@@ -9,6 +9,7 @@
 
 ## Google job search API
 - **5000 requests/month and 100 requests/s**
+- https://rapidapi.com/letscrape-6bRBa3QguO5/api/google-jobs-search/
 ```python
 import requests
 
@@ -28,6 +29,7 @@ print(response.text)
 
 ## LinkedIn Profiles and Company Data
 - To get company info
+- https://rapidapi.com/iscraper/api/linkedin-profiles-and-company-data/
 - **100 requests/month and 10 requests/min**
 
 ```python
