@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - ci
   pull_request:
     branches:
       - main
@@ -38,10 +39,14 @@ jobs:
 
       - name: Run lint
         run: cd ./client && npm run lint
-        
+
       - name: Run prettier
         run: cd ./client && npm run format
-      - run: git status
-      - uses: mikeal/publish-to-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Push changes
+        if: steps.git-check.outputs.modified == 'true'
+        run: |
+          git config --global user.name 'Charlene'
+          git config --global user.email 'charlenekwok499@gmail.com'
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git commit -am "Automated changes"
+          git push
