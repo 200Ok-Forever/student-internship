@@ -38,3 +38,6 @@ jobs:
 
       - name: Run lint
         run: cd ./client && npm run lint
+        
+      - name: Run prettier
+        run: cd ./client && npm run format
