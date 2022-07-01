@@ -1,4 +1,4 @@
-name: ci
+name: ci eslint
 
 on:
   push:
@@ -17,7 +17,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node: [14]
+        node: [16]
 
     steps:
       - name: Checkout
@@ -39,4 +39,4 @@ jobs:
         run: npm ci
 
       - name: Run lint
-        run: npm run style:all
+        run: npm run client lint
