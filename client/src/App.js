@@ -1,4 +1,4 @@
-import classes from "./App.module.scss";
+// import classes from "./App.module.scss";
 
 function App() {
   return <div>Hello</div>;
