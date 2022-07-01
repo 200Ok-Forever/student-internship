@@ -36,7 +36,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
       - name: Install dependencies
-        run: npm client ci
+        run: npm client install
 
       - name: Run lint
         run: npm run client lint
