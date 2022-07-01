@@ -42,11 +42,7 @@ jobs:
 
       - name: Run prettier
         run: cd ./client && npm run format
-      - name: Push changes
-        if: steps.git-check.outputs.modified == 'true'
-        run: |
-          git config --global user.name 'Charlene'
-          git config --global user.email 'charlenekwok499@gmail.com'
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
-          git commit -am "Automated changes"
-          git push
+        
+      - uses: stefanzweifel/git-auto-commit-action@v4
+              with:
+                  commit_message: Apply prettier changes
