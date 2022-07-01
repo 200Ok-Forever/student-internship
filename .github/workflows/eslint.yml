@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - ci
   pull_request:
     branches:
       - main
@@ -38,10 +39,10 @@ jobs:
 
       - name: Run lint
         run: cd ./client && npm run lint
-        
+
       - name: Run prettier
         run: cd ./client && npm run format
-      - run: git status
-      - uses: mikeal/publish-to-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Apply prettier changes
