@@ -41,3 +41,7 @@ jobs:
         
       - name: Run prettier
         run: cd ./client && npm run format
+      - run: git status
+      - uses: mikeal/publish-to-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
