@@ -23,9 +23,10 @@ const NavBar = () => {
     }
     setOpenDrawer(false);
   };
+
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+      <AppBar position="static" sx={{ height: "80px" }}>
         <Toolbar className={classes.container}>
           <div className={classes.align}>
             {/* mobile */}
