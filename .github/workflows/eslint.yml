@@ -1,4 +1,4 @@
-name: CI
+name: Eslint check and prettier
 
 on:
   push:
