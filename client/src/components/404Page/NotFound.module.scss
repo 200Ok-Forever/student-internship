@@ -4,4 +4,11 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  img {
+    max-width: 400px;
+    min-width: auto;
+  }
+  h1 {
+    text-align: center;
+  }
 }
