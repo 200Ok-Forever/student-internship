@@ -8,7 +8,7 @@ import { useHistory } from "react-router-dom";
 import classes from "./NavBar.module.scss";
 import Menu from "./Menu";
 import MenuIcon from "@mui/icons-material/Menu";
-import { Drawer, IconButton } from "@mui/material";
+import { Drawer } from "@mui/material";
 
 const NavBar = () => {
   const history = useHistory();
