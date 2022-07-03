@@ -1,5 +1,5 @@
 import { createTheme } from "@mui/material/styles";
-
+// change color of mui
 const theme = createTheme({
   palette: {
     type: "light",
