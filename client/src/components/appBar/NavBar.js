@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { useHistory } from "react-router-dom";
 import classes from "./NavBar.module.scss";
 import Menu from "./Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Drawer } from "@mui/material";
+import Logo from "../../asset/logo.svg";
 
 const NavBar = () => {
   const history = useHistory();
@@ -39,13 +39,7 @@ const NavBar = () => {
               <Menu className={classes.drawer} isDrawer={true} />
             </Drawer>
             {/* logo */}
-            <Typography
-              variant="h6"
-              component="div"
-              onClick={() => history.push("/")}
-            >
-              InternHub
-            </Typography>
+            <img src={Logo} alt="logo" width="180px" />
             {/* laptop */}
             <Menu className={classes.menu} isDrawer={false} />
           </div>

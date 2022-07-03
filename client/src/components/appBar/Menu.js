@@ -1,25 +1,15 @@
 import React from "react";
-import { NavLink, useHistory } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import classes from "./NavBar.module.scss";
 import SearchIcon from "@mui/icons-material/Search";
 import ForumIcon from "@mui/icons-material/Forum";
 import ArticleIcon from "@mui/icons-material/Article";
-import { Typography } from "@mui/material";
+import Logo from "../../asset/logo.svg";
 
 const Menu = (props) => {
-  const history = useHistory();
-
   return (
     <div className={props.className}>
-      {props.isDrawer && (
-        <Typography
-          variant="h6"
-          component="div"
-          onClick={() => history.push("/")}
-        >
-          InternHub
-        </Typography>
-      )}
+      {props.isDrawer && <img src={Logo} alt="logo" width="170px" />}
       <NavLink
         to="/search"
         activeClassName={classes.active}
