@@ -1,6 +1,6 @@
 // import classes from "./App.module.scss";
 import { Fragment } from "react";
-import { Route, Switch } from "react-router-dom";
+import { Redirect, Route, Switch } from "react-router-dom";
 import NotFound from "./components/404Page/NotFound";
 import Login from "./components/auth/Login";
 import Signup from "./components/auth/Signup";
@@ -8,14 +8,17 @@ import Resources from "./components/educational/Resources";
 import Forum from "./components/forum/Forum";
 import Home from "./components/home/Home";
 import JobList from "./components/home/JobList";
-import NavBar from "./components/home/NavBar";
+import NavBar from "./components/appBar/NavBar";
 
 function App() {
   return (
     <Fragment>
       <NavBar />
       <Switch>
-        <Route path="/" exact component={Home} />
+        <Route path="/" exact component={Home}>
+          <Redirect to="/search" />
+        </Route>
+        <Route path="/search" exact component={Home}></Route>
         <Route path="/job" exact component={JobList} />
         <Route path="/login" exact component={Login} />
         <Route path="/signup" exact component={Signup} />

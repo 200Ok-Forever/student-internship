@@ -1,0 +1,61 @@
+.btn-common {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  color: black;
+  column-gap: 4px;
+  padding: 18px 8px 20px 4px;
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.align {
+  display: flex;
+  align-items: center;
+  column-gap: 50px;
+}
+
+.drawer-icon {
+  display: none;
+}
+
+.menu {
+  @extend .align;
+}
+
+.btn {
+  @extend .btn-common;
+  transition: all ease 200ms;
+}
+
+.active {
+  @extend .btn-common;
+  color: #3d70b2;
+  font-weight: 700;
+  border-bottom: 2px #3d70b2 solid;
+}
+
+.drawer {
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  row-gap: 30px;
+  margin: 30px 5px;
+}
+
+@media (max-width: 900px) {
+  .menu {
+    display: none;
+  }
+  .drawer-icon {
+    display: block;
+    cursor: pointer;
+  }
+  .align {
+    column-gap: 10px;
+  }
+}

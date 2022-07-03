@@ -7,7 +7,7 @@ const theme = createTheme({
       main: "#fffffe",
     },
     secondary: {
-      main: "#3da9fc",
+      main: "#3d70b2",
       contrastText: "#fff",
     },
     error: {
@@ -16,6 +16,11 @@ const theme = createTheme({
   },
   shape: {
     borderRadius: 10,
+  },
+  typography: {
+    button: {
+      fontWeight: 700,
+    },
   },
 });
 
