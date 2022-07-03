@@ -14,7 +14,7 @@ const NavBar = () => {
   const history = useHistory();
   const [openDrawer, setOpenDrawer] = useState(false);
 
-  const toggleDrawer = (anchor, open) => (event) => {
+  const toggleDrawer = () => (event) => {
     if (
       event.type === "keydown" &&
       (event.key === "Tab" || event.key === "Shift")
@@ -30,15 +30,11 @@ const NavBar = () => {
           <div className={classes.align}>
             {/* mobile */}
             <MenuIcon
-              onClick={() => setOpenDrawer(true)}
               className={classes["drawer-icon"]}
+              onClick={() => setOpenDrawer(true)}
               color="secondary"
             />
-            <Drawer
-              anchor="left"
-              open={openDrawer}
-              onClose={toggleDrawer("left", false)}
-            >
+            <Drawer anchor="left" open={openDrawer} onClose={toggleDrawer()}>
               <Menu className={classes.drawer} isDrawer={true} />
             </Drawer>
             {/* logo */}

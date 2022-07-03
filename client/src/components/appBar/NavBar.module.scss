@@ -19,7 +19,7 @@
 }
 
 .drawer-icon {
-  display: none;
+  display: none !important;
 }
 
 .menu {
@@ -52,7 +52,7 @@
     display: none;
   }
   .drawer-icon {
-    display: block;
+    display: block !important;
     cursor: pointer;
   }
   .align {
