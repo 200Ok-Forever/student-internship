@@ -52,6 +52,7 @@ const NavBar = () => {
           <Button
             color="secondary"
             variant="outlined"
+            sx={{ height: "55px" }}
             onClick={() => history.push("/login")}
           >
             Login
