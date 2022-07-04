@@ -2,18 +2,16 @@
 
 import time
 from flask import Flask, g, request
-from server.extension import limiter, mail, bcrypt, assets, migrate
-from server.Helpers.database import db
-from server import config
-from server.Models.model import Student
-from APIs import api_bp
-from Helpers.Auth import auth_bp
+from .extension import limiter, mail, bcrypt, assets, migrate, cors, db
+from . import config
+from .APIs import api_bp
+from .APIs.Auth import auth_bp
 
 
-def create_app():
+def create_app(config_name=config.Config):
     """Returns an initialized Flask application."""
     app = Flask(__name__)
-    app.config.from_object(config.Config)
+    app.config.from_object(config_name)
 
     register_extensions(app)
     register_blueprints(app)
@@ -37,6 +35,7 @@ def register_extensions(app):
     mail.init_app(app)
     bcrypt.init_app(app)
     assets.init_app(app)
+    cors.init_app(app)
     # rq.init_app(app)
     migrate.init_app(app, db)
     limiter.init_app(app)
@@ -45,7 +44,8 @@ def register_extensions(app):
 def register_blueprints(app):
     """Register blueprints with the Flask application."""
     app.register_blueprint(api_bp)
-    app.register_blueprint(auth_bp)
+    app.register_blueprint(auth_bp, url_prefix="/auth")
+
 
 # def register_errorhandlers(app):
 #     """Register error handlers with the Flask application."""
