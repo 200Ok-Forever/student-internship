@@ -16,7 +16,7 @@ function App() {
   return (
     <Fragment>
       <NavBar />
-      <Container maxWidth="xl" className={classes.rootContainer}>
+      <Container maxWidth="100%" className={classes.rootContainer}>
         <Switch>
           <Route path="/" exact component={Home}></Route>
           <Route path="/job" exact component={JobList} />
