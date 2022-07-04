@@ -15,10 +15,7 @@ function App() {
     <Fragment>
       <NavBar />
       <Switch>
-        <Route path="/" exact component={Home}>
-          <Redirect to="/search" />
-        </Route>
-        <Route path="/search" exact component={Home}></Route>
+        <Route path="/" exact component={Home}></Route>
         <Route path="/job" exact component={JobList} />
         <Route path="/login" exact component={Login} />
         <Route path="/signup" exact component={Signup} />

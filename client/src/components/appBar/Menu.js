@@ -11,7 +11,8 @@ const Menu = (props) => {
     <div className={props.className}>
       {props.isDrawer && <img src={Logo} alt="logo" width="170px" />}
       <NavLink
-        to="/search"
+        to="/"
+        exact
         activeClassName={classes.active}
         className={classes.btn}
       >
