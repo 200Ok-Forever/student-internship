@@ -9,14 +9,14 @@ import Forum from "./components/forum/Forum";
 import Home from "./components/home/Home";
 import JobList from "./components/home/JobList";
 import NavBar from "./components/appBar/NavBar";
-import { Container } from '@mui/material';
+import { Container } from "@mui/material";
 import classes from "./App.module.scss";
 
 function App() {
   return (
     <Fragment>
       <NavBar />
-      <Container maxWidth="xl" className={classes.rootContainer}>
+      <Container maxWidth={false} className={classes.rootContainer}>
         <Switch>
           <Route path="/" exact component={Home}></Route>
           <Route path="/job" exact component={JobList} />
