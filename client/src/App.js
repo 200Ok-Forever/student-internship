@@ -1,6 +1,6 @@
 // import classes from "./App.module.scss";
 import { Fragment } from "react";
-import { Redirect, Route, Switch } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 import NotFound from "./components/404Page/NotFound";
 import Login from "./components/auth/Login";
 import Signup from "./components/auth/Signup";
