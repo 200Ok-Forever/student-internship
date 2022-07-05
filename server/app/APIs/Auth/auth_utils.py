@@ -22,7 +22,8 @@ class AuthUtils:
 
             elif user and user.verify_password(password):
                 user_info = User.get_info(user)
-                access_token = create_access_token(identity=user_info.uid)
+                print(user_info)
+                access_token = create_access_token(identity=user_info['uid'])
                 resp = {"status": True,
                         "message": "Successfully logged in.",
                         "user": user_info,

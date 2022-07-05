@@ -31,9 +31,6 @@ def create_app(config_name=config.Config):
     register_extensions(app)
     register_blueprints(app)
 
-    # register_errorhandlers(app)
-    # register_jinja_env(app)
-
     @app.before_request
     def before_request():
         """Prepare some things before the application handles a request."""
@@ -60,24 +57,3 @@ def register_blueprints(app):
     """Register blueprints with the Flask application."""
     app.register_blueprint(api_bp)
     app.register_blueprint(auth_bp, url_prefix="/auth")
-
-# def register_errorhandlers(app):
-#     """Register error handlers with the Flask application."""
-#
-#     def render_error(e):
-#         return render_template('errors/%s.html' % e.code), e.code
-#
-#     for e in [
-#         requests.codes.INTERNAL_SERVER_ERROR,
-#         requests.codes.NOT_FOUND,
-#         requests.codes.UNAUTHORIZED,
-#     ]:
-#         app.errorhandler(e)(render_error)
-#
-#
-# def register_jinja_env(app):
-#     """Configure the Jinja env to enable some functions in templates."""
-#     app.jinja_env.globals.update({
-#         'timeago': lambda x: arrow.get(x).humanize(),
-#         'url_for_other_page': url_for_other_page,
-#     })

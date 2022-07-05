@@ -23,7 +23,7 @@ class User(db.Model):
 
     @hybrid_method
     def verify_password(self, password):
-        return bcrypt.check_password_hash(self.password_hash, password)
+        return bcrypt.check_password_hash(self.hashed_password, password)
 
     def get_info(self):
         return {
