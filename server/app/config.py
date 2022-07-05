@@ -11,8 +11,12 @@ class Config:
     SECRET_KEY = os.environ.get("SECRET_KEY", os.urandom(24))
 
     # Mail
-    MAIL_SERVER = os.environ.get('MAIL_SERVER', 'mail')
-    MAIL_PORT = os.environ.get('MAIL_PORT', 1025)
+    MAIL_SERVER = os.environ.get('MAIL_SERVER', 'smtp.163.com')
+    MAIL_PORT = os.environ.get('MAIL_PORT', 465)
+    MAIL_USERNAME = os.environ.get('MAIL_USERNAME', 'zhy1998618@163.com')
+    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD', 'TOQGDQNPUYPAIVLA')
+    MAIL_USE_SSL = os.environ.get('MAIL_USE_SSL', True)
+    MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS', False)
 
     # JWT
     JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY", os.urandom(24))

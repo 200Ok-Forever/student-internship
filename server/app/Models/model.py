@@ -5,23 +5,13 @@ from wtforms import Form, IntegerField, StringField, PasswordField, validators
 from .. import bcrypt, db
 
 
-class Student(db.Model):
-    """Student table"""
-    __tablename__ = 'Student'
-    uid = db.Column(db.Integer, autoincrement=True, primary_key=True, nullable=False, unique=True)
-    username = db.Column(db.VARCHAR(50), nullable=False, unique=True)
+class User(db.Model):
+    """User(student&company) table"""
+    __tablename__ = 't_user'
+    uid = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.VARCHAR(320), nullable=False, unique=True)
     hashed_password = db.Column(db.BINARY(60), nullable=False)
-    first_name = db.Column(db.VARCHAR(50), nullable=False)
-    last_name = db.Column(db.VARCHAR(50), nullable=False)
-    university = db.Column(db.VARCHAR(100), nullable=False)
-    degree = db.Column(db.VARCHAR(15), nullable=False)
-    major = db.Column(db.VARCHAR(15))
-    skills = db.Column(db.VARCHAR(100))
-    description = db.Column(db.VARCHAR(200))
-
-    def __repr__(self):
-        return f"<Student: {self.username}, {self.email}, {self.first_name} {self.last_name}>"
+    role = db.Column(db.Integer, nullable=False)
 
     @property
     def password(self):
@@ -37,7 +27,32 @@ class Student(db.Model):
 
     def get_info(self):
         return {
-            "uid": self.uid,
+            'uid': self.uid,
+            'email': self.email,
+            'role': self.role
+        }
+
+
+class Student(db.Model):
+    """Student table"""
+    __tablename__ = 't_student'
+    id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
+    username = db.Column(db.VARCHAR(50), nullable=False, unique=True)
+    email = db.Column(db.VARCHAR(320), nullable=False, unique=True)
+    first_name = db.Column(db.VARCHAR(50), nullable=False)
+    last_name = db.Column(db.VARCHAR(50), nullable=False)
+    university = db.Column(db.VARCHAR(100), nullable=False)
+    degree = db.Column(db.VARCHAR(15), nullable=False)
+    major = db.Column(db.VARCHAR(15))
+    skills = db.Column(db.VARCHAR(100))
+    description = db.Column(db.VARCHAR(200))
+
+    def __repr__(self):
+        return f"<Student: {self.username}, {self.email}, {self.first_name} {self.last_name}>"
+
+    def get_info(self):
+        return {
+            "id": self.uid,
             "username": self.username,
             "email": self.email,
             "first_name": self.first_name,
@@ -52,7 +67,7 @@ class Student(db.Model):
 
 class Company(db.Model):
     """Company table"""
-    __tablename__ = 'company'
+    __tablename__ = 't_company'
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     name = db.Column(db.String(20), nullable=False)
     # more
