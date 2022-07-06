@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography';
 
 export default function Card({ title, subheading, media, children, to }) {
   return (
-    <MUICard sx={{ width: '400px', margin: '2em'}}>
+    <MUICard sx={{ width: '400px', margin: '2em 1em'}}>
       <CardActionArea component={RouterLink} to={to}>
         <CardMedia
           component="img"

@@ -1,68 +1,96 @@
 import React from "react";
+import { Grid, Box, Typography, Button } from '@mui/material';
+import { Link } from "react-router-dom";
 import Card from '../UI/Card';
 import ScrollableRow from '../UI/ScrollableRow'
 
 const Home = () => {
   return (
-    <>
-      <ScrollableRow>
-        <Card
-          title="Software Engineering Internship"
-          itemId={1}
-          subheading="Google"
-          media='https://picsum.photos/300/200'
-          to='/forum'
-        >
-          "some text omg asdjoas idasiudh asiduh asiduhas diuahsd iasuhd aiushdiau sdhsaiudh"
-        </Card>,
-        <Card
-          title="Software Engineering Internship"
-          itemId={2}
-          subheading="Google"
-          media='https://picsum.photos/300/200'
-          to='/forum'
-        >
-          "some text omg asdjoas idasiudh asiduh asiduhas diuahsd iasuhd aiushdiau sdhsaiudh"
-        </Card>,
-        <Card
-          title="Software Engineering Internship"
-          itemId={3}
-          subheading="Google"
-          media='https://picsum.photos/300/200'
-          to='/forum'
-        >
-          "some text omg asdjoas idasiudh asiduh asiduhas diuahsd iasuhd aiushdiau sdhsaiudh"
-        </Card>,
-        <Card
-          title="Software Engineering Internship"
-          itemId={4}
-          subheading="Google"
-          media='https://picsum.photos/300/200'
-          to='/forum'
-        >
-          "some text omg asdjoas idasiudh asiduh asiduhas diuahsd iasuhd aiushdiau sdhsaiudh"
-        </Card>,
-        <Card
-          title="Software Engineering Internship"
-          itemId={5}
-          subheading="Google"
-          media='https://picsum.photos/300/200'
-          to='/forum'
-        >
-          "some text omg asdjoas idasiudh asiduh asiduhas diuahsd iasuhd aiushdiau sdhsaiudh"
-        </Card>,
-        <Card
-          title="Software Engineering Internship"
-          itemId={6}
-          subheading="Google"
-          media='https://picsum.photos/300/200'
-          to='/forum'
-        >
-          "some text omg asdjoas idasiudh asiduh asiduhas diuahsd iasuhd aiushdiau sdhsaiudh"
-        </Card>  
-      </ScrollableRow>
-    </>
+    <Box>
+      <Box>
+        Search
+      </Box>
+      <Grid container >
+        <Grid item xs={10}>
+          <Typography variant="h5" component="div" gutterBottom>
+            Recommended for You
+          </Typography>          
+          <ContentRow />
+          <Typography variant="h5" component="div" gutterBottom>
+            Recently Posted
+          </Typography>           
+          <ContentRow />
+          <Typography variant="h5" component="div" gutterBottom>
+            Closing Soon
+          </Typography> 
+          <ContentRow />
+        </Grid>
+        <Grid item xs={2}>
+        <Button component={Link} to="/calendar" variant="contained" color="primary">
+          Full Calendar 
+        </Button>
+        </Grid>
+      </Grid>
+    </Box>
   );
 };
 
+const ContentRow = () => (
+  <ScrollableRow>
+    <Card
+      title="Software Engineering Internship"
+      itemId={1}
+      subheading="Google"
+      media='https://picsum.photos/300/200'
+      to='/forum'
+    >
+      "some text omg asdjoas idasiudh asiduh asiduhas diuahsd iasuhd aiushdiau sdhsaiudh"
+    </Card>,
+    <Card
+      title="Software Engineering Internship"
+      itemId={2}
+      subheading="Google"
+      media='https://picsum.photos/300/200'
+      to='/forum'
+    >
+      "some text omg asdjoas idasiudh asiduh asiduhas diuahsd iasuhd aiushdiau sdhsaiudh"
+    </Card>,
+    <Card
+      title="Software Engineering Internship"
+      itemId={3}
+      subheading="Google"
+      media='https://picsum.photos/300/200'
+      to='/forum'
+    >
+      "some text omg asdjoas idasiudh asiduh asiduhas diuahsd iasuhd aiushdiau sdhsaiudh"
+    </Card>,
+    <Card
+      title="Software Engineering Internship"
+      itemId={4}
+      subheading="Google"
+      media='https://picsum.photos/300/200'
+      to='/forum'
+    >
+      "some text omg asdjoas idasiudh asiduh asiduhas diuahsd iasuhd aiushdiau sdhsaiudh"
+    </Card>,
+    <Card
+      title="Software Engineering Internship"
+      itemId={5}
+      subheading="Google"
+      media='https://picsum.photos/300/200'
+      to='/forum'
+    >
+      "some text omg asdjoas idasiudh asiduh asiduhas diuahsd iasuhd aiushdiau sdhsaiudh"
+    </Card>,
+    <Card
+      title="Software Engineering Internship"
+      itemId={6}
+      subheading="Google"
+      media='https://picsum.photos/300/200'
+      to='/forum'
+    >
+      "some text omg asdjoas idasiudh asiduh asiduhas diuahsd iasuhd aiushdiau sdhsaiudh"
+    </Card>  
+  </ScrollableRow>
+)
 export default Home;
