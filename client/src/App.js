@@ -19,6 +19,7 @@ function App() {
       <Container maxWidth={false} className={classes.rootContainer}>
         <Switch>
           <Route path="/" exact component={Home}></Route>
+          <Route path="/search" exact component={JobList} />
           <Route path="/job" exact component={JobList} />
           <Route path="/login" exact component={Login} />
           <Route path="/signup" exact component={Signup} />
