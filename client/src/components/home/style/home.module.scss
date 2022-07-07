@@ -1,0 +1,84 @@
+.search-container {
+  background: url("https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2340&q=80");
+  width: 100vw;
+  height: 110vh;
+  background-position: center;
+  background-size: cover;
+  position: absolute;
+  right: 0;
+  top: 0;
+  img {
+    position: absolute;
+    bottom: -10px;
+    z-index: 4;
+  }
+  &::after {
+    position: absolute;
+    top: 0;
+    content: " ";
+    background: rgb(0, 0, 0, 0.372);
+    backdrop-filter: blur(7px);
+    width: 100vw;
+    height: 110vh;
+  }
+}
+
+.box {
+  position: relative;
+  z-index: 10;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.content-container {
+  margin-top: 110vh;
+}
+
+.typewriter h1 {
+  color: #fff;
+  font-family: "Cairo", sans-serif;
+  font-size: 3vw;
+  overflow: hidden;
+  border-right: 0.1em solid #3d70b2;
+  white-space: nowrap;
+  margin: 0 auto;
+  letter-spacing: 0.15em;
+  animation: typing 2.5s steps(30, end), blink-caret 0.5s step-end infinite;
+}
+
+.search {
+  flex-direction: row !important;
+  align-items: center;
+}
+
+@media (max-width: 900px) {
+  .search {
+    flex-direction: column !important;
+  }
+  .typewriter h1 {
+    font-size: 4vw;
+  }
+}
+
+@keyframes typing {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes blink-caret {
+  from,
+  to {
+    border-color: transparent;
+  }
+  50% {
+    border-color: #3d70b2;
+  }
+}

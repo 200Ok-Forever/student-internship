@@ -26,7 +26,7 @@ const NavBar = () => {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" sx={{ height: "80px" }}>
+      <AppBar position="absolute" sx={{ height: "80px" }}>
         <Toolbar className={classes.container}>
           <div className={classes.align}>
             {/* mobile */}
@@ -39,7 +39,12 @@ const NavBar = () => {
               <Menu className={classes.drawer} isDrawer={true} />
             </Drawer>
             {/* logo */}
-            <img src={Logo} alt="logo" width="180px" />
+            <img
+              src={Logo}
+              alt="logo"
+              width="180px"
+              onClick={() => history.push("/")}
+            />
             {/* laptop */}
             <Menu className={classes.menu} isDrawer={false} />
           </div>
