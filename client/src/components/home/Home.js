@@ -10,7 +10,7 @@ const Home = () => {
       <Box>
         Search
       </Box>
-      <Grid container >
+      <Grid container>
         <Grid item xs={9}>
           <Typography variant="h5" component="div" gutterBottom>
             Recommended for You

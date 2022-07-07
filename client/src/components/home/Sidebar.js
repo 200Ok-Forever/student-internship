@@ -38,7 +38,10 @@ const Sidebar = () => {
   ]
 
   // events in the next week
-  const upcomingEvents = events.filter(e => moment(e.start).isBetween(moment(), moment().add(7, 'd')));
+  const upcomingEvents = 
+    events
+      .filter(e => moment(e.start).isBetween(moment(), moment().add(7, 'd')))
+      .sort((a, b) => a.start - b.start);
 
   return (
     <Grid item xs={3}>
@@ -48,8 +51,8 @@ const Sidebar = () => {
       <Link component={RouteLink} to="/calendar" color="secondary">
         View Calendar 
       </Link>
-      <Internships events={upcomingEvents.filter(e => e.type === 'internship')}/>
       <Meetings events={upcomingEvents.filter(e => e.type === 'meeting')} />
+      <Internships events={upcomingEvents.filter(e => e.type === 'internship')}/>
     </Grid>
   )
 }
