@@ -1,0 +1,45 @@
+.container {
+  display: grid;
+  grid-template-columns: 400px 400px 150px;
+  grid-template-rows: auto auto auto;
+  grid-template-areas: "keyword location search" "filter filter .";
+  align-items: center;
+  gap: 20px;
+  input {
+    letter-spacing: 2px;
+  }
+  margin-bottom: 70px;
+}
+
+.keyword {
+  grid-area: keyword;
+  letter-spacing: 10px;
+}
+
+.location {
+  grid-area: location;
+  letter-spacing: 2px;
+}
+
+.filter {
+  grid-area: filter;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+.btn {
+  grid-area: search;
+  height: 50px;
+}
+
+@media (max-width: 1090px) {
+  .container {
+    grid-template-rows: auto auto auto auto;
+    grid-template-columns: 100%;
+    grid-template-areas: "keyword" "location" "filter" "search";
+    min-width: 430px;
+    width: 80%;
+  }
+}

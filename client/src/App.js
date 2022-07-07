@@ -7,10 +7,10 @@ import Signup from "./components/auth/Signup";
 import Resources from "./components/educational/Resources";
 import Forum from "./components/forum/Forum";
 import Home from "./components/home/Home";
-import JobList from "./components/home/JobList";
 import NavBar from "./components/appBar/NavBar";
 import { Container } from "@mui/material";
 import classes from "./App.module.scss";
+import JobList from "./components/jobs/JobList";
 
 function App() {
   return (
