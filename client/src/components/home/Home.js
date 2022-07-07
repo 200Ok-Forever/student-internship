@@ -1,8 +1,8 @@
 import React from "react";
-import { Grid, Box, Typography, Button } from '@mui/material';
-import { Link } from "react-router-dom";
+import { Grid, Box, Typography } from '@mui/material';
 import Card from '../UI/Card';
 import ScrollableRow from '../UI/ScrollableRow'
+import EventsSidebar from './Sidebar'
 
 const Home = () => {
   return (
@@ -11,7 +11,7 @@ const Home = () => {
         Search
       </Box>
       <Grid container >
-        <Grid item xs={10}>
+        <Grid item xs={9}>
           <Typography variant="h5" component="div" gutterBottom>
             Recommended for You
           </Typography>          
@@ -25,11 +25,7 @@ const Home = () => {
           </Typography> 
           <ContentRow />
         </Grid>
-        <Grid item xs={2}>
-        <Button component={Link} to="/calendar" variant="contained" color="primary">
-          Full Calendar 
-        </Button>
-        </Grid>
+        <EventsSidebar />      
       </Grid>
     </Box>
   );
