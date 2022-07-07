@@ -1,6 +1,7 @@
 import { Button, FormControl, TextField } from "@mui/material";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
+import classes from "./style/search.module.scss";
 
 const text_class = {
   input: {
@@ -25,7 +26,7 @@ const btn = {
   borderColor: "#2979ff",
 };
 
-const Search = (props) => {
+const Search = ({ className }) => {
   const [keywords, setKeywords] = useState("");
   const [location, setLocation] = useState("");
   const history = useHistory();
@@ -40,14 +41,15 @@ const Search = (props) => {
   };
 
   return (
-    <FormControl className={props.className}>
+    <FormControl className={className}>
       <TextField
         id="keywords"
-        label="Keywords"
+        label="Keywords / Job title"
         variant="filled"
         sx={text_class}
+        className={classes.textfield}
         value={keywords}
-        color={props.color}
+        color="secondary"
         onChange={(e) => setKeywords(e.target.value)}
         focused
       />
@@ -57,7 +59,7 @@ const Search = (props) => {
         variant="filled"
         sx={text_class}
         value={location}
-        color={props.color}
+        color="secondary"
         onChange={(e) => setLocation(e.target.value)}
         focused
       />
