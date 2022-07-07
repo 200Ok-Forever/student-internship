@@ -7,3 +7,13 @@ body {
   -moz-osx-font-smoothing: grayscale;
   box-sizing: border-box;
 }
+#keywords:-webkit-autofill,
+#keywords:-webkit-autofill:hover,
+#keywords:-webkit-autofill:focus,
+#keywords:-webkit-autofill:active,
+#location:-webkit-autofill,
+#location:-webkit-autofill:hover,
+#location:-webkit-autofill:focus,
+#location:-webkit-autofill:active {
+  transition: background-color 5000s ease-in-out 0s;
+}

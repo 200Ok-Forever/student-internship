@@ -3,9 +3,26 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 
 const text_class = {
-  input: { color: "white", height: "50px", letterSpacing: "2px" },
+  input: {
+    color: "white",
+    height: "50px",
+    letterSpacing: "2px",
+    "&:-webkit-autofill": {
+      WebkitTextFillColor: "white",
+    },
+  },
   width: "300px",
   m: "30px",
+};
+
+const btn = {
+  "&:disabled": {
+    color: "rgba(137, 132, 132)",
+    borderColor: "rgba(137, 132, 132)",
+  },
+  height: "60px",
+  color: "#2979ff",
+  borderColor: "#2979ff",
 };
 
 const Search = (props) => {
@@ -46,7 +63,7 @@ const Search = (props) => {
       />
       <Button
         variant="outlined"
-        sx={{ height: "60px" }}
+        sx={btn}
         onClick={getSearchList}
         disabled={keywords === ""}
       >
