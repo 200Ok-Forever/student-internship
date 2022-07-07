@@ -48,8 +48,8 @@ const Sidebar = () => {
       <Typography variant="h5" component="div" gutterBottom>
         My Upcoming Events 
       </Typography> 
-      <Link component={RouteLink} to="/calendar" color="secondary">
-        View Calendar 
+      <Link component={RouteLink} to="/calendar" color="primary">
+        View Full Calendar 
       </Link>
       <Meetings events={upcomingEvents.filter(e => e.type === 'meeting')} />
       <Internships events={upcomingEvents.filter(e => e.type === 'internship')}/>
