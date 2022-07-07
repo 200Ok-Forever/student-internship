@@ -17,17 +17,20 @@ const Search = (props) => {
     // api from api file
     console.log(keywords);
     console.log(location);
-    history.push(`/search?keywords=${keywords}&location=${location}`);
+    const newKeywords = keywords.trim().replace(/\s/g, "-");
+    const newLocation = location.trim().replace(/\s/g, "-");
+    history.push(`/search?keywords=${newKeywords}&location=${newLocation}`);
   };
 
   return (
-    <FormControl color={props.color} className={props.className}>
+    <FormControl className={props.className}>
       <TextField
         id="keywords"
         label="Keywords"
         variant="filled"
         sx={text_class}
         value={keywords}
+        color={props.color}
         onChange={(e) => setKeywords(e.target.value)}
         focused
       />
@@ -37,12 +40,12 @@ const Search = (props) => {
         variant="filled"
         sx={text_class}
         value={location}
+        color={props.color}
         onChange={(e) => setLocation(e.target.value)}
         focused
       />
       <Button
         variant="outlined"
-        color="secondary"
         sx={{ height: "60px" }}
         onClick={getSearchList}
         disabled={keywords === ""}

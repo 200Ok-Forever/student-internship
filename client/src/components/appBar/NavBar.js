@@ -26,14 +26,13 @@ const NavBar = () => {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="absolute" sx={{ height: "80px" }}>
+      <AppBar position="absolute" sx={{ height: "80px" }} color="secondary">
         <Toolbar className={classes.container}>
           <div className={classes.align}>
             {/* mobile */}
             <MenuIcon
               className={classes["drawer-icon"]}
               onClick={() => setOpenDrawer(true)}
-              color="secondary"
             />
             <Drawer anchor="left" open={openDrawer} onClose={toggleDrawer()}>
               <Menu className={classes.drawer} isDrawer={true} />
@@ -49,7 +48,6 @@ const NavBar = () => {
             <Menu className={classes.menu} isDrawer={false} />
           </div>
           <Button
-            color="secondary"
             variant="outlined"
             sx={{ height: "55px" }}
             onClick={() => history.push("/login")}

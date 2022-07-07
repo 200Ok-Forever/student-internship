@@ -11,7 +11,7 @@ const Home = () => {
           <div className={classes.typewriter}>
             <h1>Hi! What are you looking for?</h1>
           </div>
-          <Search color="primary" className={classes.search} />
+          <Search color="secondary" className={classes.search} />
         </div>
         <img src={wave} alt="wave" />
       </div>
