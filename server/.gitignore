@@ -1,0 +1,9 @@
+/.idea/
+/__pycache__/
+/app/__pycache__/
+/app/APIs/__pycache__/
+/app/APIs/Auth/__pycache__/
+/app/Helpers/__pycache__/
+/app/Models/__pycache__/
+*.pyc
+/.DS_Store

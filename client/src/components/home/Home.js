@@ -3,13 +3,14 @@ import { Grid, Box, Typography } from '@mui/material';
 import Card from '../UI/Card';
 import ScrollableRow from '../UI/ScrollableRow'
 import EventsSidebar from './Sidebar'
+import Search from "./Search";
+import classes from "./style/home.module.scss";
+import wave from "../../asset/wave.svg";
 
 const Home = () => {
   return (
     <Box>
-      <Box>
-        Search
-      </Box>
+      <SearchBanner />
       <Grid container>
         <Grid item xs={9}>
           <Typography variant="h5" component="div" gutterBottom>
@@ -31,6 +32,24 @@ const Home = () => {
   );
 };
 
+const SearchBanner = () => {
+  return (
+    <div>
+      <div className={classes["search-container"]}>
+        <div className={classes.box}>
+          <div className={classes.typewriter}>
+            <h1>Hi! What are you looking for?</h1>
+          </div>
+          <Search className={classes.search} />
+        </div>
+        <img src={wave} alt="wave" />
+      </div>
+      <div className={classes["content-container"]} />
+    </div>
+  );
+};
+
+// hardcoded for now, will actually come from API
 const ContentRow = () => (
   <ScrollableRow>
     <Card
