@@ -54,12 +54,7 @@ class AuthAPI:
         },
     )
 
-    user_logout = api.model(
-        "User logout",
-        {
-            "token": fields.String(required=True),
-        },
-    )
+
 
     login_success = api.model(
         "User login success response",
