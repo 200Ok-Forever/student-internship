@@ -24,7 +24,7 @@ const posts = [
 
 const IndustryForum = () => {
   const location = useLocation();
-  const industry = location.pathname.split('/')[location.pathname.split('/').length-1]
+  const industry = location.pathname.split('/')[2];
 
   return (
     <Box sx={{ width: '60%', margin: 'auto' }}>

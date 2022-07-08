@@ -7,6 +7,7 @@ import Signup from "./components/auth/Signup";
 import Resources from "./components/educational/Resources";
 import Forum from "./components/forum/Forum";
 import IndustryForum from "./components/forum/IndustryForum";
+import ForumPost from "./components/forum/ForumPost";
 import Home from "./components/home/Home";
 import Calendar from "./components/home/Calendar";
 import JobList from "./components/jobs/JobList";
@@ -40,6 +41,7 @@ function App() {
           {INDUSTRIES.map((industry) => (
             <Route path={`/forum/${industry}`} component={IndustryForum} />
           ))}
+          <Route path="/forum/posts" component={ForumPost} />
           <Route path="/forum/*" component={Forum} />
           <Route path="/resources" exact component={Resources} />
           <Route path="*" component={NotFound} />
