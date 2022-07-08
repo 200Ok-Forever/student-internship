@@ -19,7 +19,8 @@ const Forum = () => {
               title={industry}
               subheading="1042 posts"
               media='https://picsum.photos/300/200'
-              to={`/forum/${industry}`}            
+              to={`/forum/${industry.toLowerCase()}`}            
+              width="80%"
             />
           </Grid>
         ))}
