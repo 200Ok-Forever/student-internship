@@ -10,11 +10,11 @@ export default function Card({ title, subheading, media, children, to }) {
   return (
     <MUICard sx={{ width: '350px', margin: '2em 1em'}}>
       <CardActionArea component={RouterLink} to={to}>
-        <CardMedia
+        {media && <CardMedia
           component="img"
           height="140"
           image={media}
-        />
+        />}
         <CardContent>
           <Typography gutterBottom variant="h5" component="div">
             {title}
