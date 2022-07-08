@@ -1,4 +1,4 @@
-from flask import request, jsonify
+from flask import request, jsonify, current_app
 from flask_restx import Resource
 from .auth_model import AuthAPI
 from ...Models.model import LoginSchema, StudentSignUpSchema, CompanySignUpSchema
@@ -43,10 +43,13 @@ class Login(Resource):
         return AuthUtils.login(login_data)
 
 
+logoutParser = auth_api.parser()
+logoutParser.add_argument('Authorization', location='headers', help='Bearer [Token]', default='Bearer xxxxxxxxxxxxx')
+
+
 @auth_api.route("/logout")
 class Logout(Resource):
     """ User logout endpoint """
-    user_logout = AuthAPI.user_logout
 
     @auth_api.doc(
         "User logout",
@@ -58,12 +61,19 @@ class Logout(Resource):
         },
     )
     @jwt_required()
-    @auth_api.expect(user_logout, validate=True)
+    @auth_api.expect(logoutParser, validate=True)
     def post(self):
         """ Logout """
-        response = jsonify({"msg": "logout successful"})
-        unset_jwt_cookies(response)
-        return response
+        try:
+            response = jsonify({"msg": "logout successful"})
+            unset_jwt_cookies(response)
+            return response
+        except Exception as error:
+            current_app.logger.error(error)
+            return {
+                       "status": False,
+                       "message": error,
+                   }, 500
 
 
 @auth_api.route("/signup/student")
@@ -114,5 +124,3 @@ class CompanySignup(Resource):
             return {"login": False, "errors": errors}, 400
 
         return "signup"
-
-
