@@ -8,11 +8,12 @@ import Resources from "./components/educational/Resources";
 import Forum from "./components/forum/Forum";
 import IndustryForum from './components/forum/IndustryForum';
 import ForumPost from './components/forum/ForumPost';
+import CreatePost from './components/forum/CreatePost';
 import Home from "./components/home/Home";
 import Calendar from './components/home/Calendar';
 import JobList from "./components/jobs/JobList";
 import NavBar from "./components/appBar/NavBar";
-import { Container } from "@mui/material";
+import { Container, Box } from "@mui/material";
 import classes from "./App.module.scss";
 import { INDUSTRIES } from "./components/forum/constants";
 
@@ -29,17 +30,28 @@ function App() {
           <Route path="/login" exact component={Login} />
           <Route path="/signup" exact component={Signup} />
           <Route path="/forum" exact component={Forum} />
-          {INDUSTRIES.map(industry => (
-            <Route path={`/forum/${industry}`} component={IndustryForum} />
-          ))}
-          <Route path='/forum/posts' component={ForumPost} />
-          <Route path="/forum/*" component={Forum} />
+          <Route component={NarrowContainerRoutes} />
           <Route path="/resources" exact component={Resources} />
           <Route path="*" component={NotFound} />
         </Switch>
       </Container>
     </Fragment>
   );
+}
+
+const NarrowContainerRoutes = () => {
+  return (
+    <Box sx={{ width: '60%', margin: 'auto' }}>
+      <Switch>
+        {INDUSTRIES.map(industry => (
+          <Route path={`/forum/${industry}`} component={IndustryForum} />
+        ))}
+        <Route path='/forum/posts' component={ForumPost} />
+        <Route path='/forum/create' component={CreatePost} />
+        <Route path="/forum/*" component={Forum} />
+      </Switch>
+    </Box>
+  )
 }
 
 export default App;

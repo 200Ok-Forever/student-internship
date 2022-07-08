@@ -40,7 +40,7 @@ const ForumPost = () => {
   }
 
   return (
-    <Box sx={{ width: '60%', margin: 'auto '}}>
+    <Box>
       <PostDetails post={post} />
       <PostComments post={post} />
     </Box>

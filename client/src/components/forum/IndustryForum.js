@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import { useLocation, Link as RouterLink } from 'react-router-dom'
-import { CardActionArea, Typography, Box, Card, CardContent } from '@mui/material';
+import { Button, CardActionArea, Typography, Box, Card, CardContent } from '@mui/material';
 import ForumIcon from '@mui/icons-material/Forum';
 import classes from './Forum.module.scss';
 
@@ -25,12 +25,23 @@ const posts = [
 const IndustryForum = () => {
   const location = useLocation();
   const industry = location.pathname.split('/')[2];
+  const title = industry.charAt(0).toUpperCase() + industry.slice(1);
 
   return (
-    <Box sx={{ width: '60%', margin: 'auto' }}>
-      <Typography variant="h4" component='div' sx={{ mb: 2 }}>
-        {industry}
-      </Typography>
+    <Box>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+        <Typography variant="h4" component='div' sx={{ mb: 2 }}>
+          {title}
+        </Typography>
+        <Button 
+          variant="contained" 
+          color="primary" 
+          component={RouterLink} 
+          to={{ pathname: '/forum/create', state: { industry: title }}}
+        >
+          Create Post
+        </Button>
+      </Box>
       <Box>
         {posts.map(post => (
           <PostCard post={post} />
