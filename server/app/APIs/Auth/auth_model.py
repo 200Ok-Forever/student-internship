@@ -124,3 +124,8 @@ class AuthAPI:
             "token": fields.String,
         },
     )
+
+    student_info = api.model('Student', {
+        'id': fields.String,
+        'name': fields.String,
+    })
