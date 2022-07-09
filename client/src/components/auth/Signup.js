@@ -6,18 +6,14 @@ import Box from "@mui/material/Box";
 import BusinessIcon from "@mui/icons-material/Business";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { ThemeProvider } from "@mui/material/styles";
 import SchoolIcon from "@mui/icons-material/School";
 import { Paper } from "@mui/material";
-import theme from "../UI/theme";
 
 export default function SignUp() {
-
   return (
-    <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <Paper elevation={10}>
+    <Container component="main" maxWidth="xs">
+      <CssBaseline />
+      <Paper elevation={10}>
         <Box
           sx={{
             marginTop: 16,
@@ -40,15 +36,14 @@ export default function SignUp() {
               </Grid>
               <Grid item xs={12} sm={6}>
                 <Button>
-                  <BusinessIcon fontSize="large"/>
+                  <BusinessIcon fontSize="large" />
                 </Button>
                 <Typography fontWeight="bold">Recruiter</Typography>
               </Grid>
             </Grid>
           </Box>
         </Box>
-        </Paper>
-      </Container>
-    </ThemeProvider>
+      </Paper>
+    </Container>
   );
 }
