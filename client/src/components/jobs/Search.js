@@ -17,7 +17,7 @@ const DUMMY_DATA = [
   {
     job_id: "aa",
     company_id: "1",
-    title: "Software engineer",
+    title: "Software engineer intern",
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
     city: "Sydney",
@@ -26,7 +26,39 @@ const DUMMY_DATA = [
     max_salary: "$40",
     salary_currency: "Au",
     company_name: "Google",
-    company_avatar: "",
+    company_avatar: "https://img.icons8.com/officel/344/google-logo.png",
+    status: "NEW",
+    job_type: "Full-time",
+  },
+  {
+    job_id: "aa3",
+    company_id: "2",
+    title: "Software engineer intern",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    city: "Sydney",
+    expiration_timestamp: "01/03/2023",
+    min_salary: "$12",
+    max_salary: "$40",
+    salary_currency: "Au",
+    company_name: "Google",
+    company_avatar: "https://img.icons8.com/officel/344/google-logo.png",
+    job_type: "Full-time",
+  },
+  {
+    job_id: "aa1",
+    company_id: "3",
+    title: "Software engineer intern",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    city: "Sydney",
+    expiration_timestamp: "01/03/2023",
+    min_salary: "$12",
+    max_salary: "$40",
+    salary_currency: "Au",
+    company_name: "Google",
+    company_avatar: "https://img.icons8.com/officel/344/google-logo.png",
+    job_type: "Full-time",
   },
 ];
 

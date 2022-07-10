@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box } from '@mui/material';
+import { Box } from "@mui/material";
 import JobBlock from "./JobBlock";
 import Search from "./Search";
 
@@ -11,7 +11,15 @@ const JobList = () => {
   };
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        rowGap: "30px",
+        mb: "30px",
+      }}
+    >
       <Search setJobList={getJobs} />
       {jobs.map((job) => (
         <JobBlock job={job} key={job.job_id} />
