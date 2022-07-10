@@ -23,83 +23,79 @@ const Login = () => {
   };
 
   return (
-    <Container component="main" maxWidth="xs" sx={{ height: "100vh" }}>
-      <CssBaseline />
-      <Paper elevation={10}>
-        <Box
-          sx={{
-            marginTop: 16,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "36px",
-          }}
+    <Paper
+      elevation={4}
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "36px",
+        width: "fit-content",
+        height: "500px",
+        gap: "40px",
+        mx: "auto",
+        mt: "50px",
+      }}
+    >
+      <Typography
+        component="h1"
+        variant="h4"
+        fontWeight="bold"
+        sx={{ textAlign: "center" }}
+        fontFamily="inherit"
+      >
+        Sign in
+      </Typography>
+      <Box component="form" onSubmit={handleSubmit} noValidate>
+        <TextField
+          margin="normal"
+          required
+          fullWidth
+          id="email"
+          label="Email Address"
+          name="email"
+          autoComplete="email"
+          autoFocus
+        />
+        <TextField
+          margin="normal"
+          required
+          fullWidth
+          name="password"
+          label="Password"
+          type="password"
+          id="password"
+          autoComplete="current-password"
+        />
+        <Grid container>
+          <Link
+            href="#"
+            variant="body2"
+            onClick={() => history.push("/signup")}
+          >
+            Forgotten password?
+          </Link>
+        </Grid>
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          sx={{ mt: 3, mb: 2 }}
         >
-          <Typography
-            component="h1"
-            variant="h4"
-            fontWeight="bold"
-            sx={{ textAlign: "center" }}
-          >
-            Sign in
-          </Typography>
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
-            noValidate
-            sx={{ mt: 1 }}
-          >
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              autoFocus
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-            />
-            <Grid container>
-              <Link
-                href="#"
-                variant="body2"
-                onClick={() => history.push("/signup")}
-              >
-                Forgot password?
-              </Link>
-            </Grid>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Log In
-            </Button>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ margin: "auto" }}
-              onClick={() => history.push("/signup")}
-            >
-              Sign Up
-            </Button>
-          </Box>
-        </Box>
-      </Paper>
-    </Container>
+          Log In
+        </Button>
+        <Button
+          type="submit"
+          fullWidth
+          variant="outlined"
+          sx={{ margin: "auto" }}
+          onClick={() => history.push("/signup")}
+        >
+          Sign Up
+        </Button>
+      </Box>
+    </Paper>
   );
 };
 
