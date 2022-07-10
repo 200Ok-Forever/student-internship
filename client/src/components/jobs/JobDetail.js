@@ -1,4 +1,4 @@
-import { Button, Grid, Paper, Typography } from "@mui/material";
+import { Button, Grid, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useEffect } from "react";
 import { useHistory } from "react-router-dom";
@@ -12,11 +12,18 @@ import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import SendIcon from "@mui/icons-material/Send";
 import Label from "../UI/Label";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import Process from "../UI/Process";
+import WorkOutlineIcon from "@mui/icons-material/WorkOutline";
 
 const DATA = {
   closed_date: "10/10/2022",
   posted_date: "03/03/2022",
   saved: false,
+  recruiting_processes: [
+    "Phone Interview",
+    "Coding Test",
+    "Technical Interview",
+  ],
 };
 
 const JobDetail = () => {
@@ -24,7 +31,6 @@ const JobDetail = () => {
   const [info, setInfo] = useState([]);
   const basicInfo = { ...history.location.state.state };
   const [saved, setSaved] = useState(false);
-
   useEffect(() => {
     setInfo(DATA);
     setSaved(DATA.saved);
@@ -91,18 +97,48 @@ const JobDetail = () => {
         {basicInfo.remote && <Label text="Remote" />}
       </Box>
       <Grid container spacing={8}>
-        <Grid item lg={12} xl={9}>
+        <Grid item md={12} lg={9}>
           <Typography variant="body1">
             {basicInfo.description}
             {basicInfo.description}
           </Typography>
         </Grid>
-        <Grid item lg={12} xl={3}>
-          <Paper elevation={3} sx={{ height: "500px", p: "10px" }}>
-            <Typography variant="h7" fontWeight="700">
+        <Grid
+          item
+          md={12}
+          lg={3}
+          sx={{
+            height: "auto",
+            p: "20px",
+            display: "flex",
+            alignItems: "center",
+            flexDirection: "column",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: "5px",
+              mb: "40px",
+              alignSelf: "flex-start",
+            }}
+          >
+            <WorkOutlineIcon size="small" color="primary" />
+            <Typography variant="h6" fontWeight="700" fontFamily="inherit">
               Recruiting Processes
             </Typography>
-          </Paper>
+          </Box>
+          <Box>
+            {info?.recruiting_processes?.map((process, i) => (
+              <Process
+                text={process}
+                key={`process_${i}`}
+                num={i + 1}
+                isLastOne={i + 1 === info.recruiting_processes.length}
+              />
+            ))}
+          </Box>
         </Grid>
       </Grid>
     </Box>
