@@ -3,9 +3,10 @@ import React from "react";
 import salary from "../../asset/salary.png";
 import Label from "../UI/Label";
 import FmdGoodIcon from "@mui/icons-material/FmdGood";
+import { Redirect, useHistory } from "react-router-dom";
 
 const JobBlock = ({ job }) => {
-  // console.log(job);
+  const history = useHistory();
   return (
     <Paper
       elevation={3}
@@ -26,17 +27,19 @@ const JobBlock = ({ job }) => {
           component="div"
           fontFamily="inherit"
           fontWeight="700"
+          sx={{ cursor: "pointer" }}
+          onClick={() => history.push(`/job?id=${job.job_id}`, { state: job })}
         >
           {job.title}
         </Typography>
-        {job?.status === "NEW" && (
+        {job?.status && (
           <Typography
             variant="h7"
             gutterBottom
             component="div"
             fontFamily="inherit"
             fontWeight="700"
-            color="primary"
+            color={job.status === "NEW" ? "primary" : "rgb(122, 119, 119)"}
           >
             {job.status}
           </Typography>

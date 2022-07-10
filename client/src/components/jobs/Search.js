@@ -41,6 +41,7 @@ const DUMMY_DATA = [
     min_salary: "$12",
     max_salary: "$40",
     salary_currency: "Au",
+    status: "Seen",
     company_name: "Google",
     company_avatar: "https://img.icons8.com/officel/344/google-logo.png",
     job_type: "Full-time",
