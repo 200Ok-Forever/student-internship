@@ -17,7 +17,6 @@ const text_class = {
   m: "30px",
 };
 
-
 const btn = {
   "&:disabled": {
     color: "rgba(137, 132, 132)",
@@ -57,6 +56,7 @@ const Search = ({ className }) => {
         id="location"
         label="Location"
         variant="filled"
+        color="secondary"
         sx={text_class}
         value={location}
         onChange={(e) => setLocation(e.target.value)}
