@@ -1,49 +1,57 @@
 import React from "react";
 import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import BusinessIcon from "@mui/icons-material/Business";
 import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
 import SchoolIcon from "@mui/icons-material/School";
 import { Paper } from "@mui/material";
+import { useHistory } from "react-router-dom";
 
 export default function SignUp() {
+  const history = useHistory()
+
   return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <Paper elevation={10}>
-        <Box
-          sx={{
-            marginTop: 16,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            padding: 6,
-          }}
-        >
-          <Typography component="h1" variant="h4" fontWeight="bold">
-            Sign up
-          </Typography>
-          <Box sx={{ mt: 3 }}>
-            <Grid container spacing={12}>
-              <Grid item xs={12} sm={6}>
-                <Button>
-                  <SchoolIcon fontSize="large" />
-                </Button>
-                <Typography fontWeight="bold">Student</Typography>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Button>
-                  <BusinessIcon fontSize="large" />
-                </Button>
-                <Typography fontWeight="bold">Recruiter</Typography>
-              </Grid>
-            </Grid>
-          </Box>
-        </Box>
-      </Paper>
-    </Container>
+    <Paper
+      elevation={4}
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "36px",
+        width: "fit-content",
+        height: "250px",
+        gap: "40px",
+        mx: "auto",
+        mt: "150px",
+      }}
+    >
+      <Typography
+        component="h1"
+        variant="h4"
+        fontWeight="bold"
+        sx={{ textAlign: "center" }}
+        fontFamily="inherit"
+      >
+        Sign up
+      </Typography>
+      <Box sx={{ mt: 3 }}>
+        <Grid container spacing={12}>
+          <Grid item xs={12} sm={6}>
+            <Button onClick={() => {history.push("/signup/student")}}>
+              <SchoolIcon fontSize="large" />
+            </Button>
+            <Typography fontWeight="bold">Student</Typography>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Button onClick={() => {history.push("/signup/company")}}>
+              <BusinessIcon fontSize="large" />
+            </Button>
+            <Typography fontWeight="bold">Recruiter</Typography>
+          </Grid>
+        </Grid>
+      </Box>
+    </Paper>
   );
 }

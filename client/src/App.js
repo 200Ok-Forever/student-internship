@@ -10,6 +10,8 @@ import Home from "./components/home/Home";
 import Calendar from './components/home/Calendar';
 import JobList from "./components/jobs/JobList";
 import NavBar from "./components/appBar/NavBar";
+import StudentSignup from "./components/auth/StudentSignup";
+import CompanySignup from "./components/auth/CompanySignup";
 import { Container } from "@mui/material";
 import classes from "./App.module.scss";
 
@@ -25,6 +27,8 @@ function App() {
           <Route path="/job" exact component={JobList} />
           <Route path="/login" exact component={Login} />
           <Route path="/signup" exact component={Signup} />
+          <Route path="/signup/student" exact component={StudentSignup} />
+          <Route path="/signup/company" exact component={CompanySignup} />
           <Route path="/forum" exact component={Forum} />
           <Route path="/resources" exact component={Resources} />
           <Route path="*" component={NotFound} />
