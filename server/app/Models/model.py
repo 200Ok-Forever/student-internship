@@ -1,5 +1,6 @@
 """ORM and Schema"""
 
+from typing import Type
 from sqlalchemy.ext.hybrid import hybrid_method
 from wtforms import Form, IntegerField, StringField, PasswordField, validators
 from .. import bcrypt, db
@@ -70,17 +71,119 @@ class Company(db.Model):
     __tablename__ = 't_company'
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     name = db.Column(db.String(20), nullable=False)
+
     # more
 
 
 class Internship(db.Model):
     """Internship table"""
-    __tablename__ = 'internship'
+    __tablename__ = 't_internships'
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    name = db.Column(db.String(20), nullable=False)
+  
+    company_id=db.Column(db.VARCHAR(255), nullable=False)
+    publisher=db.Column(db.VARCHAR(255))
+    type=db.Column(db.VARCHAR(255))
+    title=db.Column(db.VARCHAR(255))
+    apply_link=db.Column(db.VARCHAR(255))
+    description=db.Column(db.VARCHAR(255))
+    is_remote=db.Column(db.VARCHAR(255))
+    posted_time=db.Column(db.VARCHAR(255))
+    latitude=db.Column(db.VARCHAR(255))
+    longitute=db.Column(db.VARCHAR(255))
+    google_link=db.Column(db.VARCHAR(255))
+    expiration_datetime_utc=db.Column(db.VARCHAR(255),nullable=True)
+    expiration_timestamp=db.Column(db.VARCHAR(255),nullable=True)
+    no_experience_required=db.Column(db.VARCHAR(255))
+    reuiqred_expersience_in_month=db.Column(db.VARCHAR(255),nullable=True)
+    experience_mentioned=db.Column(db.VARCHAR(255))
+    experience_preferred=db.Column(db.VARCHAR(255))
+    degree_mentioned=db.Column(db.VARCHAR(255))
+    degree_preferred=db.Column(db.VARCHAR(255))
+    professional_certification_mentioned=db.Column(db.VARCHAR(255))
+    job_experience_in_place_of_education=db.Column(db.VARCHAR(255))
+    min_salary=db.Column(db.VARCHAR(255))
+    max_salary=db.Column(db.VARCHAR(255))
+    salary_curreny=db.Column(db.VARCHAR(255))
+    salary_period_id=db.Column(db.VARCHAR(255))
+    city=db.Column(db.VARCHAR(255))
+    job_id=db.Column(db.VARCHAR(255))
+
+    def __repr__(self):
+        return f"<Internship: {self.publisher}, {self.title}, {self.company_id} {self.max_salary}>"
+    
+    def get_info(self):
+        return {
+            "id": self.id,
+            "company_id":self.company_id,
+            "publisher":self.publisher,
+            "type":self.type,
+            "title":self.title,
+            "apply_link":self.apply_link,
+            "description":self.description,
+            "is_remote":self.is_remote,
+            "posted_time":self.posted_time,
+            "latitude":self.latitude,
+            "longitute":self.longitute,
+            "google_link":self.google_link,
+            "expiration_datetime_utc":self.expiration_datetime_utc,
+            "expiration_timestamp":self.expiration_timestamp,
+            "no_experience_required":self.no_experience_required,
+            "reuiqred_expersience_in_month":self.reuiqred_expersience_in_month,
+            "experience_mentioned":self.experience_mentioned,
+            "experience_preferred":self.experience_preferred,
+            "degree_mentioned":self.degree_mentioned,
+            "degree_preferred":self.degree_preferred,
+            "professional_certification_mentioned":self.professional_certification_mentioned,
+            "job_experience_in_place_of_education":self.job_experience_in_place_of_education,
+            "min_salary":self.min_salary,
+            "max_salary":self.max_salary,
+            "salary_curreny":self.salary_curreny,
+            "salary_period_id":self.salary_period_id,
+            "city":self.city,
+            "job_id":self.job_id
+
+        }
     # more
 
+class City(db.Model):
+    __tablename__ = 't_cities'
 
+    id = db.Column(db.Integer,primary_key=True)
+    state_id = db.Column(db.Integer)
+    name = db.Column(db.VARCHAR(255))
+     
+    def get_info(self):
+        return {
+            "id": self.id,
+            "state_id":self.state_id,
+            "name": self.name
+        }
+
+
+class Company(db.Model):
+    __tablename__ = 't_companies'
+    id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.VARCHAR(255))
+    logo = db.Column(db.VARCHAR(255))
+    website = db.Column(db.VARCHAR(255))
+
+    def get_info(self):
+        return{
+            "id": self.id,
+            "name":self.name,
+            "logo": self.logo,
+            "website":self.website
+        }
+
+class Model(db.Model):
+    __tablename__ = 't_comment'
+    id = db.Column(db.Integer, primary_key = True)
+    internship_id = db.Column(db.Integer)
+    content = db.Column(db.TEXT)
+    parent_id = db.Column(db.Integer)
+    user_id = db.Column(db.Integer)
+    data = db.Column(db.Timestamp)
+    
 class LoginSchema(Form):
     email = StringField('Email Address', [validators.Length(min=6, max=35)])
     password = PasswordField('Password', [validators.Length(min=6, max=16), validators.DataRequired()])
@@ -113,3 +216,12 @@ class CompanySignUpSchema(SignUpSchema):
     founded_year = StringField('Founded year', [validators.DataRequired(), validators.Length(4)])
     company_size = IntegerField('Company size', [validators.DataRequired(), validators.Length(4)])
     location = StringField('Location', [validators.Length(max=100)])
+
+class InternshipSearchSchema(Form):
+    job = StringField('job', [validators.optional(), validators.Length(max=200)])
+    location = StringField('location', [validators.optional(), validators.Length(max=200)])
+    sort = StringField('sort', [validators.optional(), validators.Length(max=200)])
+    paid = StringField('paid', [validators.optional(), validators.Length(max=200)])
+    remote = StringField('remote', [validators.optional(), validators.Length(max=200)])
+    job_type = StringField('job_type', [validators.optional(), validators.Length(max=200)])
+    current_page = IntegerField('current_page', [validators.optional(), validators.Length(max=200)])
