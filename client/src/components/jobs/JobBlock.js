@@ -1,42 +1,36 @@
-import { Avatar, Box, Paper, Typography } from "@mui/material";
+import { Box, Paper, Typography } from "@mui/material";
 import React from "react";
 import salary from "../../asset/salary.png";
 import Label from "../UI/Label";
-import FmdGoodIcon from "@mui/icons-material/FmdGood";
-import { Redirect, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
+import JobBasicCard from "../UI/JobBasicCard";
 
 const JobBlock = ({ job }) => {
   const history = useHistory();
+  const paper = {
+    width: "100%",
+    maxWidth: "1200px",
+    height: "235px",
+    p: "30px",
+    display: "flex",
+    flexDirection: "column",
+    rowGap: "14px",
+  };
+
   return (
-    <Paper
-      elevation={3}
-      sx={{
-        width: "100%",
-        maxWidth: "1200px",
-        height: "240px",
-        p: "30px",
-        display: "flex",
-        flexDirection: "column",
-        rowGap: "10px",
-      }}
-    >
-      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-        <Typography
-          variant="h6"
-          gutterBottom
-          component="div"
-          fontFamily="inherit"
-          fontWeight="700"
-          sx={{ cursor: "pointer" }}
-          onClick={() => history.push(`/job?id=${job.job_id}`, { state: job })}
-        >
-          {job.title}
-        </Typography>
+    <Paper elevation={3} sx={paper}>
+      <JobBasicCard
+        job={{
+          title: job.title,
+          com_name: job.company_name,
+          city: job.city,
+          avatar: job.company_avatar,
+        }}
+        onClick={() => history.push(`/job?id=${job.job_id}`, { state: job })}
+      >
         {job?.status && (
           <Typography
             variant="h7"
-            gutterBottom
-            component="div"
             fontFamily="inherit"
             fontWeight="700"
             color={job.status === "NEW" ? "primary" : "rgb(122, 119, 119)"}
@@ -44,45 +38,18 @@ const JobBlock = ({ job }) => {
             {job.status}
           </Typography>
         )}
-      </Box>
-      <Box
-        sx={{ display: "flex", alignItems: "flex-start", columnGap: "10px" }}
-      >
-        <Avatar
-          src={job.company_avatar}
-          sx={{ width: 24, height: 24 }}
-        ></Avatar>
-        <Typography
-          variant="h8"
-          gutterBottom
-          component="div"
-          fontFamily="inherit"
-          fontWeight="700"
-        >
-          {job.company_name}
-        </Typography>
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "flex-start",
-            columnGap: "3px",
-            ml: "10px",
-          }}
-        >
-          <FmdGoodIcon fontSize="small" color="primary" />
-          {job.city}
-        </Box>
-      </Box>
+      </JobBasicCard>
       <Box sx={{ display: "flex", columnGap: "14px" }}>
-        <Label text={job.min_salary + " - " + job.max_salary}>
-          <img src={salary} alt="salary" width="25px" height="25px" />
-        </Label>
+        {job?.salary && (
+          <Label text={job.min_salary + " - " + job.max_salary}>
+            <img src={salary} alt="salary" width="25px" height="25px" />
+          </Label>
+        )}
         <Label text={job.job_type}></Label>
+        {job.remote && <Label text={"Remote"}></Label>}
       </Box>
       <Typography
         variant="body1"
-        gutterBottom
-        component="div"
         fontFamily="inherit"
         sx={{ overflow: "hidden" }}
       >

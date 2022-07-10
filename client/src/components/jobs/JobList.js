@@ -39,7 +39,7 @@ const JobList = () => {
       <Search setJobList={getJobs} />
       <Box
         sx={{
-          minWidth: "470px",
+          minWidth: "450px",
           width: "100%",
           maxWidth: "1260px",
           display: "flex",
