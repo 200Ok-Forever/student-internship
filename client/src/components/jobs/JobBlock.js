@@ -40,7 +40,7 @@ const JobBlock = ({ job }) => {
         )}
       </JobBasicCard>
       <Box sx={{ display: "flex", columnGap: "14px" }}>
-        {job?.salary && (
+        {job?.min_salary && (
           <Label text={job.min_salary + " - " + job.max_salary}>
             <img src={salary} alt="salary" width="25px" height="25px" />
           </Label>
