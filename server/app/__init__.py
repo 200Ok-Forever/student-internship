@@ -6,7 +6,7 @@ from flask_jwt_extended import get_jwt, set_access_cookies, create_access_token,
 from .extension import limiter, mail, bcrypt, assets, migrate, cors, db, jwt
 from . import config
 from .APIs import api_bp
-from .APIs.Auth import auth_bp
+# from .APIs.Auth import auth_bp
 
 
 def create_app(config_name=config.Config):
@@ -56,4 +56,3 @@ def register_extensions(app):
 def register_blueprints(app):
     """Register blueprints with the Flask application."""
     app.register_blueprint(api_bp)
-    app.register_blueprint(auth_bp, url_prefix="/auth")

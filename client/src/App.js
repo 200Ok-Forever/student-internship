@@ -7,7 +7,8 @@ import Signup from "./components/auth/Signup";
 import Resources from "./components/educational/Resources";
 import Forum from "./components/forum/Forum";
 import Home from "./components/home/Home";
-import JobList from "./components/home/JobList";
+import Calendar from './components/home/Calendar';
+import JobList from "./components/jobs/JobList";
 import NavBar from "./components/appBar/NavBar";
 import { Container } from "@mui/material";
 import classes from "./App.module.scss";
@@ -19,6 +20,7 @@ function App() {
       <Container maxWidth={false} className={classes.rootContainer}>
         <Switch>
           <Route path="/" exact component={Home}></Route>
+          <Route path="/calendar" exact component={Calendar} />
           <Route path="/search" exact component={JobList} />
           <Route path="/job" exact component={JobList} />
           <Route path="/login" exact component={Login} />

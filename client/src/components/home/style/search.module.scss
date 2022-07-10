@@ -1,0 +1,14 @@
+.search {
+  flex-direction: row !important;
+  align-items: center;
+}
+
+@media (max-width: 900px) {
+  .search {
+    flex-direction: column !important;
+    button {
+      align-self: flex-end;
+      margin-right: 30px;
+    }
+  }
+}

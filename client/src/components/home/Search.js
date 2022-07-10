@@ -2,13 +2,33 @@ import { Button, FormControl, TextField } from "@mui/material";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 
+import classes from "./style/search.module.scss";
+
 const text_class = {
-  input: { color: "white", height: "50px", letterSpacing: "2px" },
+  input: {
+    color: "white",
+    height: "50px",
+    letterSpacing: "2px",
+    "&:-webkit-autofill": {
+      WebkitTextFillColor: "white",
+    },
+  },
   width: "300px",
   m: "30px",
 };
 
-const Search = (props) => {
+
+const btn = {
+  "&:disabled": {
+    color: "rgba(137, 132, 132)",
+    borderColor: "rgba(137, 132, 132)",
+  },
+  height: "60px",
+  color: "#2979ff",
+  borderColor: "#2979ff",
+};
+
+const Search = ({ className }) => {
   const [keywords, setKeywords] = useState("");
   const [location, setLocation] = useState("");
   const history = useHistory();
@@ -23,14 +43,15 @@ const Search = (props) => {
   };
 
   return (
-    <FormControl className={props.className}>
+    <FormControl className={className}>
       <TextField
         id="keywords"
-        label="Keywords"
+        label="Keywords / Job title"
         variant="filled"
         sx={text_class}
+        className={classes.textfield}
         value={keywords}
-        color={props.color}
+        color="secondary"
         onChange={(e) => setKeywords(e.target.value)}
         focused
       />
@@ -40,13 +61,12 @@ const Search = (props) => {
         variant="filled"
         sx={text_class}
         value={location}
-        color={props.color}
         onChange={(e) => setLocation(e.target.value)}
         focused
       />
       <Button
         variant="outlined"
-        sx={{ height: "60px" }}
+        sx={btn}
         onClick={getSearchList}
         disabled={keywords === ""}
       >
