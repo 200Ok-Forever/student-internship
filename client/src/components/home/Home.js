@@ -29,6 +29,7 @@ const Home = () => {
             gutterBottom
             fontFamily={"inherit"}
             fontWeight={700}
+            mt="60px"
           >
             Recently Posted
           </Typography>
@@ -39,6 +40,7 @@ const Home = () => {
             gutterBottom
             fontFamily={"inherit"}
             fontWeight={700}
+            mt="60px"
           >
             Closing Soon
           </Typography>
