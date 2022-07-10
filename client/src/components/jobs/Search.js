@@ -105,15 +105,15 @@ const Search = ({ setJobList }) => {
   return (
     <form onSubmit={getJobList} className={classes.container}>
       <TextField
-        id="outlined-name"
+        id="keyword_search"
         label="Keyword / Job title"
         value={keyword}
         onChange={(e) => setKeyword(e.target.value)}
         className={classes.keyword}
       />
       <TextField
-        id="outlined-name"
-        label="Location"
+        id="location_search"
+        label="City"
         value={location}
         onChange={(e) => setLocation(e.target.value)}
         className={classes.location}
