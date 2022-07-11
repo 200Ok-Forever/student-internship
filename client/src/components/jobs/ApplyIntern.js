@@ -115,7 +115,7 @@ const ApplyForm = ({ onSubmit }) => {
           mt="100px"
         />
         {questions.map((q, i) => (
-          <Box key={`q_${i}`} mb="40px">
+          <Box key={`q_${i}`} mb="40px" sx={{ width: "100%" }}>
             <Typography variant="h7">{q}</Typography>
             <TextField
               multiline
