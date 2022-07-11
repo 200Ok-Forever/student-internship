@@ -17,13 +17,7 @@ const Label = (props) => {
       }}
     >
       {props.children}
-      <Typography
-        variant="body2"
-        gutterBottom
-        component="div"
-        fontFamily="inherit"
-        sx={{ m: 0 }}
-      >
+      <Typography variant="body2" gutterBottom component="div" sx={{ m: 0 }}>
         {props.text}
       </Typography>
     </Paper>

@@ -11,7 +11,6 @@ const JobBasicCard = (props) => {
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Typography
           variant="h6"
-          fontFamily="inherit"
           fontWeight="700"
           sx={{ cursor: "pointer", display: "flex", alignItems: "center" }}
           onClick={props?.onClick}
@@ -26,7 +25,7 @@ const JobBasicCard = (props) => {
         sx={{ display: "flex", alignItems: "flex-start", columnGap: "10px" }}
       >
         <Avatar src={job.avatar} sx={{ width: 24, height: 24 }}></Avatar>
-        <Typography variant="h8" fontFamily="inherit" fontWeight="700">
+        <Typography variant="h8" fontWeight="700">
           {job.com_name}
         </Typography>
         <Box

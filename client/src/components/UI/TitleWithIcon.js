@@ -15,7 +15,7 @@ const TitleWithIcon = ({ icon, text, mb, mt }) => {
       }}
     >
       {icon}
-      <Typography variant="h6" fontWeight="700" fontFamily="inherit">
+      <Typography variant="h6" fontWeight="700">
         {text}
       </Typography>
     </Box>

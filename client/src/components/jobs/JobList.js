@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  Box,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  Typography,
-} from "@mui/material";
+import { Box, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import JobBlock from "./JobBlock";
 import Search from "./Search";
 
@@ -65,9 +58,6 @@ const JobList = () => {
             <MenuItem value="Closing Soon">Closing Soon</MenuItem>
           </Select>
         </FormControl>
-        <Typography fontFamily="inherit" variant="body2">
-          Showing 3 of 3
-        </Typography>
       </Box>
       {jobs.map((job) => (
         <JobBlock job={job} key={job.job_id} />

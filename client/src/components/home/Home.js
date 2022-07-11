@@ -17,7 +17,6 @@ const Home = () => {
             variant="h5"
             component="div"
             gutterBottom
-            fontFamily={"inherit"}
             fontWeight={700}
           >
             Recommended for You
@@ -27,7 +26,6 @@ const Home = () => {
             variant="h5"
             component="div"
             gutterBottom
-            fontFamily={"inherit"}
             fontWeight={700}
             mt="60px"
           >
@@ -38,7 +36,6 @@ const Home = () => {
             variant="h5"
             component="div"
             gutterBottom
-            fontFamily={"inherit"}
             fontWeight={700}
             mt="60px"
           >

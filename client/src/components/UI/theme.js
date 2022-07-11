@@ -27,6 +27,36 @@ const theme = createTheme({
     button: {
       fontWeight: 700,
     },
+    h1: {
+      fontFamily: "Montserrat",
+    },
+    h2: {
+      fontFamily: "Montserrat",
+    },
+    h3: {
+      fontFamily: "Montserrat",
+    },
+    h4: {
+      fontFamily: "Montserrat",
+    },
+    h5: {
+      fontFamily: "Montserrat",
+    },
+    h6: {
+      fontFamily: "Montserrat",
+    },
+    subtitle1: {
+      fontFamily: "Montserrat",
+    },
+    subtitle2: {
+      fontFamily: "Montserrat",
+    },
+    body1: {
+      fontFamily: "Montserrat",
+    },
+    body2: {
+      fontFamily: "Montserrat",
+    },
   },
 });
 

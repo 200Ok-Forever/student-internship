@@ -10,11 +10,7 @@ const NotFound = () => {
     <div className={classes.container}>
       <img src="https://i.imgur.com/Q2BAOd2.png" alt="404 not found" />
       <h1>OOPS! PAGE NOT FOUND!</h1>
-      <Button
-        variant="contained"
-        color="secondary"
-        onClick={() => history.push("/")}
-      >
+      <Button variant="contained" onClick={() => history.push("/")}>
         Go to homepage
       </Button>
     </div>
