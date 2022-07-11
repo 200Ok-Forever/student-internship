@@ -34,7 +34,7 @@ const StudentSignup = () => {
         width: "fit-content",
         height: "fit-content",
         gap: "40px",
-        mx: "300px",
+        mx: "auto",
         mt: "100px",
         mb: "100px",
       }}

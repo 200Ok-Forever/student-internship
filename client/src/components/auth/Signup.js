@@ -21,10 +21,10 @@ export default function SignUp() {
         justifyContent: "center",
         padding: "36px",
         width: "fit-content",
-        height: "250px",
+        height: "fit-content",
         gap: "40px",
         mx: "auto",
-        mt: "150px",
+        mt: "50px",
       }}
     >
       <Typography
