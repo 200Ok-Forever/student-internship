@@ -11,7 +11,13 @@ const theme = createTheme({
       contrastText: "#fff",
     },
     error: {
-      main: "#ef4565",
+      main: "#c62828",
+    },
+    success: {
+      main: "#9ccc9e",
+    },
+    greyColor: {
+      main: "#616161",
     },
   },
   shape: {

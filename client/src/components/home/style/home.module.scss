@@ -55,6 +55,13 @@
   align-items: center;
 }
 
+.btn {
+  height: 60px;
+  &:disabled {
+    color: red;
+  }
+}
+
 @media (max-width: 900px) {
   .search {
     flex-direction: column !important;
@@ -62,6 +69,7 @@
       align-self: flex-end;
       margin-right: 30px;
     }
+
   }
   .typewriter h1 {
     font-size: 4vw;
