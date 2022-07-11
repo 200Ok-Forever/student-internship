@@ -6,7 +6,6 @@ import { Box } from "@mui/system";
 import { Button, Grid, Input, TextField, Typography } from "@mui/material";
 import TitleWithIcon from "../UI/TitleWithIcon";
 import QuizIcon from "@mui/icons-material/Quiz";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useState } from "react";
 import apply from "../../asset/apply.png";
 
