@@ -19,6 +19,8 @@ import TitleWithIcon from "../UI/TitleWithIcon";
 import SchoolIcon from "@mui/icons-material/School";
 import YoutubeEmbed from "./YoutubeEmbed";
 import ScrollableRow from "../UI/ScrollableRow";
+import ChatIcon from "@mui/icons-material/Chat";
+import ShowCmts from "../UI/ShowCmts";
 
 const DATA = {
   closed_date: "10/10/2022",
@@ -47,6 +49,31 @@ const DATA = {
     "grEKMHGYyns",
     "5fb2aPlgoys",
   ],
+  comments: [
+    {
+      cmtId: "1",
+      text: "Lorem ipsum dolorf sit amet, consectetur adipiscing elit. Etiam sit amet erat id est consequat fermentum. ",
+      avatar:
+        "https://images.unsplash.com/photo-1491308056676-205b7c9a7dc1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2073&q=80",
+      username: "Lorem",
+      reply: [
+        {
+          text: "Lorem ipsum dolorf sit amet, consectetur adipiscing elit ",
+          avatar:
+            "https://images.unsplash.com/photo-1491308056676-205b7c9a7dc1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2073&q=80",
+          username: "Lorem ipsum",
+        },
+      ],
+    },
+    {
+      cmtId: "2",
+      text: "Lorem ipsum dolorf sit amet, consectetur adipiscing elit. Etiam sit amet erat id est consequat fermentum. ",
+      avatar:
+        "https://images.unsplash.com/photo-1491308056676-205b7c9a7dc1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2073&q=80",
+      username: "ipsum",
+      reply: [],
+    },
+  ],
 };
 
 const JobDetail = () => {
@@ -67,6 +94,7 @@ const JobDetail = () => {
     >
       <BasicInfo info={info} />
       <RelatedCourses info={info} />
+      <Comments list={info.comments} />
     </Box>
   );
 };
@@ -220,6 +248,38 @@ const RelatedCourses = ({ info }) => {
           />
         ))}
       </ScrollableRow>
+    </>
+  );
+};
+
+const Comments = ({ list }) => {
+  const [comments, setComments] = useState(list);
+
+  const sendCmtHandler = (newCmt) => {
+    setComments((prev) => [newCmt].concat(prev));
+  };
+
+  const sendReplyHandler = (cmtId, newReply) => {
+    setComments((prev) => {
+      const comment = prev.find((e) => e.cmtId === cmtId);
+      if (comment) {
+        comment.reply = [newReply].concat(newReply);
+      }
+    });
+  };
+
+  return (
+    <>
+      <TitleWithIcon
+        icon={<ChatIcon size="small" color="primary" />}
+        text="Comments"
+        mt="50px"
+      />
+      <ShowCmts
+        list={comments}
+        sendCmt={sendCmtHandler}
+        sendReply={sendReplyHandler}
+      />
     </>
   );
 };
