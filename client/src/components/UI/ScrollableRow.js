@@ -1,10 +1,10 @@
-import React from 'react';
-import { ScrollMenu, VisibilityContext } from 'react-horizontal-scrolling-menu';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import IconButton from '@mui/material/IconButton';
+import React from "react";
+import { ScrollMenu, VisibilityContext } from "react-horizontal-scrolling-menu";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import IconButton from "@mui/material/IconButton";
 import usePreventBodyScroll from "../../hooks/usePreventBodyScroll";
-import classes from './UI.module.scss';
+import classes from "./UI.module.scss";
 
 export default function ScrollableRow({ children }) {
   const { disableScroll, enableScroll } = usePreventBodyScroll();
@@ -13,7 +13,7 @@ export default function ScrollableRow({ children }) {
     <div onMouseEnter={disableScroll} onMouseLeave={enableScroll}>
       <ScrollMenu
         scrollContainerClassName={classes.noScroll}
-        LeftArrow={LeftArrow} 
+        LeftArrow={LeftArrow}
         RightArrow={RightArrow}
         onWheel={onWheel}
       >
@@ -38,16 +38,9 @@ function onWheel(apiObj, ev) {
   }
 }
 
-function Arrow({
-  children,
-  disabled,
-  onClick
-}) {
+function Arrow({ children, disabled, onClick }) {
   return (
-    <IconButton
-      disabled={disabled}
-      onClick={onClick}
-    >
+    <IconButton disabled={disabled} onClick={onClick}>
       {children}
     </IconButton>
   );
@@ -60,7 +53,7 @@ export function LeftArrow() {
     isFirstItemVisible,
     scrollToItem,
     visibleItemsWithoutSeparators,
-    initComplete
+    initComplete,
   } = React.useContext(VisibilityContext);
 
   const [disabled, setDisabled] = React.useState(
@@ -98,7 +91,7 @@ export function RightArrow() {
     getNextItem,
     isLastItemVisible,
     scrollToItem,
-    visibleItemsWithoutSeparators
+    visibleItemsWithoutSeparators,
   } = React.useContext(VisibilityContext);
 
   const [disabled, setDisabled] = React.useState(
