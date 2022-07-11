@@ -1,4 +1,4 @@
-import { Button, Grid, Typography } from "@mui/material";
+import { Button, Grid, Snackbar, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useEffect } from "react";
 // import { useHistory } from "react-router-dom";
@@ -64,6 +64,8 @@ const JobDetail = () => {
 
 const BasicInfo = ({ info }) => {
   const [saved, setSaved] = useState(false);
+  const [shareBar, setShareBar] = useState(false);
+
   useEffect(() => {
     setSaved(DATA.saved);
   }, []);
@@ -76,6 +78,13 @@ const BasicInfo = ({ info }) => {
   ) : (
     <BookmarkIcon color="primary" onClick={saveJobHandler} />
   );
+
+  const handleSharedBarClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setShareBar(false);
+  };
 
   return (
     <Box
@@ -99,9 +108,23 @@ const BasicInfo = ({ info }) => {
         <Button variant="contained" startIcon={<SendIcon />} size="small">
           Apply now
         </Button>
-        <Button variant="outlined" startIcon={<ShareIcon />} size="small">
+        <Button
+          variant="outlined"
+          startIcon={<ShareIcon />}
+          size="small"
+          onClick={() => {
+            navigator.clipboard.writeText(window.location.href);
+            setShareBar(true);
+          }}
+        >
           Share
         </Button>
+        <Snackbar
+          open={shareBar}
+          autoHideDuration={2000}
+          onClose={handleSharedBarClose}
+          message="🎉 Copied link to clipboard"
+        />
         <Button
           variant="outlined"
           startIcon={<CalendarMonthIcon />}

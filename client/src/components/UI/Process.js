@@ -4,7 +4,6 @@ import React from "react";
 import classes from "./Process.module.scss";
 
 const Process = ({ isLastOne, text, num }) => {
-  console.log(text);
   return (
     <Box>
       <Box sx={{ display: "flex", gap: "10px", alignItems: "center" }}>
