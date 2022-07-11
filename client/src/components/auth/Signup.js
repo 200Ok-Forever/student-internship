@@ -19,7 +19,7 @@ export default function SignUp() {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        padding: "36px",
+        padding: "72px",
         width: "fit-content",
         height: "fit-content",
         gap: "40px",

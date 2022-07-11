@@ -41,10 +41,10 @@ const CompanySignup = () => {
         alignItems: "center",
         justifyContent: "center",
         padding: "36px",
-        width: "fit-content",
+        width: "500px",
         height: "fit-content",
         gap: "40px",
-        mx: "300px",
+        mx: "auto",
         mt: "100px",
         mb: "100px",
       }}
@@ -56,7 +56,7 @@ const CompanySignup = () => {
         sx={{ textAlign: "center" }}
         fontFamily="inherit"
       >
-        Company Sign up
+        Company Sign Up
       </Typography>
       <Avatar sx={{ m: 1, bgcolor: "primary.main" }}>
         <LockOutlinedIcon />
@@ -187,10 +187,22 @@ const CompanySignup = () => {
 							}}
             >
               <MenuItem value={"0-50"}>0-50</MenuItem>
-              <MenuItem value={"50-200"}>Twenty</MenuItem>
-              <MenuItem value={"200-1000"}>Thirty</MenuItem>
+              <MenuItem value={"50-200"}>50-200</MenuItem>
+              <MenuItem value={"200-1000"}>200-1000</MenuItem>
+              <MenuItem value={"1000-5000"}>1000-5000</MenuItem>
+              <MenuItem value={"5000-10000"}>5000-10000</MenuItem>
+              <MenuItem value={"10000+"}>10000+</MenuItem>
             </Select>
 						</FormControl>
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              name="location"
+              label="Location"
+              id="location"
+              autoComplete="location"
+            />
           </Grid>
           <Grid item xs={12}>
             <TextField

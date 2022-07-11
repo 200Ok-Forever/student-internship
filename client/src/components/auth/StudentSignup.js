@@ -31,7 +31,7 @@ const StudentSignup = () => {
         alignItems: "center",
         justifyContent: "center",
         padding: "36px",
-        width: "fit-content",
+        width: "500px",
         height: "fit-content",
         gap: "40px",
         mx: "auto",
@@ -46,7 +46,7 @@ const StudentSignup = () => {
         sx={{ textAlign: "center" }}
         fontFamily="inherit"
       >
-        Student Sign up
+        Student Sign Up
       </Typography>
       <Avatar sx={{ m: 1, bgcolor: "primary.main" }}>
         <LockOutlinedIcon />
