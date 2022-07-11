@@ -1,7 +1,7 @@
 import { Button, Grid, Snackbar, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useEffect } from "react";
-// import { useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import JobBasicCard from "../UI/JobBasicCard";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import { useState } from "react";
@@ -23,6 +23,7 @@ import ChatIcon from "@mui/icons-material/Chat";
 import ShowCmts from "../UI/ShowCmts";
 
 const DATA = {
+  job_id: "1",
   closed_date: "10/10/2022",
   posted_date: "03/03/2022",
   saved: false,
@@ -78,9 +79,7 @@ const DATA = {
 };
 
 const JobDetail = () => {
-  // const history = useHistory();
   const [info, setInfo] = useState([]);
-  // console.log(info.comments);
   useEffect(() => {
     setInfo(DATA);
   }, []);
@@ -102,6 +101,7 @@ const JobDetail = () => {
 };
 
 const BasicInfo = ({ info }) => {
+  const history = useHistory();
   const [saved, setSaved] = useState(false);
   const [shareBar, setShareBar] = useState(false);
 
@@ -144,7 +144,22 @@ const BasicInfo = ({ info }) => {
         save={saveBtns}
       />
       <Box sx={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-        <Button variant="contained" startIcon={<SendIcon />} size="small">
+        <Button
+          variant="contained"
+          startIcon={<SendIcon />}
+          size="small"
+          onClick={() =>
+            history.push(
+              `/apply?id=${info.job_id}&name=${info.title.replace(
+                / /g,
+                "-"
+              )}&company=${info.company_name.replace(/ /g, "-")}`,
+              {
+                state: { avatar: info.company_avatar },
+              }
+            )
+          }
+        >
           Apply now
         </Button>
         <Button
@@ -196,10 +211,7 @@ const BasicInfo = ({ info }) => {
       </Box>
       <Grid container spacing={8}>
         <Grid item md={12} lg={9} sm={12}>
-          <Typography variant="body1" fontFamily={"inherit"}>
-            {info.description}
-            {info.description}
-          </Typography>
+          <Typography variant="body1">{info.description}</Typography>
         </Grid>
         <Grid
           item
@@ -256,7 +268,6 @@ const RelatedCourses = ({ info }) => {
 
 const Comments = ({ list }) => {
   const [comments, setComments] = useState(list);
-  console.log(comments);
 
   useEffect(() => {
     setComments(list);

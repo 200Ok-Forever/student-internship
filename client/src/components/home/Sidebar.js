@@ -49,13 +49,7 @@ const Sidebar = () => {
 
   return (
     <Grid item xs={3}>
-      <Typography
-        variant="h5"
-        component="div"
-        gutterBottom
-        fontFamily={"inherit"}
-        fontWeight={700}
-      >
+      <Typography variant="h5" component="div" gutterBottom fontWeight={700}>
         My Upcoming Events
       </Typography>
       <Link component={RouteLink} to="/calendar" color="primary">
@@ -72,13 +66,7 @@ const Sidebar = () => {
 const Internships = ({ events }) => {
   return (
     <Box sx={{ mt: 4 }}>
-      <Typography
-        variant="h6"
-        component="div"
-        gutterBottom
-        fontFamily={"inherit"}
-        fontWeight={700}
-      >
+      <Typography variant="h6" component="div" gutterBottom fontWeight={700}>
         Application Deadlines
       </Typography>
       {events.length === 0 ? (
@@ -124,12 +112,7 @@ const Internships = ({ events }) => {
 const Meetings = ({ events }) => {
   return (
     <Box sx={{ mt: 4 }}>
-      <Typography
-        variant="h6"
-        component="div"
-        fontFamily={"inherit"}
-        fontWeight={700}
-      >
+      <Typography variant="h6" component="div" fontWeight={700}>
         Meetings
       </Typography>
       {events.length === 0 ? (

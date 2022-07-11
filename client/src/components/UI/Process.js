@@ -8,7 +8,7 @@ const Process = ({ isLastOne, text, num }) => {
     <Box>
       <Box sx={{ display: "flex", gap: "10px", alignItems: "center" }}>
         <div className={classes.circle}>{num}</div>
-        <Typography fontFamily="inherit">{text}</Typography>
+        <Typography>{text}</Typography>
       </Box>
       {!isLastOne && <div className={classes.divider}></div>}
     </Box>

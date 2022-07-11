@@ -31,7 +31,6 @@ const JobBlock = ({ job }) => {
         {job?.status && (
           <Typography
             variant="h7"
-            fontFamily="inherit"
             fontWeight="700"
             color={job.status === "NEW" ? "primary" : "rgb(122, 119, 119)"}
           >
@@ -48,11 +47,7 @@ const JobBlock = ({ job }) => {
         <Label text={job.job_type}></Label>
         {job.remote && <Label text={"Remote"}></Label>}
       </Box>
-      <Typography
-        variant="body1"
-        fontFamily="inherit"
-        sx={{ overflow: "hidden" }}
-      >
+      <Typography variant="body1" sx={{ overflow: "hidden" }}>
         {job.description}
       </Typography>
     </Paper>

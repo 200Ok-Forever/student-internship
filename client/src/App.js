@@ -13,6 +13,7 @@ import NavBar from "./components/appBar/NavBar";
 import { Container } from "@mui/material";
 import classes from "./App.module.scss";
 import JobDetail from "./components/jobs/JobDetail";
+import ApplyIntern from "./components/jobs/ApplyIntern";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Switch>
           <Route path="/" exact component={Home}></Route>
           <Route path="/calendar" exact component={Calendar} />
+          <Route path="/apply" exact component={ApplyIntern} />
           <Route path="/search" exact component={JobList} />
           <Route path="/job" exact component={JobDetail} />
           <Route path="/login" exact component={Login} />

@@ -19,7 +19,7 @@ const ShowCmts = ({ list, sendCmt, sendReply }) => {
       <CmtTextField
         sendHandler={sendCmt}
         isCmt={true}
-        placeholder="Any question or thought for this internship ?"
+        placeholder="Any question or thought for this internship?"
       />
       {list?.map((comment, i) => (
         <Item
@@ -40,7 +40,7 @@ const Item = ({ cmt, isLast, sendReply }) => {
   return (
     <Box sx={{ ...box }}>
       <AvatarName avatar={cmt.avatar} name={cmt.username} />
-      <Typography variant="body1" fontFamily="inherit" ml="60px">
+      <Typography variant="body1" ml="60px">
         {cmt.text}
       </Typography>
       <Box sx={{ width: "95%", ml: "50px" }}>
@@ -62,7 +62,7 @@ const Item = ({ cmt, isLast, sendReply }) => {
           {replies?.map((reply, i) => (
             <Box key={`reply_${i}`} sx={box}>
               <AvatarName avatar={reply.avatar} name={reply.username} />
-              <Typography variant="body1" fontFamily="inherit" ml="60px">
+              <Typography variant="body1" ml="60px">
                 {reply.text}
               </Typography>
             </Box>

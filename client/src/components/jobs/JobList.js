@@ -65,9 +65,6 @@ const JobList = () => {
             <MenuItem value="Closing Soon">Closing Soon</MenuItem>
           </Select>
         </FormControl>
-        <Typography fontFamily="inherit" variant="body2">
-          Showing 3 of 3
-        </Typography>
       </Box>
       {jobs.map((job) => (
         <JobBlock job={job} key={job.job_id} />
