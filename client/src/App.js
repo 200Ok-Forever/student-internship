@@ -7,13 +7,15 @@ import Signup from "./components/auth/Signup";
 import Resources from "./components/educational/Resources";
 import Forum from "./components/forum/Forum";
 import Home from "./components/home/Home";
-import Calendar from './components/home/Calendar';
+import Calendar from "./components/home/Calendar";
 import JobList from "./components/jobs/JobList";
 import NavBar from "./components/appBar/NavBar";
 import StudentSignup from "./components/auth/StudentSignup";
 import CompanySignup from "./components/auth/CompanySignup";
 import { Container } from "@mui/material";
 import classes from "./App.module.scss";
+import JobDetail from "./components/jobs/JobDetail";
+import ApplyIntern from "./components/jobs/ApplyIntern";
 
 function App() {
   return (
@@ -23,8 +25,9 @@ function App() {
         <Switch>
           <Route path="/" exact component={Home}></Route>
           <Route path="/calendar" exact component={Calendar} />
+          <Route path="/apply" exact component={ApplyIntern} />
           <Route path="/search" exact component={JobList} />
-          <Route path="/job" exact component={JobList} />
+          <Route path="/job" exact component={JobDetail} />
           <Route path="/login" exact component={Login} />
           <Route path="/signup" exact component={Signup} />
           <Route path="/signup/student" exact component={StudentSignup} />

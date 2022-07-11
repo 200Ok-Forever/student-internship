@@ -17,7 +17,6 @@ const text_class = {
   m: "30px",
 };
 
-
 const btn = {
   "&:disabled": {
     color: "rgba(137, 132, 132)",
@@ -35,8 +34,6 @@ const Search = ({ className }) => {
 
   const getSearchList = () => {
     // api from api file
-    console.log(keywords);
-    console.log(location);
     const newKeywords = keywords.trim().replace(/\s/g, "-");
     const newLocation = location.trim().replace(/\s/g, "-");
     history.push(`/search?keywords=${newKeywords}&location=${newLocation}`);
@@ -57,19 +54,15 @@ const Search = ({ className }) => {
       />
       <TextField
         id="location"
-        label="Location"
+        label="City"
         variant="filled"
+        color="secondary"
         sx={text_class}
         value={location}
         onChange={(e) => setLocation(e.target.value)}
         focused
       />
-      <Button
-        variant="outlined"
-        sx={btn}
-        onClick={getSearchList}
-        disabled={keywords === ""}
-      >
+      <Button variant="outlined" sx={btn} onClick={getSearchList}>
         Search
       </Button>
     </FormControl>

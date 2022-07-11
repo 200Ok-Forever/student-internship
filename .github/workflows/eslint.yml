@@ -40,9 +40,9 @@ jobs:
       - name: Run lint
         run: cd ./client && npm run lint
 
-      - name: Run prettier
-        run: cd ./client && npm run format
+#       - name: Run prettier
+#         run: cd ./client && npm run format
 
-      - uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: Apply prettier changes
+#       - uses: stefanzweifel/git-auto-commit-action@v4
+#         with:
+#           commit_message: Apply prettier changes
