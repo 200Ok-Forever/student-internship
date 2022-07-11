@@ -26,7 +26,7 @@ const JobBlock = ({ job }) => {
           city: job.city,
           avatar: job.company_avatar,
         }}
-        onClick={() => history.push(`/job?id=${job.job_id}`, { state: job })}
+        onClick={() => history.push(`/job?id=${job.job_id}`)}
       >
         {job?.status && (
           <Typography
