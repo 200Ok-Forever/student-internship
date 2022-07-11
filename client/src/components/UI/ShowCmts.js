@@ -7,31 +7,20 @@ import CmtTextField from "./CmtTextField";
 // list => comments list {cmdId, text, avatar, username, reply: [{text, avatar, username}]}
 // sendCmt => append new content to list of comments and deal with api
 // sendReply => append new content to list of replies for a specific comment and deal with api
-
 const box = {
   display: "flex",
   flexDirection: "column",
   gap: "20px",
 };
 
-const ShowCmts = ({ list, setComments }) => {
-  const sendCmt = (newCmt) => {
-    setComments((prev) => [newCmt].concat(prev));
-  };
-
-  const sendReply = (cmtId, newReply) => {
-    const copy = list;
-    const comment = copy.find((e) => e.cmtId === cmtId);
-    console.log(comment);
-    if (comment) {
-      comment.reply = [newReply].concat(comment.reply);
-    }
-    setComments(copy);
-  };
-
+const ShowCmts = ({ list, sendCmt, sendReply }) => {
   return (
     <Box sx={box}>
-      <CmtTextField sendHandler={sendCmt} isCmt={true} />
+      <CmtTextField
+        sendHandler={sendCmt}
+        isCmt={true}
+        placeholder="Any question or thought for this internship ?"
+      />
       {list?.map((comment, i) => (
         <Item
           key={`intern_cmt_${i}`}
@@ -66,9 +55,10 @@ const Item = ({ cmt, isLast, sendReply }) => {
             sendHandler={sendReply}
             isCmt={false}
             cmtId={cmt.cmtId}
+            placeholder=""
           />
         )}
-        <Box ml="8px">
+        <Box sx={box}>
           {replies?.map((reply, i) => (
             <Box key={`reply_${i}`} sx={box}>
               <AvatarName avatar={reply.avatar} name={reply.username} />

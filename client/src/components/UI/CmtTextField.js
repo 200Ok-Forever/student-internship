@@ -4,7 +4,13 @@ import React, { useState } from "react";
 import SendIcon from "@mui/icons-material/Send";
 
 // isCmt => true -- comment, false -- reply
-const CmtTextField = ({ sendHandler, sx, isCmt, cmtId }) => {
+const CmtTextField = ({
+  sendHandler,
+  sx = {},
+  isCmt,
+  cmtId = -1,
+  placeholder,
+}) => {
   const [text, setText] = useState("");
 
   const sendInfo = () => {
@@ -32,7 +38,7 @@ const CmtTextField = ({ sendHandler, sx, isCmt, cmtId }) => {
     >
       <TextField
         id="outlined-multiline-static"
-        placeholder="Any question or thought for this internship ?"
+        placeholder={placeholder}
         multiline
         rows={3}
         value={text}
@@ -44,6 +50,7 @@ const CmtTextField = ({ sendHandler, sx, isCmt, cmtId }) => {
         endIcon={<SendIcon />}
         onClick={sendInfo}
         sx={{ alignSelf: "flex-end" }}
+        disabled={text === ""}
       >
         Send
       </Button>

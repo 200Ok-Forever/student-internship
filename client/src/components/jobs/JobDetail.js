@@ -58,6 +58,7 @@ const DATA = {
       username: "cmt_user1",
       reply: [
         {
+          repliedId: "1",
           text: "Lorem ipsum dolorf sit amet, consectetur adipiscing elit, Lorem ipsum dolorf sit amet, consectetur adipiscing elit , Lorem ipsum dolorf sit amet, consectetur adipiscing elit  ",
           avatar:
             "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2340&q=80",
@@ -256,9 +257,28 @@ const RelatedCourses = ({ info }) => {
 const Comments = ({ list }) => {
   const [comments, setComments] = useState(list);
   console.log(comments);
+
   useEffect(() => {
     setComments(list);
   }, [list]);
+
+  const sendCmt = (newCmt) => {
+    setComments((prev) => [newCmt].concat(prev));
+  };
+
+  const sendReply = (cmtId, newReply) => {
+    setComments((prev) => {
+      const idx = prev.findIndex((e) => e.cmtId === cmtId);
+      const cmt = prev[idx];
+      if (cmt) {
+        const reply = [newReply].concat(cmt.reply);
+        let new_cmt = {};
+        new_cmt = { ...cmt, reply };
+        prev.splice(idx, 1, new_cmt);
+      }
+      return [...prev];
+    });
+  };
 
   return (
     <>
@@ -267,7 +287,7 @@ const Comments = ({ list }) => {
         text="Comments"
         mt="50px"
       />
-      <ShowCmts list={comments} setComments={setComments} />
+      <ShowCmts list={comments} sendCmt={sendCmt} sendReply={sendReply} />
     </>
   );
 };
