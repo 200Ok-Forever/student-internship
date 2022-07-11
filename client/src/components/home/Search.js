@@ -54,7 +54,7 @@ const Search = ({ className }) => {
       />
       <TextField
         id="location"
-        label="Location"
+        label="City"
         variant="filled"
         color="secondary"
         sx={text_class}
@@ -62,12 +62,7 @@ const Search = ({ className }) => {
         onChange={(e) => setLocation(e.target.value)}
         focused
       />
-      <Button
-        variant="outlined"
-        sx={btn}
-        onClick={getSearchList}
-        disabled={keywords === ""}
-      >
+      <Button variant="outlined" sx={btn} onClick={getSearchList}>
         Search
       </Button>
     </FormControl>

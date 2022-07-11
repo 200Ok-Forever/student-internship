@@ -1,7 +1,7 @@
-import { Button, Grid, Paper, Typography } from "@mui/material";
+import { Button, Grid, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useEffect } from "react";
-import { useHistory } from "react-router-dom";
+// import { useHistory } from "react-router-dom";
 import JobBasicCard from "../UI/JobBasicCard";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import { useState } from "react";
@@ -12,29 +12,66 @@ import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import SendIcon from "@mui/icons-material/Send";
 import Label from "../UI/Label";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import Process from "../UI/Process";
+import WorkOutlineIcon from "@mui/icons-material/WorkOutline";
+import salary from "../../asset/salary.png";
+import TitleWithIcon from "../UI/TitleWithIcon";
+import SchoolIcon from "@mui/icons-material/School";
 
 const DATA = {
   closed_date: "10/10/2022",
   posted_date: "03/03/2022",
   saved: false,
+  recruiting_processes: [
+    "Phone Interview",
+    "Coding Test",
+    "Technical Interview",
+  ],
+  min_salary: "$12",
+  max_salary: "$40",
+  salary_currency: "Au",
+  company_name: "Google",
+  company_avatar: "https://img.icons8.com/officel/344/google-logo.png",
+  remote: true,
+  job_type: "Full-time",
+  city: "Sydney",
+  title: "Software engineer intern",
+  description:
+    "Lorem ipsum dolorf sit amet, consectetur adipiscing elit. Etiam sit amet erat id est consequat fermentum. Sed efficitur ligula et ante lacinia, quis pulvinar massa eleifend. Duis interdum ornare nunc, ac tincidunt diam rhoncus non. Vestibulum tincidunt tellus rutrum quam gravida lobortis. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Mauris viverra erat et enim efficitur porta. In hac habitasse platea dictumst. In at erat quis mi accumsan fringilla sit amet eu mi. Phasellus dignissim leo eros, sed rhoncus est vestibulum nec. \n Ut congue, purus sit amet porttitor pellentesque, ex diam pellentesque mi, ac scelerisque nibh dui eu neque. In finibus, eros sit amet consectetur sagittis, arcu orci semper tortor, sit amet blandit est purus ut turpis. Aliquam quis diam ornare, pharetra metus eget, finibus neque. Sed nec mauris id tortor tempus efficitur a cursus nibh. Donec a sollicitudin augue. Mauris auctor nibh ut molestie semper. Praesent felis orci, rhoncus quis pulvinar a, bibendum non lectus. \n Nunc vehicula pulvinar lorem suscipit malesuada. Donec malesuada velit massa, eget ullamcorper ligula convallis nec. Aenean ac mollis elit. Pellentesque ut ultricies velit. Nam quis posuere orci. Etiam nibh sem, venenatis a rutrum id, condimentum non velit. Mauris at tincidunt mauris. Phasellus viverra est a arcu facilisis, ac auctor elit egestas. Quisque eget risus condimentum, molestie leo vel, venenatis nunc. In hac habitasse platea dictumst. Morbi quis dui non metus ultricies aliquam. Vestibulum ornare, sapien ut vehicula ornare, nibh nunc porta magna, eget accumsan ipsum enim eget est. Donec et ligula ac arcu lobortis finibus sit amet lobortis felis.\n",
 };
 
 const JobDetail = () => {
-  const history = useHistory();
+  // const history = useHistory();
   const [info, setInfo] = useState([]);
-  const basicInfo = { ...history.location.state.state };
-  const [saved, setSaved] = useState(false);
-
   useEffect(() => {
     setInfo(DATA);
-    setSaved(DATA.saved);
   }, []);
 
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        rowGap: "50px",
+        mb: "30px",
+      }}
+    >
+      <BasicInfo info={info} />
+      <RelatedCourses />
+    </Box>
+  );
+};
+
+const BasicInfo = ({ info }) => {
+  const [saved, setSaved] = useState(false);
+  useEffect(() => {
+    setSaved(DATA.saved);
+  }, []);
   const saveJobHandler = () => {
     setSaved((prev) => !prev);
   };
 
-  const save = !saved ? (
+  const saveBtns = !saved ? (
     <BookmarkBorderIcon color="primary" onClick={saveJobHandler} />
   ) : (
     <BookmarkIcon color="primary" onClick={saveJobHandler} />
@@ -51,12 +88,12 @@ const JobDetail = () => {
     >
       <JobBasicCard
         job={{
-          title: basicInfo.title,
-          com_name: basicInfo.company_name,
-          city: basicInfo.city,
-          avatar: basicInfo.company_avatar,
+          title: info.title,
+          com_name: info.company_name,
+          city: info.city,
+          avatar: info.company_avatar,
         }}
-        save={save}
+        save={saveBtns}
       />
       <Box sx={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
         <Button variant="contained" startIcon={<SendIcon />} size="small">
@@ -87,25 +124,62 @@ const JobDetail = () => {
         <Label text={info.posted_date + " - " + info.closed_date}>
           <AccessTimeIcon fontSize="small" color="primary" sx={{ mr: "5px" }} />
         </Label>
-        <Label text={basicInfo.job_type} />
-        {basicInfo.remote && <Label text="Remote" />}
+        {info?.min_salary && (
+          <Label text={info.min_salary + " - " + info.max_salary}>
+            <img src={salary} alt="salary" width="25px" height="25px" />
+          </Label>
+        )}
+        <Label text={info.job_type} />
+        {info.remote && <Label text="Remote" />}
       </Box>
       <Grid container spacing={8}>
-        <Grid item lg={12} xl={9}>
+        <Grid item md={12} lg={9} sm={12}>
           <Typography variant="body1">
-            {basicInfo.description}
-            {basicInfo.description}
+            {info.description}
+            {info.description}
           </Typography>
         </Grid>
-        <Grid item lg={12} xl={3}>
-          <Paper elevation={3} sx={{ height: "500px", p: "10px" }}>
-            <Typography variant="h7" fontWeight="700">
-              Recruiting Processes
-            </Typography>
-          </Paper>
+        <Grid
+          item
+          md={12}
+          lg={3}
+          sm={12}
+          sx={{
+            height: "auto",
+            p: "20px",
+            display: "flex",
+            alignItems: "center",
+            flexDirection: "column",
+          }}
+        >
+          <TitleWithIcon
+            icon={<WorkOutlineIcon size="small" color="primary" />}
+            text="Recruiting Processes"
+          />
+          <Box>
+            {info?.recruiting_processes?.map((process, i) => (
+              <Process
+                text={process}
+                key={`process_${i}`}
+                num={i + 1}
+                isLastOne={i + 1 === info.recruiting_processes.length}
+              />
+            ))}
+          </Box>
         </Grid>
       </Grid>
     </Box>
+  );
+};
+
+const RelatedCourses = () => {
+  return (
+    <>
+      <TitleWithIcon
+        icon={<SchoolIcon size="small" color="primary" />}
+        text="Related Courses"
+      />
+    </>
   );
 };
 
