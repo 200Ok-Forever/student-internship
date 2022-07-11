@@ -82,7 +82,6 @@ const ContentRow = () => (
       "some text omg asdjoas idasiudh asiduh asiduhas diuahsd iasuhd aiushdiau
       sdhsaiudh"
     </Card>
-    ,
     <Card
       title="Software Engineering Internship"
       itemId={2}
@@ -93,7 +92,6 @@ const ContentRow = () => (
       "some text omg asdjoas idasiudh asiduh asiduhas diuahsd iasuhd aiushdiau
       sdhsaiudh"
     </Card>
-    ,
     <Card
       title="Software Engineering Internship"
       itemId={3}
@@ -104,7 +102,6 @@ const ContentRow = () => (
       "some text omg asdjoas idasiudh asiduh asiduhas diuahsd iasuhd aiushdiau
       sdhsaiudh"
     </Card>
-    ,
     <Card
       title="Software Engineering Internship"
       itemId={4}
@@ -115,7 +112,6 @@ const ContentRow = () => (
       "some text omg asdjoas idasiudh asiduh asiduhas diuahsd iasuhd aiushdiau
       sdhsaiudh"
     </Card>
-    ,
     <Card
       title="Software Engineering Internship"
       itemId={5}
@@ -126,7 +122,6 @@ const ContentRow = () => (
       "some text omg asdjoas idasiudh asiduh asiduhas diuahsd iasuhd aiushdiau
       sdhsaiudh"
     </Card>
-    ,
     <Card
       title="Software Engineering Internship"
       itemId={6}
