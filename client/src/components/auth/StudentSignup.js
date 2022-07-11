@@ -2,7 +2,6 @@ import * as React from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
@@ -74,7 +73,7 @@ const StudentSignup = () => {
               autoComplete="new-password"
             />
           </Grid>
-					<Grid item xs={12}>
+          <Grid item xs={12}>
             <TextField
               required
               fullWidth
@@ -171,12 +170,12 @@ const StudentSignup = () => {
         >
           Sign Up
         </Button>
-				<Button
+        <Button
           type="submit"
           fullWidth
           variant="outlined"
           sx={{ margin: "auto" }}
-					onClick={() => history.push("/login")}
+          onClick={() => history.push("/login")}
         >
           Already has an account? Login!
         </Button>

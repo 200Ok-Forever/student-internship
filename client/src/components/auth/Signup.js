@@ -9,7 +9,7 @@ import { Paper } from "@mui/material";
 import { useHistory } from "react-router-dom";
 
 export default function SignUp() {
-  const history = useHistory()
+  const history = useHistory();
 
   return (
     <Paper
@@ -39,13 +39,21 @@ export default function SignUp() {
       <Box sx={{ mt: 3 }}>
         <Grid container spacing={12}>
           <Grid item xs={12} sm={6}>
-            <Button onClick={() => {history.push("/signup/student")}}>
+            <Button
+              onClick={() => {
+                history.push("/signup/student");
+              }}
+            >
               <SchoolIcon fontSize="large" />
             </Button>
             <Typography fontWeight="bold">Student</Typography>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <Button onClick={() => {history.push("/signup/company")}}>
+            <Button
+              onClick={() => {
+                history.push("/signup/company");
+              }}
+            >
               <BusinessIcon fontSize="large" />
             </Button>
             <Typography fontWeight="bold">Recruiter</Typography>

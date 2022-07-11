@@ -162,7 +162,7 @@ const CompanySignup = () => {
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DatePicker
                 disableFuture
-								fullWidth
+                fullWidth
                 label="Founded Year"
                 openTo="year"
                 views={["year"]}
@@ -175,25 +175,27 @@ const CompanySignup = () => {
             </LocalizationProvider>
           </Grid>
           <Grid item xs={12} sm={6}>
-					<FormControl fullWidth>
-            <InputLabel id="demo-simple-select-helper-label">Company Size</InputLabel>
-            <Select
-              labelId="demo-simple-select-helper-label"
-              id="demo-simple-select-helper"
-              value={size}
-              label="Age"
-              onChange={(newValue) => {
-								setSize(newValue);
-							}}
-            >
-              <MenuItem value={"0-50"}>0-50</MenuItem>
-              <MenuItem value={"50-200"}>50-200</MenuItem>
-              <MenuItem value={"200-1000"}>200-1000</MenuItem>
-              <MenuItem value={"1000-5000"}>1000-5000</MenuItem>
-              <MenuItem value={"5000-10000"}>5000-10000</MenuItem>
-              <MenuItem value={"10000+"}>10000+</MenuItem>
-            </Select>
-						</FormControl>
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-helper-label">
+                Company Size
+              </InputLabel>
+              <Select
+                labelId="demo-simple-select-helper-label"
+                id="demo-simple-select-helper"
+                value={size}
+                label="Age"
+                onChange={(newValue) => {
+                  setSize(newValue);
+                }}
+              >
+                <MenuItem value={"0-50"}>0-50</MenuItem>
+                <MenuItem value={"50-200"}>50-200</MenuItem>
+                <MenuItem value={"200-1000"}>200-1000</MenuItem>
+                <MenuItem value={"1000-5000"}>1000-5000</MenuItem>
+                <MenuItem value={"5000-10000"}>5000-10000</MenuItem>
+                <MenuItem value={"10000+"}>10000+</MenuItem>
+              </Select>
+            </FormControl>
           </Grid>
           <Grid item xs={12}>
             <TextField
