@@ -11,7 +11,13 @@ const theme = createTheme({
       contrastText: "#fff",
     },
     error: {
-      main: "#ef4565",
+      main: "#c62828",
+    },
+    success: {
+      main: "#9ccc9e",
+    },
+    greyColor: {
+      main: "#616161",
     },
   },
   shape: {
@@ -20,6 +26,36 @@ const theme = createTheme({
   typography: {
     button: {
       fontWeight: 700,
+    },
+    h1: {
+      fontFamily: "Montserrat",
+    },
+    h2: {
+      fontFamily: "Montserrat",
+    },
+    h3: {
+      fontFamily: "Montserrat",
+    },
+    h4: {
+      fontFamily: "Montserrat",
+    },
+    h5: {
+      fontFamily: "Montserrat",
+    },
+    h6: {
+      fontFamily: "Montserrat",
+    },
+    subtitle1: {
+      fontFamily: "Montserrat",
+    },
+    subtitle2: {
+      fontFamily: "Montserrat",
+    },
+    body1: {
+      fontFamily: "Montserrat",
+    },
+    body2: {
+      fontFamily: "Montserrat",
     },
   },
 });

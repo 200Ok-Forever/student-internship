@@ -54,12 +54,7 @@ class AuthAPI:
         },
     )
 
-    user_logout = api.model(
-        "User logout",
-        {
-            "token": fields.String(required=True),
-        },
-    )
+
 
     login_success = api.model(
         "User login success response",
@@ -124,3 +119,8 @@ class AuthAPI:
             "token": fields.String,
         },
     )
+
+    student_info = api.model('Student', {
+        'id': fields.String,
+        'name': fields.String,
+    })

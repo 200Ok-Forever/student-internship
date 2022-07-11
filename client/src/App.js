@@ -10,12 +10,16 @@ import IndustryForum from './components/forum/IndustryForum';
 import ForumPost from './components/forum/ForumPost';
 import CreatePost from './components/forum/CreatePost';
 import Home from "./components/home/Home";
-import Calendar from './components/home/Calendar';
+import Calendar from "./components/home/Calendar";
 import JobList from "./components/jobs/JobList";
 import NavBar from "./components/appBar/NavBar";
 import { Container, Box } from "@mui/material";
 import classes from "./App.module.scss";
 import { INDUSTRIES } from "./components/forum/constants";
+import StudentSignup from "./components/auth/StudentSignup";
+import CompanySignup from "./components/auth/CompanySignup";
+import JobDetail from "./components/jobs/JobDetail";
+import ApplyIntern from "./components/jobs/ApplyIntern";
 
 function App() {
   return (
@@ -25,10 +29,13 @@ function App() {
         <Switch>
           <Route path="/" exact component={Home}></Route>
           <Route path="/calendar" exact component={Calendar} />
+          <Route path="/apply" exact component={ApplyIntern} />
           <Route path="/search" exact component={JobList} />
-          <Route path="/job" exact component={JobList} />
+          <Route path="/job" exact component={JobDetail} />
           <Route path="/login" exact component={Login} />
           <Route path="/signup" exact component={Signup} />
+          <Route path="/signup/student" exact component={StudentSignup} />
+          <Route path="/signup/company" exact component={CompanySignup} />
           <Route path="/forum" exact component={Forum} />
           <Route component={NarrowContainerRoutes} />
           <Route path="/resources" exact component={Resources} />
@@ -39,6 +46,7 @@ function App() {
   );
 }
 
+// width is smaller because they don't need that much space
 const NarrowContainerRoutes = () => {
   return (
     <Box sx={{ width: '60%', margin: 'auto' }}>
