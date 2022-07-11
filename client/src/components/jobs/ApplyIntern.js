@@ -115,14 +115,16 @@ const ApplyForm = ({ onSubmit }) => {
           mt="100px"
         />
         {questions.map((q, i) => (
-          <TextField
-            key={`q_${i}`}
-            label={q}
-            multiline
-            rows={4}
-            fullWidth
-            defaultValue=""
-          />
+          <Box key={`q_${i}`} mb="40px">
+            <Typography variant="h7">{q}</Typography>
+            <TextField
+              multiline
+              rows={4}
+              fullWidth
+              defaultValue=""
+              sx={{ mt: "20px" }}
+            />
+          </Box>
         ))}
         <Button
           variant="contained"
