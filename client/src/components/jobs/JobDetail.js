@@ -17,6 +17,8 @@ import WorkOutlineIcon from "@mui/icons-material/WorkOutline";
 import salary from "../../asset/salary.png";
 import TitleWithIcon from "../UI/TitleWithIcon";
 import SchoolIcon from "@mui/icons-material/School";
+import YoutubeEmbed from "./YoutubeEmbed";
+import ScrollableRow from "../UI/ScrollableRow";
 
 const DATA = {
   closed_date: "10/10/2022",
@@ -38,6 +40,13 @@ const DATA = {
   title: "Software engineer intern",
   description:
     "Lorem ipsum dolorf sit amet, consectetur adipiscing elit. Etiam sit amet erat id est consequat fermentum. Sed efficitur ligula et ante lacinia, quis pulvinar massa eleifend. Duis interdum ornare nunc, ac tincidunt diam rhoncus non. Vestibulum tincidunt tellus rutrum quam gravida lobortis. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Mauris viverra erat et enim efficitur porta. In hac habitasse platea dictumst. In at erat quis mi accumsan fringilla sit amet eu mi. Phasellus dignissim leo eros, sed rhoncus est vestibulum nec. \n Ut congue, purus sit amet porttitor pellentesque, ex diam pellentesque mi, ac scelerisque nibh dui eu neque. In finibus, eros sit amet consectetur sagittis, arcu orci semper tortor, sit amet blandit est purus ut turpis. Aliquam quis diam ornare, pharetra metus eget, finibus neque. Sed nec mauris id tortor tempus efficitur a cursus nibh. Donec a sollicitudin augue. Mauris auctor nibh ut molestie semper. Praesent felis orci, rhoncus quis pulvinar a, bibendum non lectus. \n Nunc vehicula pulvinar lorem suscipit malesuada. Donec malesuada velit massa, eget ullamcorper ligula convallis nec. Aenean ac mollis elit. Pellentesque ut ultricies velit. Nam quis posuere orci. Etiam nibh sem, venenatis a rutrum id, condimentum non velit. Mauris at tincidunt mauris. Phasellus viverra est a arcu facilisis, ac auctor elit egestas. Quisque eget risus condimentum, molestie leo vel, venenatis nunc. In hac habitasse platea dictumst. Morbi quis dui non metus ultricies aliquam. Vestibulum ornare, sapien ut vehicula ornare, nibh nunc porta magna, eget accumsan ipsum enim eget est. Donec et ligula ac arcu lobortis finibus sit amet lobortis felis.\n",
+  related_courses: [
+    "5fb2aPlgoys",
+    "ua-CiDNNj30",
+    "rfscVS0vtbw",
+    "grEKMHGYyns",
+    "5fb2aPlgoys",
+  ],
 };
 
 const JobDetail = () => {
@@ -57,7 +66,7 @@ const JobDetail = () => {
       }}
     >
       <BasicInfo info={info} />
-      <RelatedCourses />
+      <RelatedCourses info={info} />
     </Box>
   );
 };
@@ -178,6 +187,7 @@ const BasicInfo = ({ info }) => {
           <TitleWithIcon
             icon={<WorkOutlineIcon size="small" color="primary" />}
             text="Recruiting Processes"
+            mb="30px"
           />
           <Box>
             {info?.recruiting_processes?.map((process, i) => (
@@ -195,13 +205,21 @@ const BasicInfo = ({ info }) => {
   );
 };
 
-const RelatedCourses = () => {
+const RelatedCourses = ({ info }) => {
   return (
     <>
       <TitleWithIcon
         icon={<SchoolIcon size="small" color="primary" />}
         text="Related Courses"
       />
+      <ScrollableRow>
+        {info?.related_courses?.map((vId, i) => (
+          <YoutubeEmbed
+            link={`https://www.youtube.com/embed/${vId}`}
+            key={`video_${i}`}
+          />
+        ))}
+      </ScrollableRow>
     </>
   );
 };

@@ -1,7 +1,7 @@
 import { Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React from "react";
-import classes from "./Process.module.scss";
+import classes from "./UI.module.scss";
 
 const Process = ({ isLastOne, text, num }) => {
   return (

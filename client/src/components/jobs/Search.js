@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import classes from "./style/search.module.scss";
+import classes from "./Job.module.scss";
 import queryString from "query-string";
 
 const DUMMY_DATA = [
