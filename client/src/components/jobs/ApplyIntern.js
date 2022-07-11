@@ -64,7 +64,7 @@ const ApplyForm = ({ onSubmit }) => {
   // const job_id = info.id;
   const job_name = "Apply " + info.name.replace(/-/g, " ");
   const company = info.company;
-  const avatar = state.state.avatar;
+  const avatar = state?.state.avatar || "";
 
   return (
     <Box
