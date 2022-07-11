@@ -3,10 +3,33 @@ import { Box } from "@mui/system";
 import React, { useState } from "react";
 import SendIcon from "@mui/icons-material/Send";
 
-const CmtTextField = ({ sendHandler }) => {
+// isCmt => true -- comment, false -- reply
+const CmtTextField = ({ sendHandler, sx, isCmt, cmtId }) => {
   const [text, setText] = useState("");
+
+  const sendInfo = () => {
+    const new_info = {
+      text: text,
+      avatar:
+        "https://images.unsplash.com/photo-1558021212-51b6ecfa0db9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2366&q=80",
+      username: "new",
+    };
+    if (isCmt) {
+      sendHandler(new_info);
+    } else {
+      sendHandler(cmtId, new_info);
+    }
+  };
+
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "20px",
+        ...sx,
+      }}
+    >
       <TextField
         id="outlined-multiline-static"
         placeholder="Any question or thought for this internship ?"
@@ -19,7 +42,7 @@ const CmtTextField = ({ sendHandler }) => {
       <Button
         variant="contained"
         endIcon={<SendIcon />}
-        onClick={() => sendHandler(text)}
+        onClick={sendInfo}
         sx={{ alignSelf: "flex-end" }}
       >
         Send

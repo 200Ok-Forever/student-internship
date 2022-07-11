@@ -55,13 +55,13 @@ const DATA = {
       text: "Lorem ipsum dolorf sit amet, consectetur adipiscing elit. Etiam sit amet erat id est consequat fermentum. ",
       avatar:
         "https://images.unsplash.com/photo-1491308056676-205b7c9a7dc1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2073&q=80",
-      username: "Lorem",
+      username: "cmt_user1",
       reply: [
         {
-          text: "Lorem ipsum dolorf sit amet, consectetur adipiscing elit ",
+          text: "Lorem ipsum dolorf sit amet, consectetur adipiscing elit, Lorem ipsum dolorf sit amet, consectetur adipiscing elit , Lorem ipsum dolorf sit amet, consectetur adipiscing elit  ",
           avatar:
-            "https://images.unsplash.com/photo-1491308056676-205b7c9a7dc1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2073&q=80",
-          username: "Lorem ipsum",
+            "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2340&q=80",
+          username: "reply1",
         },
       ],
     },
@@ -70,7 +70,7 @@ const DATA = {
       text: "Lorem ipsum dolorf sit amet, consectetur adipiscing elit. Etiam sit amet erat id est consequat fermentum. ",
       avatar:
         "https://images.unsplash.com/photo-1491308056676-205b7c9a7dc1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2073&q=80",
-      username: "ipsum",
+      username: "cmt_user2",
       reply: [],
     },
   ],
@@ -79,6 +79,7 @@ const DATA = {
 const JobDetail = () => {
   // const history = useHistory();
   const [info, setInfo] = useState([]);
+  // console.log(info.comments);
   useEffect(() => {
     setInfo(DATA);
   }, []);
@@ -194,7 +195,7 @@ const BasicInfo = ({ info }) => {
       </Box>
       <Grid container spacing={8}>
         <Grid item md={12} lg={9} sm={12}>
-          <Typography variant="body1">
+          <Typography variant="body1" fontFamily={"inherit"}>
             {info.description}
             {info.description}
           </Typography>
@@ -254,19 +255,10 @@ const RelatedCourses = ({ info }) => {
 
 const Comments = ({ list }) => {
   const [comments, setComments] = useState(list);
-
-  const sendCmtHandler = (newCmt) => {
-    setComments((prev) => [newCmt].concat(prev));
-  };
-
-  const sendReplyHandler = (cmtId, newReply) => {
-    setComments((prev) => {
-      const comment = prev.find((e) => e.cmtId === cmtId);
-      if (comment) {
-        comment.reply = [newReply].concat(newReply);
-      }
-    });
-  };
+  console.log(comments);
+  useEffect(() => {
+    setComments(list);
+  }, [list]);
 
   return (
     <>
@@ -275,11 +267,7 @@ const Comments = ({ list }) => {
         text="Comments"
         mt="50px"
       />
-      <ShowCmts
-        list={comments}
-        sendCmt={sendCmtHandler}
-        sendReply={sendReplyHandler}
-      />
+      <ShowCmts list={comments} setComments={setComments} />
     </>
   );
 };
