@@ -19,11 +19,7 @@ export default function ScrollableRow({ children }) {
   );
 }
 
-function Arrow({
-  children,
-  disabled,
-  onClick
-}) {
+function Arrow({ children, disabled, onClick }) {
   return (
     <IconButton disabled={disabled} onClick={onClick}>
       {children}

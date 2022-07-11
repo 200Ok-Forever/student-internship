@@ -2,15 +2,16 @@ import { Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React from "react";
 
-const TitleWithIcon = ({ icon, text }) => {
+const TitleWithIcon = ({ icon, text, mb, mt }) => {
   return (
     <Box
       sx={{
         display: "flex",
         alignItems: "center",
         gap: "10px",
-        mb: "40px",
         alignSelf: "flex-start",
+        mb: mb,
+        mt: mt,
       }}
     >
       {icon}
