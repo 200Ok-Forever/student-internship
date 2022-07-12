@@ -124,7 +124,7 @@ const Company = () => {
           flexDirection: "column",
           my: "50px",
           gap: "25px",
-          minHeight: "50vh",
+          minHeight: "80vh",
         }}
       >
         {isOverview ? <Overview info={info} /> : <Jobs />}
