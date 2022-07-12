@@ -14,13 +14,13 @@ const Forum = () => {
       </Typography>
       <Grid container>
         {INDUSTRIES.map(industry => (
-          <Grid item xs={3}>
+          <Grid item xs={12} sm={6} lg={4} xl={3}>
             <Card
               title={industry}
               subheading="1042 posts"
               media='https://picsum.photos/300/200'
               to={`/forum/${industry.toLowerCase()}`}            
-              width="80%"
+              width="85%"
             />
           </Grid>
         ))}

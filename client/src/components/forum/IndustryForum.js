@@ -2,7 +2,7 @@ import React from 'react';
 import moment from 'moment';
 import { useLocation, Link as RouterLink } from 'react-router-dom'
 import { Button, CardActionArea, Typography, Box, Card, CardContent } from '@mui/material';
-import ForumIcon from '@mui/icons-material/Forum';
+import ChatIcon from '@mui/icons-material/Chat';
 import classes from './Forum.module.scss';
 
 const posts = [
@@ -73,7 +73,7 @@ const PostCard = ({ post }) => (
           </Typography>
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
-          <ForumIcon />
+          <ChatIcon color="primary" />
           <Typography variant="subtitle1" component='div' sx={{ ml: 1 }}>
             {post.nComments} Comments
           </Typography>

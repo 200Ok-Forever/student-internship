@@ -3,6 +3,9 @@ import { Chip, Box, Typography, Button, Popover } from "@mui/material";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import moment from "moment";
+import DeleteIcon from "@mui/icons-material/Delete";
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import VideoCameraFrontIcon from "@mui/icons-material/VideoCameraFront";
 
 const localizer = momentLocalizer(moment);
 const events = [
@@ -86,10 +89,20 @@ const Event = ({ event }) => {
           />
           <EventTime event={event} />
           <Box sx={{ pt: 3 }}>
-            <Button variant="outlined" color="success" sx={{ mr: 2 }}>
-              {event.type === "internship" ? "View" : "Join"}
+            <Button
+              variant="contained"
+              sx={{ mr: 2 }}
+              size="small"
+              startIcon={event.type === 'internship' ? <RemoveRedEyeIcon /> : <VideoCameraFrontIcon />}
+            >
+              {event.type === 'internship' ? 'View' : 'Join'}
             </Button>
-            <Button variant="outlined" color="error">
+            <Button
+              variant="outlined"
+              color="greyColor"
+              startIcon={<DeleteIcon />}
+              size="small"
+            >
               Remove
             </Button>
           </Box>

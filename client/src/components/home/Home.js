@@ -12,7 +12,7 @@ const Home = () => {
     <Box>
       <SearchBanner />
       <Grid container>
-        <Grid item xs={9}>
+        <Grid item xs={12} md={9} order={{ xs: 2, md: 1 }} mt={{ xs: 5, md: 0 }}>
           <Typography
             variant="h5"
             component="div"
@@ -37,7 +37,7 @@ const Home = () => {
             component="div"
             gutterBottom
             fontWeight={700}
-            mt="60px"
+            mt="30px"
           >
             Closing Soon
           </Typography>
@@ -70,7 +70,7 @@ const SearchBanner = () => {
 const ContentRow = () => (
   <ScrollableRow>
     <Card
-      title="Software Engineering Internship"
+      title="1 Software Engineering Internship"
       itemId={1}
       subheading="Google"
       media="https://picsum.photos/300/200"
@@ -80,7 +80,7 @@ const ContentRow = () => (
       sdhsaiudh"
     </Card>
     <Card
-      title="Software Engineering Internship"
+      title="2 Software Engineering Internship"
       itemId={2}
       subheading="Google"
       media="https://picsum.photos/300/200"
@@ -90,7 +90,7 @@ const ContentRow = () => (
       sdhsaiudh"
     </Card>
     <Card
-      title="Software Engineering Internship"
+      title="3 Software Engineering Internship"
       itemId={3}
       subheading="Google"
       media="https://picsum.photos/300/200"
@@ -100,7 +100,7 @@ const ContentRow = () => (
       sdhsaiudh"
     </Card>
     <Card
-      title="Software Engineering Internship"
+      title="4 Software Engineering Internship"
       itemId={4}
       subheading="Google"
       media="https://picsum.photos/300/200"
@@ -110,7 +110,7 @@ const ContentRow = () => (
       sdhsaiudh"
     </Card>
     <Card
-      title="Software Engineering Internship"
+      title="5 Software Engineering Internship"
       itemId={5}
       subheading="Google"
       media="https://picsum.photos/300/200"
@@ -120,7 +120,7 @@ const ContentRow = () => (
       sdhsaiudh"
     </Card>
     <Card
-      title="Software Engineering Internship"
+      title="6 Software Engineering Internship"
       itemId={6}
       subheading="Google"
       media="https://picsum.photos/300/200"
