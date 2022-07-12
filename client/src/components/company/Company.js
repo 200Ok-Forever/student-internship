@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Paper, Typography } from "@mui/material";
+import { Avatar, Box, Paper, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import classes from "./company.module.scss";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
