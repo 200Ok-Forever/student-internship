@@ -15,6 +15,9 @@ import Home from "./components/home/Home";
 import Calendar from "./components/home/Calendar";
 import JobList from "./components/jobs/JobList";
 import NavBar from "./components/appBar/NavBar";
+import { Container, Box } from "@mui/material";
+import classes from "./App.module.scss";
+import { INDUSTRIES } from "./components/forum/constants";
 import StudentSignup from "./components/auth/StudentSignup";
 import CompanySignup from "./components/auth/CompanySignup";
 import { Container, Box } from "@mui/material";
@@ -50,22 +53,24 @@ function App() {
   );
 }
 
+// width is smaller because they don't need that much space
 const NarrowContainerRoutes = () => {
   const theme = useTheme();
-  const smallScreen = useMediaQuery(theme.breakpoints.down("md"));
+  const smallScreen = useMediaQuery(theme.breakpoints.down('md'));
 
   return (
-    <Box sx={{ width: smallScreen ? "100%" : "60%", margin: "auto" }}>
+    <Box sx={{ width: smallScreen ? '100%' : '60%', margin: 'auto' }}>
       <Switch>
-        {INDUSTRIES.map((industry) => (
+        {INDUSTRIES.map(industry => (
           <Route path={`/forum/${industry}`} component={IndustryForum} />
         ))}
-        <Route path="/forum/posts" component={ForumPost} />
-        <Route path="/forum/create" component={CreatePost} />
+        <Route path='/forum/posts' component={ForumPost} />
+        <Route path='/forum/create' component={CreatePost} />
         <Route path="/forum/*" component={Forum} />
       </Switch>
     </Box>
-  );
-};
+  )
+}
+
 
 export default App;
