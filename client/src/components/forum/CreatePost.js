@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { Link, InputLabel, MenuItem, Select, FormControl, Box, Typography, TextField, Button } from '@mui/material';
+import { Grid, Link, InputLabel, MenuItem, Select, FormControl, Box, Typography, TextField, Button } from '@mui/material';
 import { INDUSTRIES } from './constants';
 
 const CreatePost = (props) => {
@@ -11,23 +11,27 @@ const CreatePost = (props) => {
       <Typography variant="h4" component='div' sx={{ mb: 1 }}>
         Create Post
       </Typography>
-      <Box sx={{ display: 'flex', mt: 4 }}>
-        <TextField id="title" label="Title" fullWidth sx={{ width: '70%' }} />
-        <FormControl sx={{ ml: 2, flexGrow: 1 }}>
-          <InputLabel id="industry">Industry</InputLabel>
-          <Select
-            labelId="industry"
-            id="industry"
-            value={industry}
-            label="Industry"
-            onChange={e => setIndustry(e.target.value)}
-          >
-            {INDUSTRIES.map(industry => (
-              <MenuItem value={industry}>{industry}</MenuItem>
-            ))}
-          </Select>
-        </FormControl>  
-      </Box>    
+      <Grid container spacing={2} mt={2}>
+        <Grid item xs={12} md={8}>
+          <TextField id="title" label="Title" fullWidth />
+        </Grid>
+        <Grid item xs={12} md={4}>
+          <FormControl fullWidth>
+            <InputLabel id="industry">Industry</InputLabel>
+            <Select
+              labelId="industry"
+              id="industry"
+              value={industry}
+              label="Industry"
+              onChange={e => setIndustry(e.target.value)}
+            >
+              {INDUSTRIES.map(industry => (
+                <MenuItem value={industry}>{industry}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
+      </Grid>
       <TextField
         sx={{ mt: 3 }}
         id="content"
