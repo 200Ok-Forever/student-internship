@@ -3,17 +3,28 @@ import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Button from "@mui/material/Button";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link as RouterLink } from "react-router-dom";
 import classes from "./NavBar.module.scss";
 import Menu from "./Menu";
 import MenuIcon from "@mui/icons-material/Menu";
-import { Drawer } from "@mui/material";
+import { Menu as MUIMenu, MenuItem, Drawer, IconButton } from "@mui/material";
 import Logo from "../../asset/logo.svg";
+import AccountCircle from '@mui/icons-material/AccountCircle';
 
 const NavBar = () => {
   const history = useHistory();
   const [openDrawer, setOpenDrawer] = useState(false);
 
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  
   const toggleDrawer = () => (event) => {
     if (
       event.type === "keydown" &&
@@ -47,13 +58,43 @@ const NavBar = () => {
             {/* laptop */}
             <Menu className={classes.menu} isDrawer={false} />
           </div>
-          <Button
-            variant="outlined"
-            sx={{ height: "55px" }}
-            onClick={() => history.push("/login")}
-          >
-            Login
-          </Button>
+          <Box>
+            <Button
+              variant="outlined"
+              sx={{ height: "55px" }}
+              onClick={() => history.push("/login")}
+            >
+              Login
+            </Button>
+            <IconButton
+              size="large"
+              aria-label="account of current user"
+              aria-controls="user-menu-appbar"
+              aria-haspopup="true"
+              onClick={handleMenu}
+              color="inherit"
+            >
+              <AccountCircle />
+            </IconButton>
+            <MUIMenu
+              id="user-menu-appbar"
+              anchorEl={anchorEl}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              open={Boolean(anchorEl)}
+              onClose={handleClose}
+            >
+              <MenuItem onClick={handleClose} component={RouterLink} to='/saved'>Saved Internships</MenuItem>
+              <MenuItem onClick={handleClose} component={RouterLink} to='/history'>History</MenuItem>
+            </MUIMenu>
+          </Box>
         </Toolbar>
       </AppBar>
     </Box>

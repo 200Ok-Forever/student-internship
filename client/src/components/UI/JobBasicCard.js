@@ -13,7 +13,6 @@ const JobBasicCard = (props) => {
           variant="h6"
           fontWeight="700"
           sx={{ cursor: "pointer", display: "flex", alignItems: "center" }}
-          onClick={props?.onClick}
         >
           {job.title}
           {props?.save}
