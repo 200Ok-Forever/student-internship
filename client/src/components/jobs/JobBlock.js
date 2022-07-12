@@ -31,6 +31,7 @@ const JobBlock = ({ job }) => {
           com_name: job.company_name,
           city: job.city,
           avatar: job.company_avatar,
+          id: job.job_id,
         }}
       >
         {job?.status && (

@@ -35,9 +35,6 @@ const JobList = () => {
           minWidth: "450px",
           width: "100%",
           maxWidth: "1260px",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
         }}
       >
         <FormControl
@@ -45,7 +42,7 @@ const JobList = () => {
             width: "180px",
           }}
         >
-          <InputLabel id="demo-simple-select-label">Sort By</InputLabel>
+          <InputLabel id="sort-by">Sort By</InputLabel>
           <Select
             labelId="Sort"
             id="sort list"

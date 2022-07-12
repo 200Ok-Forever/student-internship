@@ -43,7 +43,7 @@ const CmtTextField = ({
         rows={3}
         value={text}
         onChange={(e) => setText(e.target.value)}
-        sx={{ width: "100%" }}
+        fullWidth
       />
       <Button
         variant="contained"
