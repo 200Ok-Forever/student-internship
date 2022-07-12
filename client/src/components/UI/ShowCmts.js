@@ -2,6 +2,8 @@ import { Box, Button, Divider, Typography } from "@mui/material";
 import React, { useState } from "react";
 import AvatarName from "./AvatarName";
 import CmtTextField from "./CmtTextField";
+import ChatIcon from "@mui/icons-material/Chat";
+import TitleWithIcon from "./TitleWithIcon";
 
 // Can be used for any comments area
 // list => comments list {cmdId, text, avatar, username, reply: [{text, avatar, username}]}
@@ -16,6 +18,11 @@ const box = {
 const ShowCmts = ({ list, sendCmt, sendReply }) => {
   return (
     <Box sx={box}>
+      <TitleWithIcon
+        icon={<ChatIcon size="small" color="primary" />}
+        text={`${list?.length} Comments`}
+        mt="50px"
+      />
       <CmtTextField
         sendHandler={sendCmt}
         isCmt={true}

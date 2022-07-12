@@ -1,5 +1,7 @@
 // import classes from "./App.module.scss";
 import { Fragment } from "react";
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import { Route, Switch } from "react-router-dom";
 import NotFound from "./components/404Page/NotFound";
 import Login from "./components/auth/Login";
@@ -48,8 +50,11 @@ function App() {
 
 // width is smaller because they don't need that much space
 const NarrowContainerRoutes = () => {
+  const theme = useTheme();
+  const smallScreen = useMediaQuery(theme.breakpoints.down('md'));
+
   return (
-    <Box sx={{ width: '60%', margin: 'auto' }}>
+    <Box sx={{ width: smallScreen ? '100%' : '60%', margin: 'auto' }}>
       <Switch>
         {INDUSTRIES.map(industry => (
           <Route path={`/forum/${industry}`} component={IndustryForum} />

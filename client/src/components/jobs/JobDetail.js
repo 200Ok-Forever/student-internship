@@ -19,7 +19,6 @@ import TitleWithIcon from "../UI/TitleWithIcon";
 import SchoolIcon from "@mui/icons-material/School";
 import YoutubeEmbed from "./YoutubeEmbed";
 import ScrollableRow from "../UI/ScrollableRow";
-import ChatIcon from "@mui/icons-material/Chat";
 import ShowCmts from "../UI/ShowCmts";
 
 const DATA = {
@@ -53,13 +52,15 @@ const DATA = {
   comments: [
     {
       cmtId: "1",
-      text: "Lorem ipsum dolorf sit amet, consectetur adipiscing elit. Etiam sit amet erat id est consequat fermentum. ",
+      text: "Lorem hipsum dolorf sit amet, consectetur adipiscing elit. Etiam sit amet erat id est consequat fermentum. ",
+      createdAt: new Date(),
       avatar:
         "https://images.unsplash.com/photo-1491308056676-205b7c9a7dc1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2073&q=80",
       username: "cmt_user1",
       reply: [
         {
           repliedId: "1",
+          createdAt: new Date(),
           text: "Lorem ipsum dolorf sit amet, consectetur adipiscing elit, Lorem ipsum dolorf sit amet, consectetur adipiscing elit , Lorem ipsum dolorf sit amet, consectetur adipiscing elit  ",
           avatar:
             "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2340&q=80",
@@ -69,6 +70,7 @@ const DATA = {
     },
     {
       cmtId: "2",
+      createdAt: new Date(),
       text: "Lorem ipsum dolorf sit amet, consectetur adipiscing elit. Etiam sit amet erat id est consequat fermentum. ",
       avatar:
         "https://images.unsplash.com/photo-1491308056676-205b7c9a7dc1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2073&q=80",
@@ -292,14 +294,7 @@ const Comments = ({ list }) => {
   };
 
   return (
-    <>
-      <TitleWithIcon
-        icon={<ChatIcon size="small" color="primary" />}
-        text="Comments"
-        mt="50px"
-      />
-      <ShowCmts list={comments} sendCmt={sendCmt} sendReply={sendReply} />
-    </>
+    <ShowCmts list={comments} sendCmt={sendCmt} sendReply={sendReply} />
   );
 };
 

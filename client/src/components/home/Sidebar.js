@@ -48,7 +48,7 @@ const Sidebar = () => {
     .sort((a, b) => a.start - b.start);
 
   return (
-    <Grid item xs={3}>
+    <Grid item xs={12} md={3} order={{ xs: 1, md: 2 }}>
       <Typography variant="h5" component="div" gutterBottom fontWeight={700}>
         My Upcoming Events
       </Typography>

@@ -4,6 +4,7 @@ import salary from "../../asset/salary.png";
 import Label from "../UI/Label";
 import { useHistory } from "react-router-dom";
 import JobBasicCard from "../UI/JobBasicCard";
+import forumClasses from '../forum/Forum.module.scss';
 
 const JobBlock = ({ job }) => {
   const history = useHistory();
@@ -18,7 +19,12 @@ const JobBlock = ({ job }) => {
   };
 
   return (
-    <Paper elevation={3} sx={paper}>
+    <Paper 
+      elevation={3} 
+      sx={paper} 
+      onClick={() => history.push(`/job?id=${job.job_id}`)}
+      className={forumClasses.cardHover}
+    >
       <JobBasicCard
         job={{
           title: job.title,
@@ -26,7 +32,6 @@ const JobBlock = ({ job }) => {
           city: job.city,
           avatar: job.company_avatar,
         }}
-        onClick={() => history.push(`/job?id=${job.job_id}`)}
       >
         {job?.status && (
           <Typography

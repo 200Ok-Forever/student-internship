@@ -1,13 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import moment from 'moment';
-import { Redirect, useLocation } from 'react-router-dom'
-import { Link, Button, Card, CardContent, TextField, Box, Typography } from '@mui/material';
-import { ChevronRight } from '@mui/icons-material';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import { Redirect } from 'react-router-dom'
+import { Box, Typography } from '@mui/material';
+import ShowCmts from '../UI/ShowCmts';
 
 const ForumPost = () => {
-  const location = useLocation();
-  const postId = location.pathname.split('/')[3]
+
   // API CALL
   const post = {
     title: "Job hunting sucks :(",
@@ -16,21 +14,33 @@ const ForumPost = () => {
     createdAt: new Date(),
     comments: [
       {
-        author: 'James Smith',
+        cmtId: "1",
+        text: "Lorem ipsum dolorf sit amet, consectetur adipiscing elit. Etiam sit amet erat id est consequat fermentum. ",
         createdAt: new Date(),
-        content: 'Pariatur dolore duis ea deserunt. Nisi id magna pariatur amet ut. Mollit culpa aliqua quis Lorem duis. Cillum eu amet culpa pariatur labore id ad nulla esse excepteur ut.'
+        avatar:
+          "https://images.unsplash.com/photo-1491308056676-205b7c9a7dc1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2073&q=80",
+        username: "cmt_user1",
+        reply: [
+          {
+            repliedId: "1",
+            createdAt: new Date(),
+            text: "Lorem ipsum dolorf sit amet, consectetur adipiscing elit, Lorem ipsum dolorf sit amet, consectetur adipiscing elit , Lorem ipsum dolorf sit amet, consectetur adipiscing elit  ",
+            avatar:
+              "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2340&q=80",
+            username: "reply1",
+          },
+        ],
       },
       {
-        author: 'James Smith',
+        cmtId: "2",
         createdAt: new Date(),
-        content: 'Cupidatat do aute do ea occaecat officia non eu Lorem velit. Incididunt cupidatat cillum nostrud culpa aute eu anim officia qui aliqua voluptate. Officia magna et veniam commodo velit. Anim enim officia Lorem ea laboris consectetur. \n Sint tempor aliqua non officia. Enim dolor ex enim voluptate non amet deserunt nisi nulla cillum adipisicing ipsum. Culpa proident quis ex sint esse labore. Non aliqua anim dolor laborum id.'
+        text: "Lorem ipsum dolorf sit amet, consectetur adipiscing elit. Etiam sit amet erat id est consequat fermentum. ",
+        avatar:
+          "https://images.unsplash.com/photo-1491308056676-205b7c9a7dc1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2073&q=80",
+        username: "cmt_user2",
+        reply: [],
       },
-      {
-        author: 'James Smith',
-        createdAt: new Date(),
-        content: 'Pariatur dolore duis ea deserunt. Nisi id magna pariatur amet ut. Mollit culpa aliqua quis Lorem duis. Cillum eu amet culpa pariatur labore id ad nulla esse excepteur ut.'
-      }
-    ]
+    ],
   };
 
   if (!post) {
@@ -74,77 +84,61 @@ const PostComments = ({ post }) => (
     <Typography variant="h5" component='div' sx={{ mt: 4 }}>
       {post.comments.length} Comment(s)
     </Typography>
-    <TextField
-      sx={{ mt: 3 }}
-      id="comment"
-      label="Comment"
-      multiline
-      rows={4}
-      placeholder="What do you think?"
-      fullWidth
-    />
-    <Button sx={{ mt: 2, px: 5 }} variant="contained" color='primary'>
-      Post
-    </Button>
-    <Box sx={{ mt: 4 }}>
-      {post.comments.map(comment => (
-        <CommentCard comment={comment} />
-      ))}
-    </Box>
+    <ShowCmts list={post.comments} />
   </>
 )
 
-const CommentCard = ({ comment }) => {
-  const [replyOpen, setReplyOpen] = useState(false);
+// const CommentCard = ({ comment }) => {
+//   const [replyOpen, setReplyOpen] = useState(false);
 
-  return (
-    <Card sx={{ mb: 2 }}>
-      <CardContent sx={{ pb: 0 }}>
-        <Box sx={{ mb: 1 }}>
-          <Typography variant='subtitle1' color="primary" component="span">
-            {comment.author}
-          </Typography>
-          {" "}
-          <Typography variant="body1" component='span' sx={{ mb: 1 }}>
-            {moment(comment.createdAt).fromNow()}
-          </Typography> 
-        </Box>
-        <Typography variant="body1" component='div'>
-          {comment.content.split('\n').map(text => (
-            <p>{text}</p>
-          ))}
-        </Typography>
-        <Link 
-          underline="none" 
-          href="#" 
-          onClick={(e) => {
-            e.preventDefault();
-            setReplyOpen(!replyOpen)
-          }}
-          sx={{ display: 'flex', alignItems: 'center '}}
-        >
-          Reply 
-          {replyOpen ? <KeyboardArrowDownIcon /> : <ChevronRight />}
-        </Link>
-        {replyOpen &&
-          <Box>
-            <TextField
-              sx={{ mt: 3 }}
-              id="reply"
-              label="Reply"
-              multiline
-              rows={2}
-              placeholder="What do you think?"
-              fullWidth
-            />
-            <Button sx={{ mt: 2, px: 5 }} variant="contained" color='primary'>
-              Post
-            </Button>
-          </Box>
-        }
-      </CardContent>
-    </Card>
-  )
-}
+//   return (
+//     <Card sx={{ mb: 2 }}>
+//       <CardContent sx={{ pb: 0 }}>
+//         <Box sx={{ mb: 1 }}>
+//           <Typography variant='subtitle1' color="primary" component="span">
+//             {comment.author}
+//           </Typography>
+//           {" "}
+//           <Typography variant="body1" component='span' sx={{ mb: 1 }}>
+//             {moment(comment.createdAt).fromNow()}
+//           </Typography> 
+//         </Box>
+//         <Typography variant="body1" component='div'>
+//           {comment.content.split('\n').map(text => (
+//             <p>{text}</p>
+//           ))}
+//         </Typography>
+//         <Link 
+//           underline="none" 
+//           href="#" 
+//           onClick={(e) => {
+//             e.preventDefault();
+//             setReplyOpen(!replyOpen)
+//           }}
+//           sx={{ display: 'flex', alignItems: 'center '}}
+//         >
+//           Reply 
+//           {replyOpen ? <KeyboardArrowDownIcon /> : <ChevronRight />}
+//         </Link>
+//         {replyOpen &&
+//           <Box>
+//             <TextField
+//               sx={{ mt: 3 }}
+//               id="reply"
+//               label="Reply"
+//               multiline
+//               rows={2}
+//               placeholder="What do you think?"
+//               fullWidth
+//             />
+//             <Button sx={{ mt: 2, px: 5 }} variant="contained" color='primary'>
+//               Post
+//             </Button>
+//           </Box>
+//         }
+//       </CardContent>
+//     </Card>
+//   )
+// }
 
 export default ForumPost;
