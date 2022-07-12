@@ -52,7 +52,7 @@ const ForumPost = () => {
   return (
     <Box>
       <PostDetails post={post} />
-      <PostComments post={post} />
+      <ShowCmts list={post.comments} />
     </Box>
   )
 }
@@ -78,67 +78,5 @@ const PostDetails = ({ post }) => (
     </Typography>
   </>
 )
-
-const PostComments = ({ post }) => (
-  <>
-    <Typography variant="h5" component='div' sx={{ mt: 4 }}>
-      {post.comments.length} Comment(s)
-    </Typography>
-    <ShowCmts list={post.comments} />
-  </>
-)
-
-// const CommentCard = ({ comment }) => {
-//   const [replyOpen, setReplyOpen] = useState(false);
-
-//   return (
-//     <Card sx={{ mb: 2 }}>
-//       <CardContent sx={{ pb: 0 }}>
-//         <Box sx={{ mb: 1 }}>
-//           <Typography variant='subtitle1' color="primary" component="span">
-//             {comment.author}
-//           </Typography>
-//           {" "}
-//           <Typography variant="body1" component='span' sx={{ mb: 1 }}>
-//             {moment(comment.createdAt).fromNow()}
-//           </Typography> 
-//         </Box>
-//         <Typography variant="body1" component='div'>
-//           {comment.content.split('\n').map(text => (
-//             <p>{text}</p>
-//           ))}
-//         </Typography>
-//         <Link 
-//           underline="none" 
-//           href="#" 
-//           onClick={(e) => {
-//             e.preventDefault();
-//             setReplyOpen(!replyOpen)
-//           }}
-//           sx={{ display: 'flex', alignItems: 'center '}}
-//         >
-//           Reply 
-//           {replyOpen ? <KeyboardArrowDownIcon /> : <ChevronRight />}
-//         </Link>
-//         {replyOpen &&
-//           <Box>
-//             <TextField
-//               sx={{ mt: 3 }}
-//               id="reply"
-//               label="Reply"
-//               multiline
-//               rows={2}
-//               placeholder="What do you think?"
-//               fullWidth
-//             />
-//             <Button sx={{ mt: 2, px: 5 }} variant="contained" color='primary'>
-//               Post
-//             </Button>
-//           </Box>
-//         }
-//       </CardContent>
-//     </Card>
-//   )
-// }
 
 export default ForumPost;
