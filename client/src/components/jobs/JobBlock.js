@@ -25,6 +25,7 @@ const JobBlock = ({ job }) => {
           com_name: job.company_name,
           city: job.city,
           avatar: job.company_avatar,
+          id: job.job_id,
         }}
         onClick={() => history.push(`/job?id=${job.job_id}`)}
       >

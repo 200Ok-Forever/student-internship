@@ -16,6 +16,7 @@ import { Container } from "@mui/material";
 import classes from "./App.module.scss";
 import JobDetail from "./components/jobs/JobDetail";
 import ApplyIntern from "./components/jobs/ApplyIntern";
+import Company from "./components/company/Company";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
           <Route path="/job" exact component={JobDetail} />
           <Route path="/login" exact component={Login} />
           <Route path="/signup" exact component={Signup} />
+          <Route path="/company" exact component={Company} />
           <Route path="/signup/student" exact component={StudentSignup} />
           <Route path="/signup/company" exact component={CompanySignup} />
           <Route path="/forum" exact component={Forum} />
