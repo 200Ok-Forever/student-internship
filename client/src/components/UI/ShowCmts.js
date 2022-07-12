@@ -50,7 +50,7 @@ const Item = ({ cmt, isLast, sendReply }) => {
       <Typography variant="body1" ml="60px">
         {cmt.text}
       </Typography>
-      <Box sx={{ width: "95%", ml: "50px" }}>
+      <Box sx={{ width: "95%", mx: "50px" }}>
         <Button
           onClick={() => setOpenReply((prev) => !prev)}
           sx={{ mb: "20px" }}
@@ -63,13 +63,21 @@ const Item = ({ cmt, isLast, sendReply }) => {
             isCmt={false}
             cmtId={cmt.cmtId}
             placeholder=""
+            sx={{ width: "80vw" }}
           />
         )}
         <Box sx={box}>
           {replies?.map((reply, i) => (
             <Box key={`reply_${i}`} sx={box}>
               <AvatarName avatar={reply.avatar} name={reply.username} />
-              <Typography variant="body1" ml="60px">
+              <Typography
+                variant="body1"
+                mx="60px"
+                sx={{
+                  minWidth: "300px",
+                  wordBreak: "break-all",
+                }}
+              >
                 {reply.text}
               </Typography>
             </Box>
