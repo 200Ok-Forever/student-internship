@@ -36,6 +36,7 @@ const DATA = {
   salary_currency: "Au",
   company_name: "Google",
   company_avatar: "https://img.icons8.com/officel/344/google-logo.png",
+  company_id: "c1",
   remote: true,
   job_type: "Full-time",
   city: "Sydney",
@@ -142,6 +143,7 @@ const BasicInfo = ({ info }) => {
           com_name: info.company_name,
           city: info.city,
           avatar: info.company_avatar,
+          id: info.company_id,
         }}
         save={saveBtns}
       />

@@ -32,6 +32,7 @@ const JobBlock = ({ job, children }) => {
           com_name: job.company_name,
           city: job.city,
           avatar: job.company_avatar,
+          id: job.job_id,
         }}
       >
         <Box className={jobClasses.cardActions}>
