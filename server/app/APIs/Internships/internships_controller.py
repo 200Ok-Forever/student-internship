@@ -15,13 +15,18 @@ class GetInternshipList(Resource):
   
     @internships_api.expect(search_internships)
     @internships_api.response(200, "Search successfully")
-    @internships_api.response(400, "Something wrong")
+    @internships_api.response(404, "Internships not found")
     def get(self):
 
         args1 = request.args
     
         print(args1)
-        return InternshipsUtils.get_all_Intership(args1)
+        try:
+            return InternshipsUtils.get_all_Intership(args1)
+        except Exception as error:
+            return{
+                "message": error
+            }, 500
  
 @internships_api.route('/internships/<int:id>')
 class GetInternship(Resource):

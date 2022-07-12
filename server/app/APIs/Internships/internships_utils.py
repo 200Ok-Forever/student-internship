@@ -196,7 +196,15 @@ class InternshipsUtils:
                         'company_name': get_comany_info(internship.company_id)[0], 'company_logo': get_comany_info(internship.company_id)[1]
 
            } for internship in internships]
-        return jsonify(all_internships)
+
+        if len(all_internships) == 0:
+            internship_not_found={
+                "message": "internships not found"
+            }
+
+            return internship_not_found, 404
+        else:
+            return jsonify(all_internships)
      
      
            
