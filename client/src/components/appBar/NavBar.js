@@ -66,6 +66,8 @@ const NavBar = () => {
             >
               Login
             </Button>
+
+            {/* #TODO only show when user is logged in */}
             <IconButton
               size="large"
               aria-label="account of current user"
