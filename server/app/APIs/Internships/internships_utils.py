@@ -1,5 +1,7 @@
+from sys import intern
 from flask import jsonify
 import requests
+import re
 from requests import session
 from sqlalchemy import null
 from ...Models.model import Internship, City, Company, Comment, User, Skill
@@ -58,10 +60,10 @@ def get_all_parent_comment(comments):
 
         # print(children_comment_list)
         all_parent_comment.append({
-            'parent_comment_content': comment.content,
-            'parent_comment_uid': comment.user_id,
-            'parent_comment_id': comment.id,
-            'children_comment': children_comment_list
+            'text': comment.content,
+            'uid': comment.user_id,
+            'cmtId': comment.id,
+            'replied': children_comment_list
         })
     return all_parent_comment
 
@@ -69,12 +71,17 @@ def get_children_comment(comments):
     all_children_comment=[]
     for comment in comments:
         all_children_comment.append({
-        'children_comment_id':comment.id,
-        'children_comment_content':comment.content,
-        'children_comment_uid':comment.user_id})
+        'repliedId':comment.id,
+        'text':comment.content,
+        'uid':comment.user_id})
  
     # print(all_children_comment)
     return all_children_comment
+
+def changeDateFormat(date):
+    
+    result = re.sub('T.+', '', str(date))
+    return result
 class InternshipsUtils:
     def get_Internship(data):
         id = Internship.id
@@ -104,11 +111,20 @@ class InternshipsUtils:
                 video_id_list=get_youtube(skills_list)
                 intership_result = {
                     "description": internship.description,
-                    "postedDate": internship.posted_time,
-                    "closedDate": internship.expiration_timestamp,
+                    "postedDate": changeDateFormat( internship.posted_time),
+                    "closedDate": changeDateFormat( internship.expiration_datetime_utc),
                     "companyId": internship.company_id,
                     'internship_id':internship.id,
                     "comment":comment_list,
+                    "jobTitle": internship.title,
+                    "jobType": internship.type,
+                    "remote": internship.is_remote,
+                    "min_salary": internship.min_salary,
+                    "max_salary":internship.max_salary,
+                    "salary_curreny": internship.salary_curreny,
+                    "location": get_location(internship.id),
+                    "companyName": get_comany_info(internship.company_id)[0],
+                    'company_logo': get_comany_info(internship.company_id)[1],
                     "video_id": video_id_list
                 }
                 return intership_result, 200
@@ -122,6 +138,7 @@ class InternshipsUtils:
     
         job = data.get("job",None)
         # location = data['location']
+        location = data.get("location", None)
         sort = data.get("sort", "Default")
         paid = data.get("paid", None)
         remote = data.get("remote", None)
@@ -132,6 +149,7 @@ class InternshipsUtils:
         if job!=None :
             job = data['job']
             map.append(Internship.title.ilike(f'%{job}%'))
+
         if paid =="True":
             map.append(Internship.min_salary.isnot(None))
         if remote != None:
@@ -141,21 +159,38 @@ class InternshipsUtils:
  
 
         print(map)
-        if sort == "Default":
-            result = Internship.query.filter(*map).order_by(Internship.id.asc())
+ 
+        if location != None:
+            location = data['location']
             
-        elif sort == "Newest":
-            result = Internship.query.filter(*map).order_by(Internship.posted_time.desc())
+            temp = db.session.query(Internship.id).join(City).filter(City.name.ilike(f'%{location}%')).subquery()
+     
+            if sort == "Default":
+                result = Internship.query.filter(*map).filter(Internship.id.in_(temp)).order_by(Internship.id.asc())
+                
+            elif sort == "Newest":
+                result = Internship.query.filter(*map).filter(Internship.id.in_(temp)).order_by(Internship.posted_time.desc())
+                
+            elif sort == "Closing Soon":
+                result = Internship.query.filter(*map).filter(Internship.id.in_(temp)).order_by(Internship.expiration_timestamp.desc())
             
-        elif sort == "Closing Soon":
-            result = Internship.query.filter(*map).order_by(Internship.expiration_timestamp.desc())
+            
+
+        elif location ==None:
+            if sort == "Default":
+                result = Internship.query.filter(*map).order_by(Internship.id.asc())
+                
+            elif sort == "Newest":
+                result = Internship.query.filter(*map).order_by(Internship.posted_time.desc())
+                
+            elif sort == "Closing Soon":
+                result = Internship.query.filter(*map).order_by(Internship.expiration_timestamp.desc())
         
         count = result.count()
         internships=result.paginate(page=current_page, per_page=15, error_out = False).items
         
-
-        all_internships = [{'job_id': internship.id,'title':internship.title, 'expiration_timestamp': internship.expiration_timestamp, \
-             'job_type': internship.type,'is_remote':internship.is_remote , 'posted_time': internship.posted_time, 'closed_time':internship.expiration_datetime_utc,\
+        all_internships = [{'job_id': internship.id,'title':internship.title, \
+             'job_type': internship.type,'is_remote':internship.is_remote , 'posted_time':changeDateFormat( internship.posted_time), 'closed_time':changeDateFormat(internship.expiration_datetime_utc),\
                 'min_salary':internship.min_salary, 'max_salary': internship.max_salary, 'description':internship.description,\
                     'numAllResults': {"total_count":count}, 'location': get_location(internship.city), 'company_id': internship.company_id,\
                         'company_name': get_comany_info(internship.company_id)[0], 'company_logo': get_comany_info(internship.company_id)[1]
