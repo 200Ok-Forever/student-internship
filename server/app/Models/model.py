@@ -6,6 +6,7 @@ from wtforms import Form, IntegerField, StringField, PasswordField, validators
 from .. import bcrypt, db
 
 
+
 class User(db.Model):
     """User(student&company) table"""
     __tablename__ = 't_user'
@@ -75,6 +76,9 @@ class Company(db.Model):
     # more
 
 
+job_skills = db.Table('r_job_skill', \
+db.Column('job_id', db.Integer, db.ForeignKey('t_internships.id'), primary_key = True),\
+db.Column('skill_id', db.Integer, db.ForeignKey('t_skills.id'),primary_key = True ))
 class Internship(db.Model):
     """Internship table"""
     __tablename__ = 't_internships'
@@ -107,6 +111,10 @@ class Internship(db.Model):
     salary_period_id=db.Column(db.VARCHAR(255))
     city=db.Column(db.VARCHAR(255))
     job_id=db.Column(db.VARCHAR(255))
+
+
+    skills = db.relationship('Skill',secondary = job_skills, \
+       backref = 'internship',overlaps="internship,skills")
 
     def __repr__(self):
         return f"<Internship: {self.publisher}, {self.title}, {self.company_id} {self.max_salary}>"
@@ -175,15 +183,38 @@ class Company(db.Model):
             "website":self.website
         }
 
-class Model(db.Model):
+class Comment(db.Model):
     __tablename__ = 't_comment'
-    id = db.Column(db.Integer, primary_key = True)
-    internship_id = db.Column(db.Integer)
+    id = db.Column(db.Integer,autoincrement=True, primary_key=True)
+    internship_id = db.Column(db.Integer, db.ForeignKey("t_internships.id"))
     content = db.Column(db.TEXT)
     parent_id = db.Column(db.Integer)
-    user_id = db.Column(db.Integer)
-    data = db.Column(db.Timestamp)
+    user_id = db.Column(db.Integer, db.ForeignKey("t_user.uid"))
+    date = db.Column(db.TIMESTAMP)
+
+    def get_info(self):
+        return{
+            "id":self.id,
+            "internship_id": self.internship_id,
+            "content":self.content,
+            "parent_id":self.parent_id,
+            "user_id":self.user_id,
+            "date":self.date
+        }
+
+class Skill(db.Model):
+    __tablename__ = 't_skills'
     
+    id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.VARCHAR(255))
+    internships = db.relationship('Internship',secondary = job_skills, \
+       backref = 'skill', overlaps="internship,skills")
+
+    def get_info(self):
+        return{
+            "id":self.id,
+            "name":self.name
+        }
 class LoginSchema(Form):
     email = StringField('Email Address', [validators.Length(min=6, max=35)])
     password = PasswordField('Password', [validators.Length(min=6, max=16), validators.DataRequired()])

@@ -1,7 +1,13 @@
 from flask import jsonify
+import requests
+from requests import session
 from sqlalchemy import null
-from ...Models.model import Internship, City, Company
+from ...Models.model import Internship, City, Company, Comment, User, Skill
 from flask_restx import Resource, reqparse
+from ...extension import db
+
+# YOUTUBE_KEY='AIzaSyAKgaoxXGkDNj1ouC4gW2Ks-_Mrw8eMuyM'
+YOUTUBE_KEY = 'AIzaSyBKUlq8KO324Q996DMDXKLVnxGtvHKKPmk'
 def get_location(data):
     id = City.id
     city = City.query.filter_by(id = data).first()
@@ -16,12 +22,66 @@ def get_comany_info(data):
     logo = company.logo
     return name, logo
 
+def get_youtube(skill_list):
+    video_id_list = []
+    search_url = 'https://www.googleapis.com/youtube/v3/search'
+    skill_list = skill_list[0:2]
+    for skill in skill_list:
+        print(skill)
+        search_params={
+            'key':YOUTUBE_KEY,
+            'q':skill,
+            'part': 'snippet',
+            'maxResult':1,
+            'type':'video'
+        }
+        r = requests.get(search_url, params = search_params)
+       
+        results=r.json()['items']
+        print(results)
+   
+      
+        for result in results:
+            # print(result)
+            videoid=result.get('id').get('videoId')
+            print(videoid)
+            video_id_list.append(videoid)
+    return video_id_list
+  
+def get_all_parent_comment(comments):
+    all_parent_comment = []
+    
+    
+    for comment in comments:
+        children_comment = db.session.query(Comment).filter(Comment.parent_id == comment.id).all()
+        children_comment_list = get_children_comment(children_comment)
+
+        # print(children_comment_list)
+        all_parent_comment.append({
+            'parent_comment_content': comment.content,
+            'parent_comment_uid': comment.user_id,
+            'parent_comment_id': comment.id,
+            'children_comment': children_comment_list
+        })
+    return all_parent_comment
+
+def get_children_comment(comments):
+    all_children_comment=[]
+    for comment in comments:
+        all_children_comment.append({
+        'children_comment_id':comment.id,
+        'children_comment_content':comment.content,
+        'children_comment_uid':comment.user_id})
+ 
+    # print(all_children_comment)
+    return all_children_comment
 class InternshipsUtils:
     def get_Internship(data):
-        id=data
+        id = Internship.id
         try:
-            internship=Internship.query.filter_by(id=id).first()
-            print(internship)
+            # print(id)
+            internship=Internship.query.filter(id==data).first()
+            # print(internship)
 
             if not internship:
                 internship_not_found={
@@ -30,13 +90,26 @@ class InternshipsUtils:
 
                 return internship_not_found, 404
             else:
-
+                comment_list = []
+                comment = db.session.query(Comment).join(Internship, Comment.internship_id == Internship.id).filter(Comment.internship_id==data).filter(Comment.parent_id==None).all()
+                if comment:
+                    comment_list = get_all_parent_comment(comment)
+                job_skill = db.session.query(Skill).filter(Skill.internships.any(id = data)).all()
+                skills_list = []
+                
+                if job_skill:
+                    for skill in job_skill:
+                        skills_list.append(skill.name)
+                    print(skills_list)
+                video_id_list=get_youtube(skills_list)
                 intership_result = {
                     "description": internship.description,
                     "postedDate": internship.posted_time,
                     "closedDate": internship.expiration_timestamp,
-                    "companyId": internship.company_id
-              
+                    "companyId": internship.company_id,
+                    'internship_id':internship.id,
+                    "comment":comment_list,
+                    "video_id": video_id_list
                 }
                 return intership_result, 200
         except  Exception as error:
@@ -82,9 +155,9 @@ class InternshipsUtils:
         
 
         all_internships = [{'job_id': internship.id,'title':internship.title, 'expiration_timestamp': internship.expiration_timestamp, \
-             'job_type': internship.type,'is_remote':internship.is_remote , 'posted_time': internship.posted_time,\
+             'job_type': internship.type,'is_remote':internship.is_remote , 'posted_time': internship.posted_time, 'closed_time':internship.expiration_datetime_utc,\
                 'min_salary':internship.min_salary, 'max_salary': internship.max_salary, 'description':internship.description,\
-                    'numAllResults': {"total_count":count}, 'location': get_location(internship.city),\
+                    'numAllResults': {"total_count":count}, 'location': get_location(internship.city), 'company_id': internship.company_id,\
                         'company_name': get_comany_info(internship.company_id)[0], 'company_logo': get_comany_info(internship.company_id)[1]
 
            } for internship in internships]
