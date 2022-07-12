@@ -6,6 +6,7 @@ import moment from "moment";
 import DeleteIcon from "@mui/icons-material/Delete";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import VideoCameraFrontIcon from "@mui/icons-material/VideoCameraFront";
+import RemoveButton from '../UI/RemoveButton';
 
 const localizer = momentLocalizer(moment);
 const events = [
@@ -97,14 +98,7 @@ const Event = ({ event }) => {
             >
               {event.type === 'internship' ? 'View' : 'Join'}
             </Button>
-            <Button
-              variant="outlined"
-              color="greyColor"
-              startIcon={<DeleteIcon />}
-              size="small"
-            >
-              Remove
-            </Button>
+            <RemoveButton />
           </Box>
         </Box>
       </Popover>

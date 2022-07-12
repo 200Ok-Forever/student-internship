@@ -5,8 +5,9 @@ import Label from "../UI/Label";
 import { useHistory } from "react-router-dom";
 import JobBasicCard from "../UI/JobBasicCard";
 import forumClasses from '../forum/Forum.module.scss';
+import jobClasses from './Job.module.scss';
 
-const JobBlock = ({ job }) => {
+const JobBlock = ({ job, children }) => {
   const history = useHistory();
   const paper = {
     width: "100%",
@@ -33,15 +34,18 @@ const JobBlock = ({ job }) => {
           avatar: job.company_avatar,
         }}
       >
-        {job?.status && (
-          <Typography
-            variant="h7"
-            fontWeight="700"
-            color={job.status === "NEW" ? "primary" : "rgb(122, 119, 119)"}
-          >
-            {job.status}
-          </Typography>
-        )}
+        <Box className={jobClasses.cardActions}>
+          {job?.status && (
+            <Typography
+              variant="h7"
+              fontWeight="700"
+              color={job.status === "NEW" ? "primary" : "rgb(122, 119, 119)"}
+            >
+              {job.status}
+            </Typography>
+          )}          
+          {children}
+        </Box>
       </JobBasicCard>
       <Box sx={{ display: "flex", columnGap: "14px" }}>
         {job?.min_salary && (

@@ -22,6 +22,7 @@ import StudentSignup from "./components/auth/StudentSignup";
 import CompanySignup from "./components/auth/CompanySignup";
 import JobDetail from "./components/jobs/JobDetail";
 import ApplyIntern from "./components/jobs/ApplyIntern";
+import Saved from './components/SavedInternships';
 
 function App() {
   return (
@@ -62,6 +63,7 @@ const NarrowContainerRoutes = () => {
         <Route path='/forum/posts' component={ForumPost} />
         <Route path='/forum/create' component={CreatePost} />
         <Route path="/forum/*" component={Forum} />
+        <Route path="/saved" component={Saved} />
       </Switch>
     </Box>
   )
