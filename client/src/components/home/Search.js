@@ -17,6 +17,16 @@ const text_class = {
   m: "30px",
 };
 
+const btn = {
+  "&:disabled": {
+    color: "rgba(137, 132, 132)",
+    borderColor: "rgba(137, 132, 132)",
+  },
+  height: "60px",
+  color: "#2979ff",
+  borderColor: "#2979ff",
+};
+
 const Search = ({ className }) => {
   const [keywords, setKeywords] = useState("");
   const [location, setLocation] = useState("");
@@ -52,7 +62,7 @@ const Search = ({ className }) => {
         onChange={(e) => setLocation(e.target.value)}
         focused
       />
-      <Button variant="outlined" onClick={getSearchList}>
+      <Button variant="outlined" sx={btn} onClick={getSearchList}>
         Search
       </Button>
     </FormControl>

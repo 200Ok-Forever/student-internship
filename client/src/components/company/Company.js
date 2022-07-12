@@ -124,6 +124,7 @@ const Company = () => {
           flexDirection: "column",
           my: "50px",
           gap: "25px",
+          minHeight: "50vh",
         }}
       >
         {isOverview ? <Overview info={info} /> : <Jobs />}
@@ -192,7 +193,7 @@ const Jobs = () => {
       <Grid
         container
         spacing={3}
-        sx={{ width: "70%", display: "flex", alignItems: "center", mb: "80px" }}
+        sx={{ width: "75%", display: "flex", alignItems: "center", mb: "80px" }}
       >
         <Grid item lg={5} md={12} xs={12}>
           <TextField
