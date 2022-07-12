@@ -2,3 +2,9 @@
   width: 90% !important;
   padding-top: 7em !important;
 }
+
+@media screen and (max-width: 600px) {
+  .rootContainer {
+    width: 100% !important;
+  }
+}

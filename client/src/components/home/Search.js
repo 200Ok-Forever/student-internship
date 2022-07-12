@@ -1,6 +1,7 @@
 import { Button, FormControl, TextField } from "@mui/material";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
+
 import classes from "./style/search.module.scss";
 
 const text_class = {
@@ -33,8 +34,6 @@ const Search = ({ className }) => {
 
   const getSearchList = () => {
     // api from api file
-    console.log(keywords);
-    console.log(location);
     const newKeywords = keywords.trim().replace(/\s/g, "-");
     const newLocation = location.trim().replace(/\s/g, "-");
     history.push(`/search?keywords=${newKeywords}&location=${newLocation}`);
@@ -55,20 +54,15 @@ const Search = ({ className }) => {
       />
       <TextField
         id="location"
-        label="Location"
+        label="City"
         variant="filled"
+        color="secondary"
         sx={text_class}
         value={location}
-        color="secondary"
         onChange={(e) => setLocation(e.target.value)}
         focused
       />
-      <Button
-        variant="outlined"
-        sx={btn}
-        onClick={getSearchList}
-        disabled={keywords === ""}
-      >
+      <Button variant="outlined" sx={btn} onClick={getSearchList}>
         Search
       </Button>
     </FormControl>

@@ -1,8 +1,8 @@
 import React from "react";
-import { Grid, Box, Typography } from '@mui/material';
-import Card from '../UI/Card';
-import ScrollableRow from '../UI/ScrollableRow'
-import EventsSidebar from './Sidebar'
+import { Grid, Box, Typography } from "@mui/material";
+import Card from "../UI/Card";
+import ScrollableRow from "../UI/ScrollableRow";
+import EventsSidebar from "./Sidebar";
 import Search from "./Search";
 import classes from "./style/home.module.scss";
 import wave from "../../asset/wave.svg";
@@ -12,21 +12,38 @@ const Home = () => {
     <Box>
       <SearchBanner />
       <Grid container>
-        <Grid item xs={9}>
-          <Typography variant="h5" component="div" gutterBottom>
+        <Grid item xs={12} md={9} order={{ xs: 2, md: 1 }} mt={{ xs: 5, md: 0 }}>
+          <Typography
+            variant="h5"
+            component="div"
+            gutterBottom
+            fontWeight={700}
+          >
             Recommended for You
-          </Typography>          
+          </Typography>
           <ContentRow />
-          <Typography variant="h5" component="div" gutterBottom>
+          <Typography
+            variant="h5"
+            component="div"
+            gutterBottom
+            fontWeight={700}
+            mt="60px"
+          >
             Recently Posted
-          </Typography>           
+          </Typography>
           <ContentRow />
-          <Typography variant="h5" component="div" gutterBottom>
+          <Typography
+            variant="h5"
+            component="div"
+            gutterBottom
+            fontWeight={700}
+            mt="30px"
+          >
             Closing Soon
-          </Typography> 
+          </Typography>
           <ContentRow />
         </Grid>
-        <EventsSidebar />      
+        <EventsSidebar />
       </Grid>
     </Box>
   );
@@ -53,59 +70,65 @@ const SearchBanner = () => {
 const ContentRow = () => (
   <ScrollableRow>
     <Card
-      title="Software Engineering Internship"
+      title="1 Software Engineering Internship"
       itemId={1}
       subheading="Google"
-      media='https://picsum.photos/300/200'
-      to='/forum'
+      media="https://picsum.photos/300/200"
+      to="/forum"
     >
-      "some text omg asdjoas idasiudh asiduh asiduhas diuahsd iasuhd aiushdiau sdhsaiudh"
-    </Card>,
+      "some text omg asdjoas idasiudh asiduh asiduhas diuahsd iasuhd aiushdiau
+      sdhsaiudh"
+    </Card>
     <Card
-      title="Software Engineering Internship"
+      title="2 Software Engineering Internship"
       itemId={2}
       subheading="Google"
-      media='https://picsum.photos/300/200'
-      to='/forum'
+      media="https://picsum.photos/300/200"
+      to="/forum"
     >
-      "some text omg asdjoas idasiudh asiduh asiduhas diuahsd iasuhd aiushdiau sdhsaiudh"
-    </Card>,
+      "some text omg asdjoas idasiudh asiduh asiduhas diuahsd iasuhd aiushdiau
+      sdhsaiudh"
+    </Card>
     <Card
-      title="Software Engineering Internship"
+      title="3 Software Engineering Internship"
       itemId={3}
       subheading="Google"
-      media='https://picsum.photos/300/200'
-      to='/forum'
+      media="https://picsum.photos/300/200"
+      to="/forum"
     >
-      "some text omg asdjoas idasiudh asiduh asiduhas diuahsd iasuhd aiushdiau sdhsaiudh"
-    </Card>,
+      "some text omg asdjoas idasiudh asiduh asiduhas diuahsd iasuhd aiushdiau
+      sdhsaiudh"
+    </Card>
     <Card
-      title="Software Engineering Internship"
+      title="4 Software Engineering Internship"
       itemId={4}
       subheading="Google"
-      media='https://picsum.photos/300/200'
-      to='/forum'
+      media="https://picsum.photos/300/200"
+      to="/forum"
     >
-      "some text omg asdjoas idasiudh asiduh asiduhas diuahsd iasuhd aiushdiau sdhsaiudh"
-    </Card>,
+      "some text omg asdjoas idasiudh asiduh asiduhas diuahsd iasuhd aiushdiau
+      sdhsaiudh"
+    </Card>
     <Card
-      title="Software Engineering Internship"
+      title="5 Software Engineering Internship"
       itemId={5}
       subheading="Google"
-      media='https://picsum.photos/300/200'
-      to='/forum'
+      media="https://picsum.photos/300/200"
+      to="/forum"
     >
-      "some text omg asdjoas idasiudh asiduh asiduhas diuahsd iasuhd aiushdiau sdhsaiudh"
-    </Card>,
+      "some text omg asdjoas idasiudh asiduh asiduhas diuahsd iasuhd aiushdiau
+      sdhsaiudh"
+    </Card>
     <Card
-      title="Software Engineering Internship"
+      title="6 Software Engineering Internship"
       itemId={6}
       subheading="Google"
-      media='https://picsum.photos/300/200'
-      to='/forum'
+      media="https://picsum.photos/300/200"
+      to="/forum"
     >
-      "some text omg asdjoas idasiudh asiduh asiduhas diuahsd iasuhd aiushdiau sdhsaiudh"
-    </Card>  
+      "some text omg asdjoas idasiudh asiduh asiduhas diuahsd iasuhd aiushdiau
+      sdhsaiudh"
+    </Card>
   </ScrollableRow>
-)
+);
 export default Home;
