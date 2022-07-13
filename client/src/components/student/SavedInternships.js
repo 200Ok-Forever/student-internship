@@ -1,7 +1,7 @@
-import React from 'react';
-import { Box, Typography } from '@mui/material';
-import JobBlock from './jobs/JobBlock';
-import RemoveButton from './UI/RemoveButton';
+import React from "react";
+import { Box, Typography } from "@mui/material";
+import JobBlock from "../jobs/JobBlock";
+import RemoveButton from "../UI/RemoveButton";
 
 const internships = [
   {
@@ -54,21 +54,23 @@ const internships = [
   },
 ];
 
+const boxStyling = { display: "flex", flexDirection: "column", gap: "30px" };
+
 const SavedInternships = () => {
   return (
-    <Box>
-      <Typography variant="h4" component='div'>
+    <Box sx={boxStyling} mb="30px">
+      <Typography variant="h4" component="div">
         Saved Internships
       </Typography>
-      <Box>
-        {internships.map(i => (
+      <Box sx={boxStyling}>
+        {internships.map((i) => (
           <JobBlock job={i} key={i.job_id}>
             <RemoveButton />
           </JobBlock>
         ))}
       </Box>
     </Box>
-  )
-}
+  );
+};
 
 export default SavedInternships;

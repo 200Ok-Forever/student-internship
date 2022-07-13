@@ -2,30 +2,21 @@ import { Box, Paper, Typography } from "@mui/material";
 import React from "react";
 import salary from "../../asset/salary.png";
 import Label from "../UI/Label";
-import { useHistory } from "react-router-dom";
 import JobBasicCard from "../UI/JobBasicCard";
-import forumClasses from '../forum/Forum.module.scss';
-import jobClasses from './Job.module.scss';
 
 const JobBlock = ({ job, children }) => {
-  const history = useHistory();
   const paper = {
-    width: "100%",
+    width: "auto",
     maxWidth: "1200px",
-    height: "235px",
-    p: "30px",
+    height: "265px",
+    p: "20px",
     display: "flex",
     flexDirection: "column",
     rowGap: "14px",
   };
 
   return (
-    <Paper 
-      elevation={3} 
-      sx={paper} 
-      onClick={() => history.push(`/job?id=${job.job_id}`)}
-      className={forumClasses.cardHover}
-    >
+    <Paper elevation={3} sx={paper}>
       <JobBasicCard
         job={{
           title: job.title,
@@ -35,7 +26,7 @@ const JobBlock = ({ job, children }) => {
           id: job.job_id,
         }}
       >
-        <Box className={jobClasses.cardActions}>
+        <Box>
           {job?.status && (
             <Typography
               variant="h7"
@@ -44,7 +35,7 @@ const JobBlock = ({ job, children }) => {
             >
               {job.status}
             </Typography>
-          )}          
+          )}
           {children}
         </Box>
       </JobBasicCard>

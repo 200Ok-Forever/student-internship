@@ -9,7 +9,7 @@ import Menu from "./Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Menu as MUIMenu, MenuItem, Drawer, IconButton } from "@mui/material";
 import Logo from "../../asset/logo.svg";
-import AccountCircle from '@mui/icons-material/AccountCircle';
+import AccountCircle from "@mui/icons-material/AccountCircle";
 
 const NavBar = () => {
   const history = useHistory();
@@ -24,7 +24,7 @@ const NavBar = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  
+
   const toggleDrawer = () => (event) => {
     if (
       event.type === "keydown" &&
@@ -82,19 +82,31 @@ const NavBar = () => {
               id="user-menu-appbar"
               anchorEl={anchorEl}
               anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
+                vertical: "top",
+                horizontal: "right",
               }}
               keepMounted
               transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
+                vertical: "top",
+                horizontal: "right",
               }}
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-              <MenuItem onClick={handleClose} component={RouterLink} to='/saved'>Saved Internships</MenuItem>
-              <MenuItem onClick={handleClose} component={RouterLink} to='/history'>History</MenuItem>
+              <MenuItem
+                onClick={handleClose}
+                component={RouterLink}
+                to="/saved"
+              >
+                Saved Internships
+              </MenuItem>
+              <MenuItem
+                onClick={handleClose}
+                component={RouterLink}
+                to="/history"
+              >
+                History
+              </MenuItem>
             </MUIMenu>
           </Box>
         </Toolbar>
