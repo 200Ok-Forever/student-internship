@@ -21,7 +21,7 @@ const JobBlock = ({ job, children }) => {
         job={{
           title: job.title,
           com_name: job.company_name,
-          city: job.city,
+          city: job.location,
           avatar: job.company_logo,
           id: job.job_id,
         }}

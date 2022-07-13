@@ -93,27 +93,25 @@ const Search = ({ setJobList }) => {
   const [jobType, setJobType] = useState("All");
   const [isPaid, setIsPaid] = useState(false);
 
-  useEffect(() => {
-    setJobList(DUMMY_DATA);
-    const getDate = async () => {
-      const resp = await getJobsListData(
-        `?job=${keyword}&location=${location}`
-      );
-      console.log(resp);
-    };
+  const getDate = async () => {
+    const resp = await getJobsListData(
+      `?job=${keyword}&location=${location}&current_page=0`
+    );
+    setJobList(resp.data);
+  };
 
+  useEffect(() => {
     try {
       getDate();
     } catch (e) {
       console.log(e);
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getJobList = (e) => {
     e.preventDefault();
-    setJobList(DUMMY_DATA2);
+    getDate();
   };
 
   return (
