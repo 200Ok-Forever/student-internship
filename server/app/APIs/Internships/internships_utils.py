@@ -7,6 +7,7 @@ from sqlalchemy import null
 from ...Models.model import Internship, City, Company, Comment, User, Skill
 from flask_restx import Resource, reqparse
 from ...extension import db
+from string import digits
 YOUTUBE_KEY='AIzaSyAKgaoxXGkDNj1ouC4gW2Ks-_Mrw8eMuyM'
 # YOUTUBE_KEY = 'AIzaSyBKUlq8KO324Q996DMDXKLVnxGtvHKKPmk'
 
@@ -27,14 +28,26 @@ def get_comany_info(data):
     return name, logo
 
 def get_youtube(title):
+    #remove stop words from title
+    stop_words = ['intern', 'internship', 'summer']
+   
+    querywords = title.split()
+
+    resultwords  = [word for word in querywords if word.lower() not in stop_words]
+    result = ' '.join(resultwords)
+
+    #translate digits to None
+    result = re.sub('[^A-Za-z ]+', '', result)
+
+    #add courses to the search keywords
+    res = result+' courses'
+    print(res)
     video_id_list = []
     search_url = 'https://www.googleapis.com/youtube/v3/search'
-    # skill_list = skill_list[0:2]
-    # for skill in skill_list:
-    # print(skill)
+
     search_params={
         'key':YOUTUBE_KEY,
-        'q':title,
+        'q':res,
         'part': 'snippet',
         'maxResult':10,
         'type':'video'
