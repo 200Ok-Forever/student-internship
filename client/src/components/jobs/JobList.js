@@ -13,7 +13,7 @@ const center = {
 const JobList = () => {
   const [jobs, setJobs] = useState([]);
   const [sortBy, setSortBy] = useState("");
-  const [currPage, setCurrPage] = useState(0);
+  const [currPage, setCurrPage] = useState(1);
   const [load, setLoad] = useState("");
 
   const observer = useRef();

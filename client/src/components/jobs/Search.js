@@ -96,26 +96,26 @@ const Search = ({ setJobList, currPage, setLoad }) => {
   const getData = async () => {
     try {
       const resp = await getJobsListData(
-        `?job=${keyword}&location=${location}&job_type=${jobType}&paid=${isPaid}&remote=${isRemote}`
+        `?job=${keyword}&location=${location}&current_page=${currPage}&job_type=${jobType}`
       );
       if (resp.status === 200) {
         if (resp.data.length === 0) {
           setLoad("End");
         } else {
-          setLoad("Loading");
+          setLoad("Loading...");
         }
         setJobList((prev) => prev.concat(resp.data));
       }
     } catch (e) {
       console.log(e);
-      setLoad("Server error");
+      setLoad("End");
     }
   };
 
   useEffect(() => {
     getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [currPage]);
 
   const getJobList = (e) => {
     e.preventDefault();
