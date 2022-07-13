@@ -33,7 +33,6 @@ const Search = ({ className }) => {
   const history = useHistory();
 
   const getSearchList = () => {
-    // api from api file
     const newKeywords = keywords.trim().replace(/\s/g, "-");
     const newLocation = location.trim().replace(/\s/g, "-");
     history.push(`/search?keywords=${newKeywords}&location=${newLocation}`);
