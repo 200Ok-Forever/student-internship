@@ -55,14 +55,27 @@ const JobList = () => {
         setLoad("Loading...");
       }
       console.log(
-        `?job=${filter.keyword}&location=${filter.location}&current_page=${currPage}&job_type=${filter.jobType}&is_remote=${filter.isRemote}&paid=${filter.isPaid}&sort=${sortBy}`
+        `?job=${filter.keyword}&location=${
+          filter.location
+        }&current_page=${currPage}&job_type=${
+          filter.jobType === "All" ? "" : filter.jobType
+        }&is_remote=${filter.isRemote === "All" ? "" : filter.isRemote}&paid=${
+          filter.isPaid === "All" ? "" : filter.isPaid
+        }&sort=${sortBy}`
       );
       const resp = await getJobsListData(
-        `?job=${filter.keyword}&location=${filter.location}&current_page=${currPage}&job_type=${filter.jobType}&is_remote=${filter.isRemote}&paid=${filter.isPaid}&sort=${sortBy}`
+        `?job=${filter.keyword}&location=${
+          filter.location
+        }&current_page=${currPage}&job_type=${
+          filter.jobType === "All" ? "" : filter.jobType
+        }&is_remote=${filter.isRemote === "All" ? "" : filter.isRemote}&paid=${
+          filter.isPaid === "All" ? "" : filter.isPaid
+        }&sort=${sortBy}`
       );
       if (resp.status === 200) {
         if (resp.data.length === 0) {
           setLoad("End");
+          console.log("??");
         }
         if (clickSearch) {
           setCannotReload(true);
@@ -148,7 +161,9 @@ const JobList = () => {
       {jobs.length !== 0 ? (
         jobs.map((job) => <JobBlock job={job} key={job.job_id} />)
       ) : (
-        <Skeletons />
+        <>
+          {load !== "End" ? <Skeletons /> : <Typography>No result</Typography>}
+        </>
       )}
       {jobs.length !== 0 && (
         <Box ref={lastItemRef}>

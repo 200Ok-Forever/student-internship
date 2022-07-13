@@ -46,7 +46,7 @@ const JobBlock = ({ job, children }) => {
           </Label>
         )}
         {job.job_type && <Label text={job.job_type}></Label>}
-        {job.is_remote && <Label text={"Remote"}></Label>}
+        {job.is_remote === "True" && <Label text={"Remote"}></Label>}
       </Box>
       <Typography variant="body1" sx={{ overflow: "hidden" }}>
         {job.description}
