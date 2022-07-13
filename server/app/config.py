@@ -5,7 +5,6 @@ from datetime import timedelta
 
 class Config:
     DEBUG = True
-    port = 5004
 
     # Info
     SITE_NAME = os.environ.get("SITE_NAME", "InternHub")
