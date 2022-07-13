@@ -7,13 +7,17 @@ from sqlalchemy import null
 from ...Models.model import Internship, City, Company, Comment, User, Skill
 from flask_restx import Resource, reqparse
 from ...extension import db
-# YOUTUBE_KEY='AIzaSyAKgaoxXGkDNj1ouC4gW2Ks-_Mrw8eMuyM'
-YOUTUBE_KEY = 'AIzaSyBKUlq8KO324Q996DMDXKLVnxGtvHKKPmk'
+YOUTUBE_KEY='AIzaSyAKgaoxXGkDNj1ouC4gW2Ks-_Mrw8eMuyM'
+# YOUTUBE_KEY = 'AIzaSyBKUlq8KO324Q996DMDXKLVnxGtvHKKPmk'
+
+
+
 def get_location(data):
     id = City.id
     city = City.query.filter_by(id = data).first()
     print(city)
     return city.name
+
 def get_comany_info(data):
     id = Company.id
     company = Company.query.filter_by(id = data).first()
@@ -21,33 +25,34 @@ def get_comany_info(data):
     name = company.name
     logo = company.logo
     return name, logo
-def get_youtube(skill_list):
+
+def get_youtube(title):
     video_id_list = []
     search_url = 'https://www.googleapis.com/youtube/v3/search'
-    skill_list = skill_list[0:2]
-    for skill in skill_list:
-        print(skill)
-        search_params={
-            'key':YOUTUBE_KEY,
-            'q':skill,
-            'part': 'snippet',
-            'maxResult':1,
-            'type':'video'
-        }
-        r = requests.get(search_url, params = search_params)
-       
-        results=r.json()['items']
-        print(results)
-   
+    # skill_list = skill_list[0:2]
+    # for skill in skill_list:
+    # print(skill)
+    search_params={
+        'key':YOUTUBE_KEY,
+        'q':title,
+        'part': 'snippet',
+        'maxResult':10,
+        'type':'video'
+    }
+    r = requests.get(search_url, params = search_params)
+    
+    results=r.json()['items']
+    print(results)
+
       
-        for result in results:
-            # print(result)
-            videoid=result.get('id').get('videoId')
-            print(videoid)
-            video_id_list.append(videoid)
+    for result in results:
+        # print(result)
+        videoid=result.get('id').get('videoId')
+        print(videoid)
+        video_id_list.append(videoid)
+
     return video_id_list
-    # return video_id_list
-    return []
+    
 def changeTypeFormat(type):
     type = str(type)
     type1 = "fulltime"
@@ -103,14 +108,15 @@ class InternshipsUtils:
                 comment = db.session.query(Comment).join(Internship, Comment.internship_id == Internship.id).filter(Comment.internship_id==data).filter(Comment.parent_id==None).all()
                 if comment:
                     comment_list = get_all_parent_comment(comment)
-                job_skill = db.session.query(Skill).filter(Skill.internships.any(id = data)).all()
-                skills_list = []
+                # job_skill = db.session.query(Skill).filter(Skill.internships.any(id = data)).all()
+                # skills_list = []
                 
-                if job_skill:
-                    for skill in job_skill:
-                        skills_list.append(skill.name)
-                    print(skills_list)
-                video_id_list=get_youtube(skills_list)
+                # if job_skill:
+                #     for skill in job_skill:
+                #         skills_list.append(skill.name)
+                #     print(skills_list)
+                video_id_list=get_youtube(internship.title)
+
                 intership_result = {
                     "description": internship.description,
                     "postedDate": changeDateFormat( internship.posted_time),
@@ -157,7 +163,6 @@ class InternshipsUtils:
             
             map.append(Internship.min_salary.isnot(None))
         if remote =="True" or remote == "False":
-            
             print(remote)
             map.append(Internship.is_remote == remote)
         if job_type != None:
