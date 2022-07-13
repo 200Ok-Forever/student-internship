@@ -6,69 +6,12 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
 import classes from "./Job.module.scss";
-import queryString from "query-string";
-import { getJobsListData } from "../../api/search-api";
 
-const Search = ({ setJobList, currPage, setLoad, setCurrPage }) => {
-  const { search } = useLocation();
-  const info = queryString.parse(search);
-  const [keyword, setKeyword] = useState(info.keywords.replace("-", " "));
-  const [location, setLocation] = useState(info.location.replace("-", " "));
-  const [isRemote, setIsRemote] = useState("");
-  const [jobType, setJobType] = useState("");
-  const [isPaid, setIsPaid] = useState("");
-  const [clickSearch, setClickSearch] = useState(false);
-
-  const getData = async () => {
-    try {
-      console.log(
-        `?job=${keyword}&location=${location}&current_page=${currPage}&job_type=${
-          jobType === "All" ? "" : jobType
-        }&is_remote=${isRemote === "All" ? "" : isRemote}&paid=${
-          isPaid === "All" ? "" : isPaid
-        }`
-      );
-      if (clickSearch) {
-        setJobList([]);
-      }
-      const resp = await getJobsListData(
-        `?job=${keyword}&location=${location}&current_page=${currPage}&job_type=${
-          jobType === "All" ? "" : jobType
-        }&is_remote=${isRemote === "All" ? "" : isRemote}&paid=${
-          isPaid === "All" ? "" : isPaid
-        }`
-      );
-      if (resp.status === 200) {
-        if (resp.data.length === 0) {
-          setLoad("End");
-        } else {
-          setLoad("Loading...");
-        }
-        if (clickSearch) {
-          setJobList(resp.data);
-          setClickSearch(false);
-        } else {
-          setJobList((prev) => prev.concat(resp.data));
-        }
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  useEffect(() => {
-    getData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currPage]);
-
+const Search = ({ setFilter, filter, clickhandler }) => {
   const getJobList = (e) => {
     e.preventDefault();
-    setCurrPage(1);
-    setClickSearch(true);
-    getData();
+    clickhandler();
   };
 
   return (
@@ -76,15 +19,19 @@ const Search = ({ setJobList, currPage, setLoad, setCurrPage }) => {
       <TextField
         id="keyword_search"
         label="Keyword / Job title"
-        value={keyword}
-        onChange={(e) => setKeyword(e.target.value.trim())}
+        value={filter.keyword}
+        onChange={(e) =>
+          setFilter((prev) => ({ ...prev, keyword: e.target.value.trim() }))
+        }
         className={classes.keyword}
       />
       <TextField
         id="location_search"
         label="City"
-        value={location}
-        onChange={(e) => setLocation(e.target.value.trim())}
+        value={filter.location}
+        onChange={(e) =>
+          setFilter((prev) => ({ ...prev, location: e.target.value.trim() }))
+        }
         className={classes.location}
       />
       <div className={classes.filter}>
@@ -93,11 +40,16 @@ const Search = ({ setJobList, currPage, setLoad, setCurrPage }) => {
           <Select
             labelId="On-site/Remote"
             id="select On-site/Remote"
-            value={isRemote}
-            onChange={(e) => setIsRemote(e.target.value)}
+            value={filter.isRemote}
+            onChange={(e) =>
+              setFilter((prev) => ({
+                ...prev,
+                isRemote: e.target.value.trim(),
+              }))
+            }
             label="On-site/Remote"
           >
-            <MenuItem value="All">
+            <MenuItem value="">
               <em>All</em>
             </MenuItem>
             <MenuItem value="False">On-site</MenuItem>
@@ -109,11 +61,13 @@ const Search = ({ setJobList, currPage, setLoad, setCurrPage }) => {
           <Select
             labelId="Paid/Unpaid"
             id="select Paid/Unpaid"
-            value={isPaid}
-            onChange={(e) => setIsPaid(e.target.value)}
+            value={filter.isPaid}
+            onChange={(e) =>
+              setFilter((prev) => ({ ...prev, isPaid: e.target.value.trim() }))
+            }
             label="On-site/Remote"
           >
-            <MenuItem value="All">
+            <MenuItem value="">
               <em>All</em>
             </MenuItem>
 
@@ -126,11 +80,13 @@ const Search = ({ setJobList, currPage, setLoad, setCurrPage }) => {
           <Select
             labelId="job type"
             id="select job type"
-            value={jobType}
-            onChange={(e) => setJobType(e.target.value)}
+            value={filter.jobType}
+            onChange={(e) =>
+              setFilter((prev) => ({ ...prev, jobType: e.target.value.trim() }))
+            }
             label="Job Type"
           >
-            <MenuItem value="All">
+            <MenuItem value="">
               <em>All</em>
             </MenuItem>
             <MenuItem value="FULLTIME">Full-time</MenuItem>
