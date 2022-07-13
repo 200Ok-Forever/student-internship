@@ -286,7 +286,7 @@ const RelatedCourses = ({ info }) => {
         text="Related Courses"
       />
       <ScrollableRow>
-        {info?.related_courses?.map((vId, i) => (
+        {info?.video_id?.map((vId, i) => (
           <YoutubeEmbed
             link={`https://www.youtube.com/embed/${vId}`}
             key={`video_${i}`}
