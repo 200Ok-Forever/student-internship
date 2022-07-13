@@ -45,7 +45,7 @@ const JobBlock = ({ job, children }) => {
             <img src={salary} alt="salary" width="25px" height="25px" />
           </Label>
         )}
-        <Label text={job.job_type}></Label>
+        {job.job_type && <Label text={job.job_type}></Label>}
         {job.is_remote && <Label text={"Remote"}></Label>}
       </Box>
       <Typography variant="body1" sx={{ overflow: "hidden" }}>
