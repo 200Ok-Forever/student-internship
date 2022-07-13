@@ -20,7 +20,7 @@ class GetInternshipList(Resource):
     def get(self):
 
         args1 = request.args
-    
+        
         print(args1)
         try:
             return InternshipsUtils.get_all_Intership(args1)

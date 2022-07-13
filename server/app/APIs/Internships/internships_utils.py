@@ -142,21 +142,27 @@ class InternshipsUtils:
         location = data.get("location", None)
         sort = data.get("sort", "Default")
         paid = data.get("paid", None)
-        remote = data.get("remote", None)
+        remote = data.get("is_remote", None)
 
         job_type = data.get("job_type", None)
         current_page = int(data.get('current_page',1))
         map = []
      
         if job!=None :
+
             job = data['job']
             map.append(Internship.title.ilike(f'%{job}%'))
         if paid =="True":
+            
+            
             map.append(Internship.min_salary.isnot(None))
         if remote != None:
+            
             print(remote)
             map.append(Internship.is_remote == remote)
         if job_type != None:
+            print("________________")
+            print(job_type)
             map.append(Internship.type.ilike(f'%{job_type}%'))
  
         print(map)
