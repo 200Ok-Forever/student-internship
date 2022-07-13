@@ -4,9 +4,7 @@ import {
   FormControl,
   InputLabel,
   MenuItem,
-  Paper,
   Select,
-  Skeleton,
   Typography,
 } from "@mui/material";
 import JobBlock from "./JobBlock";
@@ -22,6 +20,7 @@ const center = {
 
 const JobList = () => {
   const [jobs, setJobs] = useState([]);
+  console.log("🚀 ~ jobs", jobs);
   const [sortBy, setSortBy] = useState("");
   const [currPage, setCurrPage] = useState(1);
   const [load, setLoad] = useState("");
@@ -52,12 +51,20 @@ const JobList = () => {
         mb: "30px",
       }}
     >
-      <Search setJobList={getJobs} currPage={currPage} setLoad={setLoad} />
+      <Search
+        setJobList={getJobs}
+        currPage={currPage}
+        setLoad={setLoad}
+        setCurrPage={setCurrPage}
+      />
       <Box
         sx={{
           minWidth: "450px",
           width: "100%",
           maxWidth: "1260px",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
         }}
       >
         <FormControl
@@ -78,13 +85,18 @@ const JobList = () => {
             <MenuItem value="Closing Soon">Closing Soon</MenuItem>
           </Select>
         </FormControl>
+        {jobs.length !== 0 && (
+          <Typography fontFamily="inherit" variant="h7">
+            Showing {jobs.length} of {jobs[0].numAllResults.total_count}
+          </Typography>
+        )}
       </Box>
-      {load ? (
+      {jobs.length !== 0 ? (
         jobs.map((job) => <JobBlock job={job} key={job.job_id} />)
       ) : (
         <Skeletons />
       )}
-      {jobs.length !== 0 && jobs.length !== 0 && (
+      {jobs.length !== 0 && (
         <Box ref={lastItemRef}>
           <p>{load}</p>
         </Box>
