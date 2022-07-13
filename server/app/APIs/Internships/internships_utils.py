@@ -7,7 +7,6 @@ from sqlalchemy import null
 from ...Models.model import Internship, City, Company, Comment, User, Skill
 from flask_restx import Resource, reqparse
 from ...extension import db
-
 # YOUTUBE_KEY='AIzaSyAKgaoxXGkDNj1ouC4gW2Ks-_Mrw8eMuyM'
 YOUTUBE_KEY = 'AIzaSyBKUlq8KO324Q996DMDXKLVnxGtvHKKPmk'
 def get_location(data):
@@ -15,7 +14,6 @@ def get_location(data):
     city = City.query.filter_by(id = data).first()
     print(city)
     return city.name
-
 def get_comany_info(data):
     id = Company.id
     company = Company.query.filter_by(id = data).first()
@@ -23,7 +21,6 @@ def get_comany_info(data):
     name = company.name
     logo = company.logo
     return name, logo
-
 def get_youtube(skill_list):
     video_id_list = []
     search_url = 'https://www.googleapis.com/youtube/v3/search'
@@ -48,6 +45,7 @@ def get_youtube(skill_list):
             videoid=result.get('id').get('videoId')
             print(videoid)
             video_id_list.append(videoid)
+    return video_id_list
     # return video_id_list
     return []
 def changeTypeFormat(type):
@@ -57,7 +55,7 @@ def changeTypeFormat(type):
     if (type.lower() == type1) or (type.lower() == type2):
         return type
     else:
-        return None
+        return ""
 
 def get_all_parent_comment(comments):
     all_parent_comment = []
@@ -66,7 +64,6 @@ def get_all_parent_comment(comments):
     for comment in comments:
         children_comment = db.session.query(Comment).filter(Comment.parent_id == comment.id).all()
         children_comment_list = get_children_comment(children_comment)
-
         # print(children_comment_list)
         all_parent_comment.append({
             'text': comment.content,
@@ -75,7 +72,6 @@ def get_all_parent_comment(comments):
             'replied': children_comment_list
         })
     return all_parent_comment
-
 def get_children_comment(comments):
     all_children_comment=[]
     for comment in comments:
@@ -86,7 +82,6 @@ def get_children_comment(comments):
  
     # print(all_children_comment)
     return all_children_comment
-
 def changeDateFormat(date):
     
     result = re.sub('T.+', '', str(date))
@@ -98,12 +93,10 @@ class InternshipsUtils:
             # print(id)
             internship=Internship.query.filter(id==data).first()
             # print(internship)
-
             if not internship:
                 internship_not_found={
                     "message": "This internship does not exist"
                 }
-
                 return internship_not_found, 404
             else:
                 comment_list = []
@@ -117,8 +110,7 @@ class InternshipsUtils:
                     for skill in job_skill:
                         skills_list.append(skill.name)
                     print(skills_list)
-                # video_id_list=get_youtube(skills_list)
-                video_id_list = []
+                video_id_list=get_youtube(skills_list)
                 intership_result = {
                     "description": internship.description,
                     "postedDate": changeDateFormat( internship.posted_time),
@@ -133,7 +125,6 @@ class InternshipsUtils:
                     "max_salary":internship.max_salary,
                     "salary_curreny": internship.salary_curreny,
                     "location": get_location(internship.id),
-                    "status": "",
                     "companyName": get_comany_info(internship.company_id)[0],
                     'company_logo': get_comany_info(internship.company_id)[1],
                     "video_id": video_id_list
@@ -144,10 +135,10 @@ class InternshipsUtils:
             return{
                 "message": "something wrong internal"
             },500
-
     def get_all_Intership(data):
-    
+
         job = data.get("job",None)
+        # location = data['location']
         location = data.get("location", None)
         sort = data.get("sort", "Default")
         paid = data.get("paid", None)
@@ -159,7 +150,6 @@ class InternshipsUtils:
         if job!=None :
             job = data['job']
             map.append(Internship.title.ilike(f'%{job}%'))
-
         if paid =="True":
             map.append(Internship.min_salary.isnot(None))
         if remote != None:
@@ -167,7 +157,6 @@ class InternshipsUtils:
         if job_type != None:
             map.append(Internship.type.ilike(f'%{job_type}%'))
  
-
         print(map)
  
         if location != None:
@@ -185,7 +174,6 @@ class InternshipsUtils:
                 result = Internship.query.filter(*map).filter(Internship.id.in_(temp)).order_by(Internship.expiration_timestamp.desc())
             
             
-
         elif location ==None:
             if sort == "Default":
                 result = Internship.query.filter(*map).order_by(Internship.id.asc())
@@ -198,27 +186,20 @@ class InternshipsUtils:
         
         count = result.count()
         internships=result.paginate(page=current_page, per_page=15, error_out = False).items
-        
+
         all_internships = [{'job_id': internship.id,'title':internship.title, \
              'job_type': changeTypeFormat(internship.type),"status": "",'is_remote':internship.is_remote , 'posted_time':changeDateFormat( internship.posted_time), 'closed_time':changeDateFormat(internship.expiration_datetime_utc),\
-                'min_salary':internship.min_salary, 'max_salary': internship.max_salary,  "salary_curreny": internship.salary_curreny,'description':internship.description,\
+                'min_salary':internship.min_salary, 'max_salary': internship.max_salary, 'description':internship.description,\
+                
                     'numAllResults': {"total_count":count}, 'location': get_location(internship.city), 'company_id': internship.company_id,\
                         'company_name': get_comany_info(internship.company_id)[0], 'company_logo': get_comany_info(internship.company_id)[1]
 
            } for internship in internships]
-
         if len(all_internships) == 0:
             internship_not_found={
                 "message": "internships not found"
             }
-
             return internship_not_found, 404
         else:
             return jsonify(all_internships)
      
-     
-           
-        
-
-
-

@@ -89,7 +89,7 @@ class Internship(db.Model):
     type=db.Column(db.VARCHAR(255))
     title=db.Column(db.VARCHAR(255))
     apply_link=db.Column(db.VARCHAR(255))
-    description=db.Column(db.VARCHAR(255))
+    description=db.Column(db.TEXT)
     is_remote=db.Column(db.VARCHAR(255))
     posted_time=db.Column(db.VARCHAR(255))
     latitude=db.Column(db.VARCHAR(255))
