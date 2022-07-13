@@ -143,6 +143,7 @@ class InternshipsUtils:
         sort = data.get("sort", "Default")
         paid = data.get("paid", None)
         remote = data.get("remote", None)
+
         job_type = data.get("job_type", None)
         current_page = int(data.get('current_page',1))
         map = []
@@ -153,6 +154,7 @@ class InternshipsUtils:
         if paid =="True":
             map.append(Internship.min_salary.isnot(None))
         if remote != None:
+            print(remote)
             map.append(Internship.is_remote == remote)
         if job_type != None:
             map.append(Internship.type.ilike(f'%{job_type}%'))
@@ -185,7 +187,7 @@ class InternshipsUtils:
                 result = Internship.query.filter(*map).order_by(Internship.expiration_timestamp.desc())
         
         count = result.count()
-        internships=result.paginate(page=current_page, per_page=15, error_out = False).items
+        internships=result.paginate(page=current_page, per_page=10, error_out = False).items
 
         all_internships = [{'job_id': internship.id,'title':internship.title, \
              'job_type': changeTypeFormat(internship.type),"status": "",'is_remote':internship.is_remote , 'posted_time':changeDateFormat( internship.posted_time), 'closed_time':changeDateFormat(internship.expiration_datetime_utc),\
