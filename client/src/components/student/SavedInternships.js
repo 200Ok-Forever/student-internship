@@ -1,8 +1,7 @@
 import React from "react";
-import { Box, IconButton, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import JobBlock from "../jobs/JobBlock";
-import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
-import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import RemoveButton from "../UI/RemoveButton";
 
 const internships = [
   {
@@ -57,21 +56,16 @@ const internships = [
 
 const boxStyling = { display: "flex", flexDirection: "column", gap: "30px" };
 
-const History = () => {
+const SavedInternships = () => {
   return (
     <Box sx={boxStyling} mb="30px">
       <Typography variant="h4" component="div">
-        History
+        Saved Internships
       </Typography>
       <Box sx={boxStyling}>
         {internships.map((i) => (
           <JobBlock job={i} key={i.job_id}>
-            <IconButton color="primary">
-              <BookmarkBorderIcon />
-            </IconButton>
-            <IconButton color="primary">
-              <CalendarMonthIcon />
-            </IconButton>
+            <RemoveButton />
           </JobBlock>
         ))}
       </Box>
@@ -79,4 +73,4 @@ const History = () => {
   );
 };
 
-export default History;
+export default SavedInternships;

@@ -10,9 +10,9 @@ import {
   Button,
 } from "@mui/material";
 import { Link as RouteLink } from "react-router-dom";
-import DeleteIcon from "@mui/icons-material/Delete";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import VideoCameraFrontIcon from "@mui/icons-material/VideoCameraFront";
+import RemoveButton from '../UI/RemoveButton';
 
 const Sidebar = () => {
   const events = [
@@ -92,14 +92,7 @@ const Internships = ({ events }) => {
                 >
                   view
                 </Button>
-                <Button
-                  variant="outlined"
-                  color="greyColor"
-                  startIcon={<DeleteIcon />}
-                  size="small"
-                >
-                  Remove
-                </Button>
+                <RemoveButton />
               </Box>
             </CardContent>
           </Card>
@@ -138,14 +131,7 @@ const Meetings = ({ events }) => {
                 >
                   Join
                 </Button>
-                <Button
-                  variant="outlined"
-                  color="greyColor"
-                  startIcon={<DeleteIcon />}
-                  size="small"
-                >
-                  Remove
-                </Button>
+                <RemoveButton />
               </Box>
             </CardContent>
           </Card>

@@ -6,3 +6,7 @@
 
     cd server
     flask run
+    
+## python packages
+    
+    pip install -r requirements.txt

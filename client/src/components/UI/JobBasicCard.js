@@ -15,7 +15,7 @@ const JobBasicCard = (props) => {
           variant="h6"
           fontWeight="700"
           sx={{ cursor: "pointer", display: "flex", alignItems: "center" }}
-          onClick={props?.onClick}
+          onClick={() => history.push(`/job?id=${job.id}`)}
         >
           {job.title}
           {props?.save}

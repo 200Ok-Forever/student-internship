@@ -2,29 +2,21 @@ import { Box, Paper, Typography } from "@mui/material";
 import React from "react";
 import salary from "../../asset/salary.png";
 import Label from "../UI/Label";
-import { useHistory } from "react-router-dom";
 import JobBasicCard from "../UI/JobBasicCard";
-import forumClasses from '../forum/Forum.module.scss';
 
-const JobBlock = ({ job }) => {
-  const history = useHistory();
+const JobBlock = ({ job, children }) => {
   const paper = {
-    width: "100%",
+    width: "auto",
     maxWidth: "1200px",
-    height: "235px",
-    p: "30px",
+    height: "265px",
+    p: "20px",
     display: "flex",
     flexDirection: "column",
     rowGap: "14px",
   };
 
   return (
-    <Paper 
-      elevation={3} 
-      sx={paper} 
-      onClick={() => history.push(`/job?id=${job.job_id}`)}
-      className={forumClasses.cardHover}
-    >
+    <Paper elevation={3} sx={paper}>
       <JobBasicCard
         job={{
           title: job.title,
@@ -34,15 +26,18 @@ const JobBlock = ({ job }) => {
           id: job.job_id,
         }}
       >
-        {job?.status && (
-          <Typography
-            variant="h7"
-            fontWeight="700"
-            color={job.status === "NEW" ? "primary" : "rgb(122, 119, 119)"}
-          >
-            {job.status}
-          </Typography>
-        )}
+        <Box>
+          {job?.status && (
+            <Typography
+              variant="h7"
+              fontWeight="700"
+              color={job.status === "NEW" ? "primary" : "rgb(122, 119, 119)"}
+            >
+              {job.status}
+            </Typography>
+          )}
+          {children}
+        </Box>
       </JobBasicCard>
       <Box sx={{ display: "flex", columnGap: "14px" }}>
         {job?.min_salary && (
