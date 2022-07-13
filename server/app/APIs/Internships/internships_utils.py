@@ -156,7 +156,7 @@ class InternshipsUtils:
             
             
             map.append(Internship.min_salary.isnot(None))
-        if remote != None:
+        if remote =="True" or remote == "False":
             
             print(remote)
             map.append(Internship.is_remote == remote)

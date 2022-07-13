@@ -14,7 +14,7 @@ class InternshipsAPI:
         'location':fields.String,
         'sort':fields.String,
         'paid':fields.String,
-        'remote': fields.String,
+        'is_remote': fields.String,
         'job_type': fields.String,
         'current_page': fields.Integer
     })
