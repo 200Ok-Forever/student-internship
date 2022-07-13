@@ -21,7 +21,7 @@ const JobBlock = ({ job, children }) => {
         job={{
           title: job.title,
           com_name: job.company_name,
-          city: job.city,
+          city: job.location,
           avatar: job.company_logo,
           id: job.job_id,
         }}
@@ -45,7 +45,7 @@ const JobBlock = ({ job, children }) => {
             <img src={salary} alt="salary" width="25px" height="25px" />
           </Label>
         )}
-        <Label text={job.job_type}></Label>
+        {job.job_type && <Label text={job.job_type}></Label>}
         {job.is_remote && <Label text={"Remote"}></Label>}
       </Box>
       <Typography variant="body1" sx={{ overflow: "hidden" }}>
