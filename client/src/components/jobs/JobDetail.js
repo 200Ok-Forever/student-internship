@@ -86,20 +86,23 @@ const DATA = {
 const JobDetail = () => {
   const [info, setInfo] = useState([]);
   const { search } = useLocation();
-  const str = queryString.parse(search);
-  const id = str.id;
+  const query = queryString.parse(search);
+  const id = query.id;
+  const [load, setLoad] = useState(true);
   console.log(info);
+
   useEffect(() => {
     const getData = async () => {
       const resp = await getJob(id);
       setInfo(resp.data);
+      setLoad(false);
     };
     try {
       getData();
     } catch (e) {
       console.log(e);
     }
-  }, []);
+  }, [id]);
 
   return (
     <Box
@@ -110,9 +113,13 @@ const JobDetail = () => {
         mb: "30px",
       }}
     >
-      <BasicInfo info={info} />
-      <RelatedCourses info={info} />
-      <Comments list={info.comments} />
+      {!load && (
+        <>
+          <BasicInfo info={info} />
+          <RelatedCourses info={info} />
+          <Comments list={info.comments} />
+        </>
+      )}
     </Box>
   );
 };
@@ -224,8 +231,8 @@ const BasicInfo = ({ info }) => {
             <img src={salary} alt="salary" width="25px" height="25px" />
           </Label>
         )}
-        <Label text={info.job_type} />
-        {info.remote && <Label text="Remote" />}
+        <Label text={info.jobType} />
+        {info.remote ? <Label text={"Remote"} /> : <Label text={"On-site"} />}
       </Box>
       <Grid container spacing={8}>
         <Grid item md={12} lg={9} sm={12}>
@@ -250,14 +257,20 @@ const BasicInfo = ({ info }) => {
             mb="30px"
           />
           <Box>
-            {info?.recruiting_processes?.map((process, i) => (
-              <Process
-                text={process}
-                key={`process_${i}`}
-                num={i + 1}
-                isLastOne={i + 1 === info.recruiting_processes.length}
-              />
-            ))}
+            {info?.recruiting_processes ? (
+              info.recruiting_processes.map((process, i) => (
+                <Process
+                  text={process}
+                  key={`process_${i}`}
+                  num={i + 1}
+                  isLastOne={i + 1 === info.recruiting_processes.length}
+                />
+              ))
+            ) : (
+              <Typography>
+                <i>Not provided:(</i>
+              </Typography>
+            )}
           </Box>
         </Grid>
       </Grid>

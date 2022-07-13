@@ -49,7 +49,7 @@ const Search = ({ setFilter, filter, clickhandler }) => {
             }
             label="On-site/Remote"
           >
-            <MenuItem value="">
+            <MenuItem value="All">
               <em>All</em>
             </MenuItem>
             <MenuItem value="False">On-site</MenuItem>
@@ -67,7 +67,7 @@ const Search = ({ setFilter, filter, clickhandler }) => {
             }
             label="On-site/Remote"
           >
-            <MenuItem value="">
+            <MenuItem value="All">
               <em>All</em>
             </MenuItem>
 
@@ -86,7 +86,7 @@ const Search = ({ setFilter, filter, clickhandler }) => {
             }
             label="Job Type"
           >
-            <MenuItem value="">
+            <MenuItem value="All">
               <em>All</em>
             </MenuItem>
             <MenuItem value="FULLTIME">Full-time</MenuItem>
