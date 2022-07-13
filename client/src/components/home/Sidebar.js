@@ -12,7 +12,7 @@ import {
 import { Link as RouteLink } from "react-router-dom";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import VideoCameraFrontIcon from "@mui/icons-material/VideoCameraFront";
-import RemoveButton from '../UI/RemoveButton';
+import RemoveButton from "../UI/RemoveButton";
 
 const Sidebar = () => {
   const events = [
@@ -74,8 +74,8 @@ const Internships = ({ events }) => {
           <i>No application deadlines in the next week</i>
         </Typography>
       ) : (
-        events.map((e) => (
-          <Card sx={{ mt: 1 }}>
+        events.map((e, i) => (
+          <Card sx={{ mt: 1 }} key={`view_${i}`}>
             <CardContent>
               <Typography gutterBottom variant="h6" component="div">
                 {e.title}
@@ -113,8 +113,8 @@ const Meetings = ({ events }) => {
           <i>No meetings in the next week</i>
         </Typography>
       ) : (
-        events.map((e) => (
-          <Card sx={{ mt: 1 }}>
+        events.map((e, i) => (
+          <Card sx={{ mt: 1 }} key={`event_${i}`}>
             <CardContent>
               <Typography gutterBottom variant="h6" component="div">
                 {e.title}

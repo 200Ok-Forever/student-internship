@@ -12,6 +12,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import classes from "./Job.module.scss";
 import queryString from "query-string";
+import { getJobsListData } from "../../api/search-api";
 
 const DUMMY_DATA = [
   {
@@ -94,6 +95,19 @@ const Search = ({ setJobList }) => {
 
   useEffect(() => {
     setJobList(DUMMY_DATA);
+    const getDate = async () => {
+      const resp = await getJobsListData(
+        `?job=${keyword}&location=${location}`
+      );
+      console.log(resp);
+    };
+
+    try {
+      getDate();
+    } catch (e) {
+      console.log(e);
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -108,14 +122,14 @@ const Search = ({ setJobList }) => {
         id="keyword_search"
         label="Keyword / Job title"
         value={keyword}
-        onChange={(e) => setKeyword(e.target.value)}
+        onChange={(e) => setKeyword(e.target.value.trim())}
         className={classes.keyword}
       />
       <TextField
         id="location_search"
         label="City"
         value={location}
-        onChange={(e) => setLocation(e.target.value)}
+        onChange={(e) => setLocation(e.target.value.trim())}
         className={classes.location}
       />
       <div className={classes.filter}>
