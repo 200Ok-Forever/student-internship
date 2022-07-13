@@ -109,7 +109,8 @@ class InternshipsUtils:
                     for skill in job_skill:
                         skills_list.append(skill.name)
                     print(skills_list)
-                video_id_list=get_youtube(skills_list)
+                # video_id_list=get_youtube(skills_list)
+                video_id_list = []
                 intership_result = {
                     "description": internship.description,
                     "postedDate": changeDateFormat( internship.posted_time),
