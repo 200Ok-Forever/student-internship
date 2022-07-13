@@ -192,7 +192,7 @@ class InternshipsUtils:
         internships=result.paginate(page=current_page, per_page=15, error_out = False).items
         
         all_internships = [{'job_id': internship.id,'title':internship.title, \
-             'job_type': internship.type,'is_remote':internship.is_remote , 'posted_time':changeDateFormat( internship.posted_time), 'closed_time':changeDateFormat(internship.expiration_datetime_utc),\
+             'job_type': internship.type,"status": "",'is_remote':internship.is_remote , 'posted_time':changeDateFormat( internship.posted_time), 'closed_time':changeDateFormat(internship.expiration_datetime_utc),\
                 'min_salary':internship.min_salary, 'max_salary': internship.max_salary,  "salary_curreny": internship.salary_curreny,'description':internship.description,\
                     'numAllResults': {"total_count":count}, 'location': get_location(internship.city), 'company_id': internship.company_id,\
                         'company_name': get_comany_info(internship.company_id)[0], 'company_logo': get_comany_info(internship.company_id)[1]
