@@ -125,6 +125,7 @@ class InternshipsUtils:
                     "max_salary":internship.max_salary,
                     "salary_curreny": internship.salary_curreny,
                     "location": get_location(internship.id),
+                    "status": "",
                     "companyName": get_comany_info(internship.company_id)[0],
                     'company_logo': get_comany_info(internship.company_id)[1],
                     "video_id": video_id_list
