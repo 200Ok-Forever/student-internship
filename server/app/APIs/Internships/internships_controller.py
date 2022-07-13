@@ -1,10 +1,11 @@
 from email.policy import default
 from flask import request, jsonify
 from flask_restx import Resource,reqparse
+import jwt
 from pyrsistent import get_in
 from .internships_model import InternshipsAPI
 from .internships_utils import InternshipsUtils
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import create_access_token, jwt_required
 from ...Models.model import Internship, InternshipSearchSchema
 internships_api = InternshipsAPI.api
 
@@ -49,6 +50,21 @@ class GetInternship(Resource):
     })
     def post(self,id):
         try:
+            pass
+        except Exception as error:
+            pass
+
+applyParser = internships_api.parser()
+applyParser.add_argument('Authorization', location = 'headers',  help='Bearer [Token]', default='Bearer xxxxxxxxxxxxx')
+@internships_api.route('/internships/<int:id>/apply')
+class ApplyInternship(Resource):
+
+    @jwt_required()
+    # @internships_api.expect(applyParser, validate=True)
+    def post(self,id):
+        try:
+            
+            
             pass
         except Exception as error:
             pass
