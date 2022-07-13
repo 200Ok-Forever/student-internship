@@ -155,21 +155,15 @@ class InternshipsUtils:
         map = []
      
         if job!=None :
-
             job = data['job']
             map.append(Internship.title.ilike(f'%{job}%'))
         if paid =="True":
-            
-            
             map.append(Internship.min_salary.isnot(None))
         if remote =="True" or remote == "False":
-            print(remote)
             map.append(Internship.is_remote == remote)
         if job_type != None:
-            print("________________")
-            print(job_type)
             map.append(Internship.type.ilike(f'%{job_type}%'))
- 
+        
         print(map)
  
         if location != None:
