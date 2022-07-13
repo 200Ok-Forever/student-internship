@@ -1,7 +1,17 @@
 import React, { useCallback, useRef, useState } from "react";
-import { Box, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import {
+  Box,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Paper,
+  Select,
+  Skeleton,
+  Typography,
+} from "@mui/material";
 import JobBlock from "./JobBlock";
 import Search from "./Search";
+import Skeletons from "../UI/Skeletons";
 
 const center = {
   display: "flex",
@@ -69,10 +79,12 @@ const JobList = () => {
           </Select>
         </FormControl>
       </Box>
-      {jobs.map((job) => (
-        <JobBlock job={job} key={job.job_id} />
-      ))}
-      {load && jobs.length !== 0 && (
+      {load ? (
+        jobs.map((job) => <JobBlock job={job} key={job.job_id} />)
+      ) : (
+        <Skeletons />
+      )}
+      {jobs.length !== 0 && jobs.length !== 0 && (
         <Box ref={lastItemRef}>
           <p>{load}</p>
         </Box>

@@ -1,7 +1,7 @@
 import { Button, Grid, Snackbar, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import JobBasicCard from "../UI/JobBasicCard";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import { useState } from "react";
@@ -20,6 +20,8 @@ import SchoolIcon from "@mui/icons-material/School";
 import YoutubeEmbed from "./YoutubeEmbed";
 import ScrollableRow from "../UI/ScrollableRow";
 import ShowCmts from "../UI/ShowCmts";
+import queryString from "query-string";
+import { getJob } from "../../api/search-api";
 
 const DATA = {
   job_id: "1",
@@ -83,8 +85,20 @@ const DATA = {
 
 const JobDetail = () => {
   const [info, setInfo] = useState([]);
+  const { search } = useLocation();
+  const str = queryString.parse(search);
+  const id = str.id;
+  console.log(info);
   useEffect(() => {
-    setInfo(DATA);
+    const getData = async () => {
+      const resp = await getJob(id);
+      setInfo(resp.data);
+    };
+    try {
+      getData();
+    } catch (e) {
+      console.log(e);
+    }
   }, []);
 
   return (
@@ -139,11 +153,11 @@ const BasicInfo = ({ info }) => {
     >
       <JobBasicCard
         job={{
-          title: info.title,
-          com_name: info.company_name,
-          city: info.city,
-          avatar: info.company_avatar,
-          id: info.company_id,
+          title: info.jobTitle,
+          com_name: info.companyName,
+          city: info.location,
+          avatar: info.company_logo,
+          id: info.companyId,
         }}
         save={saveBtns}
       />
@@ -159,7 +173,7 @@ const BasicInfo = ({ info }) => {
                 "-"
               )}&company=${info.company_name.replace(/ /g, "-")}`,
               {
-                state: { avatar: info.company_avatar },
+                state: { avatar: info.company_logo },
               }
             )
           }
@@ -202,7 +216,7 @@ const BasicInfo = ({ info }) => {
           flexWrap: "wrap",
         }}
       >
-        <Label text={info.posted_date + " - " + info.closed_date}>
+        <Label text={info.postedDate + " - " + info.closedDate}>
           <AccessTimeIcon fontSize="small" color="primary" sx={{ mr: "5px" }} />
         </Label>
         {info?.min_salary && (
@@ -295,9 +309,7 @@ const Comments = ({ list }) => {
     });
   };
 
-  return (
-    <ShowCmts list={comments} sendCmt={sendCmt} sendReply={sendReply} />
-  );
+  return <ShowCmts list={comments} sendCmt={sendCmt} sendReply={sendReply} />;
 };
 
 export default JobDetail;

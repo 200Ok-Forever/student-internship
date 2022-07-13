@@ -108,7 +108,6 @@ const Search = ({ setJobList, currPage, setLoad }) => {
       }
     } catch (e) {
       console.log(e);
-      setLoad("End");
     }
   };
 
