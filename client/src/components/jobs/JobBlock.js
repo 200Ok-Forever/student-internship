@@ -20,8 +20,8 @@ const JobBlock = ({ job, children }) => {
   const status = !job.status && date === job.posted_time ? "NEW" : job.status;
   let salary_str;
   let salary_curr =
-    job.salary_curreny !== "AUD"
-      ? getSymbolFromCurrency(job.salary_curreny)
+    job.salary_currency !== "AUD"
+      ? getSymbolFromCurrency(job.salary_currency)
       : "AU$";
   if (job.min_salary && job.max_salary) {
     salary_str =
