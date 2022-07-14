@@ -65,6 +65,11 @@ const ApplyForm = ({ onSubmit }) => {
   const job_name = "Apply " + info.name.replace(/-/g, " ");
   const company = info.company;
   const avatar = state?.state.avatar || "";
+  const [resume, setResume] = useState(null);
+  const [coverLetter, setCoverLetter] = useState(null);
+
+  console.log(resume);
+  console.log(coverLetter);
 
   return (
     <Box
@@ -83,11 +88,11 @@ const ApplyForm = ({ onSubmit }) => {
           mt: "60px",
         }}
       >
-        <UploadFile name="Resume" />
+        <UploadFile name="Resume" setFile={setResume} />
         <Typography variant="subtitle2" sx={{ color: "#c1c1c1" }}>
           No resume? Click <a href="/">here</a> !
         </Typography>
-        <UploadFile name="Cover Letter" />
+        <UploadFile name="Cover Letter" setFile={setCoverLetter} />
         <Grid container spacing={5} mt="50px">
           <Grid item md={6} xs={12}>
             <TextField
@@ -139,7 +144,7 @@ const ApplyForm = ({ onSubmit }) => {
   );
 };
 
-const UploadFile = ({ name }) => {
+const UploadFile = ({ name, setFile }) => {
   return (
     <Box
       sx={{
@@ -158,7 +163,12 @@ const UploadFile = ({ name }) => {
           type="file"
           sx={{ display: "none" }}
         />
-        <Button variant="contained" component="span" sx={{ width: "28vw" }}>
+        <Button
+          variant="contained"
+          component="span"
+          sx={{ width: "28vw" }}
+          onChange={(e) => setFile(e.target.value)}
+        >
           Upload
         </Button>
       </label>
