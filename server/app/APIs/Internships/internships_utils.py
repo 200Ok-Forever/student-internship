@@ -6,6 +6,7 @@ import re
 from json import dumps
 from requests import session
 from sqlalchemy import null
+from torch import is_same_size
 from ...Models.model import Internship, City, Company, Comment, User, Skill,InternshipStatus
 from flask_restx import Resource, reqparse
 from ...extension import db
@@ -256,12 +257,100 @@ class InternshipsUtils:
             
         return dumps({'msg': 'no related internship'})
 
-    def appliedfor():
-        # temp = db.session.query(Internship.id).join(City).filter(City.name.ilike(f'%{location}%')).subquery()
-        # job_skill = db.session.query(Skill).filter(Skill.internships.any(id = data)).all()
-        job_status = db.session.query(Internship).join(InternshipStatus, Internship.id == InternshipStatus.intern_id)\
-        .filter(InternshipStatus.uid==102).filter(InternshipStatus.is_applied=="True").all()
-        print(job_status)
-        return dumps({"msg": 'comment sucessfully'}),200
+    def appliedfor(arg):
+        #id = arg['id']
         
+        #uid should not be 102, should change later
+        is_applied = db.session.query(Internship).join(InternshipStatus, Internship.id == InternshipStatus.intern_id)\
+        .filter(InternshipStatus.uid==102).filter(InternshipStatus.is_applied=="True").all()
+        if is_applied:
+            info = []
+            for applied in is_applied:
+                info.append(Internship.get_info(applied))
+            result = {
+                "is_applied": info
+            }
+            return result,200
+        else:
+            return dumps({"msg": "Internship not found"}),404
+    def apply(arg):
+        internship_id = arg.get('internship_id')
+        internship=Internship.query.filter(id==internship_id).first()
+        if internship:
+            apply =  db.session.query(InternshipStatus)\
+                .filter(InternshipStatus.intern_id == internship_id )\
+                .filter(InternshipStatus.uid==102)\
+                .update({InternshipStatus.is_applied: "True"})
+        
+            db.session.commit()
+            return dumps({"msg": "save sucessfully"}),200
+        else:
+
+            return dumps({"msg": "Internship not found"}),404
+
+    def getSaveList(arg):
+
+        #id = arg['id']
+        #uid should not be 102, should change later
+        is_save = db.session.query(Internship)\
+            .join(InternshipStatus, Internship.id == InternshipStatus.intern_id)\
+        .filter(InternshipStatus.uid==102).filter(InternshipStatus.is_save=="True").all()
+        if is_save:
+            info =[]
+            for save in is_save:
+                info.append(Internship.get_info(save))
+            # print(info)
+            result = {
+                "is_save": info
+            }
+            # print(result)
+            return result,200
+
+        else:
+            return dumps({"msg": "Internship not found"}),404
+    
+    def saveInternship(arg):
+        internship_id = arg.get('internship_id')
+        print(internship_id)
+
+        #uid will change later, could not be 102
+        update = db.session.query(InternshipStatus)\
+            .filter(InternshipStatus.intern_id == internship_id )\
+            .filter(InternshipStatus.uid==102)\
+            .update({InternshipStatus.is_save: "True"})
+        if update:
+            db.session.commit()
+            return dumps({"msg": "save sucessfully"}),200
+        else:
+            return dumps({"msg": "Internship not found"}),404
+
+    def unSaveInternship(arg):
+        internship_id = arg.get('internship_id')
+        print(internship_id)
+ 
+        update = db.session.query(InternshipStatus)\
+            .filter(InternshipStatus.intern_id == internship_id )\
+            .filter(InternshipStatus.uid==102)\
+            .update({InternshipStatus.is_save: "False"})
+        if update:
+            db.session.commit()
+            return dumps({"msg": "unsave sucessfully"}),200
+        else:
+            return dumps({"msg": "Internship not found"}),404
+
+    def getViewedHistory(arg):
+        is_seen = db.session.query(Internship).join(InternshipStatus, Internship.id == InternshipStatus.intern_id)\
+        .filter(InternshipStatus.uid==102).filter(InternshipStatus.is_seen=="True").all()
+        if is_seen:
+            info = []
+            for applied in is_seen:
+                info.append(Internship.get_info(applied))
+            result = {
+                "is_seen": info
+            }
+            return result,200
+        else:
+            return dumps({"msg": "Internship not found"}),404
+               
+       
      
