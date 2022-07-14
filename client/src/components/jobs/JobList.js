@@ -25,6 +25,7 @@ const JobList = () => {
   const { search } = useLocation();
   const info = queryString.parse(search);
   const [jobs, setJobs] = useState([]);
+  console.log("🚀 ~ jobs", jobs);
   const [sortBy, setSortBy] = useState("Default");
   const [currPage, setCurrPage] = useState(1);
   const [load, setLoad] = useState("Loading...");
@@ -53,6 +54,15 @@ const JobList = () => {
         setJobs([]);
         setLoad("Loading...");
       }
+      console.log(
+        `?job=${filter.keyword}&location=${
+          filter.location
+        }&current_page=${currPage}&job_type=${
+          filter.jobType === "All" ? "" : filter.jobType
+        }&is_remote=${filter.isRemote === "All" ? "" : filter.isRemote}&paid=${
+          filter.isPaid === "All" ? "" : filter.isPaid
+        }&sort=${sortBy}`
+      );
       const resp = await getJobsListData(
         `?job=${filter.keyword}&location=${
           filter.location
