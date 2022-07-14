@@ -3,17 +3,32 @@ import React from "react";
 import salary from "../../asset/salary.png";
 import Label from "../UI/Label";
 import JobBasicCard from "../UI/JobBasicCard";
+import getSymbolFromCurrency from "currency-symbol-map";
 
+const paper = {
+  width: "auto",
+  maxWidth: "1200px",
+  height: "265px",
+  p: "20px",
+  display: "flex",
+  flexDirection: "column",
+  rowGap: "14px",
+};
 const JobBlock = ({ job, children }) => {
-  const paper = {
-    width: "auto",
-    maxWidth: "1200px",
-    height: "265px",
-    p: "20px",
-    display: "flex",
-    flexDirection: "column",
-    rowGap: "14px",
-  };
+  console.log("🚀 ~ job", job);
+  const date = new Date().toJSON().slice(0, 10);
+  const status = !job.status && date === job.posted_time ? "NEW" : job.status;
+  let salary_str;
+  let salary_curr =
+    job.salary_currency !== "AUD"
+      ? getSymbolFromCurrency(job.salary_currency)
+      : "AU$";
+  if (job.min_salary && job.max_salary) {
+    salary_str =
+      salary_curr + job.min_salary + " - " + salary_curr + job.max_salary;
+  } else {
+    salary_str = salary_curr + job.min_salary || salary_curr + job.max_salary;
+  }
 
   return (
     <Paper elevation={3} sx={paper}>
@@ -27,21 +42,21 @@ const JobBlock = ({ job, children }) => {
         }}
       >
         <Box>
-          {job?.status && (
+          {status.length !== 0 && (
             <Typography
               variant="h7"
               fontWeight="700"
               color={job.status === "NEW" ? "primary" : "rgb(122, 119, 119)"}
             >
-              {job.status}
+              {status}
             </Typography>
           )}
           {children}
         </Box>
       </JobBasicCard>
       <Box sx={{ display: "flex", columnGap: "14px" }}>
-        {job?.min_salary && (
-          <Label text={job.min_salary + " - " + job.max_salary}>
+        {(job.min_salary || job.max_salary) && (
+          <Label text={salary_str}>
             <img src={salary} alt="salary" width="25px" height="25px" />
           </Label>
         )}

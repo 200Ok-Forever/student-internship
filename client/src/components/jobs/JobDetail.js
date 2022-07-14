@@ -22,6 +22,7 @@ import ScrollableRow from "../UI/ScrollableRow";
 import ShowCmts from "../UI/ShowCmts";
 import queryString from "query-string";
 import { getJob } from "../../api/search-api";
+import getSymbolFromCurrency from "currency-symbol-map";
 
 const DATA = {
   job_id: "1",
@@ -117,7 +118,7 @@ const JobDetail = () => {
       {!load && (
         <>
           <BasicInfo info={info} />
-          <RelatedCourses info={info} />
+          {info.video_id.length !== 0 && <RelatedCourses ids={info.video_id} />}
           <Comments list={info.comment} />
         </>
       )}
@@ -129,11 +130,21 @@ const BasicInfo = ({ info }) => {
   const history = useHistory();
   const [saved, setSaved] = useState(false);
   const [shareBar, setShareBar] = useState(false);
-  const processes = info?.recruiting_processes || [
-    "Phone Interview",
-    "Coding Test",
-    "Technical Interview",
-  ];
+  const processes =
+    info.recruiting_process.length === 0
+      ? ["Phone Interview", "Coding Test", "Technical Interview"]
+      : info.recruiting_process;
+  let salary_str;
+  let salary_curr =
+    info.salary_currency !== "AUD"
+      ? getSymbolFromCurrency(info.salary_currency)
+      : "AU$";
+  if (info.min_salary && info.max_salary) {
+    salary_str =
+      salary_curr + info.min_salary + " - " + salary_curr + info.max_salary;
+  } else {
+    salary_str = salary_curr + info.min_salary || salary_curr + info.max_salary;
+  }
 
   useEffect(() => {
     setSaved(DATA.saved);
@@ -232,8 +243,8 @@ const BasicInfo = ({ info }) => {
         <Label text={info.postedDate + " - " + info.closedDate}>
           <AccessTimeIcon fontSize="small" color="primary" sx={{ mr: "5px" }} />
         </Label>
-        {info?.min_salary && (
-          <Label text={info.min_salary + " - " + info.max_salary}>
+        {(info.min_salary || info.max_salary) && (
+          <Label text={salary_str}>
             <img src={salary} alt="salary" width="25px" height="25px" />
           </Label>
         )}
@@ -282,7 +293,7 @@ const BasicInfo = ({ info }) => {
   );
 };
 
-const RelatedCourses = ({ info }) => {
+const RelatedCourses = ({ ids }) => {
   return (
     <>
       <TitleWithIcon
@@ -290,7 +301,7 @@ const RelatedCourses = ({ info }) => {
         text="Related Courses"
       />
       <ScrollableRow>
-        {info?.video_id?.map((vId, i) => (
+        {ids?.map((vId, i) => (
           <YoutubeEmbed
             link={`https://www.youtube.com/embed/${vId}`}
             key={`video_${i}`}
