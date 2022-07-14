@@ -24,6 +24,7 @@ import queryString from "query-string";
 import { getJob } from "../../api/search-api";
 import getSymbolFromCurrency from "currency-symbol-map";
 import { postComment, replyComment } from "../../api/comment-api";
+import axios from "axios";
 
 const DATA = {
   job_id: "1",
@@ -193,10 +194,10 @@ const BasicInfo = ({ info }) => {
           size="small"
           onClick={() =>
             history.push(
-              `/apply?id=${info.job_id}&name=${info.title.replace(
+              `/apply?id=${info.internship_id}&name=${info.jobTitle.replace(
                 / /g,
                 "-"
-              )}&company=${info.company_name.replace(/ /g, "-")}`,
+              )}&company=${info.companyName.replace(/ /g, "-")}`,
               {
                 state: { avatar: info.company_logo },
               }
@@ -329,10 +330,11 @@ const Comments = ({ list, jobId }) => {
         const cmtInfo = {
           text: newCmt.text,
           uid: newCmt.uid,
-          time: new Date().toJSON().slice(0, 10),
+          time: new Date(),
           replied: [],
-          cmtId: resp.data,
+          cmtId: resp.data.comment_id,
         };
+        console.log("🚀 ~ cmtInfo", cmtInfo);
         setComments((prev) => [cmtInfo].concat(prev));
       }
     } catch (e) {
@@ -356,7 +358,7 @@ const Comments = ({ list, jobId }) => {
           const replyInfo = {
             repliedId: resp.data,
             text: newReply.text,
-            time: new Date().toJSON().slice(0, 10),
+            time: new Date(),
             // TODO
             uid: newReply.uid,
           };
