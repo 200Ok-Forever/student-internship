@@ -85,6 +85,7 @@ const DATA = {
 
 const JobDetail = () => {
   const [info, setInfo] = useState([]);
+  console.log("🚀 ~ info", info);
   const { search } = useLocation();
   const query = queryString.parse(search);
   const id = query.id;
@@ -117,7 +118,7 @@ const JobDetail = () => {
         <>
           <BasicInfo info={info} />
           <RelatedCourses info={info} />
-          <Comments list={info.comments} />
+          <Comments list={info.comment} />
         </>
       )}
     </Box>
@@ -128,6 +129,11 @@ const BasicInfo = ({ info }) => {
   const history = useHistory();
   const [saved, setSaved] = useState(false);
   const [shareBar, setShareBar] = useState(false);
+  const processes = info?.recruiting_processes || [
+    "Phone Interview",
+    "Coding Test",
+    "Technical Interview",
+  ];
 
   useEffect(() => {
     setSaved(DATA.saved);
@@ -231,8 +237,12 @@ const BasicInfo = ({ info }) => {
             <img src={salary} alt="salary" width="25px" height="25px" />
           </Label>
         )}
-        <Label text={info.jobType} />
-        {info.remote ? <Label text={"Remote"} /> : <Label text={"On-site"} />}
+        {info?.jobType && <Label text={info.jobType} />}
+        {info.remote === "True" ? (
+          <Label text={"Remote"} />
+        ) : (
+          <>{info.remote === "False" && <Label text={"On-site"} />}</>
+        )}
       </Box>
       <Grid container spacing={8}>
         <Grid item md={12} lg={9} sm={12}>
@@ -257,20 +267,14 @@ const BasicInfo = ({ info }) => {
             mb="30px"
           />
           <Box>
-            {info?.recruiting_processes ? (
-              info.recruiting_processes.map((process, i) => (
-                <Process
-                  text={process}
-                  key={`process_${i}`}
-                  num={i + 1}
-                  isLastOne={i + 1 === info.recruiting_processes.length}
-                />
-              ))
-            ) : (
-              <Typography>
-                <i>Not provided:(</i>
-              </Typography>
-            )}
+            {processes.map((process, i) => (
+              <Process
+                text={process}
+                key={`process_${i}`}
+                num={i + 1}
+                isLastOne={i + 1 === processes.length}
+              />
+            ))}
           </Box>
         </Grid>
       </Grid>
