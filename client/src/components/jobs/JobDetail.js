@@ -87,12 +87,10 @@ const DATA = {
 
 const JobDetail = () => {
   const [info, setInfo] = useState([]);
-  console.log("🚀 ~ info", info);
   const { search } = useLocation();
   const query = queryString.parse(search);
   const id = query.id;
   const [load, setLoad] = useState(true);
-  console.log(info);
 
   useEffect(() => {
     const getData = async () => {
@@ -321,10 +319,8 @@ const Comments = ({ list, jobId }) => {
   }, [list]);
 
   const sendCmt = async (newCmt) => {
-    console.log("🚀 ~ newCmt", newCmt);
     try {
       const resp = await postComment(jobId, newCmt.uid, newCmt.text);
-      console.log("🚀 ~ resp", resp);
       if (resp.status === 200) {
         const cmtInfo = {
           text: newCmt.text,
@@ -333,7 +329,6 @@ const Comments = ({ list, jobId }) => {
           replied: [],
           cmtId: JSON.parse(resp.data).comment_id,
         };
-        console.log("🚀 ~ cmtInfo", cmtInfo);
         setComments((prev) => [cmtInfo].concat(prev));
       }
     } catch (e) {
@@ -349,7 +344,6 @@ const Comments = ({ list, jobId }) => {
         newReply.text,
         cmtId
       );
-      console.log("🚀 ~ resp", resp);
       if (resp.status === 200) {
         setComments((prev) => {
           const idx = prev.findIndex((e) => e.cmtId === cmtId);

@@ -15,7 +15,6 @@ const paper = {
   rowGap: "14px",
 };
 const JobBlock = ({ job, children }) => {
-  console.log("🚀 ~ job", job);
   const date = new Date().toJSON().slice(0, 10);
   const status = !job.status && date === job.posted_time ? "NEW" : job.status;
   let salary_str;
