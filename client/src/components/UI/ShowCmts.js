@@ -20,7 +20,7 @@ const ShowCmts = ({ list, sendCmt, sendReply }) => {
     <Box sx={box}>
       <TitleWithIcon
         icon={<ChatIcon size="small" color="primary" />}
-        text={`${list?.length} Comments`}
+        text={`Comments (${list?.length})`}
         mt="50px"
       />
       <CmtTextField
