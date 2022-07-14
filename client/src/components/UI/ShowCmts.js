@@ -20,7 +20,7 @@ const ShowCmts = ({ list, sendCmt, sendReply }) => {
     <Box sx={box}>
       <TitleWithIcon
         icon={<ChatIcon size="small" color="primary" />}
-        text={`${list?.length} Comments`}
+        text={`Comments (${list?.length})`}
         mt="50px"
       />
       <CmtTextField
@@ -42,11 +42,15 @@ const ShowCmts = ({ list, sendCmt, sendReply }) => {
 
 const Item = ({ cmt, isLast, sendReply }) => {
   const [openReply, setOpenReply] = useState(false);
-  const replies = cmt.reply;
+  const replies = cmt.replied;
 
   return (
     <Box sx={{ ...box }}>
-      <AvatarName avatar={cmt.avatar} name={cmt.username} />
+      <AvatarName
+        avatar={cmt?.avatar}
+        name={cmt.username || "fake name"}
+        createdAt={cmt.time}
+      />
       <Typography variant="body1" ml="60px">
         {cmt.text}
       </Typography>
@@ -66,10 +70,15 @@ const Item = ({ cmt, isLast, sendReply }) => {
             sx={{ width: "80vw" }}
           />
         )}
+
         <Box sx={box}>
           {replies?.map((reply, i) => (
             <Box key={`reply_${i}`} sx={box}>
-              <AvatarName avatar={reply.avatar} name={reply.username} />
+              <AvatarName
+                avatar={reply?.avatar}
+                name={reply?.username || "Fake name"}
+                createdAt={reply.time}
+              />
               <Typography
                 variant="body1"
                 mx="60px"

@@ -15,6 +15,7 @@ const JobBasicCard = (props) => {
           variant="h6"
           fontWeight="700"
           sx={{ cursor: "pointer", display: "flex", alignItems: "center" }}
+          onClick={() => window.open(`/job?id=${job.id}`, "_blank")}
         >
           {job.title}
           {props?.save}
