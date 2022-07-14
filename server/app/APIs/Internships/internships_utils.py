@@ -93,7 +93,7 @@ def get_all_parent_comment(comments):
             'text': comment.content,
             'uid': comment.user_id,
             'cmtId': comment.id,
-            'time': comment.date,
+            'time': str(comment.date),
             'replied': children_comment_list
         })
     return all_parent_comment
@@ -103,7 +103,7 @@ def get_children_comment(comments):
         all_children_comment.append({
         'repliedId':comment.id,
         'text':comment.content,
-        'time': comment.date,
+        'time': str(comment.date),
         'uid':comment.user_id},)
  
     # print(all_children_comment)
@@ -127,8 +127,11 @@ class InternshipsUtils:
             else:
                 comment_list = []
                 comment = db.session.query(Comment).join(Internship, Comment.internship_id == Internship.id).filter(Comment.internship_id==data).filter(Comment.parent_id==None).all()
+                print("_________")
+                
                 if comment:
                     comment_list = get_all_parent_comment(comment)
+                    print(comment_list)
                 # job_skill = db.session.query(Skill).filter(Skill.internships.any(id = data)).all()
                 # skills_list = []
                 
@@ -218,11 +221,10 @@ class InternshipsUtils:
 
         all_internships = [{'job_id': internship.id,'title':internship.title, \
              'job_type': changeTypeFormat(internship.type),"status": "",'is_remote':internship.is_remote , 'posted_time':changeDateFormat( internship.posted_time), 'closed_time':changeDateFormat(internship.expiration_datetime_utc),\
-                'min_salary':internship.min_salary, 'max_salary': internship.max_salary, 'description':internship.description,   "salary_curreny": internship.salary_curreny,\
+                'min_salary':internship.min_salary, 'max_salary': internship.max_salary, 'description':internship.description,   "salary_currency": internship.salary_curreny,\
                 
                     'numAllResults': {"total_count":count}, 'location': get_location(internship.city), 'company_id': internship.company_id,\
                         'company_name': get_comany_info(internship.company_id)[0], 'company_logo': get_comany_info(internship.company_id)[1]
-
            } for internship in internships]
 
         return jsonify(all_internships)
@@ -230,12 +232,22 @@ class InternshipsUtils:
     def comment(id, data):
         result = Internship.query.filter(Internship.id==id).first()
         print(result)
-        if result:
+        print(data)
+        if result != None:
+           
             ct = datetime.datetime.now()
+            
             newComment = Comment(content = data['comment'], parent_id = data['parent_id'],internship_id = id, user_id = data['uid'], date = ct)
-            db.session.add(newComment)
-            db.session.commit()
-            return dumps({'message':'yes'}),200
+            try:
+                db.session.add(newComment)
+                db.session.commit()
+               
+                return dumps({'message':'yes'}),200
+            except Exception as error:
+                
+                return dumps({'msg': error}),40
+           
+            
         return dumps({'msg': 'no related internship'})
 
     # def apply(data):

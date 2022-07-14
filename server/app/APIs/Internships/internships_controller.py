@@ -83,8 +83,7 @@ class CommentInternship(Resource):
             # unset_jwt_cookies(response)
             
             data = request.get_json()
-            print("==================")
-            print(data)
+            
             return InternshipsUtils.comment(id, data)
 
             pass
