@@ -250,7 +250,7 @@ class InternshipsUtils:
                 return dumps({'message':'yes', 'comment_id': newComment.id}),200
             except Exception as error:
                 
-                return dumps({'msg': error}),40
+                return dumps({'msg': error}),400
            
             
         return dumps({'msg': 'no related internship'})
