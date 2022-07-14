@@ -24,6 +24,7 @@ const CmtTextField = ({
     } else {
       sendHandler(cmtId, new_info);
     }
+    setText("");
   };
 
   return (

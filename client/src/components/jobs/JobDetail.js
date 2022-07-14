@@ -24,7 +24,6 @@ import queryString from "query-string";
 import { getJob } from "../../api/search-api";
 import getSymbolFromCurrency from "currency-symbol-map";
 import { postComment, replyComment } from "../../api/comment-api";
-import axios from "axios";
 
 const DATA = {
   job_id: "1",
@@ -88,12 +87,10 @@ const DATA = {
 
 const JobDetail = () => {
   const [info, setInfo] = useState([]);
-  console.log("🚀 ~ info", info);
   const { search } = useLocation();
   const query = queryString.parse(search);
   const id = query.id;
   const [load, setLoad] = useState(true);
-  console.log(info);
 
   useEffect(() => {
     const getData = async () => {
@@ -323,18 +320,15 @@ const Comments = ({ list, jobId }) => {
 
   const sendCmt = async (newCmt) => {
     try {
-      const resp = await postComment(jobId, newCmt.uId, newCmt.text);
-      console.log("🚀 ~ resp", resp);
+      const resp = await postComment(jobId, newCmt.uid, newCmt.text);
       if (resp.status === 200) {
-        console.log("???");
         const cmtInfo = {
           text: newCmt.text,
           uid: newCmt.uid,
           time: new Date(),
           replied: [],
-          cmtId: resp.data.comment_id,
+          cmtId: JSON.parse(resp.data).comment_id,
         };
-        console.log("🚀 ~ cmtInfo", cmtInfo);
         setComments((prev) => [cmtInfo].concat(prev));
       }
     } catch (e) {
@@ -346,25 +340,23 @@ const Comments = ({ list, jobId }) => {
     try {
       const resp = await replyComment(
         jobId,
-        newReply.uId,
+        newReply.uid,
         newReply.text,
         cmtId
       );
-      console.log("🚀 ~ resp", resp);
       if (resp.status === 200) {
         setComments((prev) => {
           const idx = prev.findIndex((e) => e.cmtId === cmtId);
           const cmt = prev[idx];
           const replyInfo = {
-            repliedId: resp.data,
+            repliedId: JSON.parse(resp.data).comment_id,
             text: newReply.text,
             time: new Date(),
-            // TODO
             uid: newReply.uid,
           };
           if (cmt) {
-            const reply = [replyInfo].concat(cmt.reply);
-            const new_cmt = { ...cmt, reply };
+            const new_replies = [replyInfo].concat(cmt.replied);
+            const new_cmt = { ...cmt, replied: new_replies };
             prev.splice(idx, 1, new_cmt);
           }
           return [...prev];
