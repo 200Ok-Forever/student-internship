@@ -153,7 +153,7 @@ class InternshipsUtils:
                     "remote": internship.is_remote,
                     "min_salary": internship.min_salary,
                     "max_salary":internship.max_salary,
-                    "salary_curreny": internship.salary_curreny,
+                    "salary_currency": internship.salary_curreny,
                     "location": get_location(internship.city),
                     "companyName": get_comany_info(internship.company_id)[0],
                     'company_logo': get_comany_info(internship.company_id)[1],
