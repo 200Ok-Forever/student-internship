@@ -64,6 +64,8 @@ def get_youtube(title):
     results=r.json()['items']
     # print(results)
 
+    if results == None:
+        return 404
       
     for result in results:
         # print(result)
@@ -141,6 +143,8 @@ class InternshipsUtils:
                 #         skills_list.append(skill.name)
                 #     print(skills_list)
                 video_id_list=get_youtube(internship.title)
+                if video_id_list == 404:
+                    return {'msg': "API KEY PROBELMS"},404
 
                 intership_result = {
                     "description": internship.description,
@@ -243,7 +247,7 @@ class InternshipsUtils:
                 db.session.add(newComment)
                 db.session.commit()
                
-                return dumps({'message':'yes'}),200
+                return dumps({'message':'yes', 'comment_id': newComment.id}),200
             except Exception as error:
                 
                 return dumps({'msg': error}),40
@@ -256,6 +260,6 @@ class InternshipsUtils:
         # job_skill = db.session.query(Skill).filter(Skill.internships.any(id = data)).all()
         job_status = db.session.query(InternshipStatus).join(User, User.uid==InternshipStatus.uid).filter(User.uid == 102).first()
         print(job_status.is_seen)
-        return dumps({}),200
+        return dumps({"msg": 'comment sucessfully'}),200
         
      
