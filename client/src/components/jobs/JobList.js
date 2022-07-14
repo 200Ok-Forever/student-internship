@@ -126,7 +126,7 @@ const JobList = () => {
         sx={{
           minWidth: "450px",
           width: "100%",
-          maxWidth: "1260px",
+          maxWidth: "1230px",
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
