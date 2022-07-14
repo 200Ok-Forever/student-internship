@@ -329,7 +329,7 @@ const Comments = ({ list, jobId }) => {
         const cmtInfo = {
           text: newCmt.text,
           uid: newCmt.uid,
-          time: new Date().toJSON().slice(0, 10),
+          time: new Date(),
           replied: [],
           cmtId: resp.data,
         };
@@ -356,7 +356,7 @@ const Comments = ({ list, jobId }) => {
           const replyInfo = {
             repliedId: resp.data,
             text: newReply.text,
-            time: new Date().toJSON().slice(0, 10),
+            time: new Date(),
             // TODO
             uid: newReply.uid,
           };
