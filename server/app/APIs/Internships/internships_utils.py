@@ -2,12 +2,14 @@ from sys import intern
 from flask import jsonify
 import requests
 import re
+from json import dumps
 from requests import session
 from sqlalchemy import null
 from ...Models.model import Internship, City, Company, Comment, User, Skill
 from flask_restx import Resource, reqparse
 from ...extension import db
 from string import digits
+import datetime;
 YOUTUBE_KEY='AIzaSyAKgaoxXGkDNj1ouC4gW2Ks-_Mrw8eMuyM'
 # YOUTUBE_KEY = 'AIzaSyBKUlq8KO324Q996DMDXKLVnxGtvHKKPmk'
 
@@ -16,15 +18,19 @@ YOUTUBE_KEY='AIzaSyAKgaoxXGkDNj1ouC4gW2Ks-_Mrw8eMuyM'
 def get_location(data):
     id = City.id
     city = City.query.filter_by(id = data).first()
-    print(city)
-    return city.name
+    if city:
+        return city.name
+    else:
+        return ""
 
 def get_comany_info(data):
     id = Company.id
     company = Company.query.filter_by(id = data).first()
+   
     print(company)
     name = company.name
     logo = company.logo
+    
     return name, logo
 
 def get_youtube(title):
@@ -55,7 +61,7 @@ def get_youtube(title):
     r = requests.get(search_url, params = search_params)
     
     results=r.json()['items']
-    print(results)
+    # print(results)
 
       
     for result in results:
@@ -87,6 +93,7 @@ def get_all_parent_comment(comments):
             'text': comment.content,
             'uid': comment.user_id,
             'cmtId': comment.id,
+            'time': comment.date,
             'replied': children_comment_list
         })
     return all_parent_comment
@@ -96,7 +103,8 @@ def get_children_comment(comments):
         all_children_comment.append({
         'repliedId':comment.id,
         'text':comment.content,
-        'uid':comment.user_id})
+        'time': comment.date,
+        'uid':comment.user_id},)
  
     # print(all_children_comment)
     return all_children_comment
@@ -143,10 +151,11 @@ class InternshipsUtils:
                     "min_salary": internship.min_salary,
                     "max_salary":internship.max_salary,
                     "salary_curreny": internship.salary_curreny,
-                    "location": get_location(internship.id),
+                    "location": get_location(internship.city),
                     "companyName": get_comany_info(internship.company_id)[0],
                     'company_logo': get_comany_info(internship.company_id)[1],
-                    "video_id": video_id_list
+                    "video_id": video_id_list,
+                    "recruiting_process":[]
                 }
                 return intership_result, 200
         except  Exception as error:
@@ -217,4 +226,18 @@ class InternshipsUtils:
            } for internship in internships]
 
         return jsonify(all_internships)
+    def comment(id, data):
+        result = Internship.query.filter(Internship.id==id).first()
+        print(result)
+        if result:
+            ct = datetime.datetime.now()
+            newComment = Comment(content = data['comment'], parent_id = data['parent_id'],internship_id = id, user_id = 3, date = ct)
+            db.session.add(newComment)
+            db.session.commit()
+            return dumps({'message':'yes'}),200
+        return dumps({'msg': 'no related internship'})
+
+    # def apply(data):
+        
+        
      

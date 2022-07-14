@@ -5,7 +5,7 @@ import jwt
 from pyrsistent import get_in
 from .internships_model import InternshipsAPI
 from .internships_utils import InternshipsUtils
-from flask_jwt_extended import create_access_token, jwt_required
+from flask_jwt_extended import create_access_token, jwt_required,unset_jwt_cookies
 from ...Models.model import Internship, InternshipSearchSchema
 internships_api = InternshipsAPI.api
 
@@ -64,7 +64,36 @@ class ApplyInternship(Resource):
     def post(self,id):
         try:
             
-            
+            arg = request.get_json()
+            return InternshipsUtils.apply(arg)
             pass
         except Exception as error:
             pass
+
+commentParser = internships_api.parser()
+commentParser.add_argument('Authorization', location='headers', help='Bearer [Token]', default='Bearer xxxxxxxxxxxxx')
+@internships_api.route('/internships/<int:id>/comments')
+class CommentInternship(Resource):
+    # @jwt_required()
+
+    def post(self,id):
+        try:
+            # response = jsonify({"msg": "logout successful"})
+            # print(response)
+            # unset_jwt_cookies(response)
+            
+            data = request.get_json()
+            print(data)
+            return InternshipsUtils.comment(id, data)
+
+            pass
+        except Exception as error:
+            pass
+
+
+@internships_api.route('internships/appliedfor')
+class AppliedForInternship(Resource):
+
+    def get(self):
+        pass
+  
