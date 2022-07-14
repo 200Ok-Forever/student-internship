@@ -1,16 +1,11 @@
 import React from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import Link from "@mui/material/Link";
-import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { useHistory } from "react-router-dom";
 import { Paper } from "@mui/material";
 
-const Login = () => {
-  const history = useHistory();
-
+const ResetPassword = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -33,7 +28,7 @@ const Login = () => {
         height: "500px",
         gap: "40px",
         mx: "auto",
-        mt: "50px",
+        mt: "100px",
       }}
     >
       <Typography
@@ -43,17 +38,17 @@ const Login = () => {
         sx={{ textAlign: "center" }}
         fontFamily="inherit"
       >
-        Log in
+        New Password
       </Typography>
       <Box component="form" onSubmit={handleSubmit} noValidate>
         <TextField
           margin="normal"
           required
           fullWidth
-          id="email"
-          label="Email Address"
-          name="email"
-          autoComplete="email"
+          id="reset-code"
+          label="Reset Code"
+          name="reset-code"
+          autoComplete="reset-code"
           autoFocus
         />
         <TextField
@@ -64,37 +59,29 @@ const Login = () => {
           label="Password"
           type="password"
           id="password"
-          autoComplete="current-password"
+          autoComplete="new-password"
         />
-        <Grid container>
-          <Link
-            href="#"
-            variant="body2"
-            onClick={() => history.push("/passwordreset/send")}
-          >
-            Forgotten password?
-          </Link>
-        </Grid>
+        <TextField
+          margin="normal"
+          required
+          fullWidth
+          name="conform-password"
+          label="Confirm Password"
+          type="password"
+          id="confirm-password"
+          autoComplete="confirm-password"
+        />
         <Button
           type="submit"
           fullWidth
           variant="contained"
           sx={{ mt: 3, mb: 2 }}
         >
-          Log In
-        </Button>
-        <Button
-          type="submit"
-          fullWidth
-          variant="outlined"
-          sx={{ margin: "auto" }}
-          onClick={() => history.push("/signup")}
-        >
-          Sign Up
+          Submit
         </Button>
       </Box>
     </Paper>
   );
 };
 
-export default Login;
+export default ResetPassword;

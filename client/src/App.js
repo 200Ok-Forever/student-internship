@@ -25,6 +25,8 @@ import ApplyIntern from "./components/jobs/ApplyIntern";
 import Saved from './components/SavedInternships';
 import History from './components/History';
 import Company from "./components/company/Company";
+import ForgottenPassword from "./components/auth/ForgottenPassword";
+import ResetPassword from "./components/auth/ResetPassword";
 
 function App() {
   return (
@@ -42,6 +44,8 @@ function App() {
           <Route path="/company" exact component={Company} />
           <Route path="/signup/student" exact component={StudentSignup} />
           <Route path="/signup/company" exact component={CompanySignup} />
+          <Route path="/passwordreset/send" exact component={ForgottenPassword} />
+          <Route path="/passwordreset/reset" exact component={ResetPassword} />
           <Route path="/forum" exact component={Forum} />
           <Route component={NarrowContainerRoutes} />
           <Route path="/resources" exact component={Resources} />
