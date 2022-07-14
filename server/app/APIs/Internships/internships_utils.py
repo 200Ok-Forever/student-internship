@@ -256,11 +256,12 @@ class InternshipsUtils:
             
         return dumps({'msg': 'no related internship'})
 
-    def appliedfor(id):
+    def appliedfor():
         # temp = db.session.query(Internship.id).join(City).filter(City.name.ilike(f'%{location}%')).subquery()
         # job_skill = db.session.query(Skill).filter(Skill.internships.any(id = data)).all()
-        job_status = db.session.query(InternshipStatus).join(User, User.uid==InternshipStatus.uid).filter(User.uid == 102).first()
-        print(job_status.is_seen)
+        job_status = db.session.query(Internship).join(InternshipStatus, Internship.id == InternshipStatus.intern_id)\
+        .filter(InternshipStatus.uid==102).filter(InternshipStatus.is_applied=="True").all()
+        print(job_status)
         return dumps({"msg": 'comment sucessfully'}),200
         
      

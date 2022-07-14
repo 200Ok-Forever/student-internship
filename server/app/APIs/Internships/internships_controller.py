@@ -79,7 +79,6 @@ class CommentInternship(Resource):
     def post(self,id):
         try:
             data = request.get_json()
-            print("(((((((((((((((((((")
             print(data)
             return InternshipsUtils.comment(id, data)
         except Exception as error:
