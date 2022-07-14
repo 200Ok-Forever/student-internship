@@ -17,7 +17,7 @@ const CmtTextField = ({
     const new_info = {
       text: text,
       // TODO
-      uId: 102,
+      uid: 102,
     };
     if (isCmt) {
       sendHandler(new_info);
