@@ -24,7 +24,6 @@ import queryString from "query-string";
 import { getJob } from "../../api/search-api";
 import getSymbolFromCurrency from "currency-symbol-map";
 import { postComment, replyComment } from "../../api/comment-api";
-import axios from "axios";
 
 const DATA = {
   job_id: "1",
@@ -322,17 +321,17 @@ const Comments = ({ list, jobId }) => {
   }, [list]);
 
   const sendCmt = async (newCmt) => {
+    console.log("🚀 ~ newCmt", newCmt);
     try {
-      const resp = await postComment(jobId, newCmt.uId, newCmt.text);
+      const resp = await postComment(jobId, newCmt.uid, newCmt.text);
       console.log("🚀 ~ resp", resp);
       if (resp.status === 200) {
-        console.log("???");
         const cmtInfo = {
           text: newCmt.text,
           uid: newCmt.uid,
           time: new Date(),
           replied: [],
-          cmtId: resp.data.comment_id,
+          cmtId: JSON.parse(resp.data).comment_id,
         };
         console.log("🚀 ~ cmtInfo", cmtInfo);
         setComments((prev) => [cmtInfo].concat(prev));
@@ -346,7 +345,7 @@ const Comments = ({ list, jobId }) => {
     try {
       const resp = await replyComment(
         jobId,
-        newReply.uId,
+        newReply.uid,
         newReply.text,
         cmtId
       );
@@ -356,15 +355,14 @@ const Comments = ({ list, jobId }) => {
           const idx = prev.findIndex((e) => e.cmtId === cmtId);
           const cmt = prev[idx];
           const replyInfo = {
-            repliedId: resp.data,
+            repliedId: JSON.parse(resp.data).comment_id,
             text: newReply.text,
             time: new Date(),
-            // TODO
             uid: newReply.uid,
           };
           if (cmt) {
-            const reply = [replyInfo].concat(cmt.reply);
-            const new_cmt = { ...cmt, reply };
+            const new_replies = [replyInfo].concat(cmt.replied);
+            const new_cmt = { ...cmt, replied: new_replies };
             prev.splice(idx, 1, new_cmt);
           }
           return [...prev];
