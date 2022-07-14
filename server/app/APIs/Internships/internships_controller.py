@@ -78,22 +78,17 @@ class CommentInternship(Resource):
     # @internships_api.expect(commentParser, validate=True)
     def post(self,id):
         try:
-            # response = jsonify({"msg": "logout successful"})
-            # print(response)
-            # unset_jwt_cookies(response)
-            
             data = request.get_json()
             
             return InternshipsUtils.comment(id, data)
-
-            pass
         except Exception as error:
             pass
 
 
-@internships_api.route('internships/appliedfor')
+@internships_api.route('/internships/appliedfor')
 class AppliedForInternship(Resource):
 
     def get(self):
-        pass
+        # arg = request.get_json()
+        return InternshipsUtils.appliedfor()
   

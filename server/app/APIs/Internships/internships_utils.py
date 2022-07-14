@@ -1,3 +1,4 @@
+from plistlib import UID
 from sys import intern
 from flask import jsonify
 import requests
@@ -5,13 +6,13 @@ import re
 from json import dumps
 from requests import session
 from sqlalchemy import null
-from ...Models.model import Internship, City, Company, Comment, User, Skill
+from ...Models.model import Internship, City, Company, Comment, User, Skill,InternshipStatus
 from flask_restx import Resource, reqparse
 from ...extension import db
 from string import digits
 import datetime;
-YOUTUBE_KEY='AIzaSyAKgaoxXGkDNj1ouC4gW2Ks-_Mrw8eMuyM'
-# YOUTUBE_KEY = 'AIzaSyBKUlq8KO324Q996DMDXKLVnxGtvHKKPmk'
+# YOUTUBE_KEY='AIzaSyAKgaoxXGkDNj1ouC4gW2Ks-_Mrw8eMuyM'
+YOUTUBE_KEY = 'AIzaSyBKUlq8KO324Q996DMDXKLVnxGtvHKKPmk'
 
 
 
@@ -250,7 +251,11 @@ class InternshipsUtils:
             
         return dumps({'msg': 'no related internship'})
 
-    # def apply(data):
-        
+    def appliedfor(id):
+        # temp = db.session.query(Internship.id).join(City).filter(City.name.ilike(f'%{location}%')).subquery()
+        # job_skill = db.session.query(Skill).filter(Skill.internships.any(id = data)).all()
+        job_status = db.session.query(InternshipStatus).join(User, User.uid==InternshipStatus.uid).filter(User.uid == 102).first()
+        print(job_status.is_seen)
+        return dumps({}),200
         
      

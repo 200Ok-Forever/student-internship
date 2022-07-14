@@ -15,6 +15,8 @@ class User(db.Model):
     hashed_password = db.Column(db.BINARY(60), nullable=False)
     role = db.Column(db.Integer, nullable=False)
 
+    status = db.relationship('InternshipStatus',back_populates='user')
+
     @property
     def password(self):
         raise AttributeError("Password is not a readable attribute")
@@ -114,9 +116,10 @@ class Internship(db.Model):
     job_id=db.Column(db.VARCHAR(255))
     # citys = db.relationship('City', backref = 'internship', lazy = 'dynamic')
 
+    status = db.relationship('InternshipStatus',back_populates='internship')
 
     skills = db.relationship('Skill',secondary = job_skills, \
-       backref = 'internship',overlaps="internship,skills")
+       backref = 'internship',overlaps="internship")
 
     def __repr__(self):
         return f"<Internship: {self.publisher}, {self.title}, {self.company_id} {self.max_salary}>"
@@ -154,20 +157,6 @@ class Internship(db.Model):
 
         }
     # more
-
-# class City(db.Model):
-#     __tablename__ = 't_cities'
-
-#     id = db.Column(db.Integer,primary_key=True)
-#     state_id = db.Column(db.Integer)
-#     name = db.Column(db.VARCHAR(255))
-     
-#     def get_info(self):
-#         return {
-#             "id": self.id,
-#             "state_id":self.state_id,
-#             "name": self.name
-#         }
 
 
 class Company(db.Model):
@@ -210,7 +199,7 @@ class Skill(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.VARCHAR(255))
     internships = db.relationship('Internship',secondary = job_skills, \
-       backref = 'skill', overlaps="internship,skills")
+       backref = 'skill', overlaps="skills")
 
     def get_info(self):
         return{
@@ -225,6 +214,19 @@ class City(db.Model):
     name = db.Column(db.VARCHAR(255))
     internships = db.relationship("Internship",backref='citys',lazy='dynamic')
 
+
+class InternshipStatus(db.Model):
+    __tablename__ = 't_intern_user_status'
+    id = db.Column(db.Integer, primary_key = True)
+    uid = db.Column(db.Integer, db.ForeignKey('t_user.uid'))
+
+    intern_id = db.Column(db.Integer,db.ForeignKey('t_internships.id'))
+    is_seen = db.Column(db.VARCHAR(255))
+    is_save = db.Column(db.VARCHAR(255))
+    is_applied = db.Column(db.VARCHAR(255))
+
+    internship = db.relationship('Internship', back_populates='status')
+    user = db.relationship('User', back_populates='status')
 
 
 class LoginSchema(Form):
