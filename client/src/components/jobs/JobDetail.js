@@ -23,6 +23,7 @@ import ShowCmts from "../UI/ShowCmts";
 import queryString from "query-string";
 import { getJob } from "../../api/search-api";
 import getSymbolFromCurrency from "currency-symbol-map";
+import { postComment, replyComment } from "../../api/comment-api";
 
 const DATA = {
   job_id: "1",
@@ -119,7 +120,7 @@ const JobDetail = () => {
         <>
           <BasicInfo info={info} />
           {info.video_id.length !== 0 && <RelatedCourses ids={info.video_id} />}
-          <Comments list={info.comment} />
+          <Comments list={info.comment} jobId={id} />
         </>
       )}
     </Box>
@@ -312,29 +313,64 @@ const RelatedCourses = ({ ids }) => {
   );
 };
 
-const Comments = ({ list }) => {
+const Comments = ({ list, jobId }) => {
   const [comments, setComments] = useState(list);
 
   useEffect(() => {
     setComments(list);
   }, [list]);
 
-  const sendCmt = (newCmt) => {
-    setComments((prev) => [newCmt].concat(prev));
+  const sendCmt = async (newCmt) => {
+    try {
+      const resp = await postComment(jobId, newCmt.uId, newCmt.text);
+      console.log("🚀 ~ resp", resp);
+      if (resp.status === 200) {
+        console.log("???");
+        const cmtInfo = {
+          text: newCmt.text,
+          uid: newCmt.uid,
+          time: new Date().toJSON().slice(0, 10),
+          replied: [],
+          cmtId: resp.data,
+        };
+        setComments((prev) => [cmtInfo].concat(prev));
+      }
+    } catch (e) {
+      console.log(e);
+    }
   };
 
-  const sendReply = (cmtId, newReply) => {
-    setComments((prev) => {
-      const idx = prev.findIndex((e) => e.cmtId === cmtId);
-      const cmt = prev[idx];
-      if (cmt) {
-        const reply = [newReply].concat(cmt.reply);
-        let new_cmt = {};
-        new_cmt = { ...cmt, reply };
-        prev.splice(idx, 1, new_cmt);
+  const sendReply = async (cmtId, newReply) => {
+    try {
+      const resp = await replyComment(
+        jobId,
+        newReply.uId,
+        newReply.text,
+        cmtId
+      );
+      console.log("🚀 ~ resp", resp);
+      if (resp.status === 200) {
+        setComments((prev) => {
+          const idx = prev.findIndex((e) => e.cmtId === cmtId);
+          const cmt = prev[idx];
+          const replyInfo = {
+            repliedId: resp.data,
+            text: newReply.text,
+            time: new Date().toJSON().slice(0, 10),
+            // TODO
+            uid: newReply.uid,
+          };
+          if (cmt) {
+            const reply = [replyInfo].concat(cmt.reply);
+            const new_cmt = { ...cmt, reply };
+            prev.splice(idx, 1, new_cmt);
+          }
+          return [...prev];
+        });
       }
-      return [...prev];
-    });
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return <ShowCmts list={comments} sendCmt={sendCmt} sendReply={sendReply} />;

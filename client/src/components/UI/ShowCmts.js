@@ -46,7 +46,11 @@ const Item = ({ cmt, isLast, sendReply }) => {
 
   return (
     <Box sx={{ ...box }}>
-      <AvatarName avatar={cmt.avatar} name={cmt.username} />
+      <AvatarName
+        avatar={cmt?.avatar}
+        name={cmt.username || "fake name"}
+        createdAt={cmt.time}
+      />
       <Typography variant="body1" ml="60px">
         {cmt.text}
       </Typography>
@@ -69,7 +73,11 @@ const Item = ({ cmt, isLast, sendReply }) => {
         <Box sx={box}>
           {replies?.map((reply, i) => (
             <Box key={`reply_${i}`} sx={box}>
-              <AvatarName avatar={reply.avatar} name={reply.username} />
+              <AvatarName
+                avatar={reply.avatar}
+                name={reply.username}
+                createdAt={reply.time}
+              />
               <Typography
                 variant="body1"
                 mx="60px"
