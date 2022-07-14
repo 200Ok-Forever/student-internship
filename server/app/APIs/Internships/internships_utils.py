@@ -129,7 +129,7 @@ class InternshipsUtils:
                 return internship_not_found, 404
             else:
                 comment_list = []
-                comment = db.session.query(Comment).join(Internship, Comment.internship_id == Internship.id).filter(Comment.internship_id==data).filter(Comment.parent_id==None).all()
+                comment = db.session.query(Comment).join(Internship, Comment.internship_id == Internship.id).filter(Comment.internship_id==data).filter(Comment.parent_id==0).all()
                 print("_________")
                 
                 if comment:
@@ -236,7 +236,8 @@ class InternshipsUtils:
 
     def comment(id, data):
         result = Internship.query.filter(Internship.id==id).first()
-        print(result)
+        print("__________")
+       
         print(data)
         if result != None:
            
