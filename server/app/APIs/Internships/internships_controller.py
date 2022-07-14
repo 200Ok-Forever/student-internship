@@ -75,7 +75,7 @@ commentParser.add_argument('Authorization', location='headers', help='Bearer [To
 @internships_api.route('/internships/<int:id>/comments')
 class CommentInternship(Resource):
     # @jwt_required()
-
+    # @internships_api.expect(commentParser, validate=True)
     def post(self,id):
         try:
             # response = jsonify({"msg": "logout successful"})
@@ -83,6 +83,7 @@ class CommentInternship(Resource):
             # unset_jwt_cookies(response)
             
             data = request.get_json()
+            print("==================")
             print(data)
             return InternshipsUtils.comment(id, data)
 

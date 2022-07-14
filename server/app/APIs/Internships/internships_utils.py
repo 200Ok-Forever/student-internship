@@ -218,7 +218,7 @@ class InternshipsUtils:
 
         all_internships = [{'job_id': internship.id,'title':internship.title, \
              'job_type': changeTypeFormat(internship.type),"status": "",'is_remote':internship.is_remote , 'posted_time':changeDateFormat( internship.posted_time), 'closed_time':changeDateFormat(internship.expiration_datetime_utc),\
-                'min_salary':internship.min_salary, 'max_salary': internship.max_salary, 'description':internship.description,\
+                'min_salary':internship.min_salary, 'max_salary': internship.max_salary, 'description':internship.description,   "salary_curreny": internship.salary_curreny,\
                 
                     'numAllResults': {"total_count":count}, 'location': get_location(internship.city), 'company_id': internship.company_id,\
                         'company_name': get_comany_info(internship.company_id)[0], 'company_logo': get_comany_info(internship.company_id)[1]
@@ -226,12 +226,13 @@ class InternshipsUtils:
            } for internship in internships]
 
         return jsonify(all_internships)
+
     def comment(id, data):
         result = Internship.query.filter(Internship.id==id).first()
         print(result)
         if result:
             ct = datetime.datetime.now()
-            newComment = Comment(content = data['comment'], parent_id = data['parent_id'],internship_id = id, user_id = 3, date = ct)
+            newComment = Comment(content = data['comment'], parent_id = data['parent_id'],internship_id = id, user_id = data['uid'], date = ct)
             db.session.add(newComment)
             db.session.commit()
             return dumps({'message':'yes'}),200
