@@ -5,39 +5,34 @@ import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { useFormik } from 'formik';
 import * as yup from 'yup';
+import { useFormik } from "formik";
 import { useHistory } from "react-router-dom";
 import { Paper } from "@mui/material";
-
-const validationSchema = yup.object({
-  email: yup
-    .string('Enter your email')
-    .email('Enter a valid email')
-    .required('Email is required'),
-  password: yup
-    .string('Enter your password')
-    .min(8, 'Password should be of minimum 8 characters length')
-    .required('Password is required'),
-});
+import { loginValidationSchema } from "./ValidationSchema";
 
 const Login = () => {
   const history = useHistory();
 
   const formik = useFormik({
     initialValues: {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
     },
-    validationSchema: validationSchema,
-    onSubmit: (event) => {
-      const data = new FormData(event.currentTarget);
-      console.log({
-        email: data.get("email"),
-        password: data.get("password"),
-      });
+    validationSchema: loginValidationSchema,
+    onSubmit: (values) => {
+      alert(JSON.stringify(values, null, 2));
     },
   });
+
+  // const handleSubmit = (event) => {
+  //   event.preventDefault();
+  //   const data = new FormData(event.currentTarget);
+  //   console.log({
+  //     email: data.get("email"),
+  //     password: data.get("password"),
+  //   });
+  // };
 
   return (
     <Paper
@@ -48,7 +43,7 @@ const Login = () => {
         alignItems: "center",
         justifyContent: "center",
         padding: "36px",
-        width: "450px",
+        width: "fit-content",
         height: "500px",
         gap: "40px",
         mx: "auto",
