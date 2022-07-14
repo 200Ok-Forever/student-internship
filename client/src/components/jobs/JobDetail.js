@@ -331,8 +331,9 @@ const Comments = ({ list, jobId }) => {
           uid: newCmt.uid,
           time: new Date(),
           replied: [],
-          cmtId: resp.data,
+          cmtId: resp.data.comment_id,
         };
+        console.log("🚀 ~ cmtInfo", cmtInfo);
         setComments((prev) => [cmtInfo].concat(prev));
       }
     } catch (e) {
