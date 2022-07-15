@@ -5,7 +5,6 @@ import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import * as yup from "yup";
 import { useFormik } from "formik";
 import { useHistory } from "react-router-dom";
 import { Paper } from "@mui/material";
@@ -21,7 +20,7 @@ const Login = () => {
     },
     validationSchema: loginValidationSchema,
     onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+      console.log(values);
     },
   });
 
