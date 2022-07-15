@@ -198,6 +198,8 @@ class InternshipsUtils:
             map.append(Internship.title.ilike(f'%{job}%'))
         if paid == "TRUE":
             map.append(Internship.min_salary!="")
+        if paid == "FALSE":
+            map.append(Internship.max_salary == "")
         if remote =="TRUE" or remote == "FALSE":
             print(remote)
             map.append(Internship.is_remote == remote)
@@ -218,7 +220,7 @@ class InternshipsUtils:
                 result = Internship.query.filter(*map).filter(Internship.id.in_(temp)).order_by(Internship.posted_time.desc())
                 
             elif sort == "Closing Soon":
-                result = Internship.query.filter(*map).filter(Internship.id.in_(temp)).order_by(Internship.expiration_timestamp.desc())
+                result = Internship.query.filter(*map).filter(Internship.id.in_(temp)).order_by(Internship.expiration_timestamp.asc())
             
             
         elif location ==None:
@@ -229,7 +231,7 @@ class InternshipsUtils:
                 result = Internship.query.filter(*map).order_by(Internship.posted_time.desc())
                 
             elif sort == "Closing Soon":
-                result = Internship.query.filter(*map).order_by(Internship.expiration_timestamp.desc())
+                result = Internship.query.filter(*map).order_by(Internship.expiration_timestamp.asc())
         
         count = result.count()
         print(count)
