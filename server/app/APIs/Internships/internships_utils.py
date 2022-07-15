@@ -13,6 +13,7 @@ from ...extension import db
 from string import digits
 import datetime;
 from sqlalchemy.sql.functions import coalesce
+from sqlalchemy import nullslast
 # YOUTUBE_KEY='AIzaSyAKgaoxXGkDNj1ouC4gW2Ks-_Mrw8eMuyM'
 YOUTUBE_KEY = 'AIzaSyBKUlq8KO324Q996DMDXKLVnxGtvHKKPmk'
 
@@ -214,24 +215,24 @@ class InternshipsUtils:
             temp = db.session.query(Internship.id).join(City).filter(City.name.ilike(f'%{location}%')).subquery()
      
             if sort == "Default":
-                result = Internship.query.filter(*map).filter(Internship.id.in_(temp)).order_by(Internship.id.asc())
+                result = Internship.query.filter(*map).filter(Internship.id.in_(temp)).order_by(nullslast(Internship.id.asc()))
                 
             elif sort == "Newest":
-                result = Internship.query.filter(*map).filter(Internship.id.in_(temp)).order_by(Internship.posted_time.desc())
+                result = Internship.query.filter(*map).filter(Internship.id.in_(temp)).order_by(nullslast(Internship.posted_time.desc()))
                 
             elif sort == "Closing Soon":
-                result = Internship.query.filter(*map).filter(Internship.id.in_(temp)).order_by(Internship.expiration_timestamp.asc())
+                result = Internship.query.filter(*map).filter(Internship.id.in_(temp)).order_by(nullslast(Internship.expiration_datetime_utc.asc()))
             
             
         elif location ==None:
             if sort == "Default":
-                result = Internship.query.filter(*map).order_by(Internship.id.asc())
+                result = Internship.query.filter(*map).order_by((Internship.id.asc()))
                 
             elif sort == "Newest":
-                result = Internship.query.filter(*map).order_by(Internship.posted_time.desc())
+                result = Internship.query.filter(*map).order_by((Internship.posted_time.desc()))
                 
             elif sort == "Closing Soon":
-                result = Internship.query.filter(*map).order_by(Internship.expiration_timestamp.asc())
+                result = Internship.query.filter(*map).order_by(Internship.expiration_datetime_utc == "",Internship.expiration_datetime_utc.asc())
         
         count = result.count()
         print(count)
