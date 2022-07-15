@@ -1,7 +1,7 @@
 import React from "react";
-import { Box, Typography } from "@mui/material";
+import { IconButton, Box, Typography } from "@mui/material";
 import JobBlock from "../jobs/JobBlock";
-import RemoveButton from "../UI/RemoveButton";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const internships = [
   {
@@ -65,7 +65,9 @@ const SavedInternships = () => {
       <Box sx={boxStyling}>
         {internships.map((i) => (
           <JobBlock job={i} key={i.job_id}>
-            <RemoveButton />
+            <IconButton color="error">
+              <DeleteIcon />
+            </IconButton>
           </JobBlock>
         ))}
       </Box>

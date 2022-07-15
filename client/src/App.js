@@ -25,6 +25,8 @@ import ApplyIntern from "./components/jobs/ApplyIntern";
 import Saved from "./components/student/SavedInternships";
 import History from "./components/student/History";
 import Company from "./components/company/Company";
+import Applications from './components/recruiter/Applications';
+import RecommendedCandidates from "./components/recruiter/RecommendedCandidates";
 
 function App() {
   return (
@@ -43,9 +45,11 @@ function App() {
           <Route path="/signup/student" exact component={StudentSignup} />
           <Route path="/signup/company" exact component={CompanySignup} />
           <Route path="/forum" exact component={Forum} />
-          <Route component={NarrowContainerRoutes} />
           <Route path="/resources" exact component={Resources} />
+          <Route path="/applications" exact component={Applications} />
+          <Route path="/recommended-candidates" exact component={RecommendedCandidates} />
           <Route path="*" component={NotFound} />
+          <Route component={NarrowContainerRoutes} />
         </Switch>
       </Container>
     </Fragment>

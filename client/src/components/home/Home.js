@@ -11,7 +11,7 @@ const Home = () => {
   return (
     <Box>
       <SearchBanner />
-      <Grid container>
+      <Grid container spacing={3}>
         <Grid item xs={12} md={9} order={{ xs: 2, md: 1 }} mt={{ xs: 5, md: 0 }}>
           {/* <RecommendedInternships /> */}
           <PostedInternships />
