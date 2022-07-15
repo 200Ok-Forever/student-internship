@@ -10,14 +10,14 @@ class AuthUtils:
     @staticmethod
     def login(data):
         # Assign vars
-        email = data["email"]
+        username = data["username"]
         password = data["password"]
         try:
-            user = User.query.filter_by(email=email).first()
+            user = User.query.filter_by(username=username).first()
             if not user:
                 return {
                            "status": False,
-                           "message": "The email you have entered does not match any account.",
+                           "message": "The username you have entered does not match any account.",
                        }, 404
 
             elif user and user.verify_password(password):
