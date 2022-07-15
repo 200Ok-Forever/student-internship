@@ -221,7 +221,7 @@ class InternshipsUtils:
                 result = Internship.query.filter(*map).filter(Internship.id.in_(temp)).order_by(Internship.posted_time.desc())
                 
             elif sort == "Closing Soon":
-                result = Internship.query.filter(*map).filter(Internship.id.in_(temp)).order_by(Internship.expiration_datetime_utc == "",Internship.expiration_datetime_utc.asc())
+                result = Internship.query.filter(*map).filter(Internship.id.in_(temp)).order_by(Internship.expiration_datetime_utc == None,Internship.expiration_datetime_utc.asc())
             
             
         elif location ==None:
@@ -232,7 +232,7 @@ class InternshipsUtils:
                 result = Internship.query.filter(*map).order_by((Internship.posted_time.desc()))
                 
             elif sort == "Closing Soon":
-                result = Internship.query.filter(*map).order_by(Internship.expiration_datetime_utc == "",Internship.expiration_datetime_utc.asc())
+                result = Internship.query.filter(*map).order_by(Internship.expiration_datetime_utc == None,Internship.expiration_datetime_utc.asc())
         
         count = result.count()
         print(count)
