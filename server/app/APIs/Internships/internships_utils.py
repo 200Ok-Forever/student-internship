@@ -32,7 +32,7 @@ def get_comany_info(data):
     company = Company.query.filter_by(id = data).first()
    
     print(company)
-    name = company.name
+    name = company.company_name
     logo = company.logo
     
     return name, logo
