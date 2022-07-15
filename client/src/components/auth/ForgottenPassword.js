@@ -6,7 +6,6 @@ import Typography from "@mui/material/Typography";
 import { Paper } from "@mui/material";
 
 const ForgottenPassword = () => {
-
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);

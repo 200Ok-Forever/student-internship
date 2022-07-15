@@ -24,17 +24,18 @@ const loginValidationObject = {
 };
 
 const resetPasswordValidationObject = {
-	password: passwordRule,
-	confirmPassword: confirmPasswordRule,
-}
+  password: passwordRule,
+  confirmPassword: confirmPasswordRule,
+};
 
 const signupValidationObject = {
   ...emailValidationObject,
   ...resetPasswordValidationObject,
 };
 
-
 export const signupValidationSchema = yup.object(signupValidationObject);
 export const loginValidationSchema = yup.object(loginValidationObject);
-export const resetPasswordValidationSchema = yup.object(resetPasswordValidationObject);
+export const resetPasswordValidationSchema = yup.object(
+  resetPasswordValidationObject
+);
 export const emailValidationSchema = yup.object(emailValidationObject);
