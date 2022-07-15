@@ -215,13 +215,13 @@ class InternshipsUtils:
             temp = db.session.query(Internship.id).join(City).filter(City.name.ilike(f'%{location}%')).subquery()
      
             if sort == "Default":
-                result = Internship.query.filter(*map).filter(Internship.id.in_(temp)).order_by(nullslast(Internship.id.asc()))
+                result = Internship.query.filter(*map).filter(Internship.id.in_(temp)).order_by(Internship.id.asc())
                 
             elif sort == "Newest":
-                result = Internship.query.filter(*map).filter(Internship.id.in_(temp)).order_by(nullslast(Internship.posted_time.desc()))
+                result = Internship.query.filter(*map).filter(Internship.id.in_(temp)).order_by(Internship.posted_time.desc())
                 
             elif sort == "Closing Soon":
-                result = Internship.query.filter(*map).filter(Internship.id.in_(temp)).order_by(nullslast(Internship.expiration_datetime_utc.asc()))
+                result = Internship.query.filter(*map).filter(Internship.id.in_(temp)).order_by(Internship.expiration_datetime_utc == "",Internship.expiration_datetime_utc.asc())
             
             
         elif location ==None:
