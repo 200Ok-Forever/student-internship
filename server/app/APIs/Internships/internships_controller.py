@@ -20,13 +20,13 @@ class GetInternshipList(Resource):
     def get(self):
 
         args1 = request.args
-        
-        print(args1)
+     
         try:
+      
             return InternshipsUtils.get_all_Intership(args1)
         except Exception as error:
             return{
-                "message": error
+                "message": str(error)
             }, 500
  
 @internships_api.route('/internships/<int:id>')

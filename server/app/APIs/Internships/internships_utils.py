@@ -12,6 +12,7 @@ from flask_restx import Resource, reqparse
 from ...extension import db
 from string import digits
 import datetime;
+from sqlalchemy.sql.functions import coalesce
 # YOUTUBE_KEY='AIzaSyAKgaoxXGkDNj1ouC4gW2Ks-_Mrw8eMuyM'
 YOUTUBE_KEY = 'AIzaSyBKUlq8KO324Q996DMDXKLVnxGtvHKKPmk'
 
@@ -172,30 +173,38 @@ class InternshipsUtils:
             return{
                 "message": "something wrong internal"
             },500
-    def get_all_Intership(data):
 
+    def get_all_Intership(data):
+        
         job = data.get("job",None)
         # location = data['location']
         location = data.get("location", None)
         sort = data.get("sort", "Default")
         paid = data.get("paid", None)
         remote = data.get("is_remote", None)
-
+        
+        if paid:
+            paid = paid.upper()
+        if remote:
+            remote = remote.upper()
+       
         job_type = data.get("job_type", None)
         current_page = int(data.get('current_page',1))
         map = []
+  
      
         if job!=None :
             job = data['job']
             map.append(Internship.title.ilike(f'%{job}%'))
-        if paid =="True":
-            map.append(Internship.min_salary.isnot(None))
-        if remote =="True" or remote == "False":
+        if paid == "TRUE":
+            map.append(Internship.min_salary!="")
+        if remote =="TRUE" or remote == "FALSE":
+            print(remote)
             map.append(Internship.is_remote == remote)
         if job_type != None:
             map.append(Internship.type.ilike(f'%{job_type}%'))
         
-        print(map)
+        # print(map)
  
         if location != None:
             location = data['location']
@@ -223,6 +232,7 @@ class InternshipsUtils:
                 result = Internship.query.filter(*map).order_by(Internship.expiration_timestamp.desc())
         
         count = result.count()
+        print(count)
         internships=result.paginate(page=current_page, per_page=10, error_out = False).items
 
         all_internships = [{'job_id': internship.id,'title':internship.title, \
@@ -232,12 +242,12 @@ class InternshipsUtils:
                     'numAllResults': {"total_count":count}, 'location': get_location(internship.city), 'company_id': internship.company_id,\
                         'company_name': get_comany_info(internship.company_id)[0], 'company_logo': get_comany_info(internship.company_id)[1]
            } for internship in internships]
-
+        
         return jsonify(all_internships)
+        
 
     def comment(id, data):
         result = Internship.query.filter(Internship.id==id).first()
-        print("__________")
        
         print(data)
         if result != None:
