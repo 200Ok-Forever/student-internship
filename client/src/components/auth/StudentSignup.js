@@ -56,7 +56,6 @@ const StudentSignup = () => {
         height: "fit-content",
         gap: "40px",
         mx: "auto",
-        mt: "100px",
         mb: "100px",
       }}
     >
@@ -69,10 +68,13 @@ const StudentSignup = () => {
       >
         Student Sign Up
       </Typography>
-      <Avatar sx={{ m: 1, bgcolor: "primary.main" }}>
-        <LockOutlinedIcon />
-      </Avatar>
-      <Box component="form" noValidate onSubmit={formik.handleSubmit} sx={{ mt: 3 }}>
+      <Avatar sx={{ m: 1, bgcolor: "primary.main" }}></Avatar>
+      <Box
+        component="form"
+        noValidate
+        onSubmit={formik.handleSubmit}
+        sx={{ mt: 3 }}
+      >
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <TextField
@@ -107,15 +109,20 @@ const StudentSignup = () => {
             <TextField
               required
               fullWidth
-              name="conform-password"
+              name="confirmPassword"
               label="Confirm Password"
               type="password"
               id="confirm-password"
               autoComplete="confirm-password"
               value={formik.values.confirmPassword}
               onChange={formik.handleChange}
-              error={formik.touched.confirmPassword && Boolean(formik.errors.confirmPassword)}
-              helperText={formik.touched.confirmPassword && formik.errors.confirmPassword}
+              error={
+                formik.touched.confirmPassword &&
+                Boolean(formik.errors.confirmPassword)
+              }
+              helperText={
+                formik.touched.confirmPassword && formik.errors.confirmPassword
+              }
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -129,7 +136,9 @@ const StudentSignup = () => {
               autoFocus
               value={formik.values.firstName}
               onChange={formik.handleChange}
-              error={formik.touched.firstName && Boolean(formik.errors.firstName)}
+              error={
+                formik.touched.firstName && Boolean(formik.errors.firstName)
+              }
               helperText={formik.touched.firstName && formik.errors.firstName}
             />
           </Grid>
@@ -157,7 +166,9 @@ const StudentSignup = () => {
               autoComplete="university"
               value={formik.values.university}
               onChange={formik.handleChange}
-              error={formik.touched.university && Boolean(formik.errors.university)}
+              error={
+                formik.touched.university && Boolean(formik.errors.university)
+              }
               helperText={formik.touched.university && formik.errors.university}
             />
           </Grid>

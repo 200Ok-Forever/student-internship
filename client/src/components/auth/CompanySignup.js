@@ -45,7 +45,6 @@ const CompanySignup = () => {
         height: "fit-content",
         gap: "40px",
         mx: "auto",
-        mt: "100px",
         mb: "100px",
       }}
     >
@@ -58,9 +57,7 @@ const CompanySignup = () => {
       >
         Company Sign Up
       </Typography>
-      <Avatar sx={{ m: 1, bgcolor: "primary.main" }}>
-        <LockOutlinedIcon />
-      </Avatar>
+      <Avatar sx={{ m: 1, bgcolor: "primary.main" }}></Avatar>
       <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
