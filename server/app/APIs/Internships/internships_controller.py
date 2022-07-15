@@ -20,13 +20,13 @@ class GetInternshipList(Resource):
     def get(self):
 
         args1 = request.args
-        
-        print(args1)
+     
         try:
+      
             return InternshipsUtils.get_all_Intership(args1)
         except Exception as error:
             return{
-                "message": error
+                "message": str(error)
             }, 500
  
 @internships_api.route('/internships/<int:id>')
@@ -59,7 +59,7 @@ applyParser.add_argument('Authorization', location = 'headers',  help='Bearer [T
 @internships_api.route('/internships/<int:id>/apply')
 class ApplyInternship(Resource):
 
-    @jwt_required()
+    # @jwt_required()
     # @internships_api.expect(applyParser, validate=True)
     def post(self,id):
         try:
@@ -90,5 +90,34 @@ class AppliedForInternship(Resource):
 
     def get(self):
         # arg = request.get_json()
-        return InternshipsUtils.appliedfor()
+        arg = request.args
+        return InternshipsUtils.appliedfor(arg)
+
+
+saveParser = internships_api.parser()
+saveParser.add_argument('Authorization', location='headers', help='Bearer [Token]', default='Bearer xxxxxxxxxxxxx')
+@internships_api.route('/internships/save')
+class SaveInternship(Resource):
+    # @jwt_required()
+    # @internships_api.expect(commentParser, validate=True)
+    def get(self):
+        arg = request.args
+        return InternshipsUtils.getSaveList(arg)
   
+    def post(self):
+        arg = request.get_json()
+        print(arg)
+        return InternshipsUtils.saveInternship(arg)
+
+@internships_api.route('/internships/unsave')
+class UnsaveInternship(Resource):
+    def post(self):
+        arg = request.get_json()
+        print(arg)
+        return InternshipsUtils.unSaveInternship(arg)
+
+@internships_api.route('/internships/history')
+class GetViewedInternships(Resource):
+    def get(self):
+        arg = request.args
+        return InternshipsUtils.getViewedHistory(arg)
