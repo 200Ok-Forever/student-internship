@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Box,
+  Fab,
   FormControl,
   InputLabel,
   MenuItem,
@@ -13,6 +14,7 @@ import Skeletons from "../UI/Skeletons";
 import { useLocation } from "react-router-dom";
 import queryString from "query-string";
 import { getJobsListData } from "../../api/search-api";
+import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 
 const center = {
   display: "flex",
@@ -36,6 +38,23 @@ const JobList = () => {
     jobType: "",
     isPaid: "",
   });
+  const [showScroll, setShowScroll] = useState(false);
+
+  const checkScrollTop = () => {
+    if (window.pageYOffset > 200) {
+      setShowScroll(true);
+    } else {
+      setShowScroll(false);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", checkScrollTop);
+    return () => {
+      window.removeEventListener("scroll", checkScrollTop);
+    };
+  }, []);
+
   const [clickSearch, setClickSearch] = useState(false);
   const [cannotReload, setCannotReload] = useState(false);
   const observer = useRef();
@@ -167,6 +186,17 @@ const JobList = () => {
       {jobs.length !== 0 && (
         <Box ref={lastItemRef}>
           <p>{load}</p>
+        </Box>
+      )}
+      {showScroll && (
+        <Box sx={{ position: "fixed", right: "40px", bottom: "50px" }}>
+          <Fab
+            color="primary"
+            aria-label="up"
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          >
+            <ArrowUpwardIcon />
+          </Fab>
         </Box>
       )}
     </Box>
