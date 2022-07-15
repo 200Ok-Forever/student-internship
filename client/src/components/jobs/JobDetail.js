@@ -126,6 +126,7 @@ const JobDetail = () => {
 };
 
 const BasicInfo = ({ info }) => {
+  console.log("🚀 ~ info", info);
   const history = useHistory();
   const [saved, setSaved] = useState(false);
   const [shareBar, setShareBar] = useState(false);
@@ -256,7 +257,9 @@ const BasicInfo = ({ info }) => {
       </Box>
       <Grid container spacing={8}>
         <Grid item md={12} lg={9} sm={12}>
-          <Typography variant="body1">{info.description}</Typography>
+          <Typography variant="body1" sx={{ whiteSpace: "pre-wrap" }}>
+            {info.description}
+          </Typography>
         </Grid>
         <Grid
           item

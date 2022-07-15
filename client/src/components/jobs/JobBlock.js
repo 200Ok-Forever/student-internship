@@ -22,6 +22,7 @@ const JobBlock = ({ job, children }) => {
     job.salary_currency !== "AUD"
       ? getSymbolFromCurrency(job.salary_currency)
       : "AU$";
+  salary_curr = salary_curr || "$";
   if (job.min_salary && job.max_salary) {
     salary_str =
       salary_curr + job.min_salary + " - " + salary_curr + job.max_salary;
@@ -60,10 +61,10 @@ const JobBlock = ({ job, children }) => {
           </Label>
         )}
         {job.job_type && <Label text={job.job_type}></Label>}
-        {job.is_remote === "True" ? (
+        {job.is_remote === "TRUE" ? (
           <Label text={"Remote"} />
         ) : (
-          <>{job.is_remote === "False" && <Label text={"On-site"} />}</>
+          <>{job.is_remote === "FALSE" && <Label text={"On-site"} />}</>
         )}
       </Box>
       <Typography variant="body1" sx={{ overflow: "hidden" }}>
