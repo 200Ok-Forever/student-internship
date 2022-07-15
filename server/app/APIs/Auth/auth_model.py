@@ -8,8 +8,10 @@ class AuthAPI:
         "User object",
         {
             "uid": fields.Integer,
+            "username": fields.String,
             "email": fields.String,
-            "role": fields.Integer
+            "role": fields.Integer,
+            "avatar": fields.String
         }
     )
 
@@ -17,7 +19,6 @@ class AuthAPI:
         "Student object",
         {
             "id": fields.Integer,
-            "username": fields.String,
             "email": fields.String,
             "first_name": fields.String,
             "last_name": fields.String,
@@ -34,27 +35,26 @@ class AuthAPI:
         {
             "id": fields.Integer,
             "email": fields.String,
+            "company_name": fields.String,
             "first_name": fields.String,
             "last_name": fields.String,
-            "company_name": fields.String,
             "industry": fields.String,
             "linkedin": fields.String,
             "company_url": fields.String,
             "founded_year": fields.String,
             "company_size": fields.Integer,
             "location": fields.String,
-            "description": fields.String
+            "description": fields.String,
+            "logo": fields.String
         },
     )
     user_login = api.model(
         "User login request",
         {
-            "email": fields.String(required=True),
+            "username": fields.String(required=True),
             "password": fields.String(required=True),
         },
     )
-
-
 
     login_success = api.model(
         "User login success response",
