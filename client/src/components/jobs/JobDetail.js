@@ -134,6 +134,7 @@ const BasicInfo = ({ info }) => {
     info.recruiting_process.length === 0
       ? ["Phone Interview", "Coding Test", "Technical Interview"]
       : info.recruiting_process;
+
   let salary_str;
   let salary_curr =
     info.salary_currency !== "AUD"
@@ -144,6 +145,14 @@ const BasicInfo = ({ info }) => {
       salary_curr + info.min_salary + " - " + salary_curr + info.max_salary;
   } else {
     salary_str = salary_curr + info.min_salary || salary_curr + info.max_salary;
+  }
+
+  let post_duration;
+
+  if (info.postedDate && info.closedDate) {
+    post_duration = info.postedDate + " - " + info.closedDate;
+  } else {
+    post_duration = info.postedDate || info.closedDate;
   }
 
   useEffect(() => {
@@ -240,9 +249,15 @@ const BasicInfo = ({ info }) => {
           flexWrap: "wrap",
         }}
       >
-        <Label text={info.postedDate + " - " + info.closedDate}>
-          <AccessTimeIcon fontSize="small" color="primary" sx={{ mr: "5px" }} />
-        </Label>
+        {(info.postedDate || info.closedDate) && (
+          <Label text={post_duration}>
+            <AccessTimeIcon
+              fontSize="small"
+              color="primary"
+              sx={{ mr: "5px" }}
+            />
+          </Label>
+        )}
         {(info.min_salary || info.max_salary) && (
           <Label text={salary_str}>
             <img src={salary} alt="salary" width="25px" height="25px" />
