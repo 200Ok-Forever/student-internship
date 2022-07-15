@@ -4,7 +4,6 @@ import EventsSidebar from "./Sidebar";
 import Search from "./Search";
 import classes from "./style/home.module.scss";
 import wave from "../../asset/wave.svg";
-import RecommendedInternships from '../student/RecommendedInternships';
 import PostedInternships from '../recruiter/PostedInternships';
 
 const Home = () => {
