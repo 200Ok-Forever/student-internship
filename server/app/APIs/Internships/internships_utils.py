@@ -11,7 +11,7 @@ from ...Models.model import Internship, City, Company, Comment, User, Skill,Inte
 from flask_restx import Resource, reqparse
 from ...extension import db
 from string import digits
-import datetime;
+import datetime
 from sqlalchemy.sql.functions import coalesce
 from sqlalchemy import nullslast
 # YOUTUBE_KEY='AIzaSyAKgaoxXGkDNj1ouC4gW2Ks-_Mrw8eMuyM'

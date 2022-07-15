@@ -126,7 +126,6 @@ const JobDetail = () => {
 };
 
 const BasicInfo = ({ info }) => {
-  console.log("🚀 ~ info", info);
   const history = useHistory();
   const [saved, setSaved] = useState(false);
   const [shareBar, setShareBar] = useState(false);
@@ -149,7 +148,7 @@ const BasicInfo = ({ info }) => {
 
   let post_duration;
 
-  if (info.postedDate && info.closedDate) {
+  if (info.postedDate !== "None" && info.closedDate !== "None") {
     post_duration = info.postedDate + " - " + info.closedDate.split(" ")[0];
   } else {
     post_duration = info.postedDate || info.closedDate;
