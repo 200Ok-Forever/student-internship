@@ -150,7 +150,7 @@ const BasicInfo = ({ info }) => {
   let post_duration;
 
   if (info.postedDate && info.closedDate) {
-    post_duration = info.postedDate + " - " + info.closedDate;
+    post_duration = info.postedDate + " - " + info.closedDate.split(" ")[0];
   } else {
     post_duration = info.postedDate || info.closedDate;
   }
