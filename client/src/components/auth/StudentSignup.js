@@ -6,6 +6,8 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
+import { useFormik } from "formik";
+import { studentSignupValidationSchema } from "./ValidationSchema";
 import { useHistory } from "react-router-dom";
 import { Paper } from "@mui/material";
 
@@ -18,6 +20,26 @@ const StudentSignup = () => {
       password: data.get("password"),
     });
   };
+
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+      confirmPassword: "",
+      firstName: "",
+      lastName: "",
+      university: "",
+      degree: "",
+      major: "",
+      positions: "",
+      skills: "",
+      description: "",
+    },
+    validationSchema: studentSignupValidationSchema,
+    onSubmit: (values) => {
+      console.log(values);
+    },
+  });
 
   const history = useHistory();
 
@@ -50,7 +72,7 @@ const StudentSignup = () => {
       <Avatar sx={{ m: 1, bgcolor: "primary.main" }}>
         <LockOutlinedIcon />
       </Avatar>
-      <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+      <Box component="form" noValidate onSubmit={formik.handleSubmit} sx={{ mt: 3 }}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <TextField
@@ -60,6 +82,10 @@ const StudentSignup = () => {
               label="Email Address"
               name="email"
               autoComplete="email"
+              value={formik.values.email}
+              onChange={formik.handleChange}
+              error={formik.touched.email && Boolean(formik.errors.email)}
+              helperText={formik.touched.email && formik.errors.email}
             />
           </Grid>
           <Grid item xs={12}>
@@ -71,6 +97,10 @@ const StudentSignup = () => {
               type="password"
               id="password"
               autoComplete="new-password"
+              value={formik.values.password}
+              onChange={formik.handleChange}
+              error={formik.touched.password && Boolean(formik.errors.password)}
+              helperText={formik.touched.password && formik.errors.password}
             />
           </Grid>
           <Grid item xs={12}>
@@ -82,6 +112,10 @@ const StudentSignup = () => {
               type="password"
               id="confirm-password"
               autoComplete="confirm-password"
+              value={formik.values.confirmPassword}
+              onChange={formik.handleChange}
+              error={formik.touched.confirmPassword && Boolean(formik.errors.confirmPassword)}
+              helperText={formik.touched.confirmPassword && formik.errors.confirmPassword}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -93,6 +127,10 @@ const StudentSignup = () => {
               id="firstName"
               label="First Name"
               autoFocus
+              value={formik.values.firstName}
+              onChange={formik.handleChange}
+              error={formik.touched.firstName && Boolean(formik.errors.firstName)}
+              helperText={formik.touched.firstName && formik.errors.firstName}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -103,6 +141,10 @@ const StudentSignup = () => {
               label="Last Name"
               name="lastName"
               autoComplete="family-name"
+              value={formik.values.lastName}
+              onChange={formik.handleChange}
+              error={formik.touched.lastName && Boolean(formik.errors.lastName)}
+              helperText={formik.touched.lastName && formik.errors.lastName}
             />
           </Grid>
           <Grid item xs={12}>
@@ -113,6 +155,10 @@ const StudentSignup = () => {
               label="University"
               id="university"
               autoComplete="university"
+              value={formik.values.university}
+              onChange={formik.handleChange}
+              error={formik.touched.university && Boolean(formik.errors.university)}
+              helperText={formik.touched.university && formik.errors.university}
             />
           </Grid>
           <Grid item xs={12}>
@@ -123,6 +169,10 @@ const StudentSignup = () => {
               label="Degree"
               id="degree"
               autoComplete="degree"
+              value={formik.values.degree}
+              onChange={formik.handleChange}
+              error={formik.touched.degree && Boolean(formik.errors.degree)}
+              helperText={formik.touched.degree && formik.errors.degree}
             />
           </Grid>
           <Grid item xs={12}>
@@ -132,6 +182,8 @@ const StudentSignup = () => {
               label="Major"
               id="major"
               autoComplete="major"
+              value={formik.values.major}
+              onChange={formik.handleChange}
             />
           </Grid>
           <Grid item xs={12}>
@@ -141,6 +193,8 @@ const StudentSignup = () => {
               label="What positions you are searching?"
               id="positions"
               autoComplete="positions"
+              value={formik.values.positions}
+              onChange={formik.handleChange}
             />
           </Grid>
           <Grid item xs={12}>
@@ -150,6 +204,8 @@ const StudentSignup = () => {
               label="Skills"
               id="skills"
               autoComplete="skills"
+              value={formik.values.skills}
+              onChange={formik.handleChange}
             />
           </Grid>
           <Grid item xs={12}>
@@ -159,6 +215,8 @@ const StudentSignup = () => {
               multiline
               fullWidth
               rows={4}
+              value={formik.values.description}
+              onChange={formik.handleChange}
             />
           </Grid>
         </Grid>
