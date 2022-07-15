@@ -102,22 +102,6 @@ class Company(db.Model):
         }
 
 
-# class Company(db.Model):
-#     __tablename__ = 't_companies'
-#     id = db.Column(db.Integer, primary_key=True)
-#     name = db.Column(db.VARCHAR(255))
-#     logo = db.Column(db.VARCHAR(255))
-#     website = db.Column(db.VARCHAR(255))
-#
-#     def get_info(self):
-#         return {
-#             "id": self.id,
-#             "name": self.name,
-#             "logo": self.logo,
-#             "website": self.website
-#         }
-
-
 job_skills = db.Table('r_job_skill',
                       db.Column('job_id', db.Integer, db.ForeignKey('t_internships.id'), primary_key=True),
                       db.Column('skill_id', db.Integer, db.ForeignKey('t_skills.id'), primary_key=True))
@@ -199,7 +183,6 @@ class Internship(db.Model):
 
         }
     # more
-
 
 class Comment(db.Model):
     __tablename__ = 't_comment'
