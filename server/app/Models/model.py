@@ -1,14 +1,15 @@
 """ORM and Schema"""
 
 from importlib.resources import Resource
+import re
 from sys import intern
-from numpy import require
+from numpy import cov, require
 from sqlalchemy.ext.hybrid import hybrid_method
 from wtforms import Form, IntegerField, StringField, PasswordField, validators
 from .. import bcrypt, db
 from sqlalchemy.dialects.mysql import TINYINT
 
-
+from sqlalchemy.schema import Sequence
 class User(db.Model):
     """User(student&company) table"""
     __tablename__ = 't_user'
@@ -40,6 +41,7 @@ class User(db.Model):
 class Internship(db.Model):
     """Internship table"""
     __tablename__ = 't_internships'
+
     job_id = db.Column('id', db.Integer, autoincrement=True, primary_key=True)
     publisher = db.Column('publisher', db.String(256), nullable=False)
     job_type = db.Column('type', db.String(256), nullable=False)
@@ -61,12 +63,24 @@ class Internship(db.Model):
     questions = db.relationship('Question', backref='internship', lazy=True)
     require_resume = db.Column('require_resume', TINYINT(), nullable=False)
     require_coverLetter = db.Column('require_coverLetter', TINYINT(), nullable=False)
-
+    processes = db.relationship('Process', backref='internship', lazy=True)
     def __repr__(self):
         return f"<Intership: id: {self.id}, company: {self.company_id}>"
 
+
+    def __init__(self, title, closed_time, location, currency, min, max, is_remote, type, description):
+        self.title = title
+        self.closed_time = closed_time
+        self.location = location
+        self.salary_curreny = currency
+        self.min_salary = min
+        self.max_salary = max
+        self.is_remote = is_remote
+        self.job_type = type
+        self.description = description
+    """
+
     def __init__(self, data):
-        self.id = data['id']
         self.publisher = data['publisher']
         self.type = data['type']
         self.title = data['title']
@@ -80,6 +94,8 @@ class Internship(db.Model):
         self.company_id = data['company_id']
         self.require_resume = data['require_resume']
         self.require_coverLetter = data['require_coverLetter']
+    """
+
 
 class Application(db.Model):
     __tablename__ = 't_intern_user_status'
@@ -209,8 +225,7 @@ class Question(db.Model):
     def __repr__(self):
         return f"<Question: id: {self.id}, intern id{self.inetrn_id}>"
 
-    def __init__(self, id, intern_id, content):
-        self.id = id
+    def __init__(self, intern_id, content):
         self.inetrn_id = intern_id
         self.content = content
 
@@ -227,3 +242,18 @@ class Answer(db.Model):
         self.student_id = student_id
         self.question_id = question_id
         self.answer = answer
+
+class Process(db.Model):
+    __tablename__ = 't_process'
+    id = db.Column('id', db.Integer, autoincrement=True, primary_key=True)
+    intern_id = db.Column('intern_id', db.Integer, db.ForeignKey('t_internships.id'),nullable=False)
+    order = db.Column('order', db.Integer, nullable=False)
+    name = db.Column('name', db.String(255), nullable=False)
+
+    def __repr__(self):
+        return f"<Process: id: {self.id}"
+
+    def __init__(self, intern_id, order, name):
+        self.intern_id = intern_id
+        self.order = order
+        self.name = name

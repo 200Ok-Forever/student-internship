@@ -239,4 +239,36 @@ class CreateIntern(Resource):
             return {"message": "No permission"}, 400
 
         # 3. create
+        try:
+            # create question
+            intern = model.Internship(data['job_title'], data['closed_date'], data['location'], data['salary_currency'], data['min_salary'], data['max_salary'], data['is_remote'], data['job_type'], data['description'])
+            db.session.add(intern)
+            db.session.flush()
+
+            if data['application']['resume']:
+                intern.require_resume = 1
+            else:
+                intern.require_resume = 0
+            if data['application']['coverLetter']:
+                intern.require_coverLetter = 1
+            else:
+                intern.require_coverLetter = 0
+
+
+            for que in data['application']['questions']:
+                new_que = model.Question(intern.job_id, que)
+                db.session.add(new_que)
+                db.session.flush()
         
+            # recruiting_process 
+            order = 1
+            for pro in data['recruiting_process']:
+                new_pro = model.Process(intern.job_id, order, pro)
+                order+=1
+                db.session.add(new_pro)
+                db.session.flush()
+            db.session.commit()
+        except:
+            db.session.rollback()
+            return {"message": "Something wrong"}, 400
+        return {"message": "Successfuly"}, 200

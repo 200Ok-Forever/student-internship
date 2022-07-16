@@ -20,8 +20,8 @@ company_info = {
 class Form(fields.Raw):
   def format(self, value):
     return {  
-    "resume": fields.String(required=True), 
-    "coverLetter": fields.String(required=True), 
+    "resume": fields.Boolean(required=True), 
+    "coverLetter": fields.Boolean(required=True), 
     "questions": fields.List(fields.String, required=True)
     }
       
@@ -37,7 +37,7 @@ intern_info = {
     "job_type": fields.String(required=True),
     "recruiting_process": fields.List(fields.String(), required=True),
     "description": fields.String(required=True),
-    "application": Form(required=True)
+    "application": Form(required=True),
 }
 
 
