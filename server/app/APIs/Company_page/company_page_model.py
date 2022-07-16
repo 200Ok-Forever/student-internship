@@ -1,4 +1,5 @@
 from flask_restx import Namespace, fields
+from numpy import require
 
 
 company_info = {
@@ -15,8 +16,23 @@ company_info = {
     "description": fields.String(required=True)
 }
 
+
+intern_info = {
+    "job_title": fields.String(required=True),
+    "closed_date": fields.String(required=True),
+    "location": fields.String(required=True),
+    "salary_currency": fields.String(required=True),
+    "min_salary": fields.Integer(required=True),
+    "max_salary": fields.Integer(required=True),
+    "is_remote": fields.String(required=True),
+    "job_type": fields.String(required=True),
+    "recruiting_process": fields.List(fields.String(), required=True),
+    "description": fields.String(required=True),
+    "application": {"resume": fields.String(required=True), "coverLetter": fields.String(required=True), "questions": fields.List(fields.String, require=True)}
+}
+
 class CompanyPageAPI:
     company_ns = Namespace("company", description="Company related operations.")
 
     company_data = company_ns.model('Company info', company_info)
-
+    intern_data = company_ns.model('Intern info', intern_info)
