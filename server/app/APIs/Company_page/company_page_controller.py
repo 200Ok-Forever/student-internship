@@ -1,4 +1,5 @@
 from flask import request, jsonify
+from flask_jwt_extended import get_jwt_identity
 from flask_restx import Resource
 from .company_page_model import CompanyPageAPI
 from .company_page_utils import CompanyPageUtils
@@ -28,14 +29,25 @@ class GetCompany(Resource):
     
     @company_ns.response(200, "Successfully")
     @company_ns.response(400, "Something wrong")
+    #@jwt_required()
     @company_ns.expect(CompanyPageAPI.company_data, validate=True)
     def post(self, id):
         data = company_ns.payload
-        movie = db.session.query(model.Company).filter(model.Company.id == id).first()
-        if movie == None:
-            return {"message": "Invalid movie id"}, 400
+        #uid = get_jwt_identity()
+        uid = 4
+        query = db.session.query(model.Company).filter(model.Company.id == id)
         
-        movie.data = data
+        # 1. check company id
+        company = query.first()
+        if company== None:
+            return {"message": "Invalid company id"}, 400
+        # 2. check permission : is recuiter and belongs to this company
+        if company.user_id != uid:
+            return {"message": "No permission"}, 400
+        
+        # 3. update
+        query.update(data, synchronize_session = False)
+
         db.session.commit()
         return {"message": "Successfully"}, 200
 

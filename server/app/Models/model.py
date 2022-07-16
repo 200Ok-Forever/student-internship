@@ -11,7 +11,8 @@ class User(db.Model):
     uid = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.VARCHAR(320), nullable=False, unique=True)
     hashed_password = db.Column(db.BINARY(60), nullable=False)
-    role = db.Column(db.Integer, nullable=False)
+    role = db.Column(db.Integer, nullable=False), 
+    company = db.relationship('Company', backref='user', lazy=True)
 
     @property
     def password(self):
@@ -174,6 +175,7 @@ class Company(db.Model):
     description = db.Column('description', db.String(255))
     company_url = db.Column('company_url', db.String(256))
     jobs = db.relationship('Internship', backref='company', lazy=True)
+    user_id = db.Column('user_id', db.Integer,  db.ForeignKey('t_user.uid'))
 
     def __repr__(self):
         return f"<Company: id: {self.id}, name{self.name}>"
