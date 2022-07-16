@@ -1,3 +1,4 @@
+from re import L
 from flask import request, jsonify
 from flask_jwt_extended import get_jwt_identity
 from flask_restx import Resource
@@ -11,6 +12,7 @@ from flask import request
 from flask_restx import Resource, reqparse
 
 from sqlalchemy import or_
+
 
 company_ns = CompanyPageAPI.company_ns
 
@@ -129,3 +131,28 @@ class CompanyJobManager(Resource):
         db.session.commit()
 
         return {"message": "Successfully"}, 200
+
+@company_ns.route("/<jobid>/applicant")
+class GetAllApplications(Resource):
+    @company_ns.response(200, "Successfully")
+    @company_ns.response(400, "Something wrong")
+    #@jwt_required()
+    def get(self, jobid):
+        # uid = get_jwt_identity()
+        uid = 3
+
+        # 1. check internship id
+        query = db.session.query(model.Internship).filter(model.Internship.job_id == jobid)
+        job = query.first()
+        if job == None:
+            return {"message": "Invalid internship id"}, 400
+
+        # 2. check permission
+        if job.company.user_id != uid:
+            return {"message": "No permission"}, 400
+
+        # 3. get all applications
+        applications = db.session.query(model.Application).filter(model.Application.intership_id == jobid, model.Application.is_applied == 'True').all()
+        print(applications)
+
+        return {'applicant': convert_model_to_dict(applications)}, 200
