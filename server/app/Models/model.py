@@ -34,18 +34,23 @@ class User(db.Model):
 class Internship(db.Model):
     """Internship table"""
     __tablename__ = 't_internships'
-    id = db.Column('id', db.Integer, autoincrement=True, primary_key=True)
+    job_id = db.Column('id', db.Integer, autoincrement=True, primary_key=True)
     publisher = db.Column('publisher', db.String(256), nullable=False)
-    type = db.Column('type', db.String(256), nullable=False)
+    job_type = db.Column('type', db.String(256), nullable=False)
     title = db.Column('title', db.String(256), nullable=False)
     apply_link = db.Column('apply_link', db.String(256), nullable=False)
     description = db.Column('description', db.String(256), nullable=False)
     is_remote = db.Column('is_remote', db.String(256), nullable=False)
     posted_time = db.Column('posted_time',db.String(256), nullable=False)
     latitude = db.Column('latitude',db.String(256), nullable=False)
+    location = db.Column('location',db.String(256))
     longitute = db.Column('longitute',db.String(256), nullable=False)
     google_link = db.Column('google_link',db.String(256))
     company_id = db.Column('company_id', db.Integer, db.ForeignKey('t_company.id'), nullable=False)
+    closed_time = db.Column('expiration_datetime_utc', db.String(255))
+    min_salary = db.Column('min_salary', db.Integer)
+    max_salary = db.Column('max_salary', db.Integer)
+    salary_curreny = db.Column('salary_curreny', db.String(256))
     students_of_appilcation = db.relationship('Student', secondary='t_application', back_populates='internships', lazy=True)
 
     def __repr__(self):
