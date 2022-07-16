@@ -15,7 +15,7 @@ class User(db.Model):
     uid = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.VARCHAR(320), nullable=False, unique=True)
     hashed_password = db.Column(db.BINARY(60), nullable=False)
-    role = db.Column(db.Integer, nullable=False), 
+    role = db.Column(db.Integer, nullable=False)
     company = db.relationship('Company', backref='user', lazy=True)
 
     @property
@@ -36,6 +36,7 @@ class User(db.Model):
             'email': self.email,
             'role': self.role
         }
+
 class Internship(db.Model):
     """Internship table"""
     __tablename__ = 't_internships'
@@ -112,7 +113,7 @@ class Student(db.Model):
     skills = db.Column(db.VARCHAR(100))
     description = db.Column(db.VARCHAR(200))
     internships = db.relationship('Internship', secondary='t_intern_user_status', back_populates='students_of_appilcation', lazy=True)
-    questions = db.relationship('Answer', secondary='r_intern_question_answer', back_populates='students', lazy=True)
+    questions = db.relationship('Question', secondary='r_intern_question_answer', back_populates='students', lazy=True)
 
     def __repr__(self):
         return f"<Student: {self.username}, {self.email}, {self.first_name} {self.last_name}>"
@@ -204,8 +205,7 @@ class Question(db.Model):
     id = db.Column('id', db.Integer, autoincrement=True, primary_key=True)
     inetrn_id = db.Column('intern_id', db.Integer, db.ForeignKey('t_internships.id'),nullable=False)
     content= db.Column('content', db.String(10000), nullable=False)
-    students = db.relationship('Answer', secondary='r_intern_question_answer', back_populates='questions', lazy=True)
-
+    students = db.relationship('Student', secondary='r_intern_question_answer', back_populates='questions', lazy=True)
     def __repr__(self):
         return f"<Question: id: {self.id}, intern id{self.inetrn_id}>"
 
@@ -217,7 +217,7 @@ class Question(db.Model):
 class Answer(db.Model):
     __tablename__ = "r_intern_question_answer"
     student_id = db.Column('student_id', db.Integer, db.ForeignKey('t_student.id'),nullable=False, primary_key=True)
-    question_id = db.Column('question_id', db.Integer, db.ForeignKey('t_intern_question'), nullable=False, primary_key=True)
+    question_id = db.Column('question_id', db.Integer, db.ForeignKey('t_intern_question.id'), nullable=False, primary_key=True)
     answer = db.Column('answer', db.String(10000), nullable=False)
 
     def __repr__(self):

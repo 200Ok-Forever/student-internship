@@ -17,6 +17,15 @@ company_info = {
 }
 
 
+class Form(fields.Raw):
+  def format(self, value):
+    return {  
+    "resume": fields.String(required=True), 
+    "coverLetter": fields.String(required=True), 
+    "questions": fields.List(fields.String, required=True)
+    }
+      
+
 intern_info = {
     "job_title": fields.String(required=True),
     "closed_date": fields.String(required=True),
@@ -28,8 +37,9 @@ intern_info = {
     "job_type": fields.String(required=True),
     "recruiting_process": fields.List(fields.String(), required=True),
     "description": fields.String(required=True),
-    "application": {"resume": fields.String(required=True), "coverLetter": fields.String(required=True), "questions": fields.List(fields.String, require=True)}
+    "application": Form(required=True)
 }
+
 
 class CompanyPageAPI:
     company_ns = Namespace("company", description="Company related operations.")

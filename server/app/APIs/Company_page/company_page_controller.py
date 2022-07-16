@@ -221,12 +221,14 @@ class Accept(Resource):
 class CreateIntern(Resource):
     @company_ns.response(200, "Successfully")
     @company_ns.response(400, "Something wrong")
+    @company_ns.expect(CompanyPageAPI.intern_data, validate=True)
     #@jwt_required()
     def post(self, companyid):
+        data = company_ns.payload
         # uid = get_jwt_identity()
         uid = 3
 
-        query = db.session.query(model.Company).filter(model.Company.id == id)
+        query = db.session.query(model.Company).filter(model.Company.id == companyid)
         
         # 1. check company id
         company = query.first()
