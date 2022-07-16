@@ -50,16 +50,20 @@ class GetCompany(Resource):
 
         db.session.commit()
         return {"message": "Successfully"}, 200
-
+    """
     @company_ns.response(200, "Successfully")
     @company_ns.response(400, "Something wrong")
+    #@jwt_required()
     def delete(self, id):
+        #uid = get_jwt_identity()
         movie = db.session.query(model.Company).filter(model.Company.id == id).first()
         if movie == None:
             return {"message": "Invalid company id"}, 400
         db.session.delete(movie)
         db.session.commit()
         return {"message": "Successfully"}, 200
+
+    """
 
 
 @company_ns.route("/<id>/jobs")
@@ -101,16 +105,27 @@ class GetCompanyJobs(Resource):
 
         return {"jobs":result}, 200
 
-@company_ns.route("/{id}/jobs")
-class GetCompanyJobs(Resource):
-
+@company_ns.route("/jobs/<jobid>")
+class CompanyJobManager(Resource):
     @company_ns.response(200, "Successfully")
     @company_ns.response(400, "Something wrong")
-    @jwt_required()
-    def get(self, id):
-        movie = db.session.query(model.Company).filter(
-            model.Company.id == id).first()
-        if movie == None:
-            return {"message": "Invalid movie id"}, 400
+    #@jwt_required()
+    def delete(self, jobid):
+        # uid = get_jwt_identity()
+        uid = 4
+        # 1. check internship id
+        query = db.session.query(model.Internship).filter(model.Internship.job_id == jobid)
+        job = query.first()
+        if job == None:
+            return {"message": "Invalid internship id"}, 400
         
-        return convert_model_to_dict(movie.jobs), 200
+        # 2. check permission
+        if job.company.user_id != uid:
+            return {"message": "No permission"}, 400
+
+        # 3. delete
+
+        db.session.delete(job)
+        db.session.commit()
+
+        return {"message": "Successfully"}, 200

@@ -52,7 +52,7 @@ class Internship(db.Model):
     min_salary = db.Column('min_salary', db.Integer)
     max_salary = db.Column('max_salary', db.Integer)
     salary_curreny = db.Column('salary_curreny', db.String(256))
-    students_of_appilcation = db.relationship('Student', secondary='t_application', back_populates='internships', lazy=True)
+    students_of_appilcation = db.relationship('Student', secondary='t_intern_user_status', back_populates='internships', lazy=True)
 
     def __repr__(self):
         return f"<Intership: id: {self.id}, company: {self.company_id}>"
@@ -72,12 +72,13 @@ class Internship(db.Model):
         self.company_id = data['company_id']
 
 class Application(db.Model):
-    __tablename__ = 't_application'
+    __tablename__ = 't_intern_user_status'
     id = db.Column('id', db.Integer, autoincrement=True, primary_key=True)
-    student_id = db.Column('student_id', db.Integer, db.ForeignKey('t_student.id'), nullable=False)
-    intership_id = db.Column('intership_id', db.Integer, db.ForeignKey('t_internships.id'), nullable=False)
-    status = db.Column('status', db.Integer, nullable=False)
-    apply_time = db.Column('apply_time', db.String(256), nullable=False)
+    student_id = db.Column('uid', db.Integer, db.ForeignKey('t_student.id'), nullable=False)
+    intership_id = db.Column('intern_id', db.Integer, db.ForeignKey('t_internships.id'), nullable=False)
+    is_seen = db.Column('is_seen', db.String(255))
+    is_save= db.Column('is_save', db.String(255))
+    is_applied = db.Column('is_applied', db.String(255))
 
     def __repr__(self):
         return f"<Application: id: {self.id}, student_id: {self.student_id} internship_id: {self.intership_id}>"
@@ -92,7 +93,6 @@ class Student(db.Model):
     """Student table"""
     __tablename__ = 't_student'
     id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
-    username = db.Column(db.VARCHAR(50), nullable=False, unique=True)
     email = db.Column(db.VARCHAR(320), nullable=False, unique=True)
     first_name = db.Column(db.VARCHAR(50), nullable=False)
     last_name = db.Column(db.VARCHAR(50), nullable=False)
@@ -101,7 +101,7 @@ class Student(db.Model):
     major = db.Column(db.VARCHAR(15))
     skills = db.Column(db.VARCHAR(100))
     description = db.Column(db.VARCHAR(200))
-    internships = db.relationship('Internship', secondary='t_application', back_populates='students_of_appilcation', lazy=True)
+    internships = db.relationship('Internship', secondary='t_intern_user_status', back_populates='students_of_appilcation', lazy=True)
 
     def __repr__(self):
         return f"<Student: {self.username}, {self.email}, {self.first_name} {self.last_name}>"
