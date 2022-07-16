@@ -360,13 +360,13 @@ class CreateIntern(Resource):
             db.session.rollback()
             return {"message": "Something wrong"}, 400
         return {"message": "Successfuly"}, 200
-"""
+
 @company_ns.route("/<jobid>/recomendation")
 class Recomendation(Resource):
     @company_ns.response(200, "Successfully")
     @company_ns.response(400, "Something wrong")
     #@jwt_required()
-    def get(self):
+    def get(self, jobid):
         # uid = get_jwt_identity()
         uid = 3
         query = db.session.query(model.Internship).filter(model.Internship.job_id == jobid)
@@ -380,11 +380,32 @@ class Recomendation(Resource):
             return {"message": "No permission"}, 400
 
         # 3. recomendation
-        # get all the match results
-        matched_movies = db.session.query(model.Student).filter(Movie.Movies.title.ilike(f'%{kw}%')).all()
-    # get the best match use fuzzywuzzy
-    best = process.extract(kw, matched_movies, limit=15)
-
-"""
+        students = job.students_of_appilcation
+        data = {}
+        ratio_list = []
+        for stu in students:
+            ratio = SequenceMatcher(None, stu.description.lower(), job.description.lower()).ratio()
+            ratio_list.append(ratio)
+            if str(ratio) not in data.keys():
+                data[str(ratio)] = [stu]
+            else:
+                data[str(ratio)].append(stu)
+    
+        ratio_list.sort()
+        ratio_list.reverse()
+        result = []
+        num = 0
+        index = 0
+        while num < 6:
+            if index >= len(ratio_list):
+                break
+            students = data[str(ratio_list[index])]
+            result += students
+            num+=len(students)
+            index+=1
+            if num >= 6:
+                break
+        return {"reault": convert_model_to_dict(result)}, 200
+    
 
 
