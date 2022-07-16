@@ -27,6 +27,7 @@ import History from "./components/student/History";
 import Company from "./components/company/Company";
 import ForgottenPassword from "./components/auth/ForgottenPassword";
 import ResetPassword from "./components/auth/ResetPassword";
+import ResumeCreator from "./components/educational/ResumeCreator"
 
 function App() {
   return (
@@ -46,6 +47,7 @@ function App() {
           <Route path="/signup/company" exact component={CompanySignup} />
           <Route path="/passwordreset/send" exact component={ForgottenPassword} />
           <Route path="/passwordreset/reset" exact component={ResetPassword} />
+          <Route path="/resume" exact component={ResumeCreator} />
           <Route path="/forum" exact component={Forum} />
           <Route component={NarrowContainerRoutes} />
           <Route path="/resources" exact component={Resources} />
