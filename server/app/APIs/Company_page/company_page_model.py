@@ -1,9 +1,14 @@
 from flask_restx import Namespace, fields
 
 
-class CompanyPageAPI:
-    api = Namespace("company", description="Company related operations.")
+company_info = {
+    "name": fields.String(required=True),
+    "logo": fields.String(required=True),
+    "website": fields.String(required=True)
+}
 
-    company_info = api.model('Company info', {
-        'id': fields.String,
-    })
+class CompanyPageAPI:
+    company_ns = Namespace("company", description="Company related operations.")
+
+    company_data = company_ns.model('Company info', company_info)
+

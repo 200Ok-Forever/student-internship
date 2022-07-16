@@ -2,17 +2,74 @@ from flask import request, jsonify
 from flask_restx import Resource
 from .company_page_model import CompanyPageAPI
 from .company_page_utils import CompanyPageUtils
-from flask_jwt_extended import jwt_required
+from  ...Models import model 
+from ...Helpers.other_until import convert_object_to_dict, convert_model_to_dict
+from ... import db
+from flask_jwt import jwt_required, JWT
+from flask import request
 
-company_page_api = CompanyPageAPI.api
+company_ns = CompanyPageAPI.company_ns
 
 
-@company_page_api.route("/id")
+@company_ns.route("/<id>")
 class GetCompany(Resource):
-    @company_page_api.doc("Get company", responses={
-        200: "success",
-        404: "User not found!",
-    })
-    # @jwt_required()
-    def post(self):
-        return "Hi"
+
+    @company_ns.response(200, "Successfully")
+    @company_ns.response(400, "Something wrong")
+    def get(self, id):
+        movie = db.session.query(model.Company).filter(model.Company.id == id).first()
+        if movie == None:
+            return {"message": "Invalid movie id"}, 400
+
+        return convert_object_to_dict(movie), 200
+    
+    @company_ns.response(200, "Successfully")
+    @company_ns.response(400, "Something wrong")
+    @company_ns.expect(CompanyPageAPI.company_data, validate=True)
+    def post(self, id):
+        data = company_ns.payload
+        movie = db.session.query(model.Company).filter(model.Company.id == id).first()
+        if movie == None:
+            return {"message": "Invalid movie id"}, 400
+        
+        movie.data = data
+        db.session.commit()
+        return {"message": "Successfully"}, 200
+
+    @company_ns.response(200, "Successfully")
+    @company_ns.response(400, "Something wrong")
+    def delete(self, id):
+        movie = db.session.query(model.Company).filter(model.Company.id == id).first()
+        if movie == None:
+            return {"message": "Invalid movie id"}, 400
+        db.session.delete(movie)
+        db.session.commit()
+        return {"message": "Successfully"}, 200
+
+
+@company_ns.route("/{id}/jobs")
+class GetCompanyJobs(Resource):
+
+    @company_ns.response(200, "Successfully")
+    @company_ns.response(400, "Something wrong")
+    @jwt_required()
+    def get(self, id):
+        movie = db.session.query(model.Company).filter(model.Company.id == id).first()
+        if movie == None:
+            return {"message": "Invalid movie id"}, 400
+        
+        return convert_model_to_dict(movie.jobs), 200
+
+@company_ns.route("/{id}/jobs")
+class GetCompanyJobs(Resource):
+
+    @company_ns.response(200, "Successfully")
+    @company_ns.response(400, "Something wrong")
+    @jwt_required()
+    def get(self, id):
+        movie = db.session.query(model.Company).filter(
+            model.Company.id == id).first()
+        if movie == None:
+            return {"message": "Invalid movie id"}, 400
+        
+        return convert_model_to_dict(movie.jobs), 200

@@ -31,8 +31,57 @@ class User(db.Model):
             'email': self.email,
             'role': self.role
         }
+class Internship(db.Model):
+    """Internship table"""
+    __tablename__ = 't_internships'
+    id = db.Column('id', db.Integer, autoincrement=True, primary_key=True)
+    publisher = db.Column('publisher', db.String(256), nullable=False)
+    type = db.Column('type', db.String(256), nullable=False)
+    title = db.Column('title', db.String(256), nullable=False)
+    apply_link = db.Column('apply_link', db.String(256), nullable=False)
+    description = db.Column('description', db.String(256), nullable=False)
+    is_remote = db.Column('is_remote', db.String(256), nullable=False)
+    posted_time = db.Column('posted_time',db.String(256), nullable=False)
+    latitude = db.Column('latitude',db.String(256), nullable=False)
+    longitute = db.Column('longitute',db.String(256), nullable=False)
+    google_link = db.Column('google_link',db.String(256))
+    company_id = db.Column('company_id', db.Integer, db.ForeignKey('t_company.id'), nullable=False)
+    students_of_appilcation = db.relationship('Student', secondary='t_application', back_populates='internships', lazy=True)
 
+    def __repr__(self):
+        return f"<Intership: id: {self.id}, company: {self.company_id}>"
 
+    def __init__(self, data):
+        self.id = data['id']
+        self.publisher = data['publisher']
+        self.type = data['type']
+        self.title = data['title']
+        self.apply_link = data['apply_link']
+        self.description = data['description']
+        self.is_remote = data['is_remote']
+        self.posted_time = data['posted_time']
+        self.latitude = data['latitude']
+        self.longitute = data['longitute']
+        self.google_link = data['google_link']
+        self.company_id = data['company_id']
+
+class Application(db.Model):
+    __tablename__ = 't_application'
+    id = db.Column('id', db.Integer, autoincrement=True, primary_key=True)
+    student_id = db.Column('student_id', db.Integer, db.ForeignKey('t_student.id'), nullable=False)
+    intership_id = db.Column('intership_id', db.Integer, db.ForeignKey('t_internships.id'), nullable=False)
+    status = db.Column('status', db.Integer, nullable=False)
+    apply_time = db.Column('apply_time', db.String(256), nullable=False)
+
+    def __repr__(self):
+        return f"<Application: id: {self.id}, student_id: {self.student_id} internship_id: {self.intership_id}>"
+
+    def __init__(self, student_id, internship_id, status, apply_time):
+        self.student_id = student_id
+        self.intership_id = internship_id
+        self.status = status
+        self.apply_time = apply_time
+        
 class Student(db.Model):
     """Student table"""
     __tablename__ = 't_student'
@@ -46,6 +95,7 @@ class Student(db.Model):
     major = db.Column(db.VARCHAR(15))
     skills = db.Column(db.VARCHAR(100))
     description = db.Column(db.VARCHAR(200))
+    internships = db.relationship('Internship', secondary='t_application', back_populates='students_of_appilcation', lazy=True)
 
     def __repr__(self):
         return f"<Student: {self.username}, {self.email}, {self.first_name} {self.last_name}>"
@@ -65,20 +115,8 @@ class Student(db.Model):
         }
 
 
-class Company(db.Model):
-    """Company table"""
-    __tablename__ = 't_company'
-    id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    name = db.Column(db.String(20), nullable=False)
-    # more
 
 
-class Internship(db.Model):
-    """Internship table"""
-    __tablename__ = 'internship'
-    id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    name = db.Column(db.String(20), nullable=False)
-    # more
 
 
 class LoginSchema(Form):
@@ -113,3 +151,34 @@ class CompanySignUpSchema(SignUpSchema):
     founded_year = StringField('Founded year', [validators.DataRequired(), validators.Length(4)])
     company_size = IntegerField('Company size', [validators.DataRequired(), validators.Length(4)])
     location = StringField('Location', [validators.Length(max=100)])
+
+class Company(db.Model):
+    """Company table"""
+    __tablename__ = 't_company'
+    id = db.Column('id', db.Integer, autoincrement=True, primary_key=True)
+    email = db.Column('email', db.String(320), nullable=False)
+    name = db.Column('company_name', db.String(255), nullable=False)
+    first_name = db.Column('first_name', db.String(255))
+    last_name = db.Column('last_name', db.String(255))
+    industry = db.Column('industry', db.String(255))
+    linkedin = db.Column('linkedin', db.String(255))
+    founded_year = db.Column('founded_year', db.String(4))
+    company_size = db.Column('company_size', db.String(10))
+    logo = db.Column('logo', db.String(255))
+    location = db.Column('location', db.String(255))
+    description = db.Column('description', db.String(255))
+    company_url = db.Column('company_url', db.String(256))
+    jobs = db.relationship('Internship', backref='company', lazy=True)
+
+    def __repr__(self):
+        return f"<Company: id: {self.id}, name{self.name}>"
+
+    def __init__(self, id, name, logo, website):
+        self.id = id
+        self.name = name
+        self.logo = logo
+        self.website = website
+
+
+
+
