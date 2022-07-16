@@ -3,13 +3,13 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import ResumeSectionBar from "./ResumeSectionBar";
 import IconButton from "@mui/material/IconButton";
-import AddIcon from '@mui/icons-material/Add';
+import AddIcon from "@mui/icons-material/Add";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
-import LooksOneRoundedIcon from '@mui/icons-material/LooksOneRounded';
-import LooksTwoOutlinedIcon from '@mui/icons-material/LooksTwoOutlined';
-import Looks3OutlinedIcon from '@mui/icons-material/Looks3Outlined';
-import NavigateNextOutlinedIcon from '@mui/icons-material/NavigateNextOutlined';
+import LooksOneRoundedIcon from "@mui/icons-material/LooksOneRounded";
+import LooksTwoOutlinedIcon from "@mui/icons-material/LooksTwoOutlined";
+import Looks3OutlinedIcon from "@mui/icons-material/Looks3Outlined";
+import NavigateNextOutlinedIcon from "@mui/icons-material/NavigateNextOutlined";
 import { Paper } from "@mui/material";
 
 const resumeItem = [
@@ -99,7 +99,9 @@ const ResumeCreator = () => {
             Add Section
           </Typography>
         </Paper>
-        <Button variant="contained" sx={{mt: "50px", marginLeft: "550px"}}>Next</Button>
+        <Button variant="contained" sx={{ mt: "50px", marginLeft: "550px" }}>
+          Next
+        </Button>
       </Box>
     </Box>
   );

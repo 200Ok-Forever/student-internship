@@ -11,7 +11,6 @@ import { useHistory } from "react-router-dom";
 import { Paper } from "@mui/material";
 
 const StudentSignup = () => {
-
   const formik = useFormik({
     initialValues: {
       email: "",
