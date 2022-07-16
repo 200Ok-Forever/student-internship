@@ -11,16 +11,19 @@ import LooksTwoOutlinedIcon from "@mui/icons-material/LooksTwoOutlined";
 import Looks3OutlinedIcon from "@mui/icons-material/Looks3Outlined";
 import NavigateNextOutlinedIcon from "@mui/icons-material/NavigateNextOutlined";
 import { Paper } from "@mui/material";
+import { useHistory } from "react-router-dom";
 
 const resumeItem = [
   { title: "Personal Information", contents: {} },
   { title: "Education", contents: [] },
-  { title: "Project", contents: [] },
-  { title: "Experience", contents: [] },
+  { title: "Work Experience", contents: [] },
+  { title: "Relavant Project", contents: [] },
   { title: "Skills", contents: [] },
 ];
 
 const ResumeCreator = () => {
+  const history = useHistory();
+
   return (
     <Box
       sx={{
@@ -99,7 +102,11 @@ const ResumeCreator = () => {
             Add Section
           </Typography>
         </Paper>
-        <Button variant="contained" sx={{ mt: "50px", marginLeft: "550px" }}>
+        <Button
+          variant="contained"
+          sx={{ mt: "50px", marginLeft: "550px" }}
+          onClick={() => history.push("/resume/s2")}
+        >
           Next
         </Button>
       </Box>
