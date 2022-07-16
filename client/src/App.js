@@ -27,7 +27,7 @@ import History from "./components/student/History";
 import Company from "./components/company/Company";
 import ForgottenPassword from "./components/auth/ForgottenPassword";
 import ResetPassword from "./components/auth/ResetPassword";
-import ResumeCreator from "./components/educational/ResumeCreator"
+import ResumeCreator from "./components/educational/ResumeCreator";
 import ResumeCreatorStep2 from "./components/educational/ResumeCreatorStep2";
 import Chat from "./components/chat/Chat";
 

@@ -12,7 +12,6 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import AddIcon from "@mui/icons-material/Add";
 
 const ResumeCreatorStep2 = () => {
-
   return (
     <Box
       sx={{
@@ -26,7 +25,7 @@ const ResumeCreatorStep2 = () => {
         gap: "30px",
         mx: "auto",
         mt: "auto",
-				mb: "100px"
+        mb: "100px",
       }}
     >
       <Typography
@@ -360,7 +359,7 @@ const ResumeCreatorStep2 = () => {
               rows={4}
             />
           </Grid>
-					<Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={6}>
             <Typography
               fontWeight="bold"
               fontFamily="inherit"
@@ -378,7 +377,7 @@ const ResumeCreatorStep2 = () => {
               </Typography>
             </Button>
           </Grid>
-					<Grid item xs={12}>
+          <Grid item xs={12}>
             <TextField
               required
               id="description"
@@ -390,7 +389,7 @@ const ResumeCreatorStep2 = () => {
           </Grid>
         </Grid>
       </Box>
-      <Button variant="contained" sx={{marginLeft: "550px" }}>
+      <Button variant="contained" sx={{ marginLeft: "550px" }}>
         Next
       </Button>
     </Box>
