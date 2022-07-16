@@ -237,7 +237,7 @@ const RenderMessageBubble = ({ message }) => {
   const isSentFromCurrUser = sender.username === "student1";
   const isInvitation = message.text.includes("MEETING BOT");
   const invitationMsg = message.text.replace("MEETING BOT:", "");
-  const { creds, activeChat } = useContext(ChatEngineContext);
+  const { activeChat } = useContext(ChatEngineContext);
 
   const acceptHandler = async () => {
     // TODO connect api
