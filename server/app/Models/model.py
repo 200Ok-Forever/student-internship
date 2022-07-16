@@ -1,8 +1,12 @@
 """ORM and Schema"""
 
+from importlib.resources import Resource
+from sys import intern
+from numpy import require
 from sqlalchemy.ext.hybrid import hybrid_method
 from wtforms import Form, IntegerField, StringField, PasswordField, validators
 from .. import bcrypt, db
+from sqlalchemy.dialects.mysql import TINYINT
 
 
 class User(db.Model):
@@ -53,6 +57,9 @@ class Internship(db.Model):
     max_salary = db.Column('max_salary', db.Integer)
     salary_curreny = db.Column('salary_curreny', db.String(256))
     students_of_appilcation = db.relationship('Student', secondary='t_intern_user_status', back_populates='internships', lazy=True)
+    questions = db.relationship('Question', backref='internship', lazy=True)
+    require_resume = db.Column('require_resume', TINYINT(), nullable=False)
+    require_coverLetter = db.Column('require_coverLetter', TINYINT(), nullable=False)
 
     def __repr__(self):
         return f"<Intership: id: {self.id}, company: {self.company_id}>"
@@ -70,6 +77,8 @@ class Internship(db.Model):
         self.longitute = data['longitute']
         self.google_link = data['google_link']
         self.company_id = data['company_id']
+        self.require_resume = data['require_resume']
+        self.require_coverLetter = data['require_coverLetter']
 
 class Application(db.Model):
     __tablename__ = 't_intern_user_status'
@@ -103,6 +112,7 @@ class Student(db.Model):
     skills = db.Column(db.VARCHAR(100))
     description = db.Column(db.VARCHAR(200))
     internships = db.relationship('Internship', secondary='t_intern_user_status', back_populates='students_of_appilcation', lazy=True)
+    questions = db.relationship('Answer', secondary='r_intern_question_answer', back_populates='students', lazy=True)
 
     def __repr__(self):
         return f"<Student: {self.username}, {self.email}, {self.first_name} {self.last_name}>"
@@ -188,5 +198,32 @@ class Company(db.Model):
         self.website = website
 
 
+class Question(db.Model):
+    __tablename__ = "t_intern_question"
 
+    id = db.Column('id', db.Integer, autoincrement=True, primary_key=True)
+    inetrn_id = db.Column('intern_id', db.Integer, db.ForeignKey('t_internships.id'),nullable=False)
+    content= db.Column('content', db.String(10000), nullable=False)
+    students = db.relationship('Answer', secondary='r_intern_question_answer', back_populates='questions', lazy=True)
 
+    def __repr__(self):
+        return f"<Question: id: {self.id}, intern id{self.inetrn_id}>"
+
+    def __init__(self, id, intern_id, content):
+        self.id = id
+        self.inetrn_id = intern_id
+        self.content = content
+
+class Answer(db.Model):
+    __tablename__ = "r_intern_question_answer"
+    student_id = db.Column('student_id', db.Integer, db.ForeignKey('t_student.id'),nullable=False, primary_key=True)
+    question_id = db.Column('question_id', db.Integer, db.ForeignKey('t_intern_question'), nullable=False, primary_key=True)
+    answer = db.Column('answer', db.String(10000), nullable=False)
+
+    def __repr__(self):
+        return f"<Answer: student id: {self.student_id}, question id{self.question_id}>"
+
+    def __init__(self, student_id, question_id, answer):
+        self.student_id = student_id
+        self.question_id = question_id
+        self.answer = answer

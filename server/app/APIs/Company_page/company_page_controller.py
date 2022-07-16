@@ -216,3 +216,25 @@ class Accept(Resource):
         print(appli.status)
         db.session.commit()
         return {"message": "Successfully"}, 200
+
+@company_ns.route("/<companyid>/create-job")
+class CreateIntern(Resource):
+    @company_ns.response(200, "Successfully")
+    @company_ns.response(400, "Something wrong")
+    #@jwt_required()
+    def post(self, companyid):
+        # uid = get_jwt_identity()
+        uid = 3
+
+        query = db.session.query(model.Company).filter(model.Company.id == id)
+        
+        # 1. check company id
+        company = query.first()
+        if company== None:
+            return {"message": "Invalid company id"}, 400
+        # 2. check permission : is recuiter and belongs to this company
+        if company.user_id != uid:
+            return {"message": "No permission"}, 400
+
+        # 3. create
+        
