@@ -7,19 +7,18 @@ import {
   Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   ChatEngine,
   ChatEngineContext,
-  ChatEngineWrapper,
   getOrCreateChat,
   sendMessage,
-  Socket,
 } from "react-chat-engine";
 import "./chat.scss";
 import InsertInvitationIcon from "@mui/icons-material/InsertInvitation";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import axios from "axios";
 
 const style = {
   position: "absolute",
@@ -39,7 +38,6 @@ const style = {
 
 const paper = {
   maxWidth: "500px",
-  wordBreak: "break-all",
   p: "9px 10px",
   backgroundColor: "#2594F9",
   color: "white",
@@ -51,8 +49,8 @@ const Chat = () => {
     <Box sx={{ marginTop: "85px" }}>
       <ChatEngine
         projectID="e7fb7381-46fd-413f-9422-766a54881ff6"
-        userName="Google"
-        userSecret="google"
+        userName="student1"
+        userSecret="a"
         height="90vh"
         renderNewChatForm={(creds) => <RenderChatForm creds={creds} />}
         onNewMessage={() =>
@@ -154,7 +152,7 @@ const RenderNewMessageForm = ({ creds, chatID }) => {
   const [text, setText] = useState("");
   const [open, setOpen] = useState(false);
   const [time, setTime] = useState(new Date());
-  const username = "Google";
+  const username = "student1";
   const handleChange = (newTime) => {
     setTime(newTime);
   };
@@ -170,7 +168,7 @@ const RenderNewMessageForm = ({ creds, chatID }) => {
     const minutesSeconds = time.toLocaleTimeString();
     const meeting_time =
       time.toLocaleDateString() + " " + minutesSeconds.substr(0, 5);
-    const text = `MEETING BOT:🎉 Hi! ${username} invites you to join zoom meeting on ${meeting_time}`;
+    const text = `MEETING BOT:😊Hi! ${username} invites you to join zoom meeting on ${meeting_time}`;
     handleSubmit(text);
     handleClose();
   };
@@ -235,29 +233,66 @@ const RenderNewMessageForm = ({ creds, chatID }) => {
 };
 
 const RenderMessageBubble = ({ message }) => {
-  // console.log("🚀 ~ creds", creds);
-  // console.log("🚀 ~ message", chat);
   const sender = message.sender;
-  const isSentFromCurrUser = sender.username === "Google";
+  const isSentFromCurrUser = sender.username === "student1";
   const isInvitation = message.text.includes("MEETING BOT");
   const invitationMsg = message.text.replace("MEETING BOT:", "");
   const { creds, activeChat } = useContext(ChatEngineContext);
 
-  const acceptHandler = () => {
+  const acceptHandler = async () => {
     // TODO connect api
     console.log("accept");
-    sendMessage(creds, activeChat, {
-      text: `${creds.userName} accepted your invitation`,
-    });
+    // sendMessage(creds, activeChat, {
+    //   text: `${creds.userName} accepted your invitation`,
+    // });
+
+    const headers = {
+      "Project-ID": "e7fb7381-46fd-413f-9422-766a54881ff6",
+      "User-Name": "student1",
+      "User-Secret": "a",
+    };
+    const headers2 = {
+      "Project-ID": "e7fb7381-46fd-413f-9422-766a54881ff6",
+      "User-Name": "Google",
+      "User-Secret": "a",
+    };
+    await axios.post(
+      `https://api.chatengine.io/chats/${activeChat}/messages/`,
+      { text: `Google accepted your invitation` },
+      { headers: headers2 }
+    );
+
+    await axios.post(
+      `https://api.chatengine.io/chats/${activeChat}/messages/`,
+      {
+        text: `Join Zoom Meeting
+      https://us04web.zoom.us/j/76094689808?pwd=564gThRd6w4Vaug703-AyBDXe7cx3X.1
+
+      Meeting ID: 760 9468 9808
+      Passcode: TvmG9Y`,
+      },
+      { headers: headers }
+    );
   };
 
-  const DeclineHandler = () => {
+  const DeclineHandler = async () => {
     // TODO connect api
     console.log("reject");
 
-    sendMessage(creds, activeChat, {
-      text: `${creds.userName} rejected your invitation`,
-    });
+    // sendMessage(creds, activeChat, {
+    //   text: `${creds.userName} rejected your invitation`,
+    // });
+    const headers2 = {
+      "Project-ID": "e7fb7381-46fd-413f-9422-766a54881ff6",
+      "User-Name": "Google",
+      "User-Secret": "a",
+    };
+
+    await axios.post(
+      `https://api.chatengine.io/chats/${activeChat}/messages/`,
+      { text: `Google rejected your invitation` },
+      { headers: headers2 }
+    );
   };
 
   const InvitationBubble = (
