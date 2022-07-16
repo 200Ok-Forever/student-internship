@@ -2,10 +2,13 @@ from flask_restx import Namespace, fields
 
 
 company_info = {
+    "email"
     "name": fields.String(required=True),
     "logo": fields.String(required=True),
     "website": fields.String(required=True)
 }
+
+
 
 class CompanyPageAPI:
     company_ns = Namespace("company", description="Company related operations.")

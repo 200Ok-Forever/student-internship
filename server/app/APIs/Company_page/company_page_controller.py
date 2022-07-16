@@ -78,10 +78,16 @@ class GetCompanyJobs(Resource):
             jobs = jobs.order_by(model.Internship.expiration_datetime_utc.desc())
         if jobs.all() == []:
             return {"message": "Invalid company id"}, 400
-        
-        result = convert_model_to_dict(jobs.all())
-        
-        return result, 200
+    
+        result = []
+        for job in jobs:
+            data = convert_object_to_dict(job)
+
+            data['status'] = ''
+            data['numAllResults'] = {"total_count": len(job.company.jobs)}
+            result.append(data)
+
+        return {"jobs":result}, 200
 
 @company_ns.route("/{id}/jobs")
 class GetCompanyJobs(Resource):
