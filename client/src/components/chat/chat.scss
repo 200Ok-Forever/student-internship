@@ -1,0 +1,36 @@
+.common-feature {
+  border-radius: 20px;
+  padding: 8px 15px;
+  font-family: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn {
+  @extend .common-feature;
+  border: 0px;
+  color: white;
+  background-color: #3d70b2;
+}
+
+.cancel-btn {
+  @extend .common-feature;
+  background-color: white;
+  color: #3d70b2;
+  border: 1px solid #3d70b2;
+  margin: 0 5px;
+}
+
+/* CHAT STYLES */
+
+.ce-chat-list {
+  @media (max-width: 570px) {
+    margin-top: 80px;
+  }
+}
+
+.ce-chat-engine {
+  @media (max-width: 570px) {
+    margin-top: 80px !important;
+  }
+}
