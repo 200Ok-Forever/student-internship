@@ -43,7 +43,7 @@ const NavBar = () => {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="absolute" sx={{ height: "80px" }} color="secondary">
+      <AppBar position="fixed" sx={{ height: "80px" }} color="secondary">
         <Toolbar className={classes.container}>
           <div className={classes.align}>
             {/* mobile */}

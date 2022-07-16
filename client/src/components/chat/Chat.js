@@ -1,10 +1,92 @@
-import { TextField, Typography } from "@mui/material";
+import {
+  Avatar,
+  IconButton,
+  Modal,
+  Paper,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useState } from "react";
-import { ChatEngine, getOrCreateChat } from "react-chat-engine";
-import classes from "./chat.module.scss";
+import {
+  Button,
+  ChatEngine,
+  getOrCreateChat,
+  sendMessage,
+} from "react-chat-engine";
+import "./chat.scss";
+import ChatFeed from "./ChatFeed";
+import InsertInvitationIcon from "@mui/icons-material/InsertInvitation";
+import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  gap: "20px",
+};
+
+const paper = {
+  maxWidth: "500px",
+  wordBreak: "break-all",
+  p: "9px 10px",
+  backgroundColor: "#2594F9",
+  color: "white",
+};
 
 const Chat = () => {
+  // TODO: change uername and usersecret
+  return (
+    <Box sx={{ marginTop: "85px" }}>
+      <ChatEngine
+        projectID="e7fb7381-46fd-413f-9422-766a54881ff6"
+        userName="Google"
+        userSecret="google"
+        height="90vh"
+        renderNewChatForm={(creds) => <RenderChatForm creds={creds} />}
+        onNewMessage={() =>
+          new Audio(
+            "https://chat-engine-assets.s3.amazonaws.com/click.mp3"
+          ).play()
+        }
+        renderChatSettingsTop={(creds, chat) => (
+          <RenderChatSettingsTop creds={creds} chat={chat} />
+        )}
+        // renderChatFeed={(chatAppState) => <ChatFeed {...chatAppState} />}
+        renderNewMessageForm={(creds, chatID) => (
+          <RenderNewMessageForm creds={creds} chatID={chatID} />
+        )}
+        renderMessageBubble={(
+          creds,
+          chat,
+          lastMessage,
+          message,
+          nextMessage
+        ) => (
+          <RenderMessageBubble
+            creds={creds}
+            chat={chat}
+            lastMessage={lastMessage}
+            message={message}
+            nextMessage={nextMessage}
+          />
+        )}
+      />
+    </Box>
+  );
+};
+
+const RenderChatForm = ({ creds }) => {
   const [username, setUsername] = useState("");
 
   const createDirectChat = (creds) => {
@@ -14,54 +96,232 @@ const Chat = () => {
       () => setUsername("")
     );
   };
+  return (
+    <Box>
+      <Typography variant="h5" fontWeight="700" sx={{ mb: "10px" }}>
+        Chats
+      </Typography>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: "10px",
+          flexWrap: "wrap",
+          mb: "20px",
+        }}
+      >
+        <TextField
+          id="chat-name"
+          label="Username"
+          variant="outlined"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          size="small"
+          sx={{ width: "78%" }}
+        />
+        <button className="btn" onClick={() => createDirectChat(creds)}>
+          Create
+        </button>
+      </Box>
+    </Box>
+  );
+};
 
-  const renderChatForm = (creds) => {
-    return (
-      <Box>
-        <Typography variant="h5" fontWeight="700" sx={{ mb: "10px" }}>
-          Chats
-        </Typography>
+const RenderChatSettingsTop = ({ creds, chat }) => {
+  const chatWith = chat?.people[0]?.person;
+  return (
+    <>
+      {chat && (
         <Box
-          sx={{
+          style={{
+            display: "flex",
+            alignItems: "center",
+            margin: "20px auto",
+            gap: "10px",
+            justifyContent: "center",
+          }}
+        >
+          <Avatar src={chatWith?.avatar}></Avatar>
+          <Avatar src={chat?.people[1]?.person?.avatar}></Avatar>
+        </Box>
+      )}
+    </>
+  );
+};
+
+const RenderNewMessageForm = ({ creds, chatID }) => {
+  console.log("🚀 ~ creds", creds);
+  const [text, setText] = useState("");
+  const [open, setOpen] = useState(false);
+  const [time, setTime] = useState(new Date());
+  const username = "Google";
+  const handleChange = (newTime) => {
+    setTime(newTime);
+  };
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  const handleSubmit = (text) => {
+    sendMessage(creds, chatID, { text });
+    setText("");
+  };
+
+  const sendInvitation = () => {
+    const minutesSeconds = time.toLocaleTimeString();
+    const meeting_time =
+      time.toLocaleDateString() + " " + minutesSeconds.substr(0, 5);
+    const text = `MEETING BOT:🎉 Hi! ${username} invites you to join zoom meeting on ${meeting_time}`;
+    handleSubmit(text);
+    handleClose();
+  };
+
+  return (
+    <Box
+      style={{
+        position: "absolute",
+        bottom: "0px",
+        display: "flex",
+        alignItems: "center",
+        flexWrap: "wrap",
+        backgroundColor: "white",
+      }}
+    >
+      <TextField
+        variant="outlined"
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        sx={{ width: "42vw" }}
+      />
+      <IconButton onClick={handleOpen}>
+        <InsertInvitationIcon color="primary" fontSize="medium" />
+      </IconButton>
+      <Modal open={open} onClose={handleClose}>
+        <Box sx={style}>
+          <Typography
+            variant="h5"
+            fontWeight={700}
+            sx={{ textAlign: "center" }}
+          >
+            Zoom Meeting Invitation
+          </Typography>
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <DateTimePicker
+              label="Date&Time picker"
+              value={time}
+              onChange={handleChange}
+              renderInput={(params) => <TextField {...params} />}
+            />
+          </LocalizationProvider>
+          <Box sx={{ alignSelf: "flex-end" }}>
+            <button className="cancel-btn" onClick={handleClose}>
+              Cancel
+            </button>
+            <button className="btn" onClick={sendInvitation}>
+              Send
+            </button>
+          </Box>
+        </Box>
+      </Modal>
+      <button
+        className="btn"
+        style={{ height: "50px", width: "80px" }}
+        disabled={text === ""}
+        onClick={() => handleSubmit(text)}
+      >
+        Send
+      </button>
+    </Box>
+  );
+};
+
+const RenderMessageBubble = ({
+  creds,
+  chat,
+  lastMessage,
+  message,
+  nextMessage,
+}) => {
+  console.log("🚀 ~ creds", creds);
+  console.log("🚀 ~ message", chat);
+  const chatId = message.id;
+  const sender = message.sender;
+  const isSentFromCurrUser = sender.username === "Google";
+  const isInvitation = message.text.includes("MEETING BOT");
+  const invitationMsg = message.text.replace("MEETING BOT:", "");
+
+  const acceptHandler = () => {
+    // TODO connect api
+    // sendMessage
+  };
+
+  const DeclineHandler = () => {
+    // TODO connect api
+  };
+
+  const InvitationBubble = (
+    <Paper
+      sx={{
+        ...paper,
+        background: "white",
+        color: "black",
+        display: "flex",
+        maxWidth: "370px",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: "15px",
+      }}
+    >
+      <Typography variant="body" sx={{ color: "rgb(99, 89, 89)" }}>
+        {invitationMsg}
+      </Typography>
+      <Box>
+        <button className="btn" onClick={acceptHandler}>
+          Accept
+        </button>
+        <button className="cancel-btn" onClick={DeclineHandler}>
+          Decline
+        </button>
+      </Box>
+    </Paper>
+  );
+
+  return (
+    <>
+      {isSentFromCurrUser ? (
+        <div
+          style={{
             display: "flex",
             alignItems: "center",
             gap: "10px",
-            flexWrap: "wrap",
-            mb: "20px",
+            justifyContent: "flex-end",
+            margin: "10px 0",
           }}
         >
-          <TextField
-            id="chat-name"
-            label="Username"
-            variant="outlined"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            size="small"
-            sx={{ width: "300px", minWidth: "150px" }}
-          />
-          <button
-            className={classes.btn}
-            onClick={() => createDirectChat(creds)}
-          >
-            Create
-          </button>
-        </Box>
-      </Box>
-    );
-  };
-
-  // TODO: change uername and usersecret
-  return (
-    <ChatEngine
-      projectID="e7fb7381-46fd-413f-9422-766a54881ff6"
-      userName="student1"
-      userSecret="a"
-      height="80vh"
-      renderNewChatForm={(creds) => renderChatForm(creds)}
-      // renderNewMessageForm={(creds, chatId) => {
-      //   console.log(chatId);
-      // }}
-    />
+          {isInvitation ? (
+            InvitationBubble
+          ) : (
+            <Paper sx={paper}>{message.text}</Paper>
+          )}
+          <Avatar src={sender.avatar} />
+        </div>
+      ) : (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            margin: "10px 0",
+          }}
+        >
+          <Avatar src={sender.avatar} />
+          {isInvitation ? (
+            InvitationBubble
+          ) : (
+            <Paper sx={paper}>{message.text}</Paper>
+          )}
+        </div>
+      )}
+    </>
   );
 };
 
