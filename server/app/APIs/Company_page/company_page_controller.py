@@ -1,3 +1,4 @@
+from operator import pos
 from re import L
 from flask import request, jsonify
 from flask_jwt_extended import get_jwt_identity
@@ -12,6 +13,7 @@ from flask import request
 from flask_restx import Resource, reqparse
 
 from sqlalchemy import or_
+from datetime import datetime
 
 
 company_ns = CompanyPageAPI.company_ns
@@ -224,6 +226,7 @@ class CreateIntern(Resource):
     @company_ns.expect(CompanyPageAPI.intern_data, validate=True)
     #@jwt_required()
     def post(self, companyid):
+        now = datetime.now()
         data = company_ns.payload
         # uid = get_jwt_identity()
         uid = 3
@@ -242,6 +245,75 @@ class CreateIntern(Resource):
         try:
             # create question
             intern = model.Internship(data['job_title'], data['closed_date'], data['location'], data['salary_currency'], data['min_salary'], data['max_salary'], data['is_remote'], data['job_type'], data['description'])
+            intern.company_id = companyid
+            intern.posted_time = str(now)
+            db.session.add(intern)
+            db.session.flush()
+
+            if data['application']['resume']:
+                intern.require_resume = 1
+            else:
+                intern.require_resume = 0
+            if data['application']['coverLetter']:
+                intern.require_coverLetter = 1
+            else:
+                intern.require_coverLetter = 0
+
+
+            for que in data['application']['questions']:
+                new_que = model.Question(intern.job_id, que)
+                db.session.add(new_que)
+                db.session.flush()
+        
+            # recruiting_process 
+            order = 1
+            for pro in data['recruiting_process']:
+                new_pro = model.Process(intern.job_id, order, pro)
+                order+=1
+                db.session.add(new_pro)
+                db.session.flush()
+            db.session.commit()
+        except:
+            db.session.rollback()
+            return {"message": "Something wrong"}, 400
+        return {"message": "Successfuly"}, 200
+
+
+@company_ns.route("/<jobid>/edit")
+class CreateIntern(Resource):
+    @company_ns.response(200, "Successfully")
+    @company_ns.response(400, "Something wrong")
+    @company_ns.expect(CompanyPageAPI.intern_data, validate=True)
+    #@jwt_required()
+    def put(self, jobid):
+        data = company_ns.payload
+        # uid = get_jwt_identity()
+        uid = 3
+
+        query = db.session.query(model.Internship).filter(model.Internship.job_id == jobid)
+        
+        # 1. check company id
+        job = query.first()
+        if job== None:
+            return {"message": "Invalid internship id"}, 400
+        # 2. check permission : is recuiter and belongs to this company
+        if job.company.user_id != uid:
+            return {"message": "No permission"}, 400
+
+        intern_id = job.job_id
+        try:
+            # 3. delete
+            posted_time = job.posted_time
+            company_id = job.company_id
+            db.session.delete(job)
+            db.session.flush()
+
+            # 4. create
+            # create question
+            intern = model.Internship(data['job_title'], data['closed_date'], data['location'], data['salary_currency'], data['min_salary'], data['max_salary'], data['is_remote'], data['job_type'], data['description'])
+            intern.job_id = intern_id
+            intern.posted_time = posted_time
+            intern.company_id = company_id
             db.session.add(intern)
             db.session.flush()
 
