@@ -1,8 +1,9 @@
-from operator import pos
+from operator import mod, pos
 from re import L
 from flask import request, jsonify
 from flask_jwt_extended import get_jwt_identity
 from flask_restx import Resource
+from pkg_resources import resource_listdir
 from .company_page_model import CompanyPageAPI
 from .company_page_utils import CompanyPageUtils
 from  ...Models import model 
@@ -11,9 +12,10 @@ from ... import db
 from flask_jwt import jwt_required, JWT
 from flask import request
 from flask_restx import Resource, reqparse
-
+from fuzzywuzzy import process
 from sqlalchemy import or_
 from datetime import datetime
+from difflib import SequenceMatcher
 
 
 company_ns = CompanyPageAPI.company_ns
@@ -154,10 +156,24 @@ class GetAllApplications(Resource):
             return {"message": "No permission"}, 400
 
         # 3. get all applications
-        applications = db.session.query(model.Application).filter(model.Application.intership_id == jobid, model.Application.is_applied == 'True').all()
-        print(applications)
-
-        return {'applicant': convert_model_to_dict(applications)}, 200
+        students = db.session.query(model.Student, model.Application).filter(
+        model.Application.is_applied == 'True', model.Application.intership_id == jobid, 
+        model.Application.student_id == model.Student.id,
+        model.Application.status == 'pending').all()
+        print(students)
+        result = []
+        for stu, app in students:
+            data = convert_object_to_dict(stu)
+            data['status'] = app.status
+            data['questions'] = {}
+            answers = db.session.query(model.Question, model.Answer
+            ).filter(model.Answer.student_id == stu.id, model.Question.inetrn_id == jobid,
+            model.Question.id == model.Answer.question_id
+            ).all()
+            for que, ans in answers:
+                data['questions'][que.content] = ans.answer
+            result.append(data)
+        return {'applicant': result}, 200
 
 @company_ns.route("/<jobid>/<appliedid>/accept")
 class Accept(Resource):
@@ -344,3 +360,31 @@ class CreateIntern(Resource):
             db.session.rollback()
             return {"message": "Something wrong"}, 400
         return {"message": "Successfuly"}, 200
+"""
+@company_ns.route("/<jobid>/recomendation")
+class Recomendation(Resource):
+    @company_ns.response(200, "Successfully")
+    @company_ns.response(400, "Something wrong")
+    #@jwt_required()
+    def get(self):
+        # uid = get_jwt_identity()
+        uid = 3
+        query = db.session.query(model.Internship).filter(model.Internship.job_id == jobid)
+        
+        # 1. check company id
+        job = query.first()
+        if job== None:
+            return {"message": "Invalid internship id"}, 400
+        # 2. check permission : is recuiter and belongs to this company
+        if job.company.user_id != uid:
+            return {"message": "No permission"}, 400
+
+        # 3. recomendation
+        # get all the match results
+        matched_movies = db.session.query(model.Student).filter(Movie.Movies.title.ilike(f'%{kw}%')).all()
+    # get the best match use fuzzywuzzy
+    best = process.extract(kw, matched_movies, limit=15)
+
+"""
+
+

@@ -129,15 +129,14 @@ class Student(db.Model):
     skills = db.Column(db.VARCHAR(100))
     description = db.Column(db.VARCHAR(200))
     internships = db.relationship('Internship', secondary='t_intern_user_status', back_populates='students_of_appilcation', lazy=True)
-    questions = db.relationship('Question', secondary='r_intern_question_answer', back_populates='students', lazy=True)
+    answers = db.relationship('Question', secondary='r_intern_question_answer', back_populates='students', lazy=True)
 
     def __repr__(self):
-        return f"<Student: {self.username}, {self.email}, {self.first_name} {self.last_name}>"
+        return f"<Student: {self.email}, {self.first_name} {self.last_name}>"
 
     def get_info(self):
         return {
             "id": self.uid,
-            "username": self.username,
             "email": self.email,
             "first_name": self.first_name,
             "last_name": self.last_name,
@@ -221,7 +220,7 @@ class Question(db.Model):
     id = db.Column('id', db.Integer, autoincrement=True, primary_key=True)
     inetrn_id = db.Column('intern_id', db.Integer, db.ForeignKey('t_internships.id'),nullable=False)
     content= db.Column('content', db.String(10000), nullable=False)
-    students = db.relationship('Student', secondary='r_intern_question_answer', back_populates='questions', lazy=True)
+    students = db.relationship('Student', secondary='r_intern_question_answer', back_populates='answers', lazy=True)
     def __repr__(self):
         return f"<Question: id: {self.id}, intern id{self.inetrn_id}>"
 
