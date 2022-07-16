@@ -1,5 +1,5 @@
 // import classes from "./App.module.scss";
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { Route, Switch, useLocation } from "react-router-dom";
@@ -28,9 +28,11 @@ import Company from "./components/company/Company";
 import ForgottenPassword from "./components/auth/ForgottenPassword";
 import ResetPassword from "./components/auth/ResetPassword";
 import Chat from "./components/chat/Chat";
+import { ChatEngineWrapper, Socket } from "react-chat-engine";
 
 function App() {
   const location = useLocation();
+
   return (
     <Fragment>
       <NavBar />

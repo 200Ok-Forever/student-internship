@@ -7,15 +7,16 @@ import {
   Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
-  Button,
   ChatEngine,
+  ChatEngineContext,
+  ChatEngineWrapper,
   getOrCreateChat,
   sendMessage,
+  Socket,
 } from "react-chat-engine";
 import "./chat.scss";
-import ChatFeed from "./ChatFeed";
 import InsertInvitationIcon from "@mui/icons-material/InsertInvitation";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -150,7 +151,6 @@ const RenderChatSettingsTop = ({ creds, chat }) => {
 };
 
 const RenderNewMessageForm = ({ creds, chatID }) => {
-  console.log("🚀 ~ creds", creds);
   const [text, setText] = useState("");
   const [open, setOpen] = useState(false);
   const [time, setTime] = useState(new Date());
@@ -234,28 +234,30 @@ const RenderNewMessageForm = ({ creds, chatID }) => {
   );
 };
 
-const RenderMessageBubble = ({
-  creds,
-  chat,
-  lastMessage,
-  message,
-  nextMessage,
-}) => {
-  console.log("🚀 ~ creds", creds);
-  console.log("🚀 ~ message", chat);
-  const chatId = message.id;
+const RenderMessageBubble = ({ message }) => {
+  // console.log("🚀 ~ creds", creds);
+  // console.log("🚀 ~ message", chat);
   const sender = message.sender;
   const isSentFromCurrUser = sender.username === "Google";
   const isInvitation = message.text.includes("MEETING BOT");
   const invitationMsg = message.text.replace("MEETING BOT:", "");
+  const { creds, activeChat } = useContext(ChatEngineContext);
 
   const acceptHandler = () => {
     // TODO connect api
-    // sendMessage
+    console.log("accept");
+    sendMessage(creds, activeChat, {
+      text: `${creds.userName} accepted your invitation`,
+    });
   };
 
   const DeclineHandler = () => {
     // TODO connect api
+    console.log("reject");
+
+    sendMessage(creds, activeChat, {
+      text: `${creds.userName} rejected your invitation`,
+    });
   };
 
   const InvitationBubble = (
