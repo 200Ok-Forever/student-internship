@@ -14,6 +14,7 @@ const paper = {
   flexDirection: "column",
   rowGap: "14px",
 };
+
 const JobBlock = ({ job, children }) => {
   const date = new Date().toJSON().slice(0, 10);
   const status = !job.status && date === job.posted_time ? "NEW" : job.status;
