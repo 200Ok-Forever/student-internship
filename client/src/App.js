@@ -2,7 +2,7 @@
 import { Fragment } from "react";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, useLocation } from "react-router-dom";
 import NotFound from "./components/404Page/NotFound";
 import Login from "./components/auth/Login";
 import Signup from "./components/auth/Signup";
@@ -30,10 +30,15 @@ import ResetPassword from "./components/auth/ResetPassword";
 import Chat from "./components/chat/Chat";
 
 function App() {
+  const location = useLocation();
+
   return (
     <Fragment>
       <NavBar />
-      <Container maxWidth={false} className={classes.rootContainer}>
+      <Container
+        maxWidth={false}
+        className={location.pathname !== "/chat" && classes.rootContainer}
+      >
         <Switch>
           <Route path="/" exact component={Home}></Route>
           <Route path="/calendar" exact component={Calendar} />

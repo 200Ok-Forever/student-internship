@@ -7,6 +7,7 @@ const authSlice = createSlice({
   },
   reducers: {
     login(state, action) {
+      console.log("🚀 ~ action", action);
       state.balabala = true;
     },
   },
