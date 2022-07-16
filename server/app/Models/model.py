@@ -79,6 +79,7 @@ class Application(db.Model):
     is_seen = db.Column('is_seen', db.String(255))
     is_save= db.Column('is_save', db.String(255))
     is_applied = db.Column('is_applied', db.String(255))
+    status = db.Column('status', db.String(255))
 
     def __repr__(self):
         return f"<Application: id: {self.id}, student_id: {self.student_id} internship_id: {self.intership_id}>"

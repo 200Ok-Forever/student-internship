@@ -156,3 +156,33 @@ class GetAllApplications(Resource):
         print(applications)
 
         return {'applicant': convert_model_to_dict(applications)}, 200
+
+@company_ns.route("/<jobid>/<appliedid>/accept")
+class Accept(Resource):
+    @company_ns.response(200, "Successfully")
+    @company_ns.response(400, "Something wrong")
+    #@jwt_required()
+    def post(self, jobid, appliedid):
+        # uid = get_jwt_identity()
+        uid = 3
+
+        # 1. check applicant 
+        query = db.session.query(model.Application).filter(model.Application.id == appliedid)
+        appli = query.first()
+        if appli == None:
+            return {"message": "Invalid applicant id"}, 400
+        
+        # 2. check permission
+        intern = db.session.query(model.Internship).filter(model.Internship.job_id == appli.intership_id).first()
+        if intern.company.user_id != uid:
+            return {"message": "No permission"}, 400
+        
+        # 3. check the applicant status
+        if appli.is_applied != 'True':
+            return {"message":"Not applied yet"}, 400
+
+        # update data
+        appli.status = 'accepted'
+        print(appli.status)
+        db.session.commit()
+        return {"message": "Successfully"}, 200
