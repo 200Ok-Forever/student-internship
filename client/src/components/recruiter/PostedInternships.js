@@ -120,8 +120,7 @@ const CardHeader = ({ job }) => {
     <>
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Typography
-          variant="h6"
-          fontWeight="700"
+          variant="h5"
           sx={{ cursor: "pointer", display: "flex", alignItems: "center" }}
           onClick={() => history.push(`/job?id=${job.id}`)}
         >
