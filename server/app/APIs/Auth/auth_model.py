@@ -48,6 +48,7 @@ class AuthAPI:
             "logo": fields.String
         },
     )
+
     user_login = api.model(
         "User login request",
         {
@@ -87,6 +88,7 @@ class AuthAPI:
         {
             "email": fields.String(required=True),
             "password": fields.String(required=True),
+            "username": fields.String(required=True),
             "company_name": fields.String(required=True),
             "first_name": fields.String(required=True),
             "last_name": fields.String(required=True),
@@ -96,7 +98,8 @@ class AuthAPI:
             "founded_year": fields.String(required=True),
             "company_size": fields.Integer(required=True),
             "location": fields.String,
-            "description": fields.String
+            "description": fields.String,
+            "company_logo": fields.String
         },
     )
 
@@ -124,3 +127,9 @@ class AuthAPI:
         'id': fields.String,
         'name': fields.String,
     })
+
+    password_reset_send = api.model(
+        "Password reset request", {
+            "email": fields.String(required=True)
+        }
+    )

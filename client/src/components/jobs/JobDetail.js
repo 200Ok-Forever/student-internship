@@ -126,6 +126,7 @@ const JobDetail = () => {
 };
 
 const BasicInfo = ({ info }) => {
+  console.log("🚀 ~ info", info);
   const history = useHistory();
   const [saved, setSaved] = useState(false);
   const [shareBar, setShareBar] = useState(false);

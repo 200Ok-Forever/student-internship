@@ -10,6 +10,7 @@ class User(db.Model):
     __tablename__ = 't_user'
     uid = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.VARCHAR(60), nullable=False, unique=True)
+    email = db.Column(db.VARCHAR(320), nullable=False, unique=True)
     hashed_password = db.Column(db.BINARY(60), nullable=False)
     role = db.Column(db.Integer, nullable=False)
     avatar = db.Column(db.BLOB, nullable=True)
@@ -73,9 +74,10 @@ class Company(db.Model):
     company_name = db.Column(db.VARCHAR(255), nullable=False, unique=True)
     first_name = db.Column(db.VARCHAR(255), nullable=False)
     last_name = db.Column(db.VARCHAR(255), nullable=False)
-    industry = db.Column(db.VARCHAR(255), nullable=True)
-    linkedin = db.Column(db.VARCHAR(255), nullable=True)
+    industry = db.Column(db.VARCHAR(255))
+    linkedin = db.Column(db.VARCHAR(255))
     founded_year = db.Column(db.VARCHAR(4), nullable=False)
+    company_url = db.Column(db.VARCHAR(255))
     company_size = db.Column(db.VARCHAR(10), nullable=False)
     location = db.Column(db.VARCHAR(255))
     description = db.Column(db.VARCHAR(200))
@@ -250,7 +252,6 @@ class SignUpSchema(Form):
     password = PasswordField('New Password', [
         validators.DataRequired(),
         validators.EqualTo('confirm', message='Passwords must match')])
-    confirm = PasswordField('Repeat Password', [validators.DataRequired()])
     first_name = StringField('Username', [validators.DataRequired(), validators.Length(min=1, max=50)])
     last_name = StringField('Username', [validators.DataRequired(), validators.Length(min=1, max=50)])
     description = StringField('Description', [validators.Length(max=200)])
