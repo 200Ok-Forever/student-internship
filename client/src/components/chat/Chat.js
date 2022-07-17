@@ -44,11 +44,13 @@ const paper = {
 
 const Chat = () => {
   // TODO: change uername and usersecret
+  const student = "John Smith";
+  const company = "Google";
   return (
     <Box sx={{ marginTop: "85px" }}>
       <ChatEngine
         projectID="e7fb7381-46fd-413f-9422-766a54881ff6"
-        userName="student1"
+        userName={company}
         userSecret="a"
         height="90vh"
         renderNewChatForm={(creds) => <RenderChatForm creds={creds} />}
@@ -151,7 +153,7 @@ const RenderNewMessageForm = ({ creds, chatID }) => {
   const [text, setText] = useState("");
   const [open, setOpen] = useState(false);
   const [time, setTime] = useState(new Date());
-  const username = "student1";
+  const username = creds?.creds?.userName;
   const handleChange = (newTime) => {
     setTime(newTime);
   };
@@ -233,8 +235,8 @@ const RenderNewMessageForm = ({ creds, chatID }) => {
 
 const RenderMessageBubble = ({ message }) => {
   const sender = message.sender;
-  const isSentFromCurrUser = sender.username === "student1";
   const { activeChat, creds } = useContext(ChatEngineContext);
+  const isSentFromCurrUser = sender.username === creds.userName;
   const isInvitation = message.text.includes("MEETING BOT");
   const invitationMsg = message.text.replace("MEETING BOT:", "");
   const isAccepted = message.text.includes("ACCEPT BOT");
@@ -247,7 +249,7 @@ const RenderMessageBubble = ({ message }) => {
   const acceptHandler = async () => {
     // TODO connect api
     sendMessage(creds, activeChat, {
-      text: `ACCEPT BOT:🎉Google accepted your invitation`,
+      text: `ACCEPT BOT:${creds.userName} accepted the invitation`,
     });
     sendMessage(creds, activeChat, {
       text:
@@ -261,7 +263,7 @@ const RenderMessageBubble = ({ message }) => {
   const DeclineHandler = async () => {
     // TODO connect api
     sendMessage(creds, activeChat, {
-      text: `REJECT BOT:Google rejected your invitation`,
+      text: `REJECT BOT:${creds.userName} rejected the invitation`,
     });
   };
 
