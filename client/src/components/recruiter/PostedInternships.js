@@ -65,9 +65,14 @@ const boxStyling = { display: "flex", flexDirection: "column", gap: "30px" };
 const PostedInternships = () => {
   return (
     <Box>
-      <Typography variant="h4" component="div">
-        Manage Your Internship Postings
-      </Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
+        <Typography variant="h4" component="div">
+          Manage Your Internship Postings
+        </Typography>
+        <Button variant="contained" color="primary">
+          New Posting
+        </Button>      
+      </Box>
       <Box sx={boxStyling}>
         {internships.map((i) => (
           <InternshipCard job={i} key={i.job_id}>

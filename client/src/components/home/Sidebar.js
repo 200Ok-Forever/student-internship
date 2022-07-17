@@ -23,9 +23,9 @@ const Sidebar = () => {
       type: "internship",
     },
     {
-      start: moment().add(4, "days").toDate(),
-      end: moment().add(4, "days").add(10, "minutes").toDate(),
-      title: "INTERCHANGE interview",
+      start: moment().add(1, "days").toDate(),
+      end: moment().add(4, "days").add(2, "days").toDate(),
+      title: "Interview with Ashley Zimmer",
       type: "meeting",
     },
     {
@@ -35,9 +35,9 @@ const Sidebar = () => {
       type: "internship",
     },
     {
-      start: moment().add(4, "days").toDate(),
-      end: moment().add(4, "days").add(10, "minutes").toDate(),
-      title: "INTERCHANGE interview",
+      start: moment().add(2, "days").add(15, 'm').toDate(),
+      end: moment().add(2, "days").add(2, "hours").toDate(),
+      title: "Interview with Jacob Li",
       type: "meeting",
     },
   ];
