@@ -79,7 +79,7 @@ class Company(db.Model):
     company_size = db.Column(db.VARCHAR(10), nullable=False)
     location = db.Column(db.VARCHAR(255))
     description = db.Column(db.VARCHAR(200))
-    logo = db.Column(db.VARCHAR(255))
+    company_logo = db.Column(db.VARCHAR(255))
 
     def __repr__(self):
         return f"<Recruiter: {self.email}, {self.first_name} {self.last_name}>"
@@ -94,11 +94,11 @@ class Company(db.Model):
             "industry": self.industry,
             "linkedin": self.linkedin,
             "founded_year": self.founded_year,
-            "company_url": self.company_url,
+          
             "company_size": self.company_size,
             "location": self.location,
             "description": self.description,
-            "logo": self.logo
+            "company_logo": self.company_logo
         }
 
 
