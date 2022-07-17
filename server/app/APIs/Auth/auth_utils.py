@@ -56,26 +56,93 @@ class AuthUtils:
                        "message": "Email is already being used.",
                    }, 403
 
-        # Check if the username is taken
-        if Student.query.filter_by(username=username).first() is not None:
-            return {
-                       "status": False,
-                       "message": "Username is already taken.",
-                   }, 403
         # msg = Message('Thanks for joining InternHub', sender='zhy1998618@163.com', recipients=[email])
         # msg.body = "Hi, welcome to InternHub, please confirm your email, thanks!"
         # mail.send(msg)
 
         try:
             new_user = User(
+                username=username,
                 email=email,
                 password=password,
                 role=1,
+                avatar=data["avatar"]
+            )
+            new_student = Student(
+                email=email,
+                first_name=data["first_name"],
+                last_name=data["last_name"],
+                university=data["university"],
+                degree=data["degree"],
+                major=data["major"],
+                skills=data["skills"],
+                description=data["description"]
             )
             db.session.add(new_user)
+            db.session.add(new_student)
             db.session.commit()
-            user = User.query.filter_by(email=email).first()
 
+            user = User.query.filter_by(email=email).first()
+            user_info = User.get_info(user)
+            # Create access token
+            access_token = create_access_token(identity=new_user.uid)
+            resp = {"status": True,
+                    "message": "Successfully signup.",
+                    "user": user_info,
+                    "token": access_token
+                    }
+            return resp, 201
+        except Exception as error:
+            current_app.logger.error(error)
+            return {
+                       "status": False,
+                       "message": "Something went wrong during the process!",
+                   }, 500
+
+    @staticmethod
+    def companySignup(data):
+        email = data["email"]
+        username = data["username"]
+        password = bytes(data["password"], 'utf-8')
+
+        # Check if the email is taken
+        if User.query.filter_by(email=email).first() is not None:
+            return {
+                       "status": False,
+                       "message": "Email is already being used.",
+                   }, 403
+
+        # msg = Message('Thanks for joining InternHub', sender='zhy1998618@163.com', recipients=[email])
+        # msg.body = "Hi, welcome to InternHub, please confirm your email, thanks!"
+        # mail.send(msg)
+
+        try:
+            new_user = User(
+                username=username,
+                email=email,
+                password=password,
+                role=2,
+                avatar=data["avatar"]
+            )
+            new_company = Company(
+                email=email,
+                company_name=data["company_name"],
+                first_name=data["first_name"],
+                last_name=data["last_name"],
+                industry=data["industry"],
+                linkedin=data["linkedin"],
+                company_url=data["company_url"],
+                founded_year=data["founded_year"],
+                company_size=data["company_size"],
+                location=data["location"],
+                description=data["description"],
+                company_logo=data["company_logo"]
+            )
+            db.session.add(new_user)
+            db.session.add(new_company)
+            db.session.commit()
+
+            user = User.query.filter_by(email=email).first()
             user_info = User.get_info(user)
             # Create access token
             access_token = create_access_token(identity=new_user.uid)
