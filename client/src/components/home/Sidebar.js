@@ -56,9 +56,9 @@ const Sidebar = () => {
         View Full Calendar
       </Link>
       <Meetings events={upcomingEvents.filter((e) => e.type === "meeting")} />
-      <Internships
+      {/* <Internships
         events={upcomingEvents.filter((e) => e.type === "internship")}
-      />
+      /> */}
     </Grid>
   );
 };
