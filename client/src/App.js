@@ -64,7 +64,6 @@ function App() {
           <Route path="/resume/s2" exact component={ResumeCreatorStep2} />
           <Route path="/forum" exact component={Forum} />
           <Route path="/chat" exact component={Chat} />
-          <Route component={NarrowContainerRoutes} />
           <Route path="/resources" exact component={Resources} />
           <Route path="/applications" exact component={Applications} />
           <Route path="/recommended-candidates" exact component={RecommendedCandidates} />
