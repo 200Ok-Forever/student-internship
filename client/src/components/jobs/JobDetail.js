@@ -1,7 +1,7 @@
 import { Button, Grid, Snackbar, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import JobBasicCard from "../UI/JobBasicCard";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import { useState } from "react";
@@ -20,6 +20,10 @@ import SchoolIcon from "@mui/icons-material/School";
 import YoutubeEmbed from "./YoutubeEmbed";
 import ScrollableRow from "../UI/ScrollableRow";
 import ShowCmts from "../UI/ShowCmts";
+import queryString from "query-string";
+import { getJob } from "../../api/search-api";
+import getSymbolFromCurrency from "currency-symbol-map";
+import { postComment, replyComment } from "../../api/comment-api";
 
 const DATA = {
   job_id: "1",
@@ -83,9 +87,23 @@ const DATA = {
 
 const JobDetail = () => {
   const [info, setInfo] = useState([]);
+  const { search } = useLocation();
+  const query = queryString.parse(search);
+  const id = query.id;
+  const [load, setLoad] = useState(true);
+
   useEffect(() => {
-    setInfo(DATA);
-  }, []);
+    const getData = async () => {
+      const resp = await getJob(id);
+      setInfo(resp.data);
+      setLoad(false);
+    };
+    try {
+      getData();
+    } catch (e) {
+      console.log(e);
+    }
+  }, [id]);
 
   return (
     <Box
@@ -96,9 +114,13 @@ const JobDetail = () => {
         mb: "30px",
       }}
     >
-      <BasicInfo info={info} />
-      <RelatedCourses info={info} />
-      <Comments list={info.comments} />
+      {!load && (
+        <>
+          <BasicInfo info={info} />
+          {info.video_id.length !== 0 && <RelatedCourses ids={info.video_id} />}
+          <Comments list={info.comment} jobId={id} />
+        </>
+      )}
     </Box>
   );
 };
@@ -107,6 +129,30 @@ const BasicInfo = ({ info }) => {
   const history = useHistory();
   const [saved, setSaved] = useState(false);
   const [shareBar, setShareBar] = useState(false);
+  const processes =
+    info.recruiting_process.length === 0
+      ? ["Phone Interview", "Coding Test", "Technical Interview"]
+      : info.recruiting_process;
+
+  let salary_str;
+  let salary_curr =
+    info.salary_currency !== "AUD"
+      ? getSymbolFromCurrency(info.salary_currency)
+      : "AU$";
+  if (info.min_salary && info.max_salary) {
+    salary_str =
+      salary_curr + info.min_salary + " - " + salary_curr + info.max_salary;
+  } else {
+    salary_str = salary_curr + info.min_salary || salary_curr + info.max_salary;
+  }
+
+  let post_duration;
+
+  if (info.postedDate !== "None" && info.closedDate !== "None") {
+    post_duration = info.postedDate + " - " + info.closedDate.split(" ")[0];
+  } else {
+    post_duration = info.postedDate || info.closedDate;
+  }
 
   useEffect(() => {
     setSaved(DATA.saved);
@@ -139,11 +185,11 @@ const BasicInfo = ({ info }) => {
     >
       <JobBasicCard
         job={{
-          title: info.title,
-          com_name: info.company_name,
-          city: info.city,
-          avatar: info.company_avatar,
-          id: info.company_id,
+          title: info.jobTitle,
+          com_name: info.companyName,
+          city: info.location,
+          avatar: info.company_logo,
+          id: info.companyId,
         }}
         save={saveBtns}
       />
@@ -154,12 +200,12 @@ const BasicInfo = ({ info }) => {
           size="small"
           onClick={() =>
             history.push(
-              `/apply?id=${info.job_id}&name=${info.title.replace(
+              `/apply?id=${info.internship_id}&name=${info.jobTitle.replace(
                 / /g,
                 "-"
-              )}&company=${info.company_name.replace(/ /g, "-")}`,
+              )}&company=${info.companyName.replace(/ /g, "-")}`,
               {
-                state: { avatar: info.company_avatar },
+                state: { avatar: info.company_logo },
               }
             )
           }
@@ -202,20 +248,32 @@ const BasicInfo = ({ info }) => {
           flexWrap: "wrap",
         }}
       >
-        <Label text={info.posted_date + " - " + info.closed_date}>
-          <AccessTimeIcon fontSize="small" color="primary" sx={{ mr: "5px" }} />
-        </Label>
-        {info?.min_salary && (
-          <Label text={info.min_salary + " - " + info.max_salary}>
+        {(info.postedDate || info.closedDate) && (
+          <Label text={post_duration}>
+            <AccessTimeIcon
+              fontSize="small"
+              color="primary"
+              sx={{ mr: "5px" }}
+            />
+          </Label>
+        )}
+        {(info.min_salary || info.max_salary) && (
+          <Label text={salary_str}>
             <img src={salary} alt="salary" width="25px" height="25px" />
           </Label>
         )}
-        <Label text={info.job_type} />
-        {info.remote && <Label text="Remote" />}
+        {info?.jobType && <Label text={info.jobType} />}
+        {info.remote === "True" ? (
+          <Label text={"Remote"} />
+        ) : (
+          <>{info.remote === "False" && <Label text={"On-site"} />}</>
+        )}
       </Box>
       <Grid container spacing={8}>
         <Grid item md={12} lg={9} sm={12}>
-          <Typography variant="body1">{info.description}</Typography>
+          <Typography variant="body1" sx={{ whiteSpace: "pre-wrap" }}>
+            {info.description}
+          </Typography>
         </Grid>
         <Grid
           item
@@ -236,12 +294,12 @@ const BasicInfo = ({ info }) => {
             mb="30px"
           />
           <Box>
-            {info?.recruiting_processes?.map((process, i) => (
+            {processes.map((process, i) => (
               <Process
                 text={process}
                 key={`process_${i}`}
                 num={i + 1}
-                isLastOne={i + 1 === info.recruiting_processes.length}
+                isLastOne={i + 1 === processes.length}
               />
             ))}
           </Box>
@@ -251,7 +309,7 @@ const BasicInfo = ({ info }) => {
   );
 };
 
-const RelatedCourses = ({ info }) => {
+const RelatedCourses = ({ ids }) => {
   return (
     <>
       <TitleWithIcon
@@ -259,7 +317,7 @@ const RelatedCourses = ({ info }) => {
         text="Related Courses"
       />
       <ScrollableRow>
-        {info?.related_courses?.map((vId, i) => (
+        {ids?.map((vId, i) => (
           <YoutubeEmbed
             link={`https://www.youtube.com/embed/${vId}`}
             key={`video_${i}`}
@@ -270,34 +328,63 @@ const RelatedCourses = ({ info }) => {
   );
 };
 
-const Comments = ({ list }) => {
+const Comments = ({ list, jobId }) => {
   const [comments, setComments] = useState(list);
 
   useEffect(() => {
     setComments(list);
   }, [list]);
 
-  const sendCmt = (newCmt) => {
-    setComments((prev) => [newCmt].concat(prev));
-  };
-
-  const sendReply = (cmtId, newReply) => {
-    setComments((prev) => {
-      const idx = prev.findIndex((e) => e.cmtId === cmtId);
-      const cmt = prev[idx];
-      if (cmt) {
-        const reply = [newReply].concat(cmt.reply);
-        let new_cmt = {};
-        new_cmt = { ...cmt, reply };
-        prev.splice(idx, 1, new_cmt);
+  const sendCmt = async (newCmt) => {
+    try {
+      const resp = await postComment(jobId, newCmt.uid, newCmt.text);
+      if (resp.status === 200) {
+        const cmtInfo = {
+          text: newCmt.text,
+          uid: newCmt.uid,
+          time: new Date(),
+          replied: [],
+          cmtId: JSON.parse(resp.data).comment_id,
+        };
+        setComments((prev) => [cmtInfo].concat(prev));
       }
-      return [...prev];
-    });
+    } catch (e) {
+      console.log(e);
+    }
   };
 
-  return (
-    <ShowCmts list={comments} sendCmt={sendCmt} sendReply={sendReply} />
-  );
+  const sendReply = async (cmtId, newReply) => {
+    try {
+      const resp = await replyComment(
+        jobId,
+        newReply.uid,
+        newReply.text,
+        cmtId
+      );
+      if (resp.status === 200) {
+        setComments((prev) => {
+          const idx = prev.findIndex((e) => e.cmtId === cmtId);
+          const cmt = prev[idx];
+          const replyInfo = {
+            repliedId: JSON.parse(resp.data).comment_id,
+            text: newReply.text,
+            time: new Date(),
+            uid: newReply.uid,
+          };
+          if (cmt) {
+            const new_replies = [replyInfo].concat(cmt.replied);
+            const new_cmt = { ...cmt, replied: new_replies };
+            prev.splice(idx, 1, new_cmt);
+          }
+          return [...prev];
+        });
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  return <ShowCmts list={comments} sendCmt={sendCmt} sendReply={sendReply} />;
 };
 
 export default JobDetail;

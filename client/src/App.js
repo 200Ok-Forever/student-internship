@@ -2,7 +2,7 @@
 import { Fragment } from "react";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, useLocation } from "react-router-dom";
 import NotFound from "./components/404Page/NotFound";
 import Login from "./components/auth/Login";
 import Signup from "./components/auth/Signup";
@@ -27,12 +27,22 @@ import History from "./components/student/History";
 import Company from "./components/company/Company";
 import Applications from './components/recruiter/Applications';
 import RecommendedCandidates from "./components/recruiter/RecommendedCandidates";
+import ForgottenPassword from "./components/auth/ForgottenPassword";
+import ResetPassword from "./components/auth/ResetPassword";
+import ResumeCreator from "./components/educational/ResumeCreator";
+import ResumeCreatorStep2 from "./components/educational/ResumeCreatorStep2";
+import Chat from "./components/chat/Chat";
 
 function App() {
+  const location = useLocation();
+
   return (
     <Fragment>
       <NavBar />
-      <Container maxWidth={false} className={classes.rootContainer}>
+      <Container
+        maxWidth={false}
+        className={location.pathname !== "/chat" && classes.rootContainer}
+      >
         <Switch>
           <Route path="/" exact component={Home}></Route>
           <Route path="/calendar" exact component={Calendar} />
@@ -44,7 +54,17 @@ function App() {
           <Route path="/company" exact component={Company} />
           <Route path="/signup/student" exact component={StudentSignup} />
           <Route path="/signup/company" exact component={CompanySignup} />
+          <Route
+            path="/passwordreset/send"
+            exact
+            component={ForgottenPassword}
+          />
+          <Route path="/passwordreset/reset" exact component={ResetPassword} />
+          <Route path="/resume/s1" exact component={ResumeCreator} />
+          <Route path="/resume/s2" exact component={ResumeCreatorStep2} />
           <Route path="/forum" exact component={Forum} />
+          <Route path="/chat" exact component={Chat} />
+          <Route component={NarrowContainerRoutes} />
           <Route path="/resources" exact component={Resources} />
           <Route path="/applications" exact component={Applications} />
           <Route path="/recommended-candidates" exact component={RecommendedCandidates} />
