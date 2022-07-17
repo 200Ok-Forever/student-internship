@@ -35,6 +35,14 @@ const Menu = (props) => {
         <ArticleIcon fontSize="sm" />
         Resources
       </NavLink>
+      <NavLink
+        to="/resume/s1"
+        activeClassName={classes.active}
+        className={classes.btn}
+      >
+        <ArticleIcon fontSize="sm" />
+        Resume Creator
+      </NavLink>
     </div>
   );
 };

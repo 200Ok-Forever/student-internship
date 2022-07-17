@@ -4,7 +4,6 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -45,7 +44,6 @@ const CompanySignup = () => {
         height: "fit-content",
         gap: "40px",
         mx: "auto",
-        mt: "100px",
         mb: "100px",
       }}
     >
@@ -58,9 +56,7 @@ const CompanySignup = () => {
       >
         Company Sign Up
       </Typography>
-      <Avatar sx={{ m: 1, bgcolor: "primary.main" }}>
-        <LockOutlinedIcon />
-      </Avatar>
+      <Avatar sx={{ m: 1, bgcolor: "primary.main" }}></Avatar>
       <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
