@@ -16,6 +16,7 @@ const paper = {
 };
 
 const JobBlock = ({ job, children }) => {
+  console.log("🚀 ~ job", job);
   const date = new Date().toJSON().slice(0, 10);
   const status = !job.status && date === job.posted_time ? "NEW" : job.status;
   let salary_str;
@@ -56,7 +57,7 @@ const JobBlock = ({ job, children }) => {
         </Box>
       </JobBasicCard>
       <Box sx={{ display: "flex", columnGap: "14px" }}>
-        {(job.min_salary || job.max_salary) && (
+        {(job.min_salary !== 0 || job.max_salary !== 0) && (
           <Label text={salary_str}>
             <img src={salary} alt="salary" width="25px" height="25px" />
           </Label>
