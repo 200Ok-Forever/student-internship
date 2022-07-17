@@ -18,7 +18,6 @@ import "./chat.scss";
 import InsertInvitationIcon from "@mui/icons-material/InsertInvitation";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import axios from "axios";
 
 const style = {
   position: "absolute",
@@ -235,64 +234,35 @@ const RenderNewMessageForm = ({ creds, chatID }) => {
 const RenderMessageBubble = ({ message }) => {
   const sender = message.sender;
   const isSentFromCurrUser = sender.username === "student1";
+  const { activeChat, creds } = useContext(ChatEngineContext);
   const isInvitation = message.text.includes("MEETING BOT");
   const invitationMsg = message.text.replace("MEETING BOT:", "");
-  const { activeChat } = useContext(ChatEngineContext);
+  const isAccepted = message.text.includes("ACCEPT BOT");
+  const acceptMsg = message.text.replace("ACCEPT BOT:", "");
+  const isRejected = message.text.includes("REJECT BOT");
+  const rejectMsg = message.text.replace("REJECT BOT:", "");
+  const isLink = message.text.includes("LINK BOT");
+  const LinkMsg = message.text.replace("LINK BOT:", "");
 
   const acceptHandler = async () => {
     // TODO connect api
-    console.log("accept");
-    // sendMessage(creds, activeChat, {
-    //   text: `${creds.userName} accepted your invitation`,
-    // });
-
-    const headers = {
-      "Project-ID": "e7fb7381-46fd-413f-9422-766a54881ff6",
-      "User-Name": "student1",
-      "User-Secret": "a",
-    };
-    const headers2 = {
-      "Project-ID": "e7fb7381-46fd-413f-9422-766a54881ff6",
-      "User-Name": "Google",
-      "User-Secret": "a",
-    };
-    await axios.post(
-      `https://api.chatengine.io/chats/${activeChat}/messages/`,
-      { text: `Google accepted your invitation` },
-      { headers: headers2 }
-    );
-
-    await axios.post(
-      `https://api.chatengine.io/chats/${activeChat}/messages/`,
-      {
-        text: `Join Zoom Meeting
-      https://us04web.zoom.us/j/76094689808?pwd=564gThRd6w4Vaug703-AyBDXe7cx3X.1
-
-      Meeting ID: 760 9468 9808
-      Passcode: TvmG9Y`,
-      },
-      { headers: headers }
-    );
+    sendMessage(creds, activeChat, {
+      text: `ACCEPT BOT:🎉Google accepted your invitation`,
+    });
+    sendMessage(creds, activeChat, {
+      text:
+        "LINK BOT:👉 Join Zoom Meeting on time\n" +
+        "https://us04web.zoom.us/j/76094689808?pwd=564gThRd6w4Vaug703-AyBDXe7cx3X.1\n" +
+        "Meeting ID: 760 9468 9808\n" +
+        "Passcode: TvmG9Y",
+    });
   };
 
   const DeclineHandler = async () => {
     // TODO connect api
-    console.log("reject");
-
-    // sendMessage(creds, activeChat, {
-    //   text: `${creds.userName} rejected your invitation`,
-    // });
-    const headers2 = {
-      "Project-ID": "e7fb7381-46fd-413f-9422-766a54881ff6",
-      "User-Name": "Google",
-      "User-Secret": "a",
-    };
-
-    await axios.post(
-      `https://api.chatengine.io/chats/${activeChat}/messages/`,
-      { text: `Google rejected your invitation` },
-      { headers: headers2 }
-    );
+    sendMessage(creds, activeChat, {
+      text: `REJECT BOT:Google rejected your invitation`,
+    });
   };
 
   const InvitationBubble = (
@@ -322,6 +292,47 @@ const RenderMessageBubble = ({ message }) => {
     </Paper>
   );
 
+  const Notification = ({ msg }) => (
+    <Typography
+      variant="subtitle2"
+      sx={{
+        whiteSpace: "pre-wrap",
+      }}
+    >
+      {msg}
+    </Typography>
+  );
+
+  const Msg = ({ paperSx }) => {
+    if (isInvitation) {
+      return InvitationBubble;
+    } else if (isAccepted) {
+      return <Notification msg={acceptMsg} />;
+    } else if (isRejected) {
+      return <Notification msg={rejectMsg} />;
+    } else if (isLink) {
+      return (
+        <Paper
+          elevation={4}
+          sx={{
+            ...paper,
+            backgroundColor: "white",
+            color: "#3d70b2",
+            borderRadius: "40px",
+            fontWeight: "700",
+            px: "20px",
+            py: "10px",
+            lineHeight: "30px",
+          }}
+        >
+          {LinkMsg}
+        </Paper>
+      );
+    } else {
+      return <Paper sx={paperSx}>{message.text}</Paper>;
+    }
+  };
+
   return (
     <>
       {isSentFromCurrUser ? (
@@ -330,16 +341,15 @@ const RenderMessageBubble = ({ message }) => {
             display: "flex",
             alignItems: "center",
             gap: "10px",
-            justifyContent: "flex-end",
-            margin: "10px 0",
+            justifyContent:
+              isAccepted || isRejected || isLink ? "center" : "flex-end",
+            margin: "10px 4px",
           }}
         >
-          {isInvitation ? (
-            InvitationBubble
-          ) : (
-            <Paper sx={paper}>{message.text}</Paper>
+          <Msg paperSx={paper} />
+          {!isAccepted && !isRejected && !isLink && (
+            <Avatar src={sender.avatar} />
           )}
-          <Avatar src={sender.avatar} />
         </div>
       ) : (
         <div
@@ -347,15 +357,16 @@ const RenderMessageBubble = ({ message }) => {
             display: "flex",
             alignItems: "center",
             gap: "10px",
-            margin: "10px 0",
+            margin: "10px 4px",
+            justifyContent: isAccepted || isRejected || isLink ? "center" : "",
           }}
         >
-          <Avatar src={sender.avatar} />
-          {isInvitation ? (
-            InvitationBubble
-          ) : (
-            <Paper sx={paper}>{message.text}</Paper>
+          {!isAccepted && !isRejected && !isLink && (
+            <Avatar src={sender.avatar} />
           )}
+          <Msg
+            paperSx={{ ...paper, backgroundColor: "#EAEAEA", color: "black" }}
+          />
         </div>
       )}
     </>
