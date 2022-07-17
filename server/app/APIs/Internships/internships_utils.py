@@ -33,7 +33,7 @@ def get_comany_info(data):
    
     print(company)
     name = company.company_name
-    logo = company.logo
+    logo = company.company_logo
     
     return name, logo
 
