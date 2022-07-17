@@ -50,7 +50,7 @@ const Chat = () => {
     <Box sx={{ marginTop: "85px" }}>
       <ChatEngine
         projectID="e7fb7381-46fd-413f-9422-766a54881ff6"
-        userName={company}
+        userName={student}
         userSecret="a"
         height="90vh"
         renderNewChatForm={(creds) => <RenderChatForm creds={creds} />}

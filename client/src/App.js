@@ -25,13 +25,14 @@ import ApplyIntern from "./components/jobs/ApplyIntern";
 import Saved from "./components/student/SavedInternships";
 import History from "./components/student/History";
 import Company from "./components/company/Company";
-import Applications from './components/recruiter/Applications';
+import Applications from "./components/recruiter/Applications";
 import RecommendedCandidates from "./components/recruiter/RecommendedCandidates";
 import ForgottenPassword from "./components/auth/ForgottenPassword";
 import ResetPassword from "./components/auth/ResetPassword";
 import ResumeCreator from "./components/educational/ResumeCreator";
 import ResumeCreatorStep2 from "./components/educational/ResumeCreatorStep2";
 import Chat from "./components/chat/Chat";
+import Profile from "./components/student/Profile";
 
 function App() {
   const location = useLocation();
@@ -65,7 +66,12 @@ function App() {
           <Route path="/forum" exact component={Forum} />
           <Route path="/chat" exact component={Chat} />
           <Route path="/applications" exact component={Applications} />
-          <Route path="/recommended-candidates" exact component={RecommendedCandidates} />
+          <Route path="/profile" exact component={Profile} />
+          <Route
+            path="/recommended-candidates"
+            exact
+            component={RecommendedCandidates}
+          />
           <Route component={NarrowContainerRoutes} />
         </Switch>
       </Container>
