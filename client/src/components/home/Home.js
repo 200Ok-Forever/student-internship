@@ -5,15 +5,22 @@ import Search from "./Search";
 import classes from "./style/home.module.scss";
 import wave from "../../asset/wave.svg";
 import PostedInternships from '../recruiter/PostedInternships';
+import RecommendedInternships from '../student/RecommendedInternships';
 
 const Home = () => {
+  // TODO update when auth setup
+  const user = 'student'
+
   return (
     <Box>
       <SearchBanner />
       <Grid container spacing={3}>
         <Grid item xs={12} md={9} order={{ xs: 2, md: 1 }} mt={{ xs: 5, md: 0 }}>
-          {/* <RecommendedInternships /> */}
-          <PostedInternships />
+          {user === 'student' ? (
+            <RecommendedInternships />
+          ) : (
+            <PostedInternships />
+          )}
         </Grid>
         <EventsSidebar />
       </Grid>

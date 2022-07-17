@@ -15,6 +15,9 @@ import VideoCameraFrontIcon from "@mui/icons-material/VideoCameraFront";
 import RemoveButton from "../UI/RemoveButton";
 
 const Sidebar = () => {
+  // TODO fix when user setup
+  const user = 'student';
+
   const events = [
     {
       start: moment().add(1, "d").toDate(),
@@ -56,9 +59,11 @@ const Sidebar = () => {
         View Full Calendar
       </Link>
       <Meetings events={upcomingEvents.filter((e) => e.type === "meeting")} />
-      {/* <Internships
-        events={upcomingEvents.filter((e) => e.type === "internship")}
-      /> */}
+      {user === 'student' && 
+        <Internships
+          events={upcomingEvents.filter((e) => e.type === "internship")}
+        />
+      }
     </Grid>
   );
 };
