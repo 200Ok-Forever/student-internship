@@ -10,6 +10,7 @@ class User(db.Model):
     __tablename__ = 't_user'
     uid = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.VARCHAR(60), nullable=False, unique=True)
+    email = db.Column(db.VARCHAR(320), nullable=False, unique=True)
     hashed_password = db.Column(db.BINARY(60), nullable=False)
     role = db.Column(db.Integer, nullable=False)
     avatar = db.Column(db.BLOB, nullable=True)
@@ -73,13 +74,14 @@ class Company(db.Model):
     company_name = db.Column(db.VARCHAR(255), nullable=False, unique=True)
     first_name = db.Column(db.VARCHAR(255), nullable=False)
     last_name = db.Column(db.VARCHAR(255), nullable=False)
-    industry = db.Column(db.VARCHAR(255), nullable=True)
-    linkedin = db.Column(db.VARCHAR(255), nullable=True)
+    industry = db.Column(db.VARCHAR(255))
+    linkedin = db.Column(db.VARCHAR(255))
     founded_year = db.Column(db.VARCHAR(4), nullable=False)
+    company_url = db.Column(db.VARCHAR(255))
     company_size = db.Column(db.VARCHAR(10), nullable=False)
     location = db.Column(db.VARCHAR(255))
     description = db.Column(db.VARCHAR(200))
-    logo = db.Column(db.VARCHAR(255))
+    company_logo = db.Column(db.VARCHAR(255))
 
     def __repr__(self):
         return f"<Recruiter: {self.email}, {self.first_name} {self.last_name}>"
@@ -100,22 +102,6 @@ class Company(db.Model):
             "description": self.description,
             "logo": self.logo
         }
-
-
-# class Company(db.Model):
-#     __tablename__ = 't_companies'
-#     id = db.Column(db.Integer, primary_key=True)
-#     name = db.Column(db.VARCHAR(255))
-#     logo = db.Column(db.VARCHAR(255))
-#     website = db.Column(db.VARCHAR(255))
-#
-#     def get_info(self):
-#         return {
-#             "id": self.id,
-#             "name": self.name,
-#             "logo": self.logo,
-#             "website": self.website
-#         }
 
 
 job_skills = db.Table('r_job_skill',
@@ -267,7 +253,6 @@ class SignUpSchema(Form):
     password = PasswordField('New Password', [
         validators.DataRequired(),
         validators.EqualTo('confirm', message='Passwords must match')])
-    confirm = PasswordField('Repeat Password', [validators.DataRequired()])
     first_name = StringField('Username', [validators.DataRequired(), validators.Length(min=1, max=50)])
     last_name = StringField('Username', [validators.DataRequired(), validators.Length(min=1, max=50)])
     description = StringField('Description', [validators.Length(max=200)])
