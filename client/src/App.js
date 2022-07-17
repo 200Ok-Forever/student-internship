@@ -67,7 +67,6 @@ function App() {
           <Route path="/resources" exact component={Resources} />
           <Route path="/applications" exact component={Applications} />
           <Route path="/recommended-candidates" exact component={RecommendedCandidates} />
-          <Route path="*" component={NotFound} />
           <Route component={NarrowContainerRoutes} />
         </Switch>
       </Container>
@@ -91,6 +90,7 @@ const NarrowContainerRoutes = () => {
         <Route path="/forum/*" component={Forum} />
         <Route path="/saved" component={Saved} />
         <Route path="/history" component={History} />
+        <Route path="*" component={NotFound} />
       </Switch>
     </Box>
   );
