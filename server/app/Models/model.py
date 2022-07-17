@@ -197,7 +197,7 @@ class Company(db.Model):
     linkedin = db.Column('linkedin', db.String(255))
     founded_year = db.Column('founded_year', db.String(4))
     company_size = db.Column('company_size', db.String(10))
-    logo = db.Column('logo', db.String(255))
+    logo = db.Column('company_logo', db.String(255))
     location = db.Column('location', db.String(255))
     description = db.Column('description', db.String(255))
     company_url = db.Column('company_url', db.String(256))
