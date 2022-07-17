@@ -64,7 +64,6 @@ function App() {
           <Route path="/resume/s2" exact component={ResumeCreatorStep2} />
           <Route path="/forum" exact component={Forum} />
           <Route path="/chat" exact component={Chat} />
-          <Route path="/resources" exact component={Resources} />
           <Route path="/applications" exact component={Applications} />
           <Route path="/recommended-candidates" exact component={RecommendedCandidates} />
           <Route component={NarrowContainerRoutes} />
@@ -90,6 +89,7 @@ const NarrowContainerRoutes = () => {
         <Route path="/forum/*" component={Forum} />
         <Route path="/saved" component={Saved} />
         <Route path="/history" component={History} />
+        <Route path="/resources" exact component={Resources} />
         <Route path="*" component={NotFound} />
       </Switch>
     </Box>
