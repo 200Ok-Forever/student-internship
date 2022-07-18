@@ -9,7 +9,7 @@ from .company_page_utils import CompanyPageUtils
 from  ...Models import model 
 from ...Helpers.other_until import convert_object_to_dict, convert_model_to_dict
 from ... import db
-from flask_jwt import jwt_required, JWT
+from flask_jwt_extended import jwt_required
 from flask import request
 from flask_restx import Resource, reqparse
 from fuzzywuzzy import process
@@ -35,12 +35,11 @@ class GetCompany(Resource):
     
     @company_ns.response(200, "Successfully")
     @company_ns.response(400, "Something wrong")
-    #@jwt_required()
+    @jwt_required()
     @company_ns.expect(CompanyPageAPI.company_data, validate=True)
     def post(self, id):
         data = company_ns.payload
-        #uid = get_jwt_identity()
-        uid = 4
+        uid = get_jwt_identity()
         query = db.session.query(model.Company).filter(model.Company.id == id)
         
         # 1. check company id
@@ -52,7 +51,18 @@ class GetCompany(Resource):
             return {"message": "No permission"}, 400
         
         # 3. update
-        query.update(data, synchronize_session = False)
+        company.email = data['email']
+        company.name = data['company_name']
+        company.first_name = data['first_name']
+        company.last_name = data['last_name']
+        company.industry = data['industry']
+        company.linkedin = data['linkedin']
+        company.company_url = data['company_url']
+        company.founded_year = data['founded_year']
+        company.company_size = data['company_size']
+        company.location = data['location']
+        company.description = data['description']
+        #query.update(data, synchronize_session = False)
 
         db.session.commit()
         return {"message": "Successfully"}, 200
@@ -98,9 +108,7 @@ class GetCompanyJobs(Resource):
             jobs = jobs.order_by(model.Internship.posted_time.desc())
         else:
             jobs = jobs.order_by(model.Internship.expiration_datetime_utc.desc())
-        if jobs.all() == []:
-            return {"message": "Invalid company id"}, 400
-    
+
         result = []
         for job in jobs:
             data = convert_object_to_dict(job)
@@ -115,10 +123,9 @@ class GetCompanyJobs(Resource):
 class CompanyJobManager(Resource):
     @company_ns.response(200, "Successfully")
     @company_ns.response(400, "Something wrong")
-    #@jwt_required()
+    @jwt_required()
     def delete(self, jobid):
-        # uid = get_jwt_identity()
-        uid = 4
+        uid = get_jwt_identity()
         # 1. check internship id
         query = db.session.query(model.Internship).filter(model.Internship.job_id == jobid)
         job = query.first()
@@ -140,10 +147,9 @@ class CompanyJobManager(Resource):
 class GetAllApplications(Resource):
     @company_ns.response(200, "Successfully")
     @company_ns.response(400, "Something wrong")
-    #@jwt_required()
+    @jwt_required()
     def get(self, jobid):
-        # uid = get_jwt_identity()
-        uid = 3
+        uid = get_jwt_identity()
 
         # 1. check internship id
         query = db.session.query(model.Internship).filter(model.Internship.job_id == jobid)
@@ -179,10 +185,9 @@ class GetAllApplications(Resource):
 class Accept(Resource):
     @company_ns.response(200, "Successfully")
     @company_ns.response(400, "Something wrong")
-    #@jwt_required()
+    @jwt_required()
     def post(self, jobid, appliedid):
-        # uid = get_jwt_identity()
-        uid = 3
+        uid = get_jwt_identity()
 
         # 1. check applicant 
         query = db.session.query(model.Application).filter(model.Application.id == appliedid)
@@ -209,10 +214,9 @@ class Accept(Resource):
 class Accept(Resource):
     @company_ns.response(200, "Successfully")
     @company_ns.response(400, "Something wrong")
-    #@jwt_required()
+    @jwt_required()
     def post(self, jobid, appliedid):
-        # uid = get_jwt_identity()
-        uid = 3
+        uid = get_jwt_identity()
 
         # 1. check applicant 
         query = db.session.query(model.Application).filter(model.Application.id == appliedid)
@@ -240,12 +244,11 @@ class CreateIntern(Resource):
     @company_ns.response(200, "Successfully")
     @company_ns.response(400, "Something wrong")
     @company_ns.expect(CompanyPageAPI.intern_data, validate=True)
-    #@jwt_required()
+    @jwt_required()
     def post(self, companyid):
         now = datetime.now()
         data = company_ns.payload
-        # uid = get_jwt_identity()
-        uid = 3
+        uid = get_jwt_identity()
 
         query = db.session.query(model.Company).filter(model.Company.id == companyid)
         
@@ -300,11 +303,10 @@ class CreateIntern(Resource):
     @company_ns.response(200, "Successfully")
     @company_ns.response(400, "Something wrong")
     @company_ns.expect(CompanyPageAPI.intern_data, validate=True)
-    #@jwt_required()
+    @jwt_required()
     def put(self, jobid):
         data = company_ns.payload
-        # uid = get_jwt_identity()
-        uid = 3
+        uid = get_jwt_identity()
 
         query = db.session.query(model.Internship).filter(model.Internship.job_id == jobid)
         
@@ -365,10 +367,9 @@ class CreateIntern(Resource):
 class Recomendation(Resource):
     @company_ns.response(200, "Successfully")
     @company_ns.response(400, "Something wrong")
-    #@jwt_required()
+    @jwt_required()
     def get(self, jobid):
-        # uid = get_jwt_identity()
-        uid = 3
+        uid = get_jwt_identity()
         query = db.session.query(model.Internship).filter(model.Internship.job_id == jobid)
         
         # 1. check company id

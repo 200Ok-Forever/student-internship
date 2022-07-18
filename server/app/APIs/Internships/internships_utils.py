@@ -1,2 +1,0 @@
-class InternshipsUtils:
-    pass

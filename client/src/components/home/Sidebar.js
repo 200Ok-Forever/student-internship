@@ -12,9 +12,12 @@ import {
 import { Link as RouteLink } from "react-router-dom";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import VideoCameraFrontIcon from "@mui/icons-material/VideoCameraFront";
-import RemoveButton from '../UI/RemoveButton';
+import RemoveButton from "../UI/RemoveButton";
 
 const Sidebar = () => {
+  // TODO fix when user setup
+  const user = 'student';
+
   const events = [
     {
       start: moment().add(1, "d").toDate(),
@@ -23,9 +26,9 @@ const Sidebar = () => {
       type: "internship",
     },
     {
-      start: moment().add(4, "days").toDate(),
-      end: moment().add(4, "days").add(10, "minutes").toDate(),
-      title: "INTERCHANGE interview",
+      start: moment().add(1, "days").toDate(),
+      end: moment().add(4, "days").add(2, "days").toDate(),
+      title: "Interview with Ashley Zimmer",
       type: "meeting",
     },
     {
@@ -35,9 +38,9 @@ const Sidebar = () => {
       type: "internship",
     },
     {
-      start: moment().add(4, "days").toDate(),
-      end: moment().add(4, "days").add(10, "minutes").toDate(),
-      title: "INTERCHANGE interview",
+      start: moment().add(2, "days").add(15, 'm').toDate(),
+      end: moment().add(2, "days").add(2, "hours").toDate(),
+      title: "Interview with Jacob Li",
       type: "meeting",
     },
   ];
@@ -56,9 +59,11 @@ const Sidebar = () => {
         View Full Calendar
       </Link>
       <Meetings events={upcomingEvents.filter((e) => e.type === "meeting")} />
-      <Internships
-        events={upcomingEvents.filter((e) => e.type === "internship")}
-      />
+      {user === 'student' && 
+        <Internships
+          events={upcomingEvents.filter((e) => e.type === "internship")}
+        />
+      }
     </Grid>
   );
 };
@@ -74,8 +79,8 @@ const Internships = ({ events }) => {
           <i>No application deadlines in the next week</i>
         </Typography>
       ) : (
-        events.map((e) => (
-          <Card sx={{ mt: 1 }}>
+        events.map((e, i) => (
+          <Card sx={{ mt: 1 }} key={`view_${i}`}>
             <CardContent>
               <Typography gutterBottom variant="h6" component="div">
                 {e.title}
@@ -113,8 +118,8 @@ const Meetings = ({ events }) => {
           <i>No meetings in the next week</i>
         </Typography>
       ) : (
-        events.map((e) => (
-          <Card sx={{ mt: 1 }}>
+        events.map((e, i) => (
+          <Card sx={{ mt: 1 }} key={`event_${i}`}>
             <CardContent>
               <Typography gutterBottom variant="h6" component="div">
                 {e.title}

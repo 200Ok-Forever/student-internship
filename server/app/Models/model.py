@@ -14,10 +14,12 @@ class User(db.Model):
     """User(student&company) table"""
     __tablename__ = 't_user'
     uid = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.VARCHAR(60), nullable=False, unique=True)
     email = db.Column(db.VARCHAR(320), nullable=False, unique=True)
     hashed_password = db.Column(db.BINARY(60), nullable=False)
     role = db.Column(db.Integer, nullable=False)
     company = db.relationship('Company', backref='user', lazy=True)
+    avatar = db.Column(db.BLOB, nullable=True)
 
     @property
     def password(self):
@@ -37,6 +39,25 @@ class User(db.Model):
             'email': self.email,
             'role': self.role
         }
+
+job_skills = db.Table('r_job_skill',
+                      db.Column('job_id', db.Integer, db.ForeignKey('t_internships.id'), primary_key=True),
+                      db.Column('skill_id', db.Integer, db.ForeignKey('t_skills.id'), primary_key=True))
+
+
+class Skill(db.Model):
+    __tablename__ = 't_skills'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.VARCHAR(255))
+    internships = db.relationship('Internship', secondary=job_skills, backref='skill', overlaps="skills")
+
+    def get_info(self):
+        return {
+            "id": self.id,
+            "name": self.name
+        }
+
 
 class Internship(db.Model):
     """Internship table"""
@@ -64,6 +85,10 @@ class Internship(db.Model):
     require_resume = db.Column('require_resume', TINYINT(), nullable=False)
     require_coverLetter = db.Column('require_coverLetter', TINYINT(), nullable=False)
     processes = db.relationship('Process', backref='internship', lazy=True)
+    skills = db.relationship('Skill', secondary=job_skills,
+                             backref='internship', overlaps="internship, skill")
+
+
     def __repr__(self):
         return f"<Intership: id: {self.id}, company: {self.company_id}>"
 
@@ -150,6 +175,36 @@ class Student(db.Model):
 
 
 
+class Comment(db.Model):
+    __tablename__ = 't_comment'
+    id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    internship_id = db.Column(db.Integer, db.ForeignKey("t_internships.id"))
+    content = db.Column(db.TEXT)
+    parent_id = db.Column(db.Integer)
+    user_id = db.Column(db.Integer, db.ForeignKey("t_user.uid"))
+    date = db.Column(db.TIMESTAMP)
+
+    def get_info(self):
+        return {
+            "id": self.id,
+            "internship_id": self.internship_id,
+            "content": self.content,
+            "parent_id": self.parent_id,
+            "user_id": self.user_id,
+            "date": self.date
+        }
+
+
+
+
+class City(db.Model):
+    __tablename__ = 't_cities'
+    id = db.Column(db.Integer, primary_key=True)
+    state_id = db.Column(db.Integer)
+    name = db.Column(db.VARCHAR(255))
+    #internships = db.relationship("Internship", backref='citys', lazy='dynamic')
+
+
 
 
 class LoginSchema(Form):
@@ -162,7 +217,6 @@ class SignUpSchema(Form):
     password = PasswordField('New Password', [
         validators.DataRequired(),
         validators.EqualTo('confirm', message='Passwords must match')])
-    confirm = PasswordField('Repeat Password', [validators.DataRequired()])
     first_name = StringField('Username', [validators.DataRequired(), validators.Length(min=1, max=50)])
     last_name = StringField('Username', [validators.DataRequired(), validators.Length(min=1, max=50)])
     description = StringField('Description', [validators.Length(max=200)])
