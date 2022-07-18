@@ -367,9 +367,9 @@ class CreateIntern(Resource):
 class Recomendation(Resource):
     @company_ns.response(200, "Successfully")
     @company_ns.response(400, "Something wrong")
-    #@jwt_required()
+    @jwt_required()
     def get(self, jobid):
-        #uid = get_jwt_identity()
+        uid = get_jwt_identity()
         query = db.session.query(model.Internship).filter(model.Internship.job_id == jobid)
         
         # 1. check company id
@@ -377,8 +377,8 @@ class Recomendation(Resource):
         if job== None:
             return {"message": "Invalid internship id"}, 400
         # 2. check permission : is recuiter and belongs to this company
-        #if job.company.user_id != uid:
-        #    return {"message": "No permission"}, 400
+        if job.company.user_id != uid:
+            return {"message": "No permission"}, 400
 
         # 3. recomendation
         job_skills = job.skills
