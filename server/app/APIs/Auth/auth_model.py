@@ -133,3 +133,10 @@ class AuthAPI:
             "email": fields.String(required=True)
         }
     )
+
+    password_reset_reset = api.model(
+        "Password reset request", {
+            "password": fields.String(required=True),
+            "verification_code": fields.String(required=True)
+        }
+    )

@@ -126,25 +126,51 @@ class CompanySignup(Resource):
         return AuthUtils.companySignup(signup_data)
 
 
-# @auth_api.route("/password_reset/send")
-# class PasswordResetSend(Resource):
-#     password_reset_send = AuthAPI.password_reset_send
-#
-#     @auth_api.doc(
-#         "Company signup success",
-#         responses={
-#             201: "Successfully send a verification code to the email",
-#             400: "Malformed data or validations failed.",
-#         },
-#     )
-#     @auth_api.expect(password_reset_send, validate=True)
-#     def post(self):
-#         """ Password reset send """
-#         # Grab the json data
-#         send_form, send_data = request.form, request.get_json()
-#         # Validate data
-#         errors = company_signup_schema.validate(signup_form)
-#         if errors:
-#             return {"login": False, "errors": errors}, 400
-#
-#         return AuthUtils.companySignup(signup_data)
+@auth_api.route("/password_reset/send")
+class PasswordResetSend(Resource):
+    password_reset_send = AuthAPI.password_reset_send
+
+    @auth_api.doc(
+        "Password reset request send success",
+        responses={
+            201: "Successfully send a verification code to the email",
+            400: "Malformed data or validations failed.",
+        },
+    )
+    @auth_api.expect(password_reset_send, validate=True)
+    def post(self):
+        """ Password reset send """
+        # Grab the json data
+        send_form, send_data = request.form, request.get_json()
+        # Validate data
+        # errors = company_signup_schema.validate(send_form)
+        # if errors:
+        #     return {"login": False, "errors": errors}, 400
+
+        AuthUtils.send_confirmation_email(send_data["email"], flag=2)
+        return "send"
+
+
+@auth_api.route("/password_reset/reset")
+class PasswordResetSend(Resource):
+    password_reset_reset = AuthAPI.password_reset_reset
+
+    @auth_api.doc(
+        "Password reset success",
+        responses={
+            201: "Successfully send a verification code to the email",
+            400: "Malformed data or validations failed.",
+        },
+    )
+    @auth_api.expect(password_reset_reset, validate=True)
+    def post(self):
+        """ Password reset send """
+        # Grab the json data
+        send_form, send_data = request.form, request.get_json()
+        # Validate data
+        # errors = company_signup_schema.validate(send_form)
+        # if errors:
+        #     return {"login": False, "errors": errors}, 400
+
+        AuthUtils.send_confirmation_email(send_data["email"], flag=2)
+        return "send"
