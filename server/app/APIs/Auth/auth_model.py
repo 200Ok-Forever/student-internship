@@ -79,7 +79,8 @@ class AuthAPI:
             "degree": fields.String(required=True),
             "major": fields.String,
             "skills": fields.String,
-            "description": fields.String
+            "description": fields.String,
+            "avatar": fields.String
         },
     )
 
@@ -99,7 +100,8 @@ class AuthAPI:
             "company_size": fields.Integer(required=True),
             "location": fields.String,
             "description": fields.String,
-            "company_logo": fields.String
+            "company_logo": fields.String,
+            "avatar": fields.String
         },
     )
 
@@ -131,5 +133,12 @@ class AuthAPI:
     password_reset_send = api.model(
         "Password reset request", {
             "email": fields.String(required=True)
+        }
+    )
+
+    password_reset_reset = api.model(
+        "Password reset request", {
+            "password": fields.String(required=True),
+            "verification_code": fields.String(required=True)
         }
     )

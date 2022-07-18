@@ -14,6 +14,7 @@ class User(db.Model):
     hashed_password = db.Column(db.BINARY(60), nullable=False)
     role = db.Column(db.Integer, nullable=False)
     avatar = db.Column(db.BLOB, nullable=True)
+    verification_code = db.Column(db.VARCHAR(6))
     status = db.relationship('InternshipStatus', back_populates='user')
 
     @property
