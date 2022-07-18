@@ -10,6 +10,7 @@ from .. import bcrypt, db
 from sqlalchemy.dialects.mysql import TINYINT
 
 from sqlalchemy.schema import Sequence
+
 class User(db.Model):
     """User(student&company) table"""
     __tablename__ = 't_user'
@@ -165,7 +166,7 @@ class Student(db.Model):
     internships = db.relationship('Internship', secondary='t_intern_user_status', back_populates='students_of_appilcation', lazy=True)
     answers = db.relationship('Question', secondary='r_intern_question_answer', back_populates='students', lazy=True)
     skills = db.relationship('Skill', secondary='r_student_skill', back_populates='students', lazy=True)
-
+    posts = db.relationship('Post', backref='student', lazy=True)
 
     def __repr__(self):
         return f"<Student: {self.email}, {self.first_name} {self.last_name}>"
@@ -320,3 +321,4 @@ class Process(db.Model):
         self.intern_id = intern_id
         self.order = order
         self.name = name
+
