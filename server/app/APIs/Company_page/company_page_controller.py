@@ -1,5 +1,5 @@
 from operator import mod, pos
-from re import L
+from re import L, S
 from flask import request, jsonify
 from flask_jwt_extended import get_jwt_identity
 from flask_restx import Resource
@@ -16,7 +16,7 @@ from fuzzywuzzy import process
 from sqlalchemy import or_
 from datetime import datetime
 from difflib import SequenceMatcher
-
+from sqlalchemy import func
 
 company_ns = CompanyPageAPI.company_ns
 
@@ -363,13 +363,13 @@ class CreateIntern(Resource):
             return {"message": "Something wrong"}, 400
         return {"message": "Successfuly"}, 200
 
-@company_ns.route("/<jobid>/recomendation")
+@company_ns.route("/<jobid>/recommendation")
 class Recomendation(Resource):
     @company_ns.response(200, "Successfully")
     @company_ns.response(400, "Something wrong")
-    @jwt_required()
+    #@jwt_required()
     def get(self, jobid):
-        uid = get_jwt_identity()
+        #uid = get_jwt_identity()
         query = db.session.query(model.Internship).filter(model.Internship.job_id == jobid)
         
         # 1. check company id
@@ -377,11 +377,35 @@ class Recomendation(Resource):
         if job== None:
             return {"message": "Invalid internship id"}, 400
         # 2. check permission : is recuiter and belongs to this company
-        if job.company.user_id != uid:
-            return {"message": "No permission"}, 400
+        #if job.company.user_id != uid:
+        #    return {"message": "No permission"}, 400
 
         # 3. recomendation
-        students = job.students_of_appilcation
+        job_skills = job.skills
+        jobs_id = [skill.id for skill in job_skills]
+
+        query = db.session.query(model.Student, model.Skill, model.StudentSkills, model.Application
+        # join the stuudent , skill, studentskill
+        ).filter(model.Student.id == model.StudentSkills.student_id, model.Skill.id == model.StudentSkills.skill_id, 
+        # get the pending applicant
+        model.Application.intership_id == jobid, model.Application.student_id == model.Student.id, model.Application.is_applied == 'True', model.Application.status == 'pending',
+        # get the skill that the job needs
+        model.Skill.id.in_(jobs_id))
+        
+        top6 = query.group_by(model.Student.id).order_by(func.count(model.Student.id).desc()).limit(6).all()
+        print(top6)
+        stu_skills = query.order_by(model.Student.id).all()
+        result = []
+        for data in top6:
+            student = data[0]
+            info = convert_object_to_dict(student)
+            stu_skills = query.filter(model.Student.id == student.id).all()
+
+            skills = [skill[1].name for skill in stu_skills]
+            info['match'] = skills
+            result.append(info)
+
+        """
         data = {}
         ratio_list = []
         for stu in students:
@@ -406,7 +430,11 @@ class Recomendation(Resource):
             index+=1
             if num >= 6:
                 break
-        return {"reault": convert_model_to_dict(result)}, 200
+        """
+
+        return {"reault": result}, 200
+
+
     
 
 

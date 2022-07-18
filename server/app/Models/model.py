@@ -40,23 +40,32 @@ class User(db.Model):
             'role': self.role
         }
 
-job_skills = db.Table('r_job_skill',
-                      db.Column('job_id', db.Integer, db.ForeignKey('t_internships.id'), primary_key=True),
-                      db.Column('skill_id', db.Integer, db.ForeignKey('t_skills.id'), primary_key=True))
 
 
 class Skill(db.Model):
     __tablename__ = 't_skills'
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.VARCHAR(255))
-    internships = db.relationship('Internship', secondary=job_skills, backref='skill', overlaps="skills")
+    internships = db.relationship('Internship', secondary='r_job_skill', back_populates='skills', lazy=True)
+    students = db.relationship('Student', secondary='r_student_skill', back_populates='skills', lazy=True)
 
     def get_info(self):
         return {
             "id": self.id,
             "name": self.name
         }
+
+class JobSkills(db.Model):
+    __tablename__ = 'r_job_skill'
+    job_id = db.Column('job_id', db.Integer, db.ForeignKey('t_internships.id'), primary_key=True)
+    skill_id = db.Column('skill_id', db.Integer, db.ForeignKey('t_skills.id'), primary_key=True)
+
+
+class StudentSkills(db.Model):
+    __tablename__ = 'r_student_skill'
+    student_id = db.Column('student_id', db.Integer, db.ForeignKey('t_student.id'), primary_key=True)
+    skill_id = db.Column('skill_id', db.Integer, db.ForeignKey('t_skills.id'), primary_key=True)
 
 
 class Internship(db.Model):
@@ -85,8 +94,8 @@ class Internship(db.Model):
     require_resume = db.Column('require_resume', TINYINT(), nullable=False)
     require_coverLetter = db.Column('require_coverLetter', TINYINT(), nullable=False)
     processes = db.relationship('Process', backref='internship', lazy=True)
-    skills = db.relationship('Skill', secondary=job_skills,
-                             backref='internship', overlaps="internship, skill")
+    skills = db.relationship('Skill', secondary='r_job_skill', back_populates='internships', lazy=True)
+
 
 
     def __repr__(self):
@@ -155,6 +164,8 @@ class Student(db.Model):
     description = db.Column(db.VARCHAR(200))
     internships = db.relationship('Internship', secondary='t_intern_user_status', back_populates='students_of_appilcation', lazy=True)
     answers = db.relationship('Question', secondary='r_intern_question_answer', back_populates='students', lazy=True)
+    skills = db.relationship('Skill', secondary='r_student_skill', back_populates='students', lazy=True)
+
 
     def __repr__(self):
         return f"<Student: {self.email}, {self.first_name} {self.last_name}>"
@@ -171,7 +182,6 @@ class Student(db.Model):
             "skills": self.skills,
             "description": self.description
         }
-
 
 
 
