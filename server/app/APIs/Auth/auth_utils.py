@@ -68,7 +68,7 @@ class AuthUtils:
                 email=email,
                 password=password,
                 role=1,
-                avatar=data["avatar"]
+                avatar=bytes(data["avatar"], 'utf-8'),
             )
             new_student = Student(
                 email=email,
@@ -82,6 +82,62 @@ class AuthUtils:
             )
             db.session.add(new_user)
             db.session.add(new_student)
+            db.session.commit()
+
+            user = User.query.filter_by(email=email).first()
+            user_info = User.get_info(user)
+            # Create access token
+            access_token = create_access_token(identity=new_user.uid)
+            resp = {"status": True,
+                    "message": "Successfully signup.",
+                    "user": user_info,
+                    "token": access_token
+                    }
+            return resp, 201
+        except Exception as error:
+            current_app.logger.error(error)
+            return {
+                       "status": False,
+                       "message": "Something went wrong during the process!",
+                   }, 500
+
+    @staticmethod
+    def companySignup(data):
+        email = data["email"]
+        username = data["username"]
+        password = bytes(data["password"], 'utf-8')
+
+        # Check if the email is taken
+        if User.query.filter_by(email=email).first() is not None:
+            return {
+                       "status": False,
+                       "message": "Email is already being used.",
+                   }, 403
+
+        try:
+            new_user = User(
+                username=username,
+                email=email,
+                password=password,
+                role=2,
+                avatar=bytes(data["avatar"], 'utf-8'),
+            )
+            new_company = Company(
+                email=email,
+                company_name=data["company_name"],
+                first_name=data["first_name"],
+                last_name=data["last_name"],
+                industry=data["industry"],
+                linkedin=data["linkedin"],
+                company_url=data["company_url"],
+                founded_year=data["founded_year"],
+                company_size=data["company_size"],
+                location=data["location"],
+                description=data["description"],
+                company_logo=data["company_logo"]
+            )
+            db.session.add(new_user)
+            db.session.add(new_company)
             db.session.commit()
 
             user = User.query.filter_by(email=email).first()
@@ -129,59 +185,3 @@ class AuthUtils:
                                "status": True,
                                "message": "Verification code is correct.",
                            }, 200
-
-    @staticmethod
-    def companySignup(data):
-        email = data["email"]
-        username = data["username"]
-        password = bytes(data["password"], 'utf-8')
-
-        # Check if the email is taken
-        if User.query.filter_by(email=email).first() is not None:
-            return {
-                       "status": False,
-                       "message": "Email is already being used.",
-                   }, 403
-
-        try:
-            new_user = User(
-                username=username,
-                email=email,
-                password=password,
-                role=2,
-                avatar=data["avatar"]
-            )
-            new_company = Company(
-                email=email,
-                company_name=data["company_name"],
-                first_name=data["first_name"],
-                last_name=data["last_name"],
-                industry=data["industry"],
-                linkedin=data["linkedin"],
-                company_url=data["company_url"],
-                founded_year=data["founded_year"],
-                company_size=data["company_size"],
-                location=data["location"],
-                description=data["description"],
-                company_logo=data["company_logo"]
-            )
-            db.session.add(new_user)
-            db.session.add(new_company)
-            db.session.commit()
-
-            user = User.query.filter_by(email=email).first()
-            user_info = User.get_info(user)
-            # Create access token
-            access_token = create_access_token(identity=new_user.uid)
-            resp = {"status": True,
-                    "message": "Successfully signup.",
-                    "user": user_info,
-                    "token": access_token
-                    }
-            return resp, 201
-        except Exception as error:
-            current_app.logger.error(error)
-            return {
-                       "status": False,
-                       "message": "Something went wrong during the process!",
-                   }, 500
