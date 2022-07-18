@@ -258,7 +258,7 @@ const BasicInfo = ({ info }) => {
             />
           </Label>
         )}
-        {(info.min_salary || info.max_salary) && (
+        {(info.min_salary !== 0 || info.max_salary !== 0) && (
           <Label text={salary_str}>
             <img src={salary} alt="salary" width="25px" height="25px" />
           </Label>

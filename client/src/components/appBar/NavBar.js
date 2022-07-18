@@ -111,6 +111,13 @@ const NavBar = () => {
               <MenuItem
                 onClick={handleClose}
                 component={RouterLink}
+                to="/profile"
+              >
+                Profile
+              </MenuItem>
+              <MenuItem
+                onClick={handleClose}
+                component={RouterLink}
                 to="/saved"
               >
                 Saved Internships
