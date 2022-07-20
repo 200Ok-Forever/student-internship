@@ -32,8 +32,10 @@ class User(db.Model):
     def get_info(self):
         return {
             'uid': self.uid,
+            'username': self.username,
             'email': self.email,
-            'role': self.role
+            'role': self.role,
+            'avatar': self.avatar
         }
 
 
@@ -55,7 +57,7 @@ class Student(db.Model):
 
     def get_info(self):
         return {
-            "id": self.uid,
+            "id": self.id,
             "email": self.email,
             "first_name": self.first_name,
             "last_name": self.last_name,
@@ -82,7 +84,7 @@ class Company(db.Model):
     company_size = db.Column(db.VARCHAR(10), nullable=False)
     location = db.Column(db.VARCHAR(255))
     description = db.Column(db.VARCHAR(200))
-    company_logo = db.Column(db.VARCHAR(255))
+    company_logo = db.Column(db.TEXT)
 
     def __repr__(self):
         return f"<Recruiter: {self.email}, {self.first_name} {self.last_name}>"

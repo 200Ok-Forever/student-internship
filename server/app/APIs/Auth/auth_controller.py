@@ -3,13 +3,16 @@ from flask_restx import Resource
 from .auth_model import AuthAPI
 from ...Models.model import LoginSchema, StudentSignUpSchema, CompanySignUpSchema
 from .auth_utils import AuthUtils
-from flask_jwt_extended import jwt_required, unset_jwt_cookies
+from flask_jwt_extended import jwt_required, unset_jwt_cookies, get_jwt_identity, create_access_token
 
 auth_api = AuthAPI.api
 
 login_schema = LoginSchema()
 student_signup_schema = StudentSignUpSchema()
 company_signup_schema = CompanySignUpSchema()
+
+authParser = auth_api.parser()
+authParser.add_argument('Authorization', location='headers', help='Bearer [Token]', default='Bearer xxxxxxxxxxxxx')
 
 
 @auth_api.route("/login")
@@ -43,10 +46,6 @@ class Login(Resource):
         return AuthUtils.login(login_data)
 
 
-logoutParser = auth_api.parser()
-logoutParser.add_argument('Authorization', location='headers', help='Bearer [Token]', default='Bearer xxxxxxxxxxxxx')
-
-
 @auth_api.route("/logout")
 class Logout(Resource):
     """ User logout endpoint """
@@ -61,7 +60,7 @@ class Logout(Resource):
         },
     )
     @jwt_required()
-    @auth_api.expect(logoutParser, validate=True)
+    @auth_api.expect(authParser, validate=True)
     def post(self):
         """ Logout """
         try:
@@ -174,3 +173,35 @@ class PasswordResetSend(Resource):
 
         AuthUtils.send_confirmation_email(send_data["email"], flag=2)
         return "send"
+
+
+@auth_api.route("/userInfoShort")
+class UserInfoShort(Resource):
+    @auth_api.doc(
+        "User info short",
+        responses={
+            200: "Successfully get user info",
+            400: "Malformed data or validations failed.",
+        },
+    )
+    @jwt_required()
+    @auth_api.expect(authParser, validate=True)
+    def get(self):
+        """ User info short """
+        return AuthUtils.userInfoShort()
+
+
+@auth_api.route("/userInfoLong")
+class UserInfoLong(Resource):
+    @auth_api.doc(
+        "User info long",
+        responses={
+            200: "Successfully get user info",
+            400: "Malformed data or validations failed.",
+        },
+    )
+    @jwt_required()
+    @auth_api.expect(authParser, validate=True)
+    def get(self):
+        """ User info long """
+        return AuthUtils.userInfoLong()

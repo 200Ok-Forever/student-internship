@@ -52,7 +52,7 @@ class AuthAPI:
     user_login = api.model(
         "User login request",
         {
-            "username": fields.String(required=True),
+            "email": fields.String(required=True),
             "password": fields.String(required=True),
         },
     )
