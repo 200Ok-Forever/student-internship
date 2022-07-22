@@ -68,7 +68,7 @@ class AuthUtils:
                 email=email,
                 password=password,
                 role=1,
-                avatar=bytes(data["avatar"], 'utf-8'),
+                avatar=data["avatar"],
             )
             new_student = Student(
                 email=email,
@@ -120,7 +120,7 @@ class AuthUtils:
                 email=email,
                 password=password,
                 role=2,
-                avatar=bytes(data["avatar"], 'utf-8'),
+                avatar=data["avatar"],
             )
             new_company = Company(
                 email=email,

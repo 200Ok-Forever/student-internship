@@ -13,7 +13,7 @@ class User(db.Model):
     email = db.Column(db.VARCHAR(320), nullable=False, unique=True)
     hashed_password = db.Column(db.BINARY(60), nullable=False)
     role = db.Column(db.Integer, nullable=False)
-    avatar = db.Column(db.BLOB, nullable=True)
+    avatar = db.Column(db.TEXT, nullable=True)
     verification_code = db.Column(db.VARCHAR(6))
     status = db.relationship('InternshipStatus', back_populates='user')
 
