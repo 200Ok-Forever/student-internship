@@ -97,7 +97,7 @@ class AuthAPI:
             "linkedin": fields.String,
             "company_url": fields.String,
             "founded_year": fields.String(required=True),
-            "company_size": fields.Integer(required=True),
+            "company_size": fields.String(required=True),
             "location": fields.String,
             "description": fields.String,
             "company_logo": fields.String,
