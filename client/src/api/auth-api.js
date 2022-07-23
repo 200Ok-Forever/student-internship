@@ -10,7 +10,7 @@ export const LoginAPI = async (data) => {
 
     return res.data;
   } catch (err) {
-    console.log(err);
+    return err;
   }
 };
 
@@ -20,7 +20,7 @@ export const StudentSignupAPI = async (data) => {
     const res = await postAxios(url, data);
     return res.data;
   } catch (err) {
-    console.log(err);
+    return err;
   }
 };
 
