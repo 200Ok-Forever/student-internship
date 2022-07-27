@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link as RouterLink, useHistory } from 'react-router-dom';
-import { Button, IconButton, Paper, Box, Typography } from '@mui/material';
+import { Button, Paper, Box, Typography } from '@mui/material';
 import FmdGoodIcon from "@mui/icons-material/FmdGood";
 import RemoveButton from "../UI/RemoveButton";
 import salary from "../../asset/salary.png";
@@ -68,7 +68,7 @@ const PostedInternships = () => {
         <Typography variant="h4" component="div">
           Manage Your Internship Postings
         </Typography>
-        <Button variant="contained" color="primary">
+        <Button variant="contained" color="primary" component={RouterLink} to="/jobs/create">
           New Posting
         </Button>      
       </Box>
