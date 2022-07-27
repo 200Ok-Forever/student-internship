@@ -8,7 +8,7 @@ const ForumPost = () => {
 
   // API CALL
   const post = {
-    title: "Job hunting sucks :(",
+    title: "Horrible experience at XYZ, stay away!!",
     author: 'Sarah Zheng',
     content: 'Velit ut cupidatat nostrud ea sunt Lorem id aliquip officia commodo nostrud commodo adipisicing. Excepteur voluptate ullamco ullamco labore ipsum minim nulla ea elit id esse minim duis. Laboris duis irure ullamco cillum. Cupidatat voluptate irure mollit pariatur consequat dolor irure exercitation ea deserunt aliqua. Do mollit occaecat ea nisi enim irure ad amet id eiusmod cillum. Cillum id ut in minim deserunt adipisicing non minim sit duis in sint proident. Laborum incididunt aute pariatur labore minim fugiat ut ullamco cupidatat laborum aliquip Lorem. \n Nulla nisi magna commodo fugiat nulla reprehenderit pariatur esse. Esse dolore ut consectetur mollit anim proident reprehenderit ad ullamco dolor nisi. Incididunt commodo dolore est duis exercitation eiusmod elit culpa ea elit. Ex laboris enim officia nostrud laborum consequat aliquip in amet excepteur aliqua pariatur Lorem ad. \n Dolore excepteur voluptate dolore sit aute voluptate ipsum anim non elit esse laboris. Ea cillum fugiat laborum aute minim proident sunt excepteur ex aute. Id laborum duis ad anim eiusmod cupidatat Lorem magna adipisicing et. Nisi amet laboris consectetur aute officia sunt nisi tempor.',
     createdAt: new Date(),

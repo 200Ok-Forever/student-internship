@@ -16,7 +16,7 @@ import RemoveButton from "../UI/RemoveButton";
 
 const Sidebar = () => {
   // TODO fix when user setup
-  const user = 'student';
+  const user = 'recruiter';
 
   const events = [
     {
