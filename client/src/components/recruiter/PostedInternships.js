@@ -6,8 +6,7 @@ import RemoveButton from "../UI/RemoveButton";
 import salary from "../../asset/salary.png";
 import Label from "../UI/Label";
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
+import EditAndDelete from '../UI/EditAndDelete';
 
 const internships = [
   {
@@ -126,14 +125,7 @@ const CardHeader = ({ job }) => {
         >
           {job.title}
         </Typography>
-        <Box>
-          <IconButton color="primary">
-            <EditIcon />
-          </IconButton>
-          <IconButton color="error">
-            <DeleteIcon />
-          </IconButton>
-        </Box>
+        <EditAndDelete />
       </Box>
     </>
   )

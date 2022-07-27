@@ -33,6 +33,7 @@ import ResumeCreator from "./components/educational/ResumeCreator";
 import ResumeCreatorStep2 from "./components/educational/ResumeCreatorStep2";
 import Chat from "./components/chat/Chat";
 import Profile from "./components/student/Profile";
+import UserPosts from './components/forum/UserPosts';
 
 function App() {
   const location = useLocation();
@@ -90,6 +91,7 @@ const NarrowContainerRoutes = () => {
         {INDUSTRIES.map((industry) => (
           <Route path={`/forum/${industry}`} component={IndustryForum} />
         ))}
+        <Route path="/forum/me" component={UserPosts} />
         <Route path="/forum/posts" component={ForumPost} />
         <Route path="/forum/create" component={CreatePost} />
         <Route path="/forum/*" component={Forum} />

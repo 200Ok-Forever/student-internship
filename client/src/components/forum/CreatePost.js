@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { Grid, Link, InputLabel, MenuItem, Select, FormControl, Box, Typography, TextField, Button } from '@mui/material';
+import { FormControlLabel, Checkbox, Grid, Link, InputLabel, MenuItem, Select, FormControl, Box, Typography, TextField, Button } from '@mui/material';
 import { INDUSTRIES } from './constants';
 
 const CreatePost = (props) => {
@@ -41,7 +41,8 @@ const CreatePost = (props) => {
         placeholder="What are your thoughts?"
         fullWidth
       />
-      <Box sx={{ display: 'flex', alignItems: 'center', mt: 3 }}>
+      <FormControlLabel control={<Checkbox />} label="Post Anonymously" sx={{ my: 2 }} />
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
         <Button color="primary" variant="contained" sx={{ px: 5, mr: 3 }}>
           Post
         </Button>
