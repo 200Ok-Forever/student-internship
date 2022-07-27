@@ -1,6 +1,7 @@
 """App configuration object"""
 import os
 from datetime import timedelta
+import pyotp
 
 
 class Config:
@@ -8,7 +9,7 @@ class Config:
 
     # Info
     SITE_NAME = os.environ.get("SITE_NAME", "InternHub")
-    SECRET_KEY = os.environ.get("SECRET_KEY", os.urandom(24))
+    SECRET_KEY = os.environ.get("SECRET_KEY", pyotp.random_base32())
 
     # Mail
     MAIL_SERVER = os.environ.get('MAIL_SERVER', 'smtp.163.com')
