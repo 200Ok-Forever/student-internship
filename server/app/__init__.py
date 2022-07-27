@@ -51,6 +51,7 @@ def register_extensions(app):
     jwt.init_app(app)
     migrate.init_app(app, db)
     limiter.init_app(app)
+    # redis.init_app(app)
 
 
 def register_blueprints(app):
