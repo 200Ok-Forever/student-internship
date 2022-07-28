@@ -12,12 +12,12 @@ class Config:
     SECRET_KEY = os.environ.get("SECRET_KEY", pyotp.random_base32())
 
     # Mail
-    MAIL_SERVER = os.environ.get('MAIL_SERVER', 'smtp.163.com')
-    MAIL_PORT = os.environ.get('MAIL_PORT', 465)
-    MAIL_USERNAME = os.environ.get('MAIL_USERNAME', 'zhy1998618@163.com')
-    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD', 'TOQGDQNPUYPAIVLA')
-    MAIL_USE_SSL = os.environ.get('MAIL_USE_SSL', True)
-    MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS', False)
+    MAIL_SERVER = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
+    MAIL_PORT = os.environ.get('MAIL_PORT', 25)
+    MAIL_USERNAME = os.environ.get('MAIL_USERNAME', 'internhub.200okforever@gmail.com')
+    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD', 'dqbregjrclhqokqy')
+    MAIL_USE_SSL = os.environ.get('MAIL_USE_SSL', False)
+    MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS', True)
 
     # JWT
     JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY", os.urandom(24))

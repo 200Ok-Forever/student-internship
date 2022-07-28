@@ -36,7 +36,7 @@ class User(db.Model):
             'email': self.email,
             'role': self.role,
             'avatar': self.avatar,
-            'code': self.verification_code
+            'verification_code': self.verification_code
         }
 
 
