@@ -151,7 +151,7 @@ class PasswordResetSend(Resource):
 
 
 @auth_api.route("/password_reset/reset")
-class PasswordResetSend(Resource):
+class PasswordResetReset(Resource):
     password_reset_reset = AuthAPI.password_reset_reset
 
     @auth_api.doc(
@@ -171,7 +171,7 @@ class PasswordResetSend(Resource):
         # if errors:
         #     return {"login": False, "errors": errors}, 400
 
-        AuthUtils.send_confirmation_email(send_data["email"], flag=2)
+        AuthUtils.verify_code(send_data)
         return "send"
 
 

@@ -9,6 +9,7 @@ from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
+# from redis import Redis
 
 assets = Environment()
 bcrypt = Bcrypt()
@@ -18,4 +19,4 @@ mail = Mail()
 migrate = Migrate()
 db = SQLAlchemy()
 jwt = JWTManager()
-# travis = Travis()
+# redis = Redis()
