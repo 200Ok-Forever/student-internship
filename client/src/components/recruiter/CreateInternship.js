@@ -29,6 +29,7 @@ const CreateInternship = () => {
   useEffect(() => {
     if (id) {
       // TODO get internship info
+      // TODO check this company owns the job
       const job = {
         title: 'test',
         closeDate: new Date(),
