@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link as RouterLink } from 'react-router-dom'
+import { useHistory, Link as RouterLink } from 'react-router-dom'
 import moment from 'moment';
 import ChatIcon from '@mui/icons-material/Chat';
 import classes from './Forum.module.scss';
@@ -9,6 +9,7 @@ import EditAndDelete from '../UI/EditAndDelete';
 const PostCard = ({ post }) => {
   // TODO
   const isMine = true;
+  const history = useHistory();
 
   return (
     <Card sx={{ mb: 2 }} className={classes.cardHover}>
@@ -19,7 +20,9 @@ const PostCard = ({ post }) => {
               {post.title}
             </Typography>
             {isMine &&
-              <EditAndDelete />
+              <EditAndDelete 
+                onEdit={() => history.push(`/forum/${post.id}/edit`)}
+              />
             }
           </Box>
           <Box sx={{ mb: 1 }}>

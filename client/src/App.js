@@ -94,6 +94,7 @@ const NarrowContainerRoutes = () => {
         <Route path="/forum/me" component={UserPosts} />
         <Route path="/forum/posts" component={ForumPost} />
         <Route path="/forum/create" component={CreatePost} />
+        <Route path="/forum/:id/edit" component={CreatePost} />
         <Route path="/forum/*" component={Forum} />
         <Route path="/saved" component={Saved} />
         <Route path="/history" component={History} />
