@@ -99,7 +99,8 @@ const NarrowContainerRoutes = () => {
         <Route path="/saved" component={Saved} />
         <Route path="/history" component={History} />
         <Route path="/resources" exact component={Resources} />
-        <Route path="/jobs/create" exact component={CreateInternship} />
+        <Route path="/job/create" exact component={CreateInternship} />
+        <Route path="/job/:id/edit" exact component={CreateInternship} />
         <Route path="*" component={NotFound} />
       </Switch>
     </Box>

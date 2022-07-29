@@ -1,27 +1,85 @@
-import React, { useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import CurrencyTextField from '@unicef/material-ui-currency-textfield'
+import { useParams, Link as RouterLink } from 'react-router-dom';
 import { Link, IconButton, Button, FormControl, InputLabel, Select, MenuItem, FormControlLabel, Checkbox, TextField, Box, Typography } from '@mui/material';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { CURRENCY_CODES } from './constants';
 
 const CreateInternship = () => {
+  const { id } = useParams();
+  const [loading, setLoading] = useState(id ? true : false);
+
+  const [title, setTitle] = useState("");
   const [closeDate, setCloseDate] = useState(new Date());
+  const [location, setLocation] = useState("");
+  const [currency, setCurrency] = useState("USD");
+  const [paid, setPaid] = useState(true);
+  const [minSalary, setMinSalary] = useState(0);
+  const [maxSalary, setMaxSalary] = useState(0);
+  const [remote, setRemote] = useState(false);
   const [type, setType] = useState("full time");
-  const [questions, setQuestions] = useState(['']);
   const [steps, setSteps] = useState([""]);
+  const [questions, setQuestions] = useState(['']);
+  const [resume, setResume] = useState(true);
+  const [coverLetter, setCoverLetter] = useState(false);
+
+  useEffect(() => {
+    if (id) {
+      // TODO get internship info
+      const job = {
+        title: 'test',
+        closeDate: new Date(),
+        location: 'Sydney',
+        currency: 'AUD',
+        minSalary: '50000',
+        maxSalary: '60000',
+        remote: true,
+        type: 'full time',
+        steps: ['Step 1', 'Step 2'],
+        questions: ['How are you?'],
+        resume: true,
+        coverLetter: true,
+      }
+      setTitle(job.title);
+      setCloseDate(job.closeDate);
+      setLocation(job.location);
+      setCurrency(job.currency);
+      setMinSalary(job.minSalary);
+      setMaxSalary(job.maxSalary);
+      setRemote(job.remote);
+      setType(job.type);
+      setSteps(job.steps);
+      setQuestions(job.questions);
+      setResume(job.resume);
+      setCoverLetter(job.coverLetter);
+      setLoading(false);
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!paid) {
+      setMinSalary(0);
+      setMaxSalary(0);
+    }
+  }, [paid])
+
+  if (loading) {
+    return;
+  }
 
   return (
     <Box>
       <Typography variant="h4" component='div' sx={{ mb: 1 }}>
-        Post an Internship
+        {id ? "Edit" : "Post"} an Internship
       </Typography>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }} mt={4}>
         <Typography variant="h5" component='div'>
           General Details
         </Typography>
-        <TextField id="title" label="Position Title" variant="outlined" />
+        <TextField id="title" label="Position Title" variant="outlined" value={title} onChange={e => setTitle(e.target.value)} />
         <Box sx={{ display: 'flex', gap: 2 }}>
           <LocalizationProvider dateAdapter={AdapterMoment}>
             <DesktopDatePicker
@@ -32,13 +90,58 @@ const CreateInternship = () => {
               renderInput={(params) => <TextField {...params} />}
             />
           </LocalizationProvider>
-          <TextField id="location" label="Location" variant="outlined" />
-          <TextField type="number" id="salary_currency" label="Salary Currency" variant="outlined" />
-          <TextField type="number" id="salary_min" label="Min Salary" variant="outlined" />
-          <TextField type="number" id="salary_max" label="Max Salary" variant="outlined" />
+          <TextField id="location" label="Location" variant="outlined" value={location} onChange={e => setLocation(e.target.value)} />
+        </Box>
+        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+          <FormControlLabel 
+            control={<Checkbox checked={paid} onChange={e => setPaid(e.target.checked)} />} 
+            label="Paid Role" 
+          />
+          <FormControl>
+            <InputLabel id="currency">Salary Currency</InputLabel>
+            <Select
+              labelId="currency"
+              disabled={!paid}
+              id="currency"
+              value={currency}
+              label="Salary Currency"
+              onChange={e => setCurrency(e.target.value)}
+            >
+              {CURRENCY_CODES.map(c => (
+                <MenuItem value={c}>{c}</MenuItem>
+              ))}
+            </Select>
+          </FormControl> 
+          <CurrencyTextField
+            label="Min Salary"
+            variant="outlined"
+            value={minSalary}
+            currencySymbol="$"
+            minimumValue="0"
+            outputFormat="string"
+            decimalCharacter="."
+            digitGroupSeparator=","
+            disabled={!paid}
+            onChange={(event, value) => setMinSalary(value)}
+          />
+          <CurrencyTextField
+            label="Max Salary"
+            variant="outlined"
+            value={maxSalary}
+            currencySymbol="$"
+            minimumValue="0"
+            outputFormat="string"
+            decimalCharacter="."
+            digitGroupSeparator=","
+            disabled={!paid}
+            onChange={(event, value) => setMaxSalary(value)}
+          />
         </Box>
         <Box sx={{ display: 'flex', gap: 3, alignItems: 'center' }}>
-          <FormControlLabel control={<Checkbox />} label="Remote Role" />
+          <FormControlLabel 
+            control={<Checkbox checked={remote} onChange={e => setRemote(e.target.checked)} />} 
+            label="Remote Role"
+          />
           <FormControl>
             <InputLabel id="type">Job Type</InputLabel>
             <Select
@@ -64,8 +167,14 @@ const CreateInternship = () => {
             Applicaiton Details
           </Typography>
           <Box sx={{ display: 'flex', gap: 2 }}>
-            <FormControlLabel control={<Checkbox />} label="Resume Required" />
-            <FormControlLabel control={<Checkbox />} label="Cover Letter Required" />
+            <FormControlLabel 
+              control={<Checkbox checked={resume} onChange={e => setResume(e.target.checked)} />} 
+              label="Resume Required"
+            />
+            <FormControlLabel 
+              control={<Checkbox checked={coverLetter} onChange={e => setCoverLetter(e.target.value)} />} 
+              label="Cover Letter Required" 
+            />
           </Box>
           <Typography variant="h6" component='div' sx={{ mb: 1 }}>
             Questions
@@ -106,7 +215,7 @@ const List = ({ values, setValues, placeholder }) => {
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }} mt={3}>
       {values.map((v, i) => (
         <Box sx={{ display: 'flex', alignItems: 'center'}}>
-          <Typography variant="subtitle1" sx={{ mr: 2 }}>
+          <Typography variant="subtitle1" sx={{ width: '30px'}}>
             {i+1}
           </Typography>
           <TextField 
