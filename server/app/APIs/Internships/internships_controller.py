@@ -140,3 +140,9 @@ class Events(Resource):
     def get(self):
         arg = request.args
         return InternshipsUtils.getCalendar(arg)
+
+@internships_api.route('/internships/recommend')
+class Recommend(Resource):
+    def get(self):
+        arg = request.args
+        return InternshipsUtils.getRecommend(arg)

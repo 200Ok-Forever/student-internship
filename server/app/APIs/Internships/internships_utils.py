@@ -428,6 +428,9 @@ class InternshipsUtils:
             
             return dumps({'msg': error}),400
     
+    def getRecommend(arg):
+        pass
+    
 
 
        
