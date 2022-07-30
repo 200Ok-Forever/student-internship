@@ -1,6 +1,7 @@
 """ORM and Schema"""
 
 from sqlalchemy.ext.hybrid import hybrid_method
+from torch import autocast_increment_nesting
 from wtforms import Form, IntegerField, StringField, PasswordField, validators
 from .. import bcrypt, db
 
@@ -188,6 +189,21 @@ class Internship(db.Model):
 
         }
     # more
+
+
+class Calendar(db.Model):
+    __tablename__= 't_calendar'
+    id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    internship_id = db.Column(db.Integer,db.ForeignKey("t_internships.id"))
+    student_id = db.Column(db.Integer,db.ForeignKey("t_student.id"))
+    start = db.Column(db.DATETIME)
+    end = db.Column(db.DATETIME)
+    title = db.Column(db.VARCHAR(255))
+    type = db.Column(db.VARCHAR(255))
+    link = db.Column(db.VARCHAR(255))
+    is_calendar = db.Column(db.Boolean)
+    
+    
 
 class Comment(db.Model):
     __tablename__ = 't_comment'

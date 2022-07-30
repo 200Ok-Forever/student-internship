@@ -120,3 +120,23 @@ class GetViewedInternships(Resource):
     def get(self):
         arg = request.args
         return InternshipsUtils.getViewedHistory(arg)
+
+@internships_api.route('/internships/calendar')
+class InternshipCalendar(Resource):
+ 
+    def post(self):
+        arg = request.get_json()
+        return InternshipsUtils.addCalendar(arg)
+        pass
+    
+
+    def delete(self):
+        arg = request.args
+        return InternshipsUtils.deleteCalendar(arg)
+        pass
+
+@internships_api.route('/events')
+class Events(Resource):
+    def get(self):
+        arg = request.args
+        return InternshipsUtils.getCalendar(arg)

@@ -1,3 +1,4 @@
+
 from plistlib import UID
 from sys import intern
 from flask import jsonify
@@ -7,7 +8,7 @@ from json import dumps
 from requests import session
 from sqlalchemy import null
 from torch import is_same_size
-from ...Models.model import Internship, City, Company, Comment, User, Skill,InternshipStatus
+from ...Models.model import Calendar, Internship, City, Company, Comment, User, Skill,InternshipStatus,Student
 from flask_restx import Resource, reqparse
 from ...extension import db
 from string import digits
@@ -324,7 +325,7 @@ class InternshipsUtils:
     
     def saveInternship(arg):
         internship_id = arg.get('internship_id')
-        print(internship_id)
+        (internship_id)
 
         #uid will change later, could not be 102
         update = db.session.query(InternshipStatus)\
@@ -364,6 +365,70 @@ class InternshipsUtils:
             return result,200
         else:
             return dumps({"msg": "Internship not found"}),404
-               
+
+    def getCalendar(arg):
+        get_student = db.session.query(Student).filter(Student.id == 102)
+        if not get_student:
+            return {
+                'msg': 'no related student'
+            },400
+
+        calendars = db.session.query(Calendar).filter(Calendar.student_id==102)
+        calander_list = []
+        if calendars:
+            for calendar in calendars:
+                calendar_result = {
+                    'internship_id':calendar.id,
+                    'student_id': calendar.student_id,
+                    'start': calendar.start,
+                    'end': calendar.end,
+                    'title':calendar.title,
+                    'type': calendar.type,
+                    'link':calendar.link,
+                    'is_calendar': calendar.is_calendar
+                }
+                calander_list.append(calendar_result)
+
+        return calander_list,200
+
+    def addCalendar(arg):
+        get_student = db.session.query(Student).filter(Student.id == 102)
+        if not get_student:
+              return {
+                'msg': 'no related student'
+            },400
+        data = arg
+        newCalendar = Calendar(title =data['name'],type=data['type'] \
+            ,start = data['start'], end = data['end'],internship_id = data['internshipId'],\
+                 user_id = data['uid'])
+
+        try:
+            db.session.add(newCalendar)
+            db.session.commit()
+            
+            return dumps({'message':'yes', 'comment_id': newCalendar.id}),200
+        except Exception as error:
+            
+            return dumps({'msg': error}),400
+    
+    def deleteCalendar(arg):
+        get_student = db.session.query(Student).filter(Student.id == 102)
+        if not get_student:
+              return {
+                'msg': 'no related student'
+            },400
+
+        obj = Calendar.query.filter_by(id=arg['id']).one()
+        try:
+            
+            session.delete(obj)
+            session.commit()
+            return dumps({'message':'delete sucessfully'}),200
+        except Exception as error:
+            
+            return dumps({'msg': error}),400
+    
+
+
        
      
