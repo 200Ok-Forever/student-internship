@@ -15,7 +15,6 @@ const applications = [
     status: 'pending',
     email: 'james@james.com',
     resume: 'www.google.com',
-    coverLetter: 'www.google.com',
     questions: [
       {
         question: 'Why do you want this job?',

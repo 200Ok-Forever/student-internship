@@ -95,6 +95,7 @@ const NarrowContainerRoutes = () => {
   return (
     <Box sx={{ width: smallScreen ? "100%" : "60%", margin: "auto" }}>
       <Switch>
+        <Route path="/forum" exact component={Forum} />
         {INDUSTRIES.map((industry) => (
           <Route path={`/forum/${industry}`} component={IndustryForum} />
         ))}
