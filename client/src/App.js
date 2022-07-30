@@ -63,7 +63,6 @@ function App() {
           <Route path="/passwordreset/reset" exact component={ResetPassword} />
           <Route path="/resume/s1" exact component={ResumeCreator} />
           <Route path="/resume/s2" exact component={ResumeCreatorStep2} />
-          <Route path="/forum" exact component={Forum} />
           <Route path="/chat" exact component={Chat} />
           <Route path="/applications" exact component={Applications} />
           <Route path="/profile" exact component={Profile} />
@@ -87,6 +86,7 @@ const NarrowContainerRoutes = () => {
   return (
     <Box sx={{ width: smallScreen ? "100%" : "60%", margin: "auto" }}>
       <Switch>
+        <Route path="/forum" exact component={Forum} />
         {INDUSTRIES.map((industry) => (
           <Route path={`/forum/${industry}`} component={IndustryForum} />
         ))}

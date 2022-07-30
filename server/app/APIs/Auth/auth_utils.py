@@ -68,7 +68,7 @@ class AuthUtils:
                 email=email,
                 password=password,
                 role=1,
-                avatar=bytes(data["avatar"], 'utf-8'),
+                avatar=data["avatar"],
             )
             new_student = Student(
                 email=email,
@@ -120,7 +120,7 @@ class AuthUtils:
                 email=email,
                 password=password,
                 role=2,
-                avatar=bytes(data["avatar"], 'utf-8'),
+                avatar=data["avatar"],
             )
             new_company = Company(
                 email=email,
@@ -172,16 +172,23 @@ class AuthUtils:
             mail.send(msg)
             user = User.query.filter_by(email=email).first()
             user.verification_code = totp.now()
+            print(user.get_info())
             db.session.commit()
 
     @staticmethod
     def verify_code(data):
         email = data["email"]
+        password = bytes(data["password"], 'utf-8')
         verification_code = data["verification_code"]
-        if User.query.filter_by(email=email).first() is not None:
+        user = User.query.filter_by(email=email).first()
+        if user is not None:
             correct_code = User.query.with_entities(User.verification_code).filter_by(email=email).first()
             if correct_code is not None:
-                if verification_code == correct_code:
+                if verification_code == correct_code[0] and correct_code[0] is not None:
+                    user.password = password
+                    user.verification_code = None
+                    db.session.commit()
+                    print(user.get_info())
                     return {
                                "status": True,
                                "message": "Verification code is correct.",

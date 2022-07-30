@@ -97,7 +97,7 @@ class AuthAPI:
             "linkedin": fields.String,
             "company_url": fields.String,
             "founded_year": fields.String(required=True),
-            "company_size": fields.Integer(required=True),
+            "company_size": fields.String(required=True),
             "location": fields.String,
             "description": fields.String,
             "company_logo": fields.String,
@@ -131,13 +131,14 @@ class AuthAPI:
     })
 
     password_reset_send = api.model(
-        "Password reset request", {
+        "Password reset send request", {
             "email": fields.String(required=True)
         }
     )
 
     password_reset_reset = api.model(
         "Password reset request", {
+            "email": fields.String(required=True),
             "password": fields.String(required=True),
             "verification_code": fields.String(required=True)
         }
