@@ -1,21 +1,34 @@
-import * as React from "react";
+import React, { useContext, useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import Modal from "@mui/material/Modal";
 import { useFormik } from "formik";
 import { studentSignupValidationSchema } from "./ValidationSchema";
 import { useHistory } from "react-router-dom";
 import { Paper } from "@mui/material";
+import { StudentSignupAPI } from "../../api/auth-api";
+import { UserContext } from "./UserContext";
 
 const StudentSignup = () => {
+  const { user, setUser } = useContext(UserContext);
+  const [errorModalState, setErrorModalState] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const handleOpen = (msg) => {
+    setErrorMessage(msg);
+    setErrorModalState(true);
+  };
+  const handleClose = () => setErrorModalState(false);
+
   const formik = useFormik({
     initialValues: {
       email: "",
       password: "",
       confirmPassword: "",
+      username: "",
       firstName: "",
       lastName: "",
       university: "",
@@ -27,7 +40,43 @@ const StudentSignup = () => {
     },
     validationSchema: studentSignupValidationSchema,
     onSubmit: (values) => {
-      console.log(values);
+      const signup = async (values) => {
+        const signupValues = {
+          email: values.email,
+          username: values.username,
+          password: values.password,
+          first_name: values.firstName,
+          last_name: values.lastName,
+          university: values.university,
+          degree: values.degree,
+          major: values.major,
+          skills: values.skills,
+          description: values.description,
+          avatar: "",
+        };
+        try {
+          const res = await StudentSignupAPI(signupValues);
+          if (res.status === true) {
+            const userInfo = res.user;
+            const userInfoWithToken = { token: res.token, ...userInfo };
+            setUser(userInfoWithToken);
+          } else if (
+            res.response.status === 404 ||
+            res.response.status === 403 ||
+            res.response.status === 400
+          ) {
+            console.log(res.response.data.message);
+            handleOpen(res.response.data.message);
+          } else {
+            console.log(res);
+            handleOpen(res);
+          }
+        } catch (err) {
+          console.log(err);
+          handleOpen(err);
+        }
+      };
+      signup(values);
     },
   });
 
@@ -49,6 +98,33 @@ const StudentSignup = () => {
         mb: "100px",
       }}
     >
+      <Modal
+        open={errorModalState}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 400,
+            bgcolor: "background.paper",
+            border: "2px solid #000",
+            boxShadow: 24,
+            p: 4,
+          }}
+        >
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Error
+          </Typography>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            {errorMessage}
+          </Typography>
+        </Box>
+      </Modal>
       <Typography
         component="h1"
         variant="h4"
@@ -113,6 +189,20 @@ const StudentSignup = () => {
               helperText={
                 formik.touched.confirmPassword && formik.errors.confirmPassword
               }
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              required
+              fullWidth
+              name="username"
+              label="Username"
+              id="username"
+              autoComplete="username"
+              value={formik.values.username}
+              onChange={formik.handleChange}
+              error={formik.touched.username && Boolean(formik.errors.username)}
+              helperText={formik.touched.username && formik.errors.username}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
