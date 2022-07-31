@@ -145,4 +145,6 @@ class Events(Resource):
 class Recommend(Resource):
     def get(self):
         arg = request.args
+        print(arg)
         return InternshipsUtils.getRecommend(arg)
+        return None

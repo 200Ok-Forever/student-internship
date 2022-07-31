@@ -8,7 +8,7 @@ from json import dumps
 from requests import session
 from sqlalchemy import null
 from torch import is_same_size
-from ...Models.model import Calendar, Internship, City, Company, Comment, User, Skill,InternshipStatus,Student
+from ...Models.model import Calendar, StudentSkills,Internship, City, Company, Comment, User, Skill,InternshipStatus,Student
 from flask_restx import Resource, reqparse
 from ...extension import db
 from string import digits
@@ -290,12 +290,17 @@ class InternshipsUtils:
     def apply(arg):
         internship_id = arg.get('internship_id')
         internship=Internship.query.filter(id==internship_id).first()
+        resume = arg.get('resume')
+        coverletter = arg.get('coverletter')
+        userid = arg.get('userid')
+        question = arg.get('question')
+        answer = arg.get('answer')
         if internship:
             apply =  db.session.query(InternshipStatus)\
                 .filter(InternshipStatus.intern_id == internship_id )\
                 .filter(InternshipStatus.uid==102)\
                 .update({InternshipStatus.is_applied: "True"})
-        
+
             db.session.commit()
             return dumps({"msg": "save sucessfully"}),200
         else:
@@ -311,11 +316,19 @@ class InternshipsUtils:
         .filter(InternshipStatus.uid==102).filter(InternshipStatus.is_save=="True").all()
         if is_save:
             info =[]
-            for save in is_save:
-                info.append(Internship.get_info(save))
-            # print(info)
+            all_internships = [{'job_id': internship.id,'title':internship.title, \
+             'job_type': changeTypeFormat(internship.type),"status": "",'is_remote':internship.is_remote , 'posted_time':changeDateFormat( internship.posted_time), 'closed_time':changeDateFormat(internship.expiration_datetime_utc),\
+                'min_salary':internship.min_salary, 'max_salary': internship.max_salary, 'description':internship.description,   "salary_currency": internship.salary_curreny,\
+                
+                 'location': get_location(internship.city), 'company_id': internship.company_id,\
+                        'company_name': get_comany_info(internship.company_id)[0], 'company_logo': get_comany_info(internship.company_id)[1]
+           } for internship in is_save]
+            # for save in is_save:
+            #     info.append(Internship.get_info(save))
+            # # print(info)
             result = {
-                "is_save": info
+                "is_save": all_internships,
+
             }
             # print(result)
             return result,200
@@ -325,9 +338,12 @@ class InternshipsUtils:
     
     def saveInternship(arg):
         internship_id = arg.get('internship_id')
-        (internship_id)
-
-        #uid will change later, could not be 102
+        # (internship_id)
+        print(internship_id)
+        # #uid will change later, could not be 102
+        internship=Internship.query.filter(Internship.id==internship_id).first()
+        if not internship:
+            return dumps({"msg": "Internship not found"}),404
         update = db.session.query(InternshipStatus)\
             .filter(InternshipStatus.intern_id == internship_id )\
             .filter(InternshipStatus.uid==102)\
@@ -336,7 +352,9 @@ class InternshipsUtils:
             db.session.commit()
             return dumps({"msg": "save sucessfully"}),200
         else:
-            return dumps({"msg": "Internship not found"}),404
+            save_internship = InternshipStatus(uid = 102, intern_id = internship_id, is_save = "True")
+            db.session.add(save_internship)
+            return dumps({"msg": "add save sucessfully"}),200
 
     def unSaveInternship(arg):
         internship_id = arg.get('internship_id')
@@ -429,7 +447,32 @@ class InternshipsUtils:
             return dumps({'msg': error}),400
     
     def getRecommend(arg):
-        pass
+
+        type = arg['type']
+      
+        get_student = db.session.query(Student).filter(Student.id == 1)
+        if not get_student:
+            return {
+            'msg': 'no related student'
+        },400
+
+       
+        
+        if type == 'recommend':
+            internships = db.session.query(Internship).join(StudentSkills, Internship.skills.any(StudentSkills.skill_id)).filter(StudentSkills.student_id == 1)
+        elif type == 'closing':
+            internships = db.session.query(Internship).join(StudentSkills, Internship.skills.any(StudentSkills.skill_id)).filter(StudentSkills.student_id == 1).order_by(Internship.expiration_datetime_utc == None,Internship.expiration_datetime_utc.asc())
+        elif type =='new':
+            internships = db.session.query(Internship).join(StudentSkills, Internship.skills.any(StudentSkills.skill_id)).filter(StudentSkills.student_id == 1).order_by((Internship.posted_time.desc()))
+       
+        all_internships = [{'job_id': internship.id,'title':internship.title, \
+             'job_type': changeTypeFormat(internship.type),"status": "",'is_remote':internship.is_remote , 'posted_time':changeDateFormat( internship.posted_time), 'closed_time':changeDateFormat(internship.expiration_datetime_utc),\
+                'min_salary':internship.min_salary, 'max_salary': internship.max_salary, 'description':internship.description,   "salary_currency": internship.salary_curreny,\
+
+                    'location': get_location(internship.city), 'company_id': internship.company_id,\
+                        'company_name': get_comany_info(internship.company_id)[0], 'company_logo': get_comany_info(internship.company_id)[1]
+           } for internship in internships]
+        return jsonify(all_internships)
     
 
 
