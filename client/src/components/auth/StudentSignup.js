@@ -12,6 +12,7 @@ import { useHistory } from "react-router-dom";
 import { Paper } from "@mui/material";
 import { StudentSignupAPI } from "../../api/auth-api";
 import { UserContext } from "./UserContext";
+import ErrorMessage from "../UI/ErrorMessage";
 
 const StudentSignup = () => {
   const { user, setUser } = useContext(UserContext);
@@ -105,26 +106,7 @@ const StudentSignup = () => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 400,
-            bgcolor: "background.paper",
-            border: "2px solid #000",
-            boxShadow: 24,
-            p: 4,
-          }}
-        >
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Error
-          </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            {errorMessage}
-          </Typography>
-        </Box>
+        <ErrorMessage errorMessage={errorMessage} />
       </Modal>
       <Typography
         component="h1"

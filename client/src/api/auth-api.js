@@ -14,6 +14,17 @@ export const LoginAPI = async (data) => {
   }
 };
 
+export const LogoutAPI = async (data) => {
+  try {
+    const url = `${baseURL}/auth/logout`;
+    const res = await postAxios(url, data);
+
+    return res.data;
+  } catch (err) {
+    return err;
+  }
+};
+
 export const StudentSignupAPI = async (data) => {
   const url = `${baseURL}/auth/signup/student`;
   try {
