@@ -33,3 +33,13 @@ export const CompanySignupAPI = async (data) => {
     return err;
   }
 };
+
+export const sendResetEmailAPI = async (data) => {
+  const url = `${baseURL}/auth/password_reset/send`;
+  try {
+    const res = await postAxios(url, data);
+    return res.data;
+  } catch (err) {
+    return err;
+  }
+};

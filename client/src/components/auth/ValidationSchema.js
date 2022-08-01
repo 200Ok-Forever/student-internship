@@ -18,6 +18,13 @@ import * as yup from "yup";
 
 // const emailValidationObject = { email: emailRule };
 
+const sendResetEmailValidationObject = {
+  email: yup
+    .string("Enter your email")
+    .email("Enter a valid email")
+    .required("Email is required"),
+};
+
 const loginValidationObject = {
   email: yup
     .string("Enter your email")
@@ -72,11 +79,9 @@ const companySignupValidationObject = {
     .required("Company name is required"),
 };
 
-// const resetPasswordValidationObject = {
-//   password: passwordRule,
-//   confirmPassword: confirmPasswordRule,
-// };
-
+export const sendResetEmailValidationSchema = yup.object(
+  sendResetEmailValidationObject
+);
 export const studentSignupValidationSchema = yup.object(
   studentSignupValidationObject
 );
