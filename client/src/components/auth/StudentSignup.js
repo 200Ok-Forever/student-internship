@@ -60,6 +60,7 @@ const StudentSignup = () => {
             const userInfo = res.user;
             const userInfoWithToken = { token: res.token, ...userInfo };
             setUser(userInfoWithToken);
+            history.push("/");
           } else if (
             res.response.status === 404 ||
             res.response.status === 403 ||

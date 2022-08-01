@@ -25,11 +25,11 @@ export const StudentSignupAPI = async (data) => {
 };
 
 export const CompanySignupAPI = async (data) => {
-  const url = `${baseURL}/auth/signup/student`;
+  const url = `${baseURL}/auth/signup/company`;
   try {
     const res = await postAxios(url, data);
     return res.data;
   } catch (err) {
-    console.log(err);
+    return err;
   }
 };
