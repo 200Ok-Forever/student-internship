@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import React, { useContext, useState } from "react";
+=======
+import React, { useState, useContext } from "react";
+>>>>>>> c952c5873a8e4fb3ce3b086a881f110dafdeaf92
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -17,6 +21,10 @@ import {
 import Logo from "../../asset/logo.svg";
 import ChatIcon from "@mui/icons-material/Chat";
 import { UserContext } from "../auth/UserContext";
+<<<<<<< HEAD
+=======
+import { LogoutAPI } from "../../api/auth-api";
+>>>>>>> c952c5873a8e4fb3ce3b086a881f110dafdeaf92
 
 const NavBar = () => {
   const history = useHistory();
@@ -42,6 +50,45 @@ const NavBar = () => {
     }
     setOpenDrawer(false);
   };
+
+  // const [errorModalState, setErrorModalState] = useState(false);
+  // const [errorMessage, setErrorMessage] = useState("");
+  // const handleErrorOpen = (msg) => {
+  //   setErrorMessage(msg);
+  //   setErrorModalState(true);
+  // };
+  // const handleErrorClose = () => setErrorModalState(false);
+
+  const { user, setUser } = useContext(UserContext);
+  const loginState = user === ("") ? false : true;
+  console.log(user, loginState)
+
+  const LogoutHandler = () => {
+    const logout = async () => {
+      try {
+        const res = await LogoutAPI(user.token);
+        if (res.status === true) {
+          // If success, clear userInfo
+          setUser("");
+          history.push("/");
+        } else if (
+          res.response.status === 404 ||
+          res.response.status === 403 ||
+          res.response.status === 400
+        ) {
+          console.log(res.response.data.message);
+          //handleErrorOpen(res.response.data.message);
+        } else {
+          console.log(res);
+          console.log(user, loginState);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    logout();
+    setUser("");
+  }
 
   return (
     <Box sx={{ flexGrow: 1 }}>

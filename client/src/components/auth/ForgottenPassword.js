@@ -1,19 +1,57 @@
-import React from "react";
+import React, { useState } from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { Paper } from "@mui/material";
+import { useHistory } from "react-router-dom";
+import { sendResetEmailValidationSchema } from "./ValidationSchema";
+import { sendResetEmailAPI } from "../../api/auth-api";
+import { useFormik } from "formik";
+import { Modal } from "@mui/material";
+import ErrorMessage from "../UI/ErrorMessage";
 
 const ForgottenPassword = () => {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+  const [errorModalState, setErrorModalState] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const handleOpen = (msg) => {
+    setErrorMessage(msg);
+    setErrorModalState(true);
   };
+  const handleClose = () => setErrorModalState(false);
+
+  const history = useHistory();
+
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+    },
+    validationSchema: sendResetEmailValidationSchema,
+    onSubmit: (values) => {
+      const sendEmail = async (values) => {
+        try {
+          const res = await sendResetEmailAPI(values);
+          if (res.status === true) {
+            // If success, store the user info and token to UserContext then route to main page
+            history.push("/passwordreset/reset");
+          } else if (
+            res.response.status === 404 ||
+            res.response.status === 403 ||
+            res.response.status === 400
+          ) {
+            console.log(res.response.data.message);
+            handleOpen(res.response.data.message);
+          } else {
+            console.log(res);
+          }
+        } catch (err) {
+          console.log(err);
+          handleOpen(err);
+        }
+      };
+      sendEmail(values);
+    },
+  });
 
   return (
     <Paper
@@ -24,13 +62,21 @@ const ForgottenPassword = () => {
         alignItems: "center",
         justifyContent: "center",
         padding: "36px",
-        width: "fit-content",
+        width: "500px",
         height: "fit-content",
         gap: "40px",
         mx: "auto",
         mt: "175px",
       }}
     >
+      <Modal
+        open={errorModalState}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <ErrorMessage errorMessage={errorMessage} />
+      </Modal>
       <Typography
         component="h1"
         variant="h4"
@@ -40,7 +86,7 @@ const ForgottenPassword = () => {
       >
         Reset Password
       </Typography>
-      <Box component="form" onSubmit={handleSubmit} noValidate>
+      <Box component="form" onSubmit={formik.handleSubmit} noValidate>
         <TextField
           margin="normal"
           required
@@ -49,15 +95,28 @@ const ForgottenPassword = () => {
           label="Email Address"
           name="email"
           autoComplete="email"
-          autoFocus
+          value={formik.values.email}
+          onChange={formik.handleChange}
+          error={formik.touched.email && Boolean(formik.errors.email)}
+          helperText={formik.touched.email && formik.errors.email}
         />
         <Button
-          type="submit"
           fullWidth
+          type="submit"
           variant="contained"
           sx={{ mt: 3, mb: 2 }}
         >
           Send Reset Password Email
+        </Button>
+        <Button
+          fullWidth
+          variant="contained"
+          sx={{ mt: 3, mb: 2 }}
+          onClick={() => {
+            history.push("/passwordreset/reset");
+          }}
+        >
+          Has an Email? Reset Now!
         </Button>
       </Box>
     </Paper>
