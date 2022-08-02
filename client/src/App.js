@@ -35,6 +35,7 @@ import Chat from "./components/chat/Chat";
 import Profile from "./components/student/Profile";
 import { UserContext } from "./components/auth/UserContext";
 import UserPosts from './components/forum/UserPosts';
+import CreateInternship from './components/recruiter/CreateInternship';
 
 function App() {
   const location = useLocation();
@@ -108,6 +109,8 @@ const NarrowContainerRoutes = () => {
         <Route path="/saved" component={Saved} />
         <Route path="/history" component={History} />
         <Route path="/resources" exact component={Resources} />
+        <Route path="/job/create" exact component={CreateInternship} />
+        <Route path="/job/:id/edit" exact component={CreateInternship} />
         <Route path="*" component={NotFound} />
       </Switch>
     </Box>
