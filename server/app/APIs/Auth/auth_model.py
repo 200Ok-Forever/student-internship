@@ -25,6 +25,7 @@ class AuthAPI:
             "university": fields.String,
             "degree": fields.String,
             "major": fields.String,
+            "position": fields.String,
             "skills": fields.String,
             "description": fields.String
         },
@@ -78,6 +79,7 @@ class AuthAPI:
             "university": fields.String(required=True),
             "degree": fields.String(required=True),
             "major": fields.String,
+            "position": fields.String,
             "skills": fields.String,
             "description": fields.String,
             "avatar": fields.String
