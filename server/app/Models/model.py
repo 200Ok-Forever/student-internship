@@ -50,6 +50,7 @@ class Student(db.Model):
     university = db.Column(db.VARCHAR(100), nullable=False)
     degree = db.Column(db.VARCHAR(15), nullable=False)
     major = db.Column(db.VARCHAR(15))
+    position = db.Column(db.VARCHAR(50))
     skills = db.Column(db.VARCHAR(100))
     description = db.Column(db.VARCHAR(200))
 
@@ -65,6 +66,7 @@ class Student(db.Model):
             "university": self.university,
             "degree": self.degree,
             "major": self.major,
+            "position": self.position,
             "skills": self.skills,
             "description": self.description
         }
