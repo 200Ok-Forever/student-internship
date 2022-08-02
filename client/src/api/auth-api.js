@@ -1,5 +1,4 @@
-import axios from "axios";
-import { getAxios, postAxios } from "./base";
+import { postAxios } from "./base";
 
 const baseURL = "http://localhost:5004";
 

@@ -26,9 +26,9 @@ const resetPasswordValidationObject = {
     .min(6, "Password should be of minimum 6 characters length")
     .oneOf([yup.ref("password")], "Passwords do not match"),
   resetCode: yup
-  .string("Enter your reset code")
-  .required("Reset code is required"),
-}
+    .string("Enter your reset code")
+    .required("Reset code is required"),
+};
 
 const studentSignupValidationObject = {
   ...loginValidationObject,

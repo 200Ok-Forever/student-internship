@@ -67,7 +67,7 @@ const CompanySignup = () => {
           founded_year: values.founded_year,
         };
         try {
-          console.log(signupValues)
+          console.log(signupValues);
           const res = await CompanySignupAPI(signupValues);
           if (res.status === true) {
             const userInfo = res.user;
@@ -124,7 +124,12 @@ const CompanySignup = () => {
         Company Sign Up
       </Typography>
       <Avatar sx={{ m: 1, bgcolor: "primary.main" }}></Avatar>
-      <Box component="form" noValidate onSubmit={formik.handleSubmit} sx={{ mt: 3 }}>
+      <Box
+        component="form"
+        noValidate
+        onSubmit={formik.handleSubmit}
+        sx={{ mt: 3 }}
+      >
         <Modal
           open={errorModalState}
           onClose={handleClose}
@@ -174,8 +179,13 @@ const CompanySignup = () => {
               autoComplete="confirm-password"
               value={formik.values.confirmPassword}
               onChange={formik.handleChange}
-              error={formik.touched.confirmPassword && Boolean(formik.errors.confirmPassword)}
-              helperText={formik.touched.confirmPassword && formik.errors.confirmPassword}
+              error={
+                formik.touched.confirmPassword &&
+                Boolean(formik.errors.confirmPassword)
+              }
+              helperText={
+                formik.touched.confirmPassword && formik.errors.confirmPassword
+              }
             />
           </Grid>
           <Grid item xs={12}>
@@ -194,7 +204,9 @@ const CompanySignup = () => {
               autoFocus
               value={formik.values.firstName}
               onChange={formik.handleChange}
-              error={formik.touched.firstName && Boolean(formik.errors.firstName)}
+              error={
+                formik.touched.firstName && Boolean(formik.errors.firstName)
+              }
               helperText={formik.touched.firstName && formik.errors.firstName}
             />
           </Grid>
@@ -236,8 +248,13 @@ const CompanySignup = () => {
               autoComplete="company_name"
               value={formik.values.company_name}
               onChange={formik.handleChange}
-              error={formik.touched.company_name && Boolean(formik.errors.company_name)}
-              helperText={formik.touched.company_name && formik.errors.company_name}
+              error={
+                formik.touched.company_name &&
+                Boolean(formik.errors.company_name)
+              }
+              helperText={
+                formik.touched.company_name && formik.errors.company_name
+              }
             />
           </Grid>
           <Grid item xs={12}>
