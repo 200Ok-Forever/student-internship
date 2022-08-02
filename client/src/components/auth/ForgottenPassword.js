@@ -9,6 +9,7 @@ import { sendResetEmailValidationSchema } from "./ValidationSchema";
 import { sendResetEmailAPI } from "../../api/auth-api";
 import { useFormik } from "formik";
 import { Modal } from "@mui/material";
+import ErrorMessage from "../UI/ErrorMessage";
 
 const ForgottenPassword = () => {
   const [errorModalState, setErrorModalState] = useState(false);
@@ -61,7 +62,7 @@ const ForgottenPassword = () => {
         alignItems: "center",
         justifyContent: "center",
         padding: "36px",
-        width: "fit-content",
+        width: "500px",
         height: "fit-content",
         gap: "40px",
         mx: "auto",
@@ -74,26 +75,7 @@ const ForgottenPassword = () => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 400,
-            bgcolor: "background.paper",
-            border: "2px solid #000",
-            boxShadow: 24,
-            p: 4,
-          }}
-        >
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Error
-          </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            {errorMessage}
-          </Typography>
-        </Box>
+        <ErrorMessage errorMessage={errorMessage} />
       </Modal>
       <Typography
         component="h1"

@@ -54,3 +54,13 @@ export const sendResetEmailAPI = async (data) => {
     return err;
   }
 };
+
+export const resetPasswordAPI = async (data) => {
+  const url = `${baseURL}/auth/password_reset/reset`;
+  try {
+    const res = await postAxios(url, data);
+    return res.data;
+  } catch (err) {
+    return err;
+  }
+};
