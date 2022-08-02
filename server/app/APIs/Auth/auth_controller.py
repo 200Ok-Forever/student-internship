@@ -146,8 +146,7 @@ class PasswordResetSend(Resource):
         # if errors:
         #     return {"login": False, "errors": errors}, 400
 
-        AuthUtils.send_confirmation_email(send_data["email"], flag=2)
-        return "send"
+        return AuthUtils.send_confirmation_email(send_data["email"], flag=2)
 
 
 @auth_api.route("/password_reset/reset")
@@ -171,8 +170,7 @@ class PasswordResetReset(Resource):
         # if errors:
         #     return {"login": False, "errors": errors}, 400
 
-        AuthUtils.verify_code(send_data)
-        return "send"
+        return AuthUtils.verify_code(send_data)
 
 
 @auth_api.route("/userInfoShort")
