@@ -61,7 +61,7 @@ class Logout(Resource):
     )
     @jwt_required()
     @auth_api.expect(authParser, validate=True)
-    def post(self):
+    def delete(self):
         """ Logout """
         try:
             response = jsonify({"msg": "logout successful"})
@@ -72,7 +72,7 @@ class Logout(Resource):
             return {
                        "status": False,
                        "message": error,
-                   }, 500
+                   }, 405
 
 
 @auth_api.route("/signup/student")
@@ -193,6 +193,8 @@ class UserInfoShort(Resource):
 
 @auth_api.route("/userInfoLong")
 class UserInfoLong(Resource):
+    update_user_info_long = AuthAPI.update_user_info_long
+
     @auth_api.doc(
         "User info long",
         responses={
@@ -205,3 +207,10 @@ class UserInfoLong(Resource):
     def get(self):
         """ User info long """
         return AuthUtils.userInfoLong()
+
+    @jwt_required()
+    @auth_api.expect(authParser, update_user_info_long, validate=True)
+    def post(self):
+        """ User info long """
+        send_form, send_data = request.form, request.get_json()
+        return AuthUtils.updateUserInfoLong(send_data)
