@@ -15,6 +15,7 @@ from string import digits
 import datetime
 from sqlalchemy.sql.functions import coalesce
 from sqlalchemy import nullslast
+from flask_jwt_extended import create_access_token, get_jwt, jwt_required, create_refresh_token, get_jwt_identity
 # YOUTUBE_KEY='AIzaSyAKgaoxXGkDNj1ouC4gW2Ks-_Mrw8eMuyM'
 YOUTUBE_KEY = 'AIzaSyBKUlq8KO324Q996DMDXKLVnxGtvHKKPmk'
 
@@ -252,8 +253,8 @@ class InternshipsUtils:
 
     def comment(id, data):
         result = Internship.query.filter(Internship.id==id).first()
-       
-        print(data)
+        # current_user_id = get_jwt_identity()
+        # print(current_user_id)
         if result != None:
            
             ct = datetime.datetime.now()

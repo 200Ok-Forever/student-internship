@@ -4,8 +4,9 @@ from flask_restx import Resource,reqparse
 from pyrsistent import get_in
 from .internships_model import InternshipsAPI
 from .internships_utils import InternshipsUtils
-from flask_jwt_extended import create_access_token, jwt_required,unset_jwt_cookies
+
 from ...Models.model import Internship, InternshipSearchSchema
+from flask_jwt_extended import create_access_token, get_jwt, jwt_required, create_refresh_token, get_jwt_identity
 internships_api = InternshipsAPI.api
 
 search_schema = InternshipSearchSchema()
@@ -78,6 +79,8 @@ class CommentInternship(Resource):
     def post(self,id):
         try:
             data = request.get_json()
+            # current_user_id = get_jwt_identity()
+            # print(current_user_id)
             print(data)
             return InternshipsUtils.comment(id, data)
         except Exception as error:
