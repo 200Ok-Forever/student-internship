@@ -143,3 +143,16 @@ class AuthAPI:
             "verification_code": fields.String(required=True)
         }
     )
+
+    update_user_info_long = api.model(
+        "Update user info long request", {
+            "first_name": fields.String(required=True),
+            "last_name": fields.String(required=True),
+            "university": fields.String(required=True),
+            "degree": fields.String(required=True),
+            "major": fields.String,
+            "position": fields.String,
+            "skills": fields.String,
+            "description": fields.String,
+        }
+    )
