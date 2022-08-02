@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -53,7 +53,7 @@ const NavBar = () => {
   // };
   // const handleErrorClose = () => setErrorModalState(false);
 
-  const { user, setUser } = useState(UserContext);
+  const { user, setUser } = useContext(UserContext);
   const loginState = user === "" ? false : true;
   console.log(user, loginState);
 
