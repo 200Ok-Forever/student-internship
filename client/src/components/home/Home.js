@@ -9,7 +9,7 @@ import RecommendedInternships from '../student/RecommendedInternships';
 
 const Home = () => {
   // TODO update when auth setup
-  const user = 'student'
+  const user = 'recruiter'
 
   return (
     <Box>

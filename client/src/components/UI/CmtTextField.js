@@ -1,5 +1,6 @@
 import { Button, TextField } from "@mui/material";
 import { Box } from "@mui/system";
+import { FormControlLabel, Checkbox } from '@mui/material';
 import React, { useState } from "react";
 import SendIcon from "@mui/icons-material/Send";
 
@@ -45,15 +46,17 @@ const CmtTextField = ({
         onChange={(e) => setText(e.target.value)}
         fullWidth
       />
-      <Button
-        variant="contained"
-        endIcon={<SendIcon />}
-        onClick={sendInfo}
-        sx={{ alignSelf: "flex-end" }}
-        disabled={text === ""}
-      >
-        Send
-      </Button>
+      <Box sx={{ alignSelf: 'flex-end', display: 'flex', alignItems: 'center' }}>
+        <FormControlLabel control={<Checkbox />} label="Post Anonymously" />
+        <Button
+          variant="contained"
+          endIcon={<SendIcon />}
+          onClick={sendInfo}
+          disabled={text === ""}
+        >
+          Send
+        </Button>
+      </Box>
     </Box>
   );
 };

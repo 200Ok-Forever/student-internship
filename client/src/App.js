@@ -1,5 +1,5 @@
 // import classes from "./App.module.scss";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { Route, Switch, useLocation } from "react-router-dom";
@@ -33,47 +33,58 @@ import ResumeCreator from "./components/educational/ResumeCreator";
 import ResumeCreatorStep2 from "./components/educational/ResumeCreatorStep2";
 import Chat from "./components/chat/Chat";
 import Profile from "./components/student/Profile";
+import { UserContext } from "./components/auth/UserContext";
+import UserPosts from './components/forum/UserPosts';
+import CreateInternship from './components/recruiter/CreateInternship';
 
 function App() {
   const location = useLocation();
+  const [user, setUser] = useState({});
 
   return (
     <Fragment>
-      <NavBar />
-      <Container
-        maxWidth={false}
-        className={location.pathname !== "/chat" && classes.rootContainer}
-      >
-        <Switch>
-          <Route path="/" exact component={Home}></Route>
-          <Route path="/calendar" exact component={Calendar} />
-          <Route path="/apply" exact component={ApplyIntern} />
-          <Route path="/search" exact component={JobList} />
-          <Route path="/job" exact component={JobDetail} />
-          <Route path="/login" exact component={Login} />
-          <Route path="/signup" exact component={Signup} />
-          <Route path="/company" exact component={Company} />
-          <Route path="/signup/student" exact component={StudentSignup} />
-          <Route path="/signup/company" exact component={CompanySignup} />
-          <Route
-            path="/passwordreset/send"
-            exact
-            component={ForgottenPassword}
-          />
-          <Route path="/passwordreset/reset" exact component={ResetPassword} />
-          <Route path="/resume/s1" exact component={ResumeCreator} />
-          <Route path="/resume/s2" exact component={ResumeCreatorStep2} />
-          <Route path="/chat" exact component={Chat} />
-          <Route path="/applications" exact component={Applications} />
-          <Route path="/profile" exact component={Profile} />
-          <Route
-            path="/recommended-candidates"
-            exact
-            component={RecommendedCandidates}
-          />
-          <Route component={NarrowContainerRoutes} />
-        </Switch>
-      </Container>
+      <UserContext.Provider value={{ user, setUser }}>
+        <NavBar />
+        <Container
+          maxWidth={false}
+          className={location.pathname !== "/chat" && classes.rootContainer}
+        >
+          <Switch>
+            <Route path="/" exact component={Home}></Route>
+            <Route path="/calendar" exact component={Calendar} />
+            <Route path="/apply" exact component={ApplyIntern} />
+            <Route path="/search" exact component={JobList} />
+            <Route path="/job" exact component={JobDetail} />
+            <Route path="/login" exact component={Login} />
+            <Route path="/signup" exact component={Signup} />
+            <Route path="/company" exact component={Company} />
+            <Route path="/signup/student" exact component={StudentSignup} />
+            <Route path="/signup/company" exact component={CompanySignup} />
+            <Route
+              path="/passwordreset/send"
+              exact
+              component={ForgottenPassword}
+            />
+            <Route
+              path="/passwordreset/reset"
+              exact
+              component={ResetPassword}
+            />
+            <Route path="/resume/s1" exact component={ResumeCreator} />
+            <Route path="/resume/s2" exact component={ResumeCreatorStep2} />
+            <Route path="/forum" exact component={Forum} />
+            <Route path="/chat" exact component={Chat} />
+            <Route path="/applications" exact component={Applications} />
+            <Route path="/profile" exact component={Profile} />
+            <Route
+              path="/recommended-candidates"
+              exact
+              component={RecommendedCandidates}
+            />
+            <Route component={NarrowContainerRoutes} />
+          </Switch>
+        </Container>
+      </UserContext.Provider>
     </Fragment>
   );
 }
@@ -90,12 +101,16 @@ const NarrowContainerRoutes = () => {
         {INDUSTRIES.map((industry) => (
           <Route path={`/forum/${industry}`} component={IndustryForum} />
         ))}
+        <Route path="/forum/me" component={UserPosts} />
         <Route path="/forum/posts" component={ForumPost} />
         <Route path="/forum/create" component={CreatePost} />
+        <Route path="/forum/:id/edit" component={CreatePost} />
         <Route path="/forum/*" component={Forum} />
         <Route path="/saved" component={Saved} />
         <Route path="/history" component={History} />
         <Route path="/resources" exact component={Resources} />
+        <Route path="/job/create" exact component={CreateInternship} />
+        <Route path="/job/:id/edit" exact component={CreateInternship} />
         <Route path="*" component={NotFound} />
       </Switch>
     </Box>

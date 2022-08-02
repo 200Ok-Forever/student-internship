@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
-import moment from 'moment';
-import { Link, Button, List, ListItem, ListItemButton, Avatar, Grid, Box, Typography } from '@mui/material';
-import CheckIcon from '@mui/icons-material/Check';
-import CloseIcon from '@mui/icons-material/Close';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import { Grid, Box, Typography } from '@mui/material';
+import ApplicationSelector from './ApplicationSelector';
+import Application from './Application';
 
 const applications = [
   {
@@ -11,8 +9,9 @@ const applications = [
     appliedAt: new Date(),
     userId: 2,
     name: 'James Joseph',
+    shortlist: true,
     avatar: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
-    status: 'pending',
+    status: 'Tech Interview',
     email: 'james@james.com',
     resume: 'www.google.com',
     questions: [
@@ -27,7 +26,7 @@ const applications = [
     ]
   },
   {
-    applicationId: 1,
+    applicationId: 2,
     appliedAt: new Date(),
     userId: 2,
     name: 'James Joseph',
@@ -48,7 +47,7 @@ const applications = [
     ]
   },
   {
-    applicationId: 1,
+    applicationId: 3,
     appliedAt: new Date(),
     userId: 2,
     name: 'James Joseph',
@@ -69,7 +68,7 @@ const applications = [
     ]
   },
   {
-    applicationId: 1,
+    applicationId: 4,
     appliedAt: new Date(),
     userId: 2,
     name: 'James Joseph',
@@ -91,12 +90,6 @@ const applications = [
   }
 ]
 
-const user = {
-  university: 'University of New South Wales',
-  degree: "Bachelor's in Computer Science",
-  major: 'Artificial Inteligence'
-}
-
 const Applications = () => {
   const [selectedApp, setSelectedApp] = useState(applications[0]);
 
@@ -110,7 +103,7 @@ const Applications = () => {
       </Typography>
       <Grid container spacing={5}>
         <Grid item xs={3.5}>
-          <Selector 
+          <ApplicationSelector 
             applications={applications} 
             setSelectedApp={setSelectedApp} 
             selectedApp={selectedApp}
@@ -120,174 +113,6 @@ const Applications = () => {
           <Application application={selectedApp} />
         </Grid>
       </Grid>    
-    </Box>
-  )
-}
-
-const Selector = ({ applications, setSelectedApp, selectedApp }) => {
-  return (
-    <Box>
-      <Typography variant="h5">
-        {applications.length} Applicants
-      </Typography>
-      <List sx={{ mt: 2, maxHeight: '65vh', overflow: 'auto' }}>
-        {applications.map(app => (
-          <ListItem sx={{ p: 0, m: 0}}>
-            <ListItemButton 
-              sx={{ p: 5 }} 
-              onClick={() => setSelectedApp(app)} 
-              selected={true}
-            >
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 5}}>
-                <Avatar src={app.avatar} sx={{ height: 100, width: 100}} />
-                <Box>
-                  <Typography variant="h5" mb={1}>
-                    {app.name}
-                  </Typography>
-                  <Typography variant="subtitle1" mb={1}>
-                    {moment(app.appliedAt).fromNow()}
-                  </Typography>
-                  <Status status={app.status} />
-                </Box>
-              </Box>
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-    </Box>
-  )
-}
-
-const Status = ({ status }) => {
-  const  toTitleCase = (str) => {
-    return str.replace(
-      /\w\S*/g,
-      function(txt) {
-        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-      }
-    );
-  }
-  const color = () => {
-    switch (status) {
-      case 'accepted':
-        return 'green';
-      case 'rejected':
-        return 'red';
-      default:
-        return '#3d70b2'
-    }
-  }
-  
-  return (
-    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: color() }}>
-      {status === 'pending' ?
-          <AccessTimeIcon />
-        : status === 'rejected' ?
-          <CloseIcon />
-        : <CheckIcon />
-      }
-      <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-        {toTitleCase(status)}
-      </Typography>
-    </Box>
-  )
-}
-
-const Application = ({ application }) => {
-  return (
-    <Box sx={{ maxHeight: '70vh', overflow: 'auto' }}>
-      <ApplicationHeader application={application} />
-      <Documents application={application} />
-      <Questions questions={application.questions} />
-    </Box>
-  )
-}
-
-const ApplicationHeader = ({ application }) => {
-  return (
-    <Box>
-      <Box style={{ display: 'flex', alignItems: 'center' }}>
-        <Avatar src={application.avatar} sx={{ height: 150, width: 150, mr: 5 }} />
-        <Box sx={{ flexGrow: 1 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
-            <Typography variant="h4">
-              {application.name}
-            </Typography>
-            <Box sx={{ display: 'flex', gap: 3, alignItems: 'center' }}>
-              <Status status={application.status} />
-              {application.status === 'pending' && <>
-                <Button size="large" variant='contained' color='success'>Accept</Button>
-                <Button size="large" variant='contained' color='error'>Reject</Button>        
-              </>}
-            </Box>
-          </Box>
-          <Typography variant="caption">
-            Applied {moment(application.appliedAt).fromNow()}
-          </Typography>
-          <Typography variant="subtitle1">
-            {user.university}
-          </Typography>
-          <Typography variant="subtitle1" mb={2}>
-            {user.degree} ({user.major})
-          </Typography>
-          <Box>
-            <Button size="large" variant='outlined' color='primary'>View Profile</Button>
-            <Button size="large" variant='outlined' color='primary' sx={{ ml: 2 }}>Message</Button>
-          </Box>
-        </Box>
-      </Box>
-    </Box>
-  )
-}
-
-const Documents = ({ application }) => {
-  return (
-    <Box mt={4}>
-      <Typography variant="h5">
-        Documents
-      </Typography>
-      <Grid container mt={3}>
-        <Grid item xs={3}>
-          <Typography variant="h6" sx={{ fontWeight: 'bold' }} mb={1}>
-            Resume
-          </Typography>
-          <Link href={application.resume}>my_resume.pdf</Link>
-        </Grid>
-        <Grid item xs={3}>
-          <Typography variant="h6" sx={{ fontWeight: 'bold' }} mb={1}>
-            Cover Letter
-          </Typography>
-          {application.coverLetter ? (
-            <Link href={application.coverLetter}>my_letter.pdf)</Link>
-          ) : (
-            <Typography variant="body1">
-              None Submitted
-            </Typography>
-          )}
-        </Grid>
-      </Grid>
-    </Box>
-  )
-}
-
-const Questions = ({ questions }) => {
-  return (
-    <Box mt={4}>
-      <Typography variant='h5'>
-        Application Questions
-      </Typography>
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: 3}}>
-        {questions.map(question => (
-          <Box>
-            <Typography variant="h6" sx={{ fontWeight: 'bold'}}>
-              {question.question}
-            </Typography>
-            <Typography variant="body1">
-              {question.answer}
-            </Typography>
-          </Box>
-        ))}
-      </Box>
     </Box>
   )
 }

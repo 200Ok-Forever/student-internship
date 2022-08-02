@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Link from "@mui/material/Link";
@@ -9,9 +9,20 @@ import { useFormik } from "formik";
 import { useHistory } from "react-router-dom";
 import { Paper } from "@mui/material";
 import { loginValidationSchema } from "./ValidationSchema";
+import { LoginAPI } from "../../api/auth-api";
+import { UserContext } from "./UserContext";
+import { Modal } from "@mui/material";
 
 const Login = () => {
   const history = useHistory();
+  const { user, setUser } = useContext(UserContext);
+  const [errorModalState, setErrorModalState] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const handleOpen = (msg) => {
+    setErrorMessage(msg);
+    setErrorModalState(true);
+  };
+  const handleClose = () => setErrorModalState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -20,18 +31,34 @@ const Login = () => {
     },
     validationSchema: loginValidationSchema,
     onSubmit: (values) => {
-      console.log(values);
+      const login = async (values) => {
+        try {
+          const res = await LoginAPI(values);
+          if (res.status === true) {
+            // If success, store the user info and token to UserContext then route to main page
+            const userInfo = res.user;
+            const userInfoWithToken = { token: res.token, ...userInfo };
+            setUser(userInfoWithToken);
+            history.push("/");
+          } else if (
+            res.response.status === 404 ||
+            res.response.status === 403 ||
+            res.response.status === 400
+          ) {
+            console.log(res.response.data.message);
+            handleOpen(res.response.data.message);
+          } else {
+            console.log(res);
+            handleOpen(res);
+          }
+        } catch (err) {
+          console.log(err);
+          handleOpen(err);
+        }
+      };
+      login(values);
     },
   });
-
-  // const handleSubmit = (event) => {
-  //   event.preventDefault();
-  //   const data = new FormData(event.currentTarget);
-  //   console.log({
-  //     email: data.get("email"),
-  //     password: data.get("password"),
-  //   });
-  // };
 
   return (
     <Paper
@@ -49,6 +76,31 @@ const Login = () => {
         mt: "50px",
       }}
     >
+      <Modal
+        open={errorModalState}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: 400,
+            bgcolor: 'background.paper',
+            border: '2px solid #000',
+            boxShadow: 24,
+            p: 4
+        }}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Error
+          </Typography>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            {errorMessage}
+          </Typography>
+        </Box>
+      </Modal>
       <Typography
         component="h1"
         variant="h4"
