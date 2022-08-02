@@ -38,7 +38,9 @@ class GetInternship(Resource):
     })
     def get(self,id):
         try:
-            return InternshipsUtils.get_Internship(id)
+            data = request.args
+            # print(data)
+            return InternshipsUtils.get_Internship(id,data)
         except Exception as error:
             return{
                 "message": error
@@ -74,13 +76,11 @@ commentParser = internships_api.parser()
 commentParser.add_argument('Authorization', location='headers', help='Bearer [Token]', default='Bearer xxxxxxxxxxxxx')
 @internships_api.route('/internships/<int:id>/comments')
 class CommentInternship(Resource):
-    # @jwt_required()
-    # @internships_api.expect(commentParser, validate=True)
+    @jwt_required()
+    @internships_api.expect(commentParser, validate=True)
     def post(self,id):
         try:
             data = request.get_json()
-            # current_user_id = get_jwt_identity()
-            # print(current_user_id)
             print(data)
             return InternshipsUtils.comment(id, data)
         except Exception as error:
@@ -143,6 +143,8 @@ class Events(Resource):
     def get(self):
         arg = request.args
         return InternshipsUtils.getCalendar(arg)
+
+
 
 @internships_api.route('/internships/recommend')
 class Recommend(Resource):

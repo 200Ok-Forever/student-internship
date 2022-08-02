@@ -121,11 +121,13 @@ def changeDateFormat(date):
     result = re.sub('T.+', '', str(date))
     return result
 class InternshipsUtils:
-    def get_Internship(data):
-        id = Internship.id
+    def get_Internship(id,data):
+        is_save = "False"
+        is_calendar = "False"
+
         try:
             # print(id)
-            internship=Internship.query.filter(id==data).first()
+            internship=Internship.query.filter(Internship.id==id).first()
             # print(internship)
             if not internship:
                 internship_not_found={
@@ -133,13 +135,47 @@ class InternshipsUtils:
                 }
                 return internship_not_found, 404
             else:
+               
+                uid = data.get("uid", None)
+                print(uid)
+                if uid != None:
+
+                    #update the interhsip status as is_seen
+                    update = db.session.query(InternshipStatus)\
+                    .filter(InternshipStatus.intern_id == id )\
+                    .filter(InternshipStatus.uid==uid)\
+                    .update({InternshipStatus.is_seen: "True"})
+                    if update:
+                        db.session.commit()
+                        
+                    else:
+                        save_internship = InternshipStatus(uid = uid, intern_id = id, is_seen = "True")
+                        db.session.add(save_internship)
+                        db.session.commit()
+                    
+                    #check if it is saved
+                    status = db.session.query(InternshipStatus).filter(InternshipStatus.intern_id==id)\
+                        .filter(InternshipStatus.uid == uid).first()
+                    
+                    if status.is_save == "True":
+                        is_save = "True"
+
+                    #check if this internship is in the calendar
+                    student = db.session.query(Student).join(User, Student.email == User.email).filter(User.uid == uid).first()
+                    if student:
+                        calendar = db.session.query(Calendar).filter(Calendar.internship_id == id)\
+                        .filter(Calendar.student_id == student.id)
+
+                    if calendar:
+                        is_calendar = "True"
+                #get comment list
                 comment_list = []
-                comment = db.session.query(Comment).join(Internship, Comment.internship_id == Internship.id).filter(Comment.internship_id==data).filter(Comment.parent_id==0).all()
-                print("_________")
-                
+                comment = db.session.query(Comment).join(Internship, Comment.internship_id == Internship.id).filter(Comment.internship_id==id).filter(Comment.parent_id==0).all()
+
                 if comment:
                     comment_list = get_all_parent_comment(comment)
                     print(comment_list)
+
                 # job_skill = db.session.query(Skill).filter(Skill.internships.any(id = data)).all()
                 # skills_list = []
                 
@@ -147,9 +183,12 @@ class InternshipsUtils:
                 #     for skill in job_skill:
                 #         skills_list.append(skill.name)
                 #     print(skills_list)
+
+                #get related course id
                 video_id_list=get_youtube(internship.title)
                 if video_id_list == 404:
                     return {'msg': "API KEY PROBELMS"},404
+
 
                 intership_result = {
                     "description": internship.description,
@@ -168,7 +207,10 @@ class InternshipsUtils:
                     "companyName": get_comany_info(internship.company_id)[0],
                     'company_logo': get_comany_info(internship.company_id)[1],
                     "video_id": video_id_list,
-                    "recruiting_process":[]
+                    "recruiting_process":[],
+                    "is_save":is_save,
+                    "is_calendar":is_calendar
+
                 }
                 return intership_result, 200
         except  Exception as error:
@@ -253,20 +295,27 @@ class InternshipsUtils:
 
     def comment(id, data):
         result = Internship.query.filter(Internship.id==id).first()
-        # current_user_id = get_jwt_identity()
-        # print(current_user_id)
+        current_user_id = get_jwt_identity()
+        print(current_user_id)
+        print(result)
+        comment = data.get("comment", None)
+        parent_id = data.get("parent_id", None)
+
         if result != None:
            
             ct = datetime.datetime.now()
             
-            newComment = Comment(content = data['comment'], parent_id = data['parent_id'],internship_id = id, user_id = data['uid'], date = ct)
+            if comment != None and parent_id != None:
+                newComment = Comment(content = data['comment'], parent_id = data['parent_id'],internship_id = id, user_id = current_user_id, date = ct)
+               
+            elif comment != None and parent_id == None:  
+                newComment = Comment(content = data['comment'],internship_id = id, user_id = current_user_id, date = ct)
+
             try:
                 db.session.add(newComment)
                 db.session.commit()
-               
                 return dumps({'message':'yes', 'comment_id': newComment.id}),200
             except Exception as error:
-                
                 return dumps({'msg': error}),400
            
             
