@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -16,6 +16,8 @@ import {
 } from "@mui/material";
 import Logo from "../../asset/logo.svg";
 import ChatIcon from "@mui/icons-material/Chat";
+import { UserContext } from "../auth/UserContext";
+import { LogoutAPI } from "../../api/auth-api";
 
 const NavBar = () => {
   const history = useHistory();
@@ -41,6 +43,45 @@ const NavBar = () => {
     setOpenDrawer(false);
   };
 
+  // const [errorModalState, setErrorModalState] = useState(false);
+  // const [errorMessage, setErrorMessage] = useState("");
+  // const handleErrorOpen = (msg) => {
+  //   setErrorMessage(msg);
+  //   setErrorModalState(true);
+  // };
+  // const handleErrorClose = () => setErrorModalState(false);
+
+  const { user, setUser } = useContext(UserContext);
+  const loginState = user === ("") ? false : true;
+  console.log(user, loginState)
+
+  const LogoutHandler = () => {
+    const logout = async () => {
+      try {
+        const res = await LogoutAPI(user.token);
+        if (res.status === true) {
+          // If success, clear userInfo
+          setUser("");
+          history.push("/");
+        } else if (
+          res.response.status === 404 ||
+          res.response.status === 403 ||
+          res.response.status === 400
+        ) {
+          console.log(res.response.data.message);
+          //handleErrorOpen(res.response.data.message);
+        } else {
+          console.log(res);
+          console.log(user, loginState);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    logout();
+    setUser("");
+  }
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="fixed" sx={{ height: "80px" }} color="secondary">
@@ -65,15 +106,24 @@ const NavBar = () => {
             <Menu className={classes.menu} isDrawer={false} />
           </div>
           <Box>
-            <Button
-              variant="outlined"
-              sx={{ height: "55px" }}
-              onClick={() => history.push("/login")}
-            >
-              Login
-            </Button>
-
-            {/* #TODO only show when user is logged in */}
+            {!loginState && (
+              <Button
+                variant="outlined"
+                sx={{ height: "55px" }}
+                onClick={() => history.push("/login")}
+              >
+                Login
+              </Button>
+            )}
+            {loginState && (
+              <Button
+                variant="outlined"
+                sx={{ height: "55px" }}
+                onClick={LogoutHandler}
+              >
+                Logout
+              </Button>
+            )}
             <IconButton
               size="large"
               aria-label="account of current user"

@@ -14,6 +14,17 @@ export const LoginAPI = async (data) => {
   }
 };
 
+export const LogoutAPI = async (data) => {
+  try {
+    const url = `${baseURL}/auth/logout`;
+    const res = await postAxios(url, data);
+
+    return res.data;
+  } catch (err) {
+    return err;
+  }
+};
+
 export const StudentSignupAPI = async (data) => {
   const url = `${baseURL}/auth/signup/student`;
   try {
@@ -25,11 +36,31 @@ export const StudentSignupAPI = async (data) => {
 };
 
 export const CompanySignupAPI = async (data) => {
-  const url = `${baseURL}/auth/signup/student`;
+  const url = `${baseURL}/auth/signup/company`;
   try {
     const res = await postAxios(url, data);
     return res.data;
   } catch (err) {
-    console.log(err);
+    return err;
+  }
+};
+
+export const sendResetEmailAPI = async (data) => {
+  const url = `${baseURL}/auth/password_reset/send`;
+  try {
+    const res = await postAxios(url, data);
+    return res.data;
+  } catch (err) {
+    return err;
+  }
+};
+
+export const resetPasswordAPI = async (data) => {
+  const url = `${baseURL}/auth/password_reset/reset`;
+  try {
+    const res = await postAxios(url, data);
+    return res.data;
+  } catch (err) {
+    return err;
   }
 };
