@@ -1,4 +1,4 @@
-import { Paper, Typography, Avatar } from "@mui/material";
+import { Paper, Typography, Avatar, Button } from "@mui/material";
 import { Box } from "@mui/system";
 import React from "react";
 import TitleWithIcon from "../UI/TitleWithIcon";
@@ -50,7 +50,7 @@ const infoData = {
   major: "AI",
   skills: "Java,C",
   description:
-    "Hello! asdkljfaskldjfaskldjfaskldjfaklsdfjaskldfjaskldjfalskdfjasklfklasdjfklasf",
+    "Hello! asdkljfaskldjfaskldjfaskldjfa klsdfjaskldfjaskldjfalskdfjasklfklasdjfklasf",
 };
 
 const Profile = () => {
@@ -61,14 +61,17 @@ const Profile = () => {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        gap: "35px"
+        gap: "35px",
       }}
     >
       <Avatar sx={{ m: 1, bgcolor: "primary.main" }} />
       <Typography variant="h4" fontWeight="bold" fontFamily="inherit">
         {infoData.first_name} {infoData.last_name}
       </Typography>
-      <ProfileInfo data={infoData}/>
+      <Button variant="outlined" sx={{ ml: "440px" }}>
+        Edit Profile
+      </Button>
+      <ProfileInfo data={infoData} />
       <TitleWithIcon
         sx={{}}
         icon={<WorkHistoryIcon color="primary" />}

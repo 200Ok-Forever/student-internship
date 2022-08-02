@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Grid, Paper, Typography } from "@mui/material";
 
 const ProfileInfo = (props) => {
-	const data = props.data
+  const data = props.data;
   return (
     <>
       <Paper
@@ -63,7 +63,7 @@ const ProfileInfo = (props) => {
           >
             Description:
           </Typography>
-          <Typography variant="body1" gutterBottom>
+          <Typography variant="h6"  fontFamily="inherit">
             {data.description}
           </Typography>
         </Box>
