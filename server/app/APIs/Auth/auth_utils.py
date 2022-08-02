@@ -161,17 +161,34 @@ class AuthUtils:
                           recipients=[email])
             msg.body = "Hi, welcome to InternHub, please confirm your email, thanks!"
             mail.send(msg)
+            return {
+                       "status": True,
+                       "message": "Confirmation email sent.",
+                   }, 200
         else:
             user = User.query.filter_by(email=email).first()
+            print(user)
             if user:
                 totp = pyotp.TOTP("23base23", digits=6, interval=600)
                 msg = Message('InternHub: checkout your verification code.', sender='internhub.200okforever@gmail.com',
                               recipients=[email])
-                msg.body = "Hi there, your verification code is: " + totp.now()
+                msg.body = f"""Hi there, 
+
+This is a verification email to reset your password on InternHub. Your verification code is: 
+
+{totp.now()}
+
+Please enter this code in the reset password page.
+if you did not request a password reset, please ignore this email.
+"""
                 mail.send(msg)
                 user.verification_code = totp.now()
                 print(user.get_info())
                 db.session.commit()
+                return {
+                           "status": True,
+                           "message": "Verification code has been sent to the email.",
+                       }, 200
             else:
                 return {
                            "status": False,
