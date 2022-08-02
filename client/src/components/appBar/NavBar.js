@@ -179,6 +179,13 @@ const NavBar = () => {
               >
                 History
               </MenuItem>
+              <MenuItem
+                onClick={handleClose}
+                component={RouterLink}
+                to="/forum/me"
+              >
+                My Forum Posts
+              </MenuItem>            
             </MUIMenu>
           </Box>
         </Toolbar>

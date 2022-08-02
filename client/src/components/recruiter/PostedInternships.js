@@ -1,13 +1,12 @@
 import React from 'react';
-import { Link as RouterLink, useHistory } from 'react-router-dom';
-import { Button, IconButton, Paper, Box, Typography } from '@mui/material';
+import { useNavigate, Link as RouterLink, useHistory } from 'react-router-dom';
+import { Button, Paper, Box, Typography } from '@mui/material';
 import FmdGoodIcon from "@mui/icons-material/FmdGood";
 import RemoveButton from "../UI/RemoveButton";
 import salary from "../../asset/salary.png";
 import Label from "../UI/Label";
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
+import EditAndDelete from '../UI/EditAndDelete';
 
 const internships = [
   {
@@ -69,7 +68,7 @@ const PostedInternships = () => {
         <Typography variant="h4" component="div">
           Manage Your Internship Postings
         </Typography>
-        <Button variant="contained" color="primary">
+        <Button variant="contained" color="primary" component={RouterLink} to="/job/create">
           New Posting
         </Button>      
       </Box>
@@ -122,18 +121,13 @@ const CardHeader = ({ job }) => {
         <Typography
           variant="h5"
           sx={{ cursor: "pointer", display: "flex", alignItems: "center" }}
-          onClick={() => history.push(`/job?id=${job.id}`)}
+          onClick={() => history.push(`/job?id=${job.job_id}`)}
         >
           {job.title}
         </Typography>
-        <Box>
-          <IconButton color="primary">
-            <EditIcon />
-          </IconButton>
-          <IconButton color="error">
-            <DeleteIcon />
-          </IconButton>
-        </Box>
+        <EditAndDelete 
+          onEdit={() => history.push(`/job/${job.job_id}/edit`)}
+        />
       </Box>
     </>
   )

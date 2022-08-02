@@ -58,10 +58,6 @@ class AuthUtils:
                        "message": "Email is already being used.",
                    }, 403
 
-        # msg = Message('Thanks for joining InternHub', sender='zhy1998618@163.com', recipients=[email])
-        # msg.body = "Hi, welcome to InternHub, please confirm your email, thanks!"
-        # mail.send(msg)
-
         try:
             new_user = User(
                 username=username,
@@ -99,7 +95,7 @@ class AuthUtils:
             return {
                        "status": False,
                        "message": "Something went wrong during the process!",
-                   }, 500
+                   }, 401
 
     @staticmethod
     def companySignup(data):
@@ -161,19 +157,43 @@ class AuthUtils:
     @staticmethod
     def send_confirmation_email(email, flag):
         if flag == 1:
-            msg = Message('Thanks for joining InternHub.', sender='zhy1998618@163.com', recipients=[email])
+            msg = Message('Thanks for joining InternHub.', sender='internhub.200okforever@gmail.com',
+                          recipients=[email])
             msg.body = "Hi, welcome to InternHub, please confirm your email, thanks!"
             mail.send(msg)
+            return {
+                       "status": True,
+                       "message": "Confirmation email sent.",
+                   }, 200
         else:
-            totp = pyotp.TOTP("23base23", digits=6, interval=600)
-            msg = Message('InternHub: checkout your verification code.', sender='zhy1998618@163.com',
-                          recipients=[email])
-            msg.body = "Hi there, your verification code is: " + totp.now()
-            mail.send(msg)
             user = User.query.filter_by(email=email).first()
-            user.verification_code = totp.now()
-            print(user.get_info())
-            db.session.commit()
+            print(user)
+            if user:
+                totp = pyotp.TOTP("23base23", digits=6, interval=600)
+                msg = Message('InternHub: checkout your verification code.', sender='internhub.200okforever@gmail.com',
+                              recipients=[email])
+                msg.body = f"""Hi there, 
+
+This is a verification email to reset your password on InternHub. Your verification code is: 
+
+{totp.now()}
+
+Please enter this code in the reset password page.
+if you did not request a password reset, please ignore this email.
+"""
+                mail.send(msg)
+                user.verification_code = totp.now()
+                print(user.get_info())
+                db.session.commit()
+                return {
+                           "status": True,
+                           "message": "Verification code has been sent to the email.",
+                       }, 200
+            else:
+                return {
+                           "status": False,
+                           "message": "User does not exist.",
+                       }, 404
 
     @staticmethod
     def verify_code(data):
@@ -193,7 +213,21 @@ class AuthUtils:
                                "status": True,
                                "message": "Verification code is correct.",
                            }, 200
-
+                else:
+                    return {
+                               "status": False,
+                               "message": "Verification code is incorrect.",
+                           }, 403
+            else:
+                return {
+                           "status": False,
+                           "message": "Please resend the verification code.",
+                       }, 404
+        else:
+            return {
+                       "status": False,
+                       "message": "User does not exist.",
+                   }, 404
 
     @staticmethod
     def userInfoShort():
@@ -221,3 +255,34 @@ class AuthUtils:
                    "status": False,
                    "message": "User not found.",
                }, 404
+
+    @staticmethod
+    def updateUserInfoLong(data):
+        current_user_id = get_jwt_identity()
+        user = User.query.filter_by(uid=current_user_id).first()
+        if data['first_name'] or data['last_name'] or data['university'] or data['degree'] is not None:
+            current_student = Student.query.filter_by(email=user.email).first()
+            if current_student is not None:
+                current_student.first_name = data['first_name']
+                current_student.last_name = data['last_name']
+                current_student.university = data['university']
+                current_student.degree = data['degree']
+                current_student.major = data['major']
+                # current_student.positions = data['positions']
+                current_student.skills = data['skills']
+                current_student.description = data['description']
+                db.session.commit()
+                return {
+                           "status": True,
+                           "message": "User info updated.",
+                       }, 200
+            else:
+                return {
+                           "status": False,
+                           "message": "Student not found.",
+                       }, 404
+        else:
+            return {
+                       "status": False,
+                       "message": "please fill in required data correctly.",
+                   }, 400

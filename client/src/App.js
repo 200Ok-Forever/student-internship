@@ -34,6 +34,8 @@ import ResumeCreatorStep2 from "./components/educational/ResumeCreatorStep2";
 import Chat from "./components/chat/Chat";
 import Profile from "./components/student/Profile";
 import { UserContext } from "./components/auth/UserContext";
+import UserPosts from './components/forum/UserPosts';
+import CreateInternship from './components/recruiter/CreateInternship';
 
 function App() {
   const location = useLocation();
@@ -99,12 +101,16 @@ const NarrowContainerRoutes = () => {
         {INDUSTRIES.map((industry) => (
           <Route path={`/forum/${industry}`} component={IndustryForum} />
         ))}
+        <Route path="/forum/me" component={UserPosts} />
         <Route path="/forum/posts" component={ForumPost} />
         <Route path="/forum/create" component={CreatePost} />
+        <Route path="/forum/:id/edit" component={CreatePost} />
         <Route path="/forum/*" component={Forum} />
         <Route path="/saved" component={Saved} />
         <Route path="/history" component={History} />
         <Route path="/resources" exact component={Resources} />
+        <Route path="/job/create" exact component={CreateInternship} />
+        <Route path="/job/:id/edit" exact component={CreateInternship} />
         <Route path="*" component={NotFound} />
       </Switch>
     </Box>
