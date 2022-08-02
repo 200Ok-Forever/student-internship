@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -16,10 +16,12 @@ import {
 } from "@mui/material";
 import Logo from "../../asset/logo.svg";
 import ChatIcon from "@mui/icons-material/Chat";
+import { UserContext } from "../auth/UserContext";
 
 const NavBar = () => {
   const history = useHistory();
   const [openDrawer, setOpenDrawer] = useState(false);
+  const { user } = useContext(UserContext);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -65,78 +67,81 @@ const NavBar = () => {
             <Menu className={classes.menu} isDrawer={false} />
           </div>
           <Box>
-            <Button
-              variant="outlined"
-              sx={{ height: "55px" }}
-              onClick={() => history.push("/login")}
-            >
-              Login
-            </Button>
-
-            {/* #TODO only show when user is logged in */}
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="user-menu-appbar"
-              aria-haspopup="true"
-              onClick={() => history.push("/chat")}
-              color="primary"
-            >
-              <ChatIcon />
-            </IconButton>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="user-menu-appbar"
-              aria-haspopup="true"
-              onClick={handleMenu}
-            >
-              <Avatar />
-            </IconButton>
-            <MUIMenu
-              id="user-menu-appbar"
-              anchorEl={anchorEl}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorEl)}
-              onClose={handleClose}
-            >
-              <MenuItem
-                onClick={handleClose}
-                component={RouterLink}
-                to="/profile"
+            {!user.token ? (
+              <Button
+                variant="outlined"
+                sx={{ height: "55px" }}
+                onClick={() => history.push("/login")}
               >
-                Profile
-              </MenuItem>
-              <MenuItem
-                onClick={handleClose}
-                component={RouterLink}
-                to="/saved"
-              >
-                Saved Internships
-              </MenuItem>
-              <MenuItem
-                onClick={handleClose}
-                component={RouterLink}
-                to="/history"
-              >
-                History
-              </MenuItem>
-              <MenuItem
-                onClick={handleClose}
-                component={RouterLink}
-                to="/forum/me"
-              >
-                My Forum Posts
-              </MenuItem>            
-            </MUIMenu>
+                Login
+              </Button>
+            ) : (
+              <>
+                <IconButton
+                  size="large"
+                  aria-label="account of current user"
+                  aria-controls="user-menu-appbar"
+                  aria-haspopup="true"
+                  onClick={() => history.push("/chat")}
+                  color="primary"
+                >
+                  <ChatIcon />
+                </IconButton>
+                <IconButton
+                  size="large"
+                  aria-label="account of current user"
+                  aria-controls="user-menu-appbar"
+                  aria-haspopup="true"
+                  onClick={handleMenu}
+                >
+                  <Avatar />
+                </IconButton>
+                <MUIMenu
+                  id="user-menu-appbar"
+                  anchorEl={anchorEl}
+                  anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  open={Boolean(anchorEl)}
+                  onClose={handleClose}
+                >
+                  <MenuItem
+                    onClick={handleClose}
+                    component={RouterLink}
+                    to="/profile"
+                  >
+                    Profile
+                  </MenuItem>
+                  <MenuItem
+                    onClick={handleClose}
+                    component={RouterLink}
+                    to="/saved"
+                  >
+                    Saved Internships
+                  </MenuItem>
+                  <MenuItem
+                    onClick={handleClose}
+                    component={RouterLink}
+                    to="/history"
+                  >
+                    History
+                  </MenuItem>
+                  <MenuItem
+                    onClick={handleClose}
+                    component={RouterLink}
+                    to="/forum/me"
+                  >
+                    My Forum Posts
+                  </MenuItem>            
+                </MUIMenu>
+              </>
+            )}
           </Box>
         </Toolbar>
       </AppBar>
