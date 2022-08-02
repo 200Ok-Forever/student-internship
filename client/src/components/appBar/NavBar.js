@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-import React, { useContext, useState } from "react";
-=======
-import React, { useState, useContext } from "react";
->>>>>>> c952c5873a8e4fb3ce3b086a881f110dafdeaf92
+/* eslint-disable no-unused-vars */
+import React, { useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -21,15 +18,12 @@ import {
 import Logo from "../../asset/logo.svg";
 import ChatIcon from "@mui/icons-material/Chat";
 import { UserContext } from "../auth/UserContext";
-<<<<<<< HEAD
-=======
 import { LogoutAPI } from "../../api/auth-api";
->>>>>>> c952c5873a8e4fb3ce3b086a881f110dafdeaf92
 
 const NavBar = () => {
   const history = useHistory();
   const [openDrawer, setOpenDrawer] = useState(false);
-  const { user } = useContext(UserContext);
+  // const { user } = useContext(UserContext);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -59,9 +53,9 @@ const NavBar = () => {
   // };
   // const handleErrorClose = () => setErrorModalState(false);
 
-  const { user, setUser } = useContext(UserContext);
-  const loginState = user === ("") ? false : true;
-  console.log(user, loginState)
+  const { user, setUser } = useState(UserContext);
+  const loginState = user === "" ? false : true;
+  console.log(user, loginState);
 
   const LogoutHandler = () => {
     const logout = async () => {
@@ -88,7 +82,7 @@ const NavBar = () => {
     };
     logout();
     setUser("");
-  }
+  };
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -185,7 +179,7 @@ const NavBar = () => {
                     to="/forum/me"
                   >
                     My Forum Posts
-                  </MenuItem>            
+                  </MenuItem>
                 </MUIMenu>
               </>
             )}

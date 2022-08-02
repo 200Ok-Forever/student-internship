@@ -4,8 +4,8 @@ import EventsSidebar from "./Sidebar";
 import Search from "./Search";
 import classes from "./style/home.module.scss";
 import wave from "../../asset/wave.svg";
-import PostedInternships from '../recruiter/PostedInternships';
-import RecommendedInternships from '../student/RecommendedInternships';
+import PostedInternships from "../recruiter/PostedInternships";
+import RecommendedInternships from "../student/RecommendedInternships";
 import { UserContext } from "../auth/UserContext";
 
 const Home = () => {
@@ -16,8 +16,14 @@ const Home = () => {
       <SearchBanner />
       {user.token && (
         <Grid container spacing={3}>
-          <Grid item xs={12} md={9} order={{ xs: 2, md: 1 }} mt={{ xs: 5, md: 0 }}>
-            {user.role == 1 ? (
+          <Grid
+            item
+            xs={12}
+            md={9}
+            order={{ xs: 2, md: 1 }}
+            mt={{ xs: 5, md: 0 }}
+          >
+            {user.role === 1 ? (
               <RecommendedInternships />
             ) : (
               <PostedInternships />
