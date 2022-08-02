@@ -3,6 +3,7 @@ import moment from 'moment';
 import { Redirect } from 'react-router-dom'
 import { Box, Typography } from '@mui/material';
 import ShowCmts from '../UI/ShowCmts';
+import EditAndDelete from '../UI/EditAndDelete';
 
 const ForumPost = () => {
 
@@ -57,26 +58,34 @@ const ForumPost = () => {
   )
 }
 
-const PostDetails = ({ post }) => (
-  <>
-    <Typography variant="h4" component='div' sx={{ mb: 1 }}>
-      {post.title}
-    </Typography>
-    <Box sx={{ mb: 1 }}>
-      <Typography variant='subtitle1' color="primary" component="span">
-        {post.author}
+const PostDetails = ({ post }) => {
+  // TODO
+  const isMine = true;
+
+  return (
+    <>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
+        <Typography variant="h4" component='div' sx={{ mb: 1 }}>
+          {post.title}
+        </Typography>
+        {isMine && <EditAndDelete />}
+      </Box>
+      <Box sx={{ mb: 1 }}>
+        <Typography variant='subtitle1' color="primary" component="span">
+          {post.author}
+        </Typography>
+        {" "}
+        <Typography variant="body1" component='span' sx={{ mb: 1 }}>
+          {moment(post.createdAt).fromNow()}
+        </Typography> 
+      </Box>
+      <Typography variant="body1" component='div'>
+        {post.content.split('\n').map(text => (
+          <p>{text}</p>
+        ))}
       </Typography>
-      {" "}
-      <Typography variant="body1" component='span' sx={{ mb: 1 }}>
-        {moment(post.createdAt).fromNow()}
-      </Typography> 
-    </Box>
-    <Typography variant="body1" component='div'>
-      {post.content.split('\n').map(text => (
-        <p>{text}</p>
-      ))}
-    </Typography>
-  </>
-)
+    </>
+  )
+}
 
 export default ForumPost;

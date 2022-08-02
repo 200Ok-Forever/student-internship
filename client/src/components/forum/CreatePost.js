@@ -1,25 +1,59 @@
-import React, { useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
-import { Grid, Link, InputLabel, MenuItem, Select, FormControl, Box, Typography, TextField, Button } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { useHistory, useParams, Link as RouterLink } from 'react-router-dom';
+import { FormControlLabel, Checkbox, Grid, Link, InputLabel, MenuItem, Select, FormControl, Box, Typography, TextField, Button } from '@mui/material';
 import { INDUSTRIES } from './constants';
 
 const CreatePost = (props) => {
+  const { id } = useParams();
+  const history = useHistory();
+  const [loading, setLoading] = useState(id ? true : false);
+
+  const [title, setTitle] = useState("");
   const [industry, setIndustry] = useState(props.location.state?.industry || 'General');
+  const [content, setContent] = useState("");
+  const [anon, setAnon] = useState(false);
+
+  useEffect(() => {
+    if (id) {
+      // TODO get post
+      const post = {
+        title: 'test',
+        industry: 'Arts',
+        content: "Exercitation quis mollit mollit nulla deserunt sunt ut ad occaecat ipsum occaecat minim adipisicing. Ut Lorem excepteur et dolor adipisicing dolore. Veniam occaecat do duis culpa dolor esse culpa. Excepteur eu mollit exercitation proident nisi ullamco aliqua laboris ex tempor do non amet magna. Proident laborum do sunt Lorem ut velit sunt ea aute ex qui id mollit cillum. Irure est commodo officia eu ea. Ea laborum nulla ullamco aliqua incididunt mollit."
+      }
+      setTitle(post.title);
+      setIndustry(post.industry);
+      setContent(post.content);
+      setLoading(false);
+    }
+  }, [])
+
+  if (loading) {
+    return;
+  }
 
   return (
     <Box>
       <Typography variant="h4" component='div' sx={{ mb: 1 }}>
-        Create Post
+        {id ? "Edit" : "Create"} Post
       </Typography>
       <Grid container spacing={2} mt={2}>
         <Grid item xs={12} md={8}>
-          <TextField id="title" label="Title" fullWidth />
+          <TextField 
+            id="title" 
+            label="Title" 
+            fullWidth 
+            value={title} 
+            onChange={e => setTitle(e.target.value)} 
+            disabled={id}
+          />
         </Grid>
         <Grid item xs={12} md={4}>
           <FormControl fullWidth>
             <InputLabel id="industry">Industry</InputLabel>
             <Select
               labelId="industry"
+              disabled={id}
               id="industry"
               value={industry}
               label="Industry"
@@ -39,13 +73,24 @@ const CreatePost = (props) => {
         multiline
         rows={10}
         placeholder="What are your thoughts?"
+        value={content}
+        onChange={e => setContent(e.target.value)}
         fullWidth
       />
-      <Box sx={{ display: 'flex', alignItems: 'center', mt: 3 }}>
+      {!id &&
+        <FormControlLabel 
+          control={<Checkbox />} 
+          label="Post Anonymously"
+          checked={anon}
+          onChange={e => setAnon(e.target.checked)}
+          sx={{ mt: 2 }} 
+        />
+      }
+      <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
         <Button color="primary" variant="contained" sx={{ px: 5, mr: 3 }}>
           Post
         </Button>
-        <Link underline="none" component={RouterLink} to={`/forum/${props.location.state?.industry || ''}`}>Cancel</Link>
+        <Link underline="none" href="#" onClick={history.goBack}>Cancel</Link>
       </Box>
     </Box>
   )

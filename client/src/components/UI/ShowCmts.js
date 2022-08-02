@@ -67,7 +67,6 @@ const Item = ({ cmt, isLast, sendReply }) => {
             isCmt={false}
             cmtId={cmt.cmtId}
             placeholder=""
-            sx={{ width: "80vw" }}
           />
         )}
 
