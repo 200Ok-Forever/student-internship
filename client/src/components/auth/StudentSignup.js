@@ -51,6 +51,7 @@ const StudentSignup = () => {
           university: values.university,
           degree: values.degree,
           major: values.major,
+          positions: values.positions,
           skills: values.skills,
           description: values.description,
           avatar: "",
@@ -71,11 +72,11 @@ const StudentSignup = () => {
             handleOpen(res.response.data.message);
           } else {
             console.log(res);
-            handleOpen(res);
+            //handleOpen(res);
           }
         } catch (err) {
           console.log(err);
-          handleOpen(err);
+          //handleOpen(err);
         }
       };
       signup(values);

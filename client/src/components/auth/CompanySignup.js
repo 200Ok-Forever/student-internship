@@ -84,11 +84,11 @@ const CompanySignup = () => {
             handleOpen(res.response.data.message);
           } else {
             console.log(res);
-            handleOpen(res);
+            //handleOpen(res);
           }
         } catch (err) {
           console.log(err);
-          handleOpen(err);
+          //handleOpen(err);
         }
       };
 
