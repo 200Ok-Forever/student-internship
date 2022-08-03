@@ -61,7 +61,7 @@ class Logout(Resource):
     )
     @jwt_required()
     @auth_api.expect(authParser, validate=True)
-    def post(self):
+    def delete(self):
         """ Logout """
         return AuthUtils.logout()
 
