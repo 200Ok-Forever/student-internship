@@ -277,10 +277,10 @@ class File(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.VARCHAR(255))
     student_id = db.Column(db.Integer, db.ForeignKey('t_student.id'))
-    data = db.Column(db.LONGBLOB)
+    data = db.Column(db.LargeBinary(length=(2**32)-1))
     file_type = db.Column(db.VARCHAR(255))
-    upload_time = db.Column(db.TILESTAMP)
-    
+    upload_time = db.Column(db.TIMESTAMP)
+
 class LoginSchema(Form):
     email = StringField('Email Address', [validators.Length(min=6, max=35)])
     password = PasswordField('Password', [validators.Length(min=6, max=16), validators.DataRequired()])

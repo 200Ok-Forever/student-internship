@@ -167,12 +167,15 @@ class Events(Resource):
         return InternshipsUtils.getCalendar(arg)
 
 
+recommendParser = internships_api.parser()
+recommendParser.add_argument('Authorization', location='headers', help='Bearer [Token]', default='Bearer xxxxxxxxxxxxx')
+recommendParser.add_argument('type', help='recommend/new/closingsoon')
 @internships_api.route('/internships/recommend')
 class Recommend(Resource):
-
+    @internships_api.expect(recommendParser, validate=True)
     @jwt_required()
     def get(self):
         arg = request.args
         print(arg)
         return InternshipsUtils.getRecommend(arg)
-        return None
+        

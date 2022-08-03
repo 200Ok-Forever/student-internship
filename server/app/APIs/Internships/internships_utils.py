@@ -541,14 +541,14 @@ class InternshipsUtils:
     def getRecommend(arg):
 
         type = arg['type']
-
-        get_student = db.session.query(Student).filter(Student.id == 2)
-        if not get_student:
+        current_user_id = get_jwt_identity()
+       
+       
+        student = db.session.query(Student).join(User, Student.email == User.email).filter(User.uid == current_user_id).first()
+        if not student:
             return {
                        'msg': 'no related student'
                    }, 400
-
-        student = db.session.query(Student).join(User, Student.email == User.email).filter(User.uid == 105).first()
 
         if student:
             print("zzzzzzzz")
@@ -556,21 +556,29 @@ class InternshipsUtils:
             print(student_id)
             skills = db.session.query(StudentSkills).filter(StudentSkills.student_id == student_id).all()
             print(skills)
+            internship_list = []
             for skill in skills:
                 if type == 'recommend':
                     print(skill.skill_id)
-                    internships = db.session.query(Internship).join(Internship.skills).filter(Skill.id == skill.skill_id)
+                    internships = db.session.query(Internship).join(Internship.skills).filter(Skill.id == skill.skill_id).all()
                     print(internships)
                 elif type == 'closing':
-                    internships = db.session.query(Internship).join(Internship.skills).filter(Skill.id == skill.skill_id).order_by(Internship.expiration_datetime_utc == None,Internship.expiration_datetime_utc.asc())
+                    internships = db.session.query(Internship).join(Internship.skills).filter(Skill.id == skill.skill_id).order_by(Internship.expiration_datetime_utc == None,Internship.expiration_datetime_utc.asc()).all()
                 elif type =='new':
-                    internships = db.session.query(Internship).join(Internship.skills).filter(Skill.id == skill.skill_id).order_by((Internship.posted_time.desc()))
-       
-        all_internships = [{'job_id': internship.id,'title':internship.title, \
+                    internships = db.session.query(Internship).join(Internship.skills).filter(Skill.id == skill.skill_id).order_by((Internship.posted_time.desc())).all()
+                internship_list.append(internships)
+        print("______________")
+        print(internship_list)
+        result = []
+        for internships in internship_list:
+            for internship in internships:
+                all_internships = [{'job_id': internship.id,'title':internship.title, \
              'job_type': changeTypeFormat(internship.type),"status": "",'is_remote':internship.is_remote , 'posted_time':changeDateFormat( internship.posted_time), 'closed_time':changeDateFormat(internship.expiration_datetime_utc),\
                 'min_salary':internship.min_salary, 'max_salary': internship.max_salary, 'description':internship.description,   "salary_currency": internship.salary_curreny,\
 
                     'location': get_location(internship.city), 'company_id': internship.company_id,\
                         'company_name': get_company_info(internship.company_id)[0], 'company_logo': get_company_info(internship.company_id)[1]
-           } for internship in internships]
-        return jsonify(all_internships)
+                } ]
+
+            result.append(all_internships)
+        return jsonify(result)
