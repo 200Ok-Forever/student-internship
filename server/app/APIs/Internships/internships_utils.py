@@ -8,7 +8,7 @@ from json import dumps
 from requests import session
 from sqlalchemy import null
 from torch import is_same_size
-from ...Models.model import Calendar, StudentSkills,Internship, City, Company, Comment, User, Skill,InternshipStatus,Student
+from ...Models.model import Calendar, StudentSkills,Internship, City, Company, Comment, User, Skill,InternshipStatus,Student, File
 from flask_restx import Resource, reqparse
 from ...extension import db
 from string import digits
@@ -338,19 +338,29 @@ class InternshipsUtils:
         else:
             return dumps({"msg": "Internship not found"}),404
     def apply(arg):
+        current_user_id = get_jwt_identity()
+        print(current_user_id)
+     
+
         internship_id = arg.get('internship_id')
         internship=Internship.query.filter(id==internship_id).first()
-        resume = arg.get('resume')
-        coverletter = arg.get('coverletter')
-        userid = arg.get('userid')
+        resume = arg.get('resume', None)
+        coverletter = arg.get('coverletter', None)
+        
         question = arg.get('question')
         answer = arg.get('answer')
         if internship:
             apply =  db.session.query(InternshipStatus)\
                 .filter(InternshipStatus.intern_id == internship_id )\
-                .filter(InternshipStatus.uid==102)\
+                .filter(InternshipStatus.uid==current_user_id)\
                 .update({InternshipStatus.is_applied: "True"})
 
+            if resume:
+                file = File(student_id = 102, data = resume, file_type = "resume", upload_time = datetime.datetime.now())
+                db.session.add(file)
+            if coverletter:
+                file = File(student_id = 102, data = coverletter, file_type = "coverletter", upload_time = datetime.datetime.now())
+                db.session.add(file)
             db.session.commit()
             return dumps({"msg": "save sucessfully"}),200
         else:
@@ -499,21 +509,30 @@ class InternshipsUtils:
     def getRecommend(arg):
 
         type = arg['type']
-      
-        get_student = db.session.query(Student).filter(Student.id == 1)
+
+        get_student = db.session.query(Student).filter(Student.id == 2)
         if not get_student:
             return {
             'msg': 'no related student'
         },400
 
-       
-        
-        if type == 'recommend':
-            internships = db.session.query(Internship).join(StudentSkills, Internship.skills.any(StudentSkills.skill_id)).filter(StudentSkills.student_id == 1)
-        elif type == 'closing':
-            internships = db.session.query(Internship).join(StudentSkills, Internship.skills.any(StudentSkills.skill_id)).filter(StudentSkills.student_id == 1).order_by(Internship.expiration_datetime_utc == None,Internship.expiration_datetime_utc.asc())
-        elif type =='new':
-            internships = db.session.query(Internship).join(StudentSkills, Internship.skills.any(StudentSkills.skill_id)).filter(StudentSkills.student_id == 1).order_by((Internship.posted_time.desc()))
+        student = db.session.query(Student).join(User, Student.email == User.email).filter(User.uid == 105).first()
+
+        if student:
+            print("zzzzzzzz")
+            student_id = student.id
+            print(student_id)
+            skills = db.session.query(StudentSkills).filter(StudentSkills.student_id == student_id).all()
+            print(skills)
+            for skill in skills:
+                if type == 'recommend':
+                    print(skill.skill_id)
+                    internships = db.session.query(Internship).join(Internship.skills).filter(Skill.id == skill.skill_id)
+                    print(internships)
+                elif type == 'closing':
+                    internships = db.session.query(Internship).join(Internship.skills).filter(Skill.id == skill.skill_id).order_by(Internship.expiration_datetime_utc == None,Internship.expiration_datetime_utc.asc())
+                elif type =='new':
+                    internships = db.session.query(Internship).join(Internship.skills).filter(Skill.id == skill.skill_id).order_by((Internship.posted_time.desc()))
        
         all_internships = [{'job_id': internship.id,'title':internship.title, \
              'job_type': changeTypeFormat(internship.type),"status": "",'is_remote':internship.is_remote , 'posted_time':changeDateFormat( internship.posted_time), 'closed_time':changeDateFormat(internship.expiration_datetime_utc),\

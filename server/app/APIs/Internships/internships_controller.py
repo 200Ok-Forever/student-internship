@@ -131,10 +131,13 @@ class InternshipCalendar(Resource):
         arg = request.get_json()
         return InternshipsUtils.addCalendar(arg)
         pass
-    
-
-    def delete(self):
-        arg = request.args
+ 
+@internships_api.route('/internships/uncalendar')
+class InternshipCalendar(Resource):
+ 
+   
+    def post(self):
+        arg = request.get_json()
         return InternshipsUtils.deleteCalendar(arg)
         pass
 
@@ -148,6 +151,8 @@ class Events(Resource):
 
 @internships_api.route('/internships/recommend')
 class Recommend(Resource):
+
+    @jwt_required()
     def get(self):
         arg = request.args
         print(arg)

@@ -272,7 +272,15 @@ class InternshipStatus(db.Model):
     internship = db.relationship('Internship', back_populates='status')
     user = db.relationship('User', back_populates='status')
 
-
+class File(db.Model):
+    __tablename__ = 't_uploadfile'
+    id = db.Column(db.Integer, primary_key=True)
+    filename = db.Column(db.VARCHAR(255))
+    student_id = db.Column(db.Integer, db.ForeignKey('t_student.id'))
+    data = db.Column(db.LONGBLOB)
+    file_type = db.Column(db.VARCHAR(255))
+    upload_time = db.Column(db.TILESTAMP)
+    
 class LoginSchema(Form):
     email = StringField('Email Address', [validators.Length(min=6, max=35)])
     password = PasswordField('Password', [validators.Length(min=6, max=16), validators.DataRequired()])
