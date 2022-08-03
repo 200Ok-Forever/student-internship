@@ -1,13 +1,12 @@
-import React from 'react';
-import { Link as RouterLink, useHistory } from 'react-router-dom';
-import { Button, IconButton, Paper, Box, Typography } from '@mui/material';
+import React from "react";
+import { Link as RouterLink, useHistory } from "react-router-dom";
+import { Button, Paper, Box, Typography } from "@mui/material";
 import FmdGoodIcon from "@mui/icons-material/FmdGood";
 import RemoveButton from "../UI/RemoveButton";
 import salary from "../../asset/salary.png";
 import Label from "../UI/Label";
-import GroupAddIcon from '@mui/icons-material/GroupAdd';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
+import GroupAddIcon from "@mui/icons-material/GroupAdd";
+import EditAndDelete from "../UI/EditAndDelete";
 
 const internships = [
   {
@@ -65,13 +64,18 @@ const boxStyling = { display: "flex", flexDirection: "column", gap: "30px" };
 const PostedInternships = () => {
   return (
     <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
+      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Typography variant="h4" component="div">
           Manage Your Internship Postings
         </Typography>
-        <Button variant="contained" color="primary">
+        <Button
+          variant="contained"
+          color="primary"
+          component={RouterLink}
+          to="/job/create"
+        >
           New Posting
-        </Button>      
+        </Button>
       </Box>
       <Box sx={boxStyling}>
         {internships.map((i) => (
@@ -79,14 +83,14 @@ const PostedInternships = () => {
             <RemoveButton />
           </InternshipCard>
         ))}
-      </Box>    
+      </Box>
     </Box>
-  )
-}
+  );
+};
 
 const InternshipCard = ({ job }) => {
   const paper = {
-    width: 'auto',
+    width: "auto",
     p: "20px",
     display: "flex",
     flexDirection: "column",
@@ -97,21 +101,24 @@ const InternshipCard = ({ job }) => {
     <Box>
       <Paper elevation={3} sx={paper}>
         <CardHeader job={job} />
-        <Box sx={{ display: 'flex', alignItems: 'center', color: 'red', gap: '12px'}}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            color: "red",
+            gap: "12px",
+          }}
+        >
           <GroupAddIcon />
-          <Typography
-            component="div"
-            variant="h6"
-            sx={{ fontWeight: 'bold' }}
-          >
+          <Typography component="div" variant="h6" sx={{ fontWeight: "bold" }}>
             5 applications
           </Typography>
         </Box>
         <Labels job={job} />
       </Paper>
     </Box>
-  )
-}
+  );
+};
 
 const CardHeader = ({ job }) => {
   const history = useHistory();
@@ -122,28 +129,27 @@ const CardHeader = ({ job }) => {
         <Typography
           variant="h5"
           sx={{ cursor: "pointer", display: "flex", alignItems: "center" }}
-          onClick={() => history.push(`/job?id=${job.id}`)}
+          onClick={() => history.push(`/job?id=${job.job_id}`)}
         >
           {job.title}
         </Typography>
-        <Box>
-          <IconButton color="primary">
-            <EditIcon />
-          </IconButton>
-          <IconButton color="error">
-            <DeleteIcon />
-          </IconButton>
-        </Box>
+        <EditAndDelete onEdit={() => history.push(`/job/${job.job_id}/edit`)} />
       </Box>
     </>
-  )
-}
+  );
+};
 
 const Labels = ({ job }) => {
   return (
-    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-      <Box sx={{ display: "flex", columnGap: "14px", alignItems: 'center' }}>
-        <Box 
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+      }}
+    >
+      <Box sx={{ display: "flex", columnGap: "14px", alignItems: "center" }}>
+        <Box
           style={{
             display: "flex",
             alignItems: "flex-start",
@@ -162,11 +168,24 @@ const Labels = ({ job }) => {
         {job.remote && <Label text={"Remote"}></Label>}
       </Box>
       <Box>
-        <Button component={RouterLink} to={`/applications?id=${job.job_id}`} variant="outlined">View Applications</Button>
-        <Button component={RouterLink} to={`/recommended-candidates?id=${job.job_id}`} variant="outlined" sx={{ ml: 2 }}>View Recommended Candidates</Button>
+        <Button
+          component={RouterLink}
+          to={`/applications?id=${job.job_id}`}
+          variant="outlined"
+        >
+          View Applications
+        </Button>
+        <Button
+          component={RouterLink}
+          to={`/recommended-candidates?id=${job.job_id}`}
+          variant="outlined"
+          sx={{ ml: 2 }}
+        >
+          View Recommended Candidates
+        </Button>
       </Box>
     </Box>
-  )
-}
+  );
+};
 
 export default PostedInternships;

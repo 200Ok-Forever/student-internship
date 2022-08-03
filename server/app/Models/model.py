@@ -1,6 +1,7 @@
 """ORM and Schema"""
 
 from sqlalchemy.ext.hybrid import hybrid_method
+from torch import autocast_increment_nesting
 from wtforms import Form, IntegerField, StringField, PasswordField, validators
 from .. import bcrypt, db
 
@@ -50,9 +51,12 @@ class Student(db.Model):
     university = db.Column(db.VARCHAR(100), nullable=False)
     degree = db.Column(db.VARCHAR(15), nullable=False)
     major = db.Column(db.VARCHAR(15))
+    position = db.Column(db.VARCHAR(50))
     skills = db.Column(db.VARCHAR(100))
     description = db.Column(db.VARCHAR(200))
 
+
+    skills = db.relationship('Skill', secondary='r_student_skill', back_populates='students', lazy=True)
     def __repr__(self):
         return f"<Student: {self.email}, {self.first_name} {self.last_name}>"
 
@@ -65,6 +69,7 @@ class Student(db.Model):
             "university": self.university,
             "degree": self.degree,
             "major": self.major,
+            "position": self.position,
             "skills": self.skills,
             "description": self.description
         }
@@ -112,6 +117,13 @@ job_skills = db.Table('r_job_skill',
                       db.Column('job_id', db.Integer, db.ForeignKey('t_internships.id'), primary_key=True),
                       db.Column('skill_id', db.Integer, db.ForeignKey('t_skills.id'), primary_key=True))
 
+
+
+
+class StudentSkills(db.Model):
+    __tablename__ = 'r_student_skill'
+    student_id = db.Column('student_id', db.Integer, db.ForeignKey('t_student.id'), primary_key=True)
+    skill_id = db.Column('skill_id', db.Integer, db.ForeignKey('t_skills.id'), primary_key=True)
 
 class Internship(db.Model):
     """Internship table"""
@@ -190,6 +202,21 @@ class Internship(db.Model):
         }
     # more
 
+
+class Calendar(db.Model):
+    __tablename__= 't_calendar'
+    id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    internship_id = db.Column(db.Integer,db.ForeignKey("t_internships.id"))
+    student_id = db.Column(db.Integer,db.ForeignKey("t_student.id"))
+    start = db.Column(db.DATETIME)
+    end = db.Column(db.DATETIME)
+    title = db.Column(db.VARCHAR(255))
+    type = db.Column(db.VARCHAR(255))
+    link = db.Column(db.VARCHAR(255))
+    is_calendar = db.Column(db.Boolean)
+    
+    
+
 class Comment(db.Model):
     __tablename__ = 't_comment'
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
@@ -216,7 +243,7 @@ class Skill(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.VARCHAR(255))
     internships = db.relationship('Internship', secondary=job_skills, backref='skill', overlaps="skills")
-
+    students = db.relationship('Student', secondary='r_student_skill', back_populates='skills', lazy=True)
     def get_info(self):
         return {
             "id": self.id,
@@ -245,6 +272,14 @@ class InternshipStatus(db.Model):
     internship = db.relationship('Internship', back_populates='status')
     user = db.relationship('User', back_populates='status')
 
+class File(db.Model):
+    __tablename__ = 't_uploadfile'
+    id = db.Column(db.Integer, primary_key=True)
+    filename = db.Column(db.VARCHAR(255))
+    uid = db.Column(db.Integer, db.ForeignKey('t_user.uid'))
+    data = db.Column(db.LargeBinary(length=(2**32)-1))
+    file_type = db.Column(db.VARCHAR(255))
+    upload_time = db.Column(db.TIMESTAMP)
 
 class LoginSchema(Form):
     email = StringField('Email Address', [validators.Length(min=6, max=35)])
