@@ -1,4 +1,5 @@
 import { Button, Grid, Snackbar, Typography } from "@mui/material";
+import moment from 'moment';
 import { Box } from "@mui/system";
 import React, { useContext, useEffect } from "react";
 import { useHistory, useLocation } from "react-router-dom";
@@ -24,7 +25,7 @@ import queryString from "query-string";
 import { getJob } from "../../api/search-api";
 import getSymbolFromCurrency from "currency-symbol-map";
 import { postComment, replyComment } from "../../api/comment-api";
-import { postInternshipSave, postInternshipUnsave } from "../../api/internship-api";
+import { postInternshipCalendar, postInternshipSave, postInternshipUnsave } from "../../api/internship-api";
 import { UserContext } from "../auth/UserContext";
 
 const DATA = {
@@ -185,6 +186,15 @@ const BasicInfo = ({ info }) => {
     setShareBar(false);
   };
 
+  const addCalendarHandler = () => {
+    postInternshipCalendar({
+      name: info.jobTitle,
+      start: info.closedDate !== "None" ? info.closedDate : moment().add(2, 'w').format('YYYY-MM-DD hh:mm:ss'),
+      type: 'internship',
+      internshipId: info.internship_id
+    }, user.token)
+  }
+
   return (
     <Box
       sx={{
@@ -244,6 +254,7 @@ const BasicInfo = ({ info }) => {
           variant="outlined"
           startIcon={<CalendarMonthIcon />}
           size="small"
+          onClick={addCalendarHandler}
         >
           Add to Calendar
         </Button>
