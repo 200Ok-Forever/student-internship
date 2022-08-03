@@ -26,7 +26,7 @@ class GetInternshipList(Resource):
 
         try:
 
-            return InternshipsUtils.get_all_Intership(args1)
+            return InternshipsUtils.get_all_Internship(args1)
         except Exception as error:
             return {
                        "message": str(error)
@@ -115,24 +115,25 @@ saveParser.add_argument('Authorization', location='headers', help='Bearer [Token
 
 @internships_api.route('/internships/save')
 class SaveInternship(Resource):
-    # @jwt_required()
-    # @internships_api.expect(commentParser, validate=True)
+    @jwt_required()
     def get(self):
-        arg = request.args
-        return InternshipsUtils.getSaveList(arg)
-
+        uid = get_jwt_identity()
+        return InternshipsUtils.getSaveList(uid)
+   
+    @jwt_required()
     def post(self):
         arg = request.get_json()
-        print(arg)
-        return InternshipsUtils.saveInternship(arg)
+        uid = get_jwt_identity()
+        return InternshipsUtils.saveInternship(arg, uid)
 
 
 @internships_api.route('/internships/unsave')
 class UnsaveInternship(Resource):
+    @jwt_required()
     def post(self):
         arg = request.get_json()
-        print(arg)
-        return InternshipsUtils.unSaveInternship(arg)
+        uid = get_jwt_identity()
+        return InternshipsUtils.unSaveInternship(arg, uid)
 
 
 @internships_api.route('/internships/history')

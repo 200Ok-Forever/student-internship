@@ -387,42 +387,35 @@ class InternshipsUtils:
             return dumps({"msg": "Internship not found"}), 404
 
     @staticmethod
-    def getSaveList(arg):
-
-        # id = arg['id']
-        # uid should not be 102, should change later
+    def getSaveList(uid):
         is_save = db.session.query(Internship) \
             .join(InternshipStatus, Internship.id == InternshipStatus.intern_id) \
-            .filter(InternshipStatus.uid == 102).filter(InternshipStatus.is_save == "True").all()
-        if is_save:
-            info = []
-            all_internships = [{'job_id': internship.id, 'title': internship.title, \
-                                'job_type': changeTypeFormat(internship.type), "status": "",
-                                'is_remote': internship.is_remote,
-                                'posted_time': changeDateFormat(internship.posted_time),
-                                'closed_time': changeDateFormat(internship.expiration_datetime_utc), \
-                                'min_salary': internship.min_salary, 'max_salary': internship.max_salary,
-                                'description': internship.description, "salary_currency": internship.salary_curreny, \
- \
-                                'location': get_location(internship.city), 'company_id': internship.company_id, \
-                                'company_name': get_company_info(internship.company_id)[0],
-                                'company_logo': get_company_info(internship.company_id)[1]
-                                } for internship in is_save]
-            # for save in is_save:
-            #     info.append(Internship.get_info(save))
-            # # print(info)
-            result = {
-                "is_save": all_internships,
+            .filter(InternshipStatus.uid == uid).filter(InternshipStatus.is_save == "True").all()
+        info = []
+        all_internships = [{'job_id': internship.id, 'title': internship.title, \
+                            'job_type': changeTypeFormat(internship.type), "status": "",
+                            'is_remote': internship.is_remote,
+                            'posted_time': changeDateFormat(internship.posted_time),
+                            'closed_time': changeDateFormat(internship.expiration_datetime_utc), \
+                            'min_salary': internship.min_salary, 'max_salary': internship.max_salary,
+                            'description': internship.description, "salary_currency": internship.salary_curreny, \
+\
+                            'location': get_location(internship.city), 'company_id': internship.company_id, \
+                            'company_name': get_company_info(internship.company_id)[0],
+                            'company_logo': get_company_info(internship.company_id)[1]
+                            } for internship in is_save]
+        # for save in is_save:
+        #     info.append(Internship.get_info(save))
+        # # print(info)
+        result = {
+            "is_save": all_internships,
 
-            }
-            # print(result)
-            return result, 200
-
-        else:
-            return dumps({"msg": "Internship not found"}), 404
+        }
+        # print(result)
+        return result, 200
 
     @staticmethod
-    def saveInternship(arg):
+    def saveInternship(arg, uid):
         internship_id = arg.get('internship_id')
         # (internship_id)
         print(internship_id)
@@ -432,28 +425,29 @@ class InternshipsUtils:
             return dumps({"msg": "Internship not found"}), 404
         update = db.session.query(InternshipStatus) \
             .filter(InternshipStatus.intern_id == internship_id) \
-            .filter(InternshipStatus.uid == 102) \
+            .filter(InternshipStatus.uid == uid) \
             .update({InternshipStatus.is_save: "True"})
         if update:
             db.session.commit()
             return dumps({"msg": "save sucessfully"}), 200
         else:
-            save_internship = InternshipStatus(uid=102, intern_id=internship_id, is_save="True")
+            save_internship = InternshipStatus(uid=uid, intern_id=internship_id, is_save="True")
             db.session.add(save_internship)
+            db.session.commit()
             return dumps({"msg": "add save sucessfully"}), 200
 
     @staticmethod
-    def unSaveInternship(arg):
+    def unSaveInternship(arg, uid):
         internship_id = arg.get('internship_id')
         print(internship_id)
 
         update = db.session.query(InternshipStatus) \
             .filter(InternshipStatus.intern_id == internship_id) \
-            .filter(InternshipStatus.uid == 102) \
+            .filter(InternshipStatus.uid == uid) \
             .update({InternshipStatus.is_save: "False"})
         if update:
             db.session.commit()
-            return dumps({"msg": "unsave sucessfully"}), 200
+            return InternshipsUtils.getSaveList(uid)
         else:
             return dumps({"msg": "Internship not found"}), 404
 
