@@ -129,7 +129,7 @@ def changeDateFormat(date):
 
 class InternshipsUtils:
     @staticmethod
-    def get_Internship(id, data):
+    def get_Internship(id, uid):
         is_save = "False"
         is_calendar = "False"
 
@@ -143,11 +143,7 @@ class InternshipsUtils:
                 }
                 return internship_not_found, 404
             else:
-
-                uid = data.get("uid", None)
-                print(uid)
                 if uid is not None:
-
                     # update the interhsip status as is_seen
                     update = db.session.query(InternshipStatus) \
                         .filter(InternshipStatus.intern_id == id) \
@@ -407,7 +403,6 @@ class InternshipsUtils:
         is_save = db.session.query(Internship) \
             .join(InternshipStatus, Internship.id == InternshipStatus.intern_id) \
             .filter(InternshipStatus.uid == uid).filter(InternshipStatus.is_save == "True").all()
-        info = []
         all_internships = [{'job_id': internship.id, 'title': internship.title, \
                             'job_type': changeTypeFormat(internship.type), "status": "",
                             'is_remote': internship.is_remote,
@@ -420,12 +415,8 @@ class InternshipsUtils:
                             'company_name': get_company_info(internship.company_id)[0],
                             'company_logo': get_company_info(internship.company_id)[1]
                             } for internship in is_save]
-        # for save in is_save:
-        #     info.append(Internship.get_info(save))
-        # # print(info)
         result = {
             "is_save": all_internships,
-
         }
         # print(result)
         return result, 200
@@ -468,15 +459,24 @@ class InternshipsUtils:
             return dumps({"msg": "Internship not found"}), 404
 
     @staticmethod
-    def getViewedHistory(arg):
+    def getViewedHistory(uid):
         is_seen = db.session.query(Internship).join(InternshipStatus, Internship.id == InternshipStatus.intern_id) \
-            .filter(InternshipStatus.uid == 143).filter(InternshipStatus.is_seen == "True").order_by(InternshipStatus.seen_time).all()
+            .filter(InternshipStatus.uid == uid).filter(InternshipStatus.is_seen == "True").order_by(InternshipStatus.seen_time.desc()).limit(15).all()
         if is_seen:
-            info = []
-            for applied in is_seen:
-                info.append(Internship.get_info(applied))
+            all_internships = [{'job_id': internship.id, 'title': internship.title, \
+                    'job_type': changeTypeFormat(internship.type), "status": "",
+                    'is_remote': internship.is_remote,
+                    'posted_time': changeDateFormat(internship.posted_time),
+                    'closed_time': changeDateFormat(internship.expiration_datetime_utc), \
+                    'min_salary': internship.min_salary, 'max_salary': internship.max_salary,
+                    'description': internship.description, "salary_currency": internship.salary_curreny, \
+    \
+                    'location': get_location(internship.city), 'company_id': internship.company_id, \
+                    'company_name': get_company_info(internship.company_id)[0],
+                    'company_logo': get_company_info(internship.company_id)[1]
+                    } for internship in is_seen]
             result = {
-                "is_seen": info
+                "is_seen": all_internships
             }
             return result, 200
         else:

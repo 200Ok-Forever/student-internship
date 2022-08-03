@@ -54,11 +54,12 @@ class GetInternship(Resource):
         404: "Internship not found!",
     })
     @internships_api.doc(body = get_internship_parser)
+    @jwt_required(optional=True)
     def get(self, id):
         try:
-            data = request.args
+            uid = get_jwt_identity()
             # print(data)
-            return InternshipsUtils.get_Internship(id, data)
+            return InternshipsUtils.get_Internship(id, uid)
         except Exception as error:
             return {
                        "message": error
@@ -149,10 +150,11 @@ class UnsaveInternship(Resource):
 
 @internships_api.route('/internships/history')
 class GetViewedInternships(Resource):
+    @jwt_required()
     @internships_api.expect(saveParser, validate=True)
     def get(self):
-        arg = request.args
-        return InternshipsUtils.getViewedHistory(arg)
+        uid = get_jwt_identity()
+        return InternshipsUtils.getViewedHistory(uid)
 
 
 @internships_api.route('/internships/calendar')
