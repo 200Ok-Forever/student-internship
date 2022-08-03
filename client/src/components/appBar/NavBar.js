@@ -55,7 +55,6 @@ const NavBar = () => {
 
   const { user, setUser } = useContext(UserContext);
   const loginState = user === "" ? false : true;
-  console.log(user, loginState);
 
   const LogoutHandler = () => {
     const logout = async () => {
