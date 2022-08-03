@@ -268,7 +268,7 @@ class InternshipStatus(db.Model):
     is_seen = db.Column(db.VARCHAR(255))
     is_save = db.Column(db.VARCHAR(255))
     is_applied = db.Column(db.VARCHAR(255))
-
+    seen_time = db.Column(db.TIMESTAMP)
     internship = db.relationship('Internship', back_populates='status')
     user = db.relationship('User', back_populates='status')
 

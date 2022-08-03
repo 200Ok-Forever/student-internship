@@ -152,12 +152,13 @@ class InternshipsUtils:
                     update = db.session.query(InternshipStatus) \
                         .filter(InternshipStatus.intern_id == id) \
                         .filter(InternshipStatus.uid == uid) \
-                        .update({InternshipStatus.is_seen: "True"})
+                        .update({InternshipStatus.is_seen: "True",InternshipStatus.seen_time: datetime.datetime.now()})\
+                        
                     if update:
                         db.session.commit()
 
                     else:
-                        save_internship = InternshipStatus(uid=uid, intern_id=id, is_seen="True")
+                        save_internship = InternshipStatus(uid=uid, intern_id=id, is_seen="True",seen_time =  datetime.datetime.now() )
                         db.session.add(save_internship)
                         db.session.commit()
 
@@ -475,7 +476,7 @@ class InternshipsUtils:
     @staticmethod
     def getViewedHistory(arg):
         is_seen = db.session.query(Internship).join(InternshipStatus, Internship.id == InternshipStatus.intern_id) \
-            .filter(InternshipStatus.uid == 102).filter(InternshipStatus.is_seen == "True").all()
+            .filter(InternshipStatus.uid == 143).filter(InternshipStatus.is_seen == "True").order_by(InternshipStatus.seen_time).all()
         if is_seen:
             info = []
             for applied in is_seen:

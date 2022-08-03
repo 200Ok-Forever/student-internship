@@ -192,4 +192,6 @@ class Recommend(Resource):
         arg = request.args
         print(arg)
         return InternshipsUtils.getRecommend(arg)
+
+
         
