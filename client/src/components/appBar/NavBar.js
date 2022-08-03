@@ -1,4 +1,5 @@
-import React, { useState, useContext } from "react";
+/* eslint-disable no-unused-vars */
+import React, { useContext, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -22,6 +23,7 @@ import { LogoutAPI } from "../../api/auth-api";
 const NavBar = () => {
   const history = useHistory();
   const [openDrawer, setOpenDrawer] = useState(false);
+  // const { user } = useContext(UserContext);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -52,8 +54,7 @@ const NavBar = () => {
   // const handleErrorClose = () => setErrorModalState(false);
 
   const { user, setUser } = useContext(UserContext);
-  const loginState = user === ("") ? false : true;
-  console.log(user, loginState)
+  const loginState = user === "" ? false : true;
 
   const LogoutHandler = () => {
     const logout = async () => {
@@ -78,9 +79,10 @@ const NavBar = () => {
         console.log(err);
       }
     };
+    document.cookie = "user=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;";
     logout();
     setUser("");
-  }
+  };
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -106,7 +108,7 @@ const NavBar = () => {
             <Menu className={classes.menu} isDrawer={false} />
           </div>
           <Box>
-            {!loginState && (
+            {!user.token ? (
               <Button
                 variant="outlined"
                 sx={{ height: "55px" }}
@@ -114,79 +116,80 @@ const NavBar = () => {
               >
                 Login
               </Button>
+            ) : (
+              <>
+                <IconButton
+                  size="large"
+                  aria-label="account of current user"
+                  aria-controls="user-menu-appbar"
+                  aria-haspopup="true"
+                  onClick={() => window.open(`/chat`, "_blank")}
+                  color="primary"
+                >
+                  <ChatIcon />
+                </IconButton>
+                <IconButton
+                  size="large"
+                  aria-label="account of current user"
+                  aria-controls="user-menu-appbar"
+                  aria-haspopup="true"
+                  onClick={handleMenu}
+                >
+                  <Avatar />
+                </IconButton>
+                <MUIMenu
+                  id="user-menu-appbar"
+                  anchorEl={anchorEl}
+                  anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  open={Boolean(anchorEl)}
+                  onClose={handleClose}
+                >
+                  <MenuItem
+                    onClick={handleClose}
+                    component={RouterLink}
+                    to="/profile"
+                  >
+                    Profile
+                  </MenuItem>
+                  <MenuItem
+                    onClick={handleClose}
+                    component={RouterLink}
+                    to="/saved"
+                  >
+                    Saved Internships
+                  </MenuItem>
+                  <MenuItem
+                    onClick={handleClose}
+                    component={RouterLink}
+                    to="/history"
+                  >
+                    History
+                  </MenuItem>
+                  <MenuItem
+                    onClick={handleClose}
+                    component={RouterLink}
+                    to="/forum/me"
+                  >
+                    My Forum Posts
+                  </MenuItem>
+                  <MenuItem
+                    onClick={LogoutHandler}
+                    component={RouterLink}
+                    to="/"
+                  >
+                    Logout
+                  </MenuItem>
+                </MUIMenu>
+              </>
             )}
-            {loginState && (
-              <Button
-                variant="outlined"
-                sx={{ height: "55px" }}
-                onClick={LogoutHandler}
-              >
-                Logout
-              </Button>
-            )}
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="user-menu-appbar"
-              aria-haspopup="true"
-              onClick={() => history.push("/chat")}
-              color="primary"
-            >
-              <ChatIcon />
-            </IconButton>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="user-menu-appbar"
-              aria-haspopup="true"
-              onClick={handleMenu}
-            >
-              <Avatar />
-            </IconButton>
-            <MUIMenu
-              id="user-menu-appbar"
-              anchorEl={anchorEl}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorEl)}
-              onClose={handleClose}
-            >
-              <MenuItem
-                onClick={handleClose}
-                component={RouterLink}
-                to="/profile"
-              >
-                Profile
-              </MenuItem>
-              <MenuItem
-                onClick={handleClose}
-                component={RouterLink}
-                to="/saved"
-              >
-                Saved Internships
-              </MenuItem>
-              <MenuItem
-                onClick={handleClose}
-                component={RouterLink}
-                to="/history"
-              >
-                History
-              </MenuItem>
-              <MenuItem
-                onClick={handleClose}
-                component={RouterLink}
-                to="/forum/me"
-              >
-                My Forum Posts
-              </MenuItem>            
-            </MUIMenu>
           </Box>
         </Toolbar>
       </AppBar>

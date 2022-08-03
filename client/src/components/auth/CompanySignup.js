@@ -20,7 +20,7 @@ import { Modal } from "@mui/material";
 import ErrorMessage from "../UI/ErrorMessage";
 
 const CompanySignup = () => {
-  const { user, setUser } = useContext(UserContext);
+  const { setUser } = useContext(UserContext);
   const [errorModalState, setErrorModalState] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const handleOpen = (msg) => {

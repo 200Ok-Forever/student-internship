@@ -1,6 +1,6 @@
 import { Button, Grid, Snackbar, Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import JobBasicCard from "../UI/JobBasicCard";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
@@ -24,6 +24,8 @@ import queryString from "query-string";
 import { getJob } from "../../api/search-api";
 import getSymbolFromCurrency from "currency-symbol-map";
 import { postComment, replyComment } from "../../api/comment-api";
+import { postInternshipSave, postInternshipUnsave } from "../../api/internship-api";
+import { UserContext } from "../auth/UserContext";
 
 const DATA = {
   job_id: "1",
@@ -91,10 +93,11 @@ const JobDetail = () => {
   const query = queryString.parse(search);
   const id = query.id;
   const [load, setLoad] = useState(true);
+  const { user } = useContext(UserContext);
 
   useEffect(() => {
     const getData = async () => {
-      const resp = await getJob(id);
+      const resp = await getJob(id, user.token);
       setInfo(resp.data);
       setLoad(false);
     };
@@ -103,7 +106,7 @@ const JobDetail = () => {
     } catch (e) {
       console.log(e);
     }
-  }, [id]);
+  }, [id, user.token]);
 
   return (
     <Box
@@ -127,6 +130,7 @@ const JobDetail = () => {
 
 const BasicInfo = ({ info }) => {
   console.log("🚀 ~ info", info);
+  const { user } = useContext(UserContext);
   const history = useHistory();
   const [saved, setSaved] = useState(false);
   const [shareBar, setShareBar] = useState(false);
@@ -158,7 +162,13 @@ const BasicInfo = ({ info }) => {
   useEffect(() => {
     setSaved(DATA.saved);
   }, []);
-  const saveJobHandler = () => {
+  const saveJobHandler = (e) => {
+    e.preventDefault();
+    if (saved) {
+      postInternshipUnsave(info.internship_id, user.token)
+    } else {
+      postInternshipSave(info.internship_id, user.token)
+    }
     setSaved((prev) => !prev);
   };
 

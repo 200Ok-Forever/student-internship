@@ -16,7 +16,7 @@ import ErrorMessage from "../UI/ErrorMessage";
 
 const Login = () => {
   const history = useHistory();
-  const { user, setUser } = useContext(UserContext);
+  const { setUser } = useContext(UserContext);
   const [errorModalState, setErrorModalState] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const handleOpen = (msg) => {
@@ -38,6 +38,7 @@ const Login = () => {
           if (res.status === true) {
             // If success, store the user info and token to UserContext then route to main page
             const userInfoWithToken = { token: res.token, ...res.user };
+            document.cookie = "user=" + res.token + "; Path=/;";
             setUser(userInfoWithToken);
             history.push("/");
           } else if (
