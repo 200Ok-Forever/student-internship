@@ -5,7 +5,12 @@ from flask import current_app, jsonify
 from flask_jwt_extended import create_access_token, get_jwt, jwt_required, create_refresh_token, get_jwt_identity
 from flask_mail import Message
 from ...Models.model import User, Student, Company
-from ... import db, mail
+from ... import db, mail, jwt
+from datetime import timedelta
+import redis
+
+r = redis.StrictRedis(host='redis-16963.c90.us-east-1-3.ec2.cloud.redislabs.com', port=16963,
+                      username='default', password='=200ok=forever', decode_responses=True)
 
 
 class AuthUtils:
@@ -26,6 +31,7 @@ class AuthUtils:
                 user_info = User.get_info(user)
                 print(user_info)
                 access_token = create_access_token(identity=user_info['uid'], additional_claims=user_info)
+
                 resp = {"status": True,
                         "message": "Successfully logged in.",
                         "token": access_token
@@ -152,6 +158,20 @@ class AuthUtils:
                        "status": False,
                        "message": "Something went wrong during the process!",
                    }, 500
+
+    @staticmethod
+    @jwt.token_in_blocklist_loader
+    def check_if_token_is_revoked(jwt_header, jwt_payload: dict):
+        jti = jwt_payload["jti"]
+        token_in_redis = r.get(jti)
+        print(jti, token_in_redis, token_in_redis is not None)
+        return token_in_redis is not None
+
+    @staticmethod
+    def logout():
+        jti = get_jwt()["jti"]
+        r.set(jti, "", ex=timedelta(hours=1))
+        return jsonify(msg="logout successful")
 
     @staticmethod
     def send_confirmation_email(email, flag):
