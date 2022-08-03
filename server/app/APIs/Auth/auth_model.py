@@ -25,6 +25,7 @@ class AuthAPI:
             "university": fields.String,
             "degree": fields.String,
             "major": fields.String,
+            "position": fields.String,
             "skills": fields.String,
             "description": fields.String
         },
@@ -78,6 +79,7 @@ class AuthAPI:
             "university": fields.String(required=True),
             "degree": fields.String(required=True),
             "major": fields.String,
+            "position": fields.String,
             "skills": fields.String,
             "description": fields.String,
             "avatar": fields.String
@@ -141,5 +143,18 @@ class AuthAPI:
             "email": fields.String(required=True),
             "password": fields.String(required=True),
             "verification_code": fields.String(required=True)
+        }
+    )
+
+    update_user_info_long = api.model(
+        "Update user info long request", {
+            "first_name": fields.String(required=True),
+            "last_name": fields.String(required=True),
+            "university": fields.String(required=True),
+            "degree": fields.String(required=True),
+            "major": fields.String,
+            "position": fields.String,
+            "skills": fields.String,
+            "description": fields.String,
         }
     )

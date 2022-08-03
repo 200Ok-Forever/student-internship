@@ -5,31 +5,98 @@ import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { useState } from "react";
-import { DatePicker } from "@mui/x-date-pickers";
+import { useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import { Paper } from "@mui/material";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
+import { UserContext } from "./UserContext";
+import { CompanySignupAPI } from "../../api/auth-api";
+import { useFormik } from "formik";
+import { companySignupValidationSchema } from "./ValidationSchema";
+import { Modal } from "@mui/material";
+import ErrorMessage from "../UI/ErrorMessage";
 
 const CompanySignup = () => {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+  const { setUser } = useContext(UserContext);
+  const [errorModalState, setErrorModalState] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const handleOpen = (msg) => {
+    setErrorMessage(msg);
+    setErrorModalState(true);
   };
+  const handleClose = () => setErrorModalState(false);
+
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+      confirmPassword: "",
+      username: "",
+      firstName: "",
+      lastName: "",
+      company_name: "",
+      industry: "",
+      linkedin: "",
+      founded_year: "",
+      size: "",
+      company_url: "",
+      location: "",
+      description: "",
+    },
+    validationSchema: companySignupValidationSchema,
+    onSubmit: (values) => {
+      const signup = async (values) => {
+        const signupValues = {
+          email: values.email,
+          username: values.username,
+          password: values.password,
+          first_name: values.firstName,
+          last_name: values.lastName,
+          company_name: values.company_name,
+          industry: values.industry,
+          linkedin: values.linkedin,
+          company_url: values.company_url,
+          location: values.location,
+          description: values.description,
+          avatar: "",
+          company_logo: "",
+          company_size: values.size,
+          founded_year: values.founded_year,
+        };
+        try {
+          console.log(signupValues);
+          const res = await CompanySignupAPI(signupValues);
+          if (res.status === true) {
+            const userInfo = res.user;
+            const userInfoWithToken = { token: res.token, ...userInfo };
+            console.log(userInfo, userInfoWithToken);
+            setUser(userInfoWithToken);
+            history.push("/");
+          } else if (
+            res.response.status === 404 ||
+            res.response.status === 403 ||
+            res.response.status === 400
+          ) {
+            console.log(res);
+            handleOpen(res.response.data.message);
+          } else {
+            console.log(res);
+            //handleOpen(res);
+          }
+        } catch (err) {
+          console.log(err);
+          //handleOpen(err);
+        }
+      };
+
+      signup(values);
+    },
+  });
 
   const history = useHistory();
-
-  const [foundedYear, setFoundedYear] = useState();
-  const [size, setSize] = useState();
 
   return (
     <Paper
@@ -57,7 +124,20 @@ const CompanySignup = () => {
         Company Sign Up
       </Typography>
       <Avatar sx={{ m: 1, bgcolor: "primary.main" }}></Avatar>
-      <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+      <Box
+        component="form"
+        noValidate
+        onSubmit={formik.handleSubmit}
+        sx={{ mt: 3 }}
+      >
+        <Modal
+          open={errorModalState}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <ErrorMessage errorMessage={errorMessage} />
+        </Modal>
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <TextField
@@ -67,6 +147,10 @@ const CompanySignup = () => {
               label="Email Address"
               name="email"
               autoComplete="email"
+              value={formik.values.email}
+              onChange={formik.handleChange}
+              error={formik.touched.email && Boolean(formik.errors.email)}
+              helperText={formik.touched.email && formik.errors.email}
             />
           </Grid>
           <Grid item xs={12}>
@@ -78,17 +162,30 @@ const CompanySignup = () => {
               type="password"
               id="password"
               autoComplete="new-password"
+              value={formik.values.password}
+              onChange={formik.handleChange}
+              error={formik.touched.password && Boolean(formik.errors.password)}
+              helperText={formik.touched.password && formik.errors.password}
             />
           </Grid>
           <Grid item xs={12}>
             <TextField
               required
               fullWidth
-              name="conform-password"
+              name="confirmPassword"
               label="Confirm Password"
               type="password"
               id="confirm-password"
               autoComplete="confirm-password"
+              value={formik.values.confirmPassword}
+              onChange={formik.handleChange}
+              error={
+                formik.touched.confirmPassword &&
+                Boolean(formik.errors.confirmPassword)
+              }
+              helperText={
+                formik.touched.confirmPassword && formik.errors.confirmPassword
+              }
             />
           </Grid>
           <Grid item xs={12}>
@@ -105,6 +202,12 @@ const CompanySignup = () => {
               id="firstName"
               label="First Name"
               autoFocus
+              value={formik.values.firstName}
+              onChange={formik.handleChange}
+              error={
+                formik.touched.firstName && Boolean(formik.errors.firstName)
+              }
+              helperText={formik.touched.firstName && formik.errors.firstName}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -115,60 +218,103 @@ const CompanySignup = () => {
               label="Last Name"
               name="lastName"
               autoComplete="family-name"
+              value={formik.values.lastName}
+              onChange={formik.handleChange}
+              error={formik.touched.lastName && Boolean(formik.errors.lastName)}
+              helperText={formik.touched.lastName && formik.errors.lastName}
             />
           </Grid>
           <Grid item xs={12}>
             <TextField
               required
               fullWidth
-              name="company-name"
+              name="username"
+              label="Username"
+              id="username"
+              autoComplete="username"
+              value={formik.values.username}
+              onChange={formik.handleChange}
+              error={formik.touched.username && Boolean(formik.errors.username)}
+              helperText={formik.touched.username && formik.errors.username}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              required
+              fullWidth
+              name="company_name"
               label="Company Name"
-              id="company-name"
-              autoComplete="company-name"
+              id="company_name"
+              autoComplete="company_name"
+              value={formik.values.company_name}
+              onChange={formik.handleChange}
+              error={
+                formik.touched.company_name &&
+                Boolean(formik.errors.company_name)
+              }
+              helperText={
+                formik.touched.company_name && formik.errors.company_name
+              }
             />
           </Grid>
           <Grid item xs={12}>
             <TextField
               fullWidth
-              name="industy"
+              name="industry"
               label="Industry"
               id="industry"
               autoComplete="industry"
+              value={formik.values.industry}
+              onChange={formik.handleChange}
             />
           </Grid>
           <Grid item xs={12}>
             <TextField
               fullWidth
-              name="linkedIn"
+              name="linkedin"
               label="LinkedIn"
-              id="linkedIn"
-              autoComplete="linkedIn"
+              id="linkedin"
+              autoComplete="linkedin"
+              value={formik.values.linkedin}
+              onChange={formik.handleChange}
             />
           </Grid>
           <Grid item xs={12}>
             <TextField
               fullWidth
-              name="url"
+              name="company_url"
               label="Company URL"
-              id="url"
-              autoComplete="url"
+              id="company_url"
+              autoComplete="company_url"
+              value={formik.values.company_url}
+              onChange={formik.handleChange}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
+            {/* <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DatePicker
                 disableFuture
                 fullWidth
+                name="foundedYear"
                 label="Founded Year"
+                id="foundedYear"
+                autoComplete="foundedYear"
                 openTo="year"
                 views={["year"]}
                 renderInput={(params) => <TextField {...params} />}
-                value={foundedYear}
-                onChange={(newValue) => {
-                  setFoundedYear(newValue);
-                }}
+                value={formik.values.foundedYear}
+                onChange={formik.handleChange}
               />
-            </LocalizationProvider>
+            </LocalizationProvider> */}
+            <TextField
+              fullWidth
+              name="founded_year"
+              label="Founded Year (YYYY)"
+              id="founded_year"
+              autoComplete="founded_year"
+              value={formik.values.founded_year}
+              onChange={formik.handleChange}
+            />
           </Grid>
           <Grid item xs={12} sm={6}>
             <FormControl fullWidth>
@@ -177,12 +323,12 @@ const CompanySignup = () => {
               </InputLabel>
               <Select
                 labelId="demo-simple-select-helper-label"
-                id="demo-simple-select-helper"
-                value={size}
-                label="Age"
-                onChange={(newValue) => {
-                  setSize(newValue);
-                }}
+                id="size"
+                name="size"
+                autoComplete="size"
+                value={formik.values.size}
+                label="Size"
+                onChange={formik.handleChange}
               >
                 <MenuItem value={"0-50"}>0-50</MenuItem>
                 <MenuItem value={"50-200"}>50-200</MenuItem>
@@ -200,6 +346,8 @@ const CompanySignup = () => {
               label="Location"
               id="location"
               autoComplete="location"
+              value={formik.values.location}
+              onChange={formik.handleChange}
             />
           </Grid>
           <Grid item xs={12}>
@@ -209,6 +357,8 @@ const CompanySignup = () => {
               multiline
               fullWidth
               rows={4}
+              value={formik.values.description}
+              onChange={formik.handleChange}
             />
           </Grid>
         </Grid>
