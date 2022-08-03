@@ -63,16 +63,7 @@ class Logout(Resource):
     @auth_api.expect(authParser, validate=True)
     def delete(self):
         """ Logout """
-        try:
-            response = jsonify({"msg": "logout successful"})
-            unset_jwt_cookies(response)
-            return response
-        except Exception as error:
-            current_app.logger.error(error)
-            return {
-                       "status": False,
-                       "message": error,
-                   }, 405
+        return AuthUtils.logout()
 
 
 @auth_api.route("/signup/student")
