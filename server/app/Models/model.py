@@ -276,7 +276,7 @@ class File(db.Model):
     __tablename__ = 't_uploadfile'
     id = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.VARCHAR(255))
-    student_id = db.Column(db.Integer, db.ForeignKey('t_student.id'))
+    uid = db.Column(db.Integer, db.ForeignKey('t_user.uid'))
     data = db.Column(db.LargeBinary(length=(2**32)-1))
     file_type = db.Column(db.VARCHAR(255))
     upload_time = db.Column(db.TIMESTAMP)

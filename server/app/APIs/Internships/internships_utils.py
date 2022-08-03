@@ -172,8 +172,9 @@ class InternshipsUtils:
                     student = db.session.query(Student).join(User, Student.email == User.email).filter(
                         User.uid == uid).first()
                     if student:
+                        
                         calendar = db.session.query(Calendar).filter(Calendar.internship_id == id) \
-                            .filter(Calendar.student_id == student.id)
+                            .filter(Calendar.student_id == student.id).all()
 
                         if calendar:
                             is_calendar = "True"
@@ -356,32 +357,46 @@ class InternshipsUtils:
             return dumps({"msg": "Internship not found"}), 404
 
     @staticmethod
-    def apply(arg):
+    def apply(id, arg):
         current_user_id = get_jwt_identity()
         print(current_user_id)
      
-
-        internship_id = arg.get('internship_id')
-        internship=Internship.query.filter(id==internship_id).first()
+        
         resume = arg.get('resume', None)
         coverletter = arg.get('coverletter', None)
         
         question = arg.get('question')
         answer = arg.get('answer')
+
+        internship=Internship.query.filter(Internship.id==id).first()
         if internship:
+            print("______________")
             apply =  db.session.query(InternshipStatus)\
-                .filter(InternshipStatus.intern_id == internship_id )\
+                .filter(InternshipStatus.intern_id == id )\
                 .filter(InternshipStatus.uid==current_user_id)\
                 .update({InternshipStatus.is_applied: "True"})
 
+            
             if resume:
-                file = File(student_id = 102, data = resume, file_type = "resume", upload_time = datetime.datetime.now())
-                db.session.add(file)
+                print("__________000000000____")
+                
+                file = File(uid = current_user_id, data = resume, file_type = "resume", upload_time = datetime.datetime.now())
+                print(file)
+                try:
+                    db.session.add(file)
+                    db.session.commit()
+                    return dumps({"msg": "save sucessfully"}), 200
+                except Exception as error:
+                    return dumps({"msg":error}),400
+
             if coverletter:
-                file = File(student_id = 102, data = coverletter, file_type = "coverletter", upload_time = datetime.datetime.now())
+                file = File(uid = current_user_id, data = coverletter, file_type = "coverletter", upload_time = datetime.datetime.now())
                 db.session.add(file)
-            db.session.commit()
-            return dumps({"msg": "save sucessfully"}), 200
+            try:
+                db.session.commit()
+                return dumps({"msg": "save sucessfully"}), 200
+            except Exception as error:
+                return dumps({"msg":error}),400
         else:
 
             return dumps({"msg": "Internship not found"}), 404
