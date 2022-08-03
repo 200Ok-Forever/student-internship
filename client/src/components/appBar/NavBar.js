@@ -123,7 +123,7 @@ const NavBar = () => {
                   aria-label="account of current user"
                   aria-controls="user-menu-appbar"
                   aria-haspopup="true"
-                  onClick={() => history.push("/chat")}
+                  onClick={() => window.open(`/chat`, "_blank")}
                   color="primary"
                 >
                   <ChatIcon />
