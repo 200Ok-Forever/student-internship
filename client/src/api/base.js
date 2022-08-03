@@ -12,10 +12,22 @@ export const getAxios = (url, data = {}) =>
       });
   });
 
-export const postAxios = (url, data = {}) =>
+export const postAxios = (url, data = {}, configs) =>
   new Promise((resolve, reject) => {
     axios
-      .post(url, { ...data })
+      .post(url, { ...data }, configs)
+      .then((res) => {
+        resolve(res);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+
+export const deleteAxios = (url, data = {}) =>
+  new Promise((resolve, reject) => {
+    axios
+      .delete(url, { ...data })
       .then((res) => {
         resolve(res);
       })

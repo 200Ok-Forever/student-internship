@@ -44,6 +44,7 @@ const EditStudentProfile = () => {
           university: values.university,
           degree: values.degree,
           major: values.major,
+          position: values.positions,
           skills: values.skills,
           description: values.description,
           avatar: "",

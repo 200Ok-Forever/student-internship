@@ -1,4 +1,4 @@
-import { postAxios } from "./base";
+import { postAxios, deleteAxios } from "./base";
 
 const baseURL = "http://localhost:5004";
 
@@ -13,10 +13,10 @@ export const LoginAPI = async (data) => {
   }
 };
 
-export const LogoutAPI = async (data) => {
+export const LogoutAPI = async (token) => {
   try {
     const url = `${baseURL}/auth/logout`;
-    const res = await postAxios(url, data);
+    const res = await deleteAxios(url, {},  { headers: { Authorization: token }});
 
     return res.data;
   } catch (err) {
@@ -66,8 +66,9 @@ export const resetPasswordAPI = async (data) => {
 
 export const editStudentProfileAPI = async (data, token) => {
   try {
+    console.log(token)
     const url = `${baseURL}/auth/userInfoLong`;
-    const res = await postAxios(url, data, { headers: { 'Authorization': token }});
+    const res = await postAxios(url, data, { headers: { Authorization : `Bearer ${token}` }});
 
     return res.data;
   } catch (err) {
