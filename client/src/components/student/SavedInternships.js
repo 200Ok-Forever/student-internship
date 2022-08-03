@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { IconButton, Box, Typography } from "@mui/material";
 import JobBlock from "../jobs/JobBlock";
 import DeleteIcon from '@mui/icons-material/Delete';
+import { UserContext } from "../auth/UserContext";
+import { getSavedInternships } from "../../api/internship-api";
 
-const internships = [
+const fake = [
   {
     job_id: "aa",
     company_id: "1",
@@ -60,6 +62,17 @@ const internships = [
 const boxStyling = { display: "flex", flexDirection: "column", gap: "30px" };
 
 const SavedInternships = () => {
+  const [internships, setInternships] = useState([]);
+  const { user } = useContext(UserContext);
+
+  useEffect(() => {
+    const getInternships = async () => {
+      const i = getSavedInternships(user.token);
+      console.log(i);
+    }
+    getInternships();
+  }, [])
+
   return (
     <Box sx={boxStyling} mb="30px">
       <Typography variant="h4" component="div">

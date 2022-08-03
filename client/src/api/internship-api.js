@@ -20,7 +20,7 @@ export const getSavedInternships = async (token) => (
     `/Internship/internships/save`,
     {
       headers: {
-        'Authorization': token
+        'Authorization': `Bearer ${token}`
       }
     }
   )

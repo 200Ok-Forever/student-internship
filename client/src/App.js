@@ -39,7 +39,7 @@ import CreateInternship from './components/recruiter/CreateInternship';
 
 function App() {
   const location = useLocation();
-  const [user, setUser] = useState("");
+  const [user, setUser] = useState({});
 
   return (
     <Fragment>
