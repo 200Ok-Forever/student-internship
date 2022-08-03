@@ -45,7 +45,7 @@ const paper = {
 const Chat = () => {
   // TODO: change uername and usersecret
   const student = "John Smith";
-  const company = "Google";
+  // const company = "Google";
   return (
     <Box sx={{ marginTop: "85px" }}>
       <ChatEngine
