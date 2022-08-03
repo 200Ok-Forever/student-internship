@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -53,7 +53,7 @@ const NavBar = () => {
   // };
   // const handleErrorClose = () => setErrorModalState(false);
 
-  const { user, setUser } = useState(UserContext);
+  const { user, setUser } = useContext(UserContext);
   const loginState = user === "" ? false : true;
   console.log(user, loginState);
 
@@ -80,6 +80,7 @@ const NavBar = () => {
         console.log(err);
       }
     };
+    document.cookie = "user" +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
     logout();
     setUser("");
   };
@@ -179,6 +180,13 @@ const NavBar = () => {
                     to="/forum/me"
                   >
                     My Forum Posts
+                  </MenuItem>
+                  <MenuItem
+                    onClick={LogoutHandler}
+                    component={RouterLink}
+                    to="/"
+                  >
+                    Logout
                   </MenuItem>
                 </MUIMenu>
               </>
