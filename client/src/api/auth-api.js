@@ -63,3 +63,14 @@ export const resetPasswordAPI = async (data) => {
     return err;
   }
 };
+
+export const editStudentProfileAPI = async (data, token) => {
+  try {
+    const url = `${baseURL}/auth/userInfoLong`;
+    const res = await postAxios(url, data, { headers: { 'Authorization': token }});
+
+    return res.data;
+  } catch (err) {
+    return err;
+  }
+};

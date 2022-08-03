@@ -37,6 +37,8 @@ import Profile from "./components/student/Profile";
 import { UserContext } from "./components/auth/UserContext";
 import UserPosts from './components/forum/UserPosts';
 import CreateInternship from './components/recruiter/CreateInternship';
+import EditStudentProfile from "./components/student/EditStudentProfile";
+import StudentProfile from "./components/student/StudentProfile";
 import { STUDENT_ROLE, RECRUITER_ROLE } from './constants';
 
 const getSession = () => {
@@ -100,6 +102,8 @@ function App() {
             <Route path="/forum" exact component={Forum} />
             <Route path="/chat" exact component={Chat} />
             <PrivateRoute role={RECRUITER_ROLE} path="/applications" exact component={Applications} />
+            <Route path="/editstudentprofile" exact component={EditStudentProfile} />
+            <Route path="/studentprofile/:id" exact component={StudentProfile} />
             <Route path="/profile" exact component={Profile} />
             <PrivateRoute
               path="/recommended-candidates"

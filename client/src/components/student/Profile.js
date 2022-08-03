@@ -8,6 +8,8 @@ import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import ProfileInfo from "./ProfileInfo";
+import { useHistory } from "react-router-dom";
+
 const data = [
   {
     title: "Software Engineer Intern",
@@ -54,6 +56,7 @@ const infoData = {
 };
 
 const Profile = () => {
+  const history = useHistory();
   return (
     <Box
       sx={{
@@ -68,7 +71,13 @@ const Profile = () => {
       <Typography variant="h4" fontWeight="bold" fontFamily="inherit">
         {infoData.first_name} {infoData.last_name}
       </Typography>
-      <Button variant="outlined" sx={{ ml: "440px" }}>
+      <Button
+        variant="outlined"
+        sx={{ ml: "440px" }}
+        onClick={() => {
+          history.push("/editstudentprofile");
+        }}
+      >
         Edit Profile
       </Button>
       <ProfileInfo data={infoData} />

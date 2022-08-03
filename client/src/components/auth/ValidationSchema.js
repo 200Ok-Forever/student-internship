@@ -7,7 +7,6 @@ const sendResetEmailValidationObject = {
     .required("Email is required"),
 };
 
-
 const loginValidationObject = {
   email: yup
     .string("Enter your email")
@@ -27,9 +26,9 @@ const resetPasswordValidationObject = {
     .min(6, "Password should be of minimum 6 characters length")
     .oneOf([yup.ref("password")], "Passwords do not match"),
   resetCode: yup
-  .string("Enter your reset code")
-  .required("Reset code is required"),
-}
+    .string("Enter your reset code")
+    .required("Reset code is required"),
+};
 
 const studentSignupValidationObject = {
   ...loginValidationObject,
@@ -74,6 +73,19 @@ const companySignupValidationObject = {
     .required("Company name is required"),
 };
 
+export const studentEditValidationObject = {
+  firstName: yup
+    .string("Please enter your first name")
+    .required("First name is required"),
+  lastName: yup
+    .string("Please enter your last name")
+    .required("Last name is required"),
+  university: yup
+    .string("Please enter your university")
+    .required("University is required"),
+  degree: yup.string("Please enter your degree").required("Degree is required"),
+};
+
 export const sendResetEmailValidationSchema = yup.object(
   sendResetEmailValidationObject
 );
@@ -86,5 +98,8 @@ export const companySignupValidationSchema = yup.object(
 );
 export const resetPasswordValidationSchema = yup.object(
   resetPasswordValidationObject
+);
+export const studentEditValidationSchema = yup.object(
+  studentEditValidationObject
 );
 // export const emailValidationSchema = yup.object(emailValidationObject);

@@ -7,13 +7,14 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { useFormik } from "formik";
-import { studentSignupValidationSchema } from "../auth/ValidationSchema";
-import { useHistory } from "react-router-dom";
+import { studentEditValidationSchema } from "../auth/ValidationSchema";
 import { Paper } from "@mui/material";
 import { StudentSignupAPI } from "../../api/auth-api";
 import { UserContext } from "../auth/UserContext";
+import ErrorMessage from "../UI/ErrorMessage";
+import { editStudentProfileAPI } from "../../api/auth-api";
 
-const StudentSignup = () => {
+const EditStudentProfile = () => {
   const { user, setUser } = useContext(UserContext);
   const [errorModalState, setErrorModalState] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -25,10 +26,6 @@ const StudentSignup = () => {
 
   const formik = useFormik({
     initialValues: {
-      email: "",
-      password: "",
-      confirmPassword: "",
-      username: "",
       firstName: "",
       lastName: "",
       university: "",
@@ -38,13 +35,10 @@ const StudentSignup = () => {
       skills: "",
       description: "",
     },
-    validationSchema: studentSignupValidationSchema,
+    validationSchema: studentEditValidationSchema,
     onSubmit: (values) => {
-      const signup = async (values) => {
-        const signupValues = {
-          email: values.email,
-          username: values.username,
-          password: values.password,
+      const edit = async (values) => {
+        const editValues = {
           first_name: values.firstName,
           last_name: values.lastName,
           university: values.university,
@@ -54,33 +48,35 @@ const StudentSignup = () => {
           description: values.description,
           avatar: "",
         };
+        console.log(editValues, user.token)
         try {
-          const res = await StudentSignupAPI(signupValues);
+          const res = await editStudentProfileAPI(editValues, user.token);
           if (res.status === true) {
-            const userInfo = res.user;
-            const userInfoWithToken = { token: res.token, ...userInfo };
-            setUser(userInfoWithToken);
+            console.log("User infomation changed!");
+            handleOpen("User infomation changed!");
           } else if (
             res.response.status === 404 ||
             res.response.status === 403 ||
-            res.response.status === 400
+            res.response.status === 400 ||
+            res.response.status === 401
           ) {
-            console.log(res.response.data.message);
-            handleOpen(res.response.data.message);
+            console.log(res);
+            handleOpen(res.response.data.msg);
           } else {
             console.log(res);
-            handleOpen(res);
+            //handleOpen(res);
           }
+          console.log(editValues);
         } catch (err) {
           console.log(err);
           handleOpen(err);
         }
       };
-      signup(values);
+      edit(values);
     },
   });
 
-  const history = useHistory();
+
 
   return (
     <Paper
@@ -104,26 +100,7 @@ const StudentSignup = () => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 400,
-            bgcolor: "background.paper",
-            border: "2px solid #000",
-            boxShadow: 24,
-            p: 4,
-          }}
-        >
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Error
-          </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            {errorMessage}
-          </Typography>
-        </Box>
+        <ErrorMessage errorMessage={errorMessage} />
       </Modal>
       <Typography
         component="h1"
@@ -132,7 +109,7 @@ const StudentSignup = () => {
         sx={{ textAlign: "center" }}
         fontFamily="inherit"
       >
-        Student Sign Up
+        Edit Profile
       </Typography>
       <Avatar sx={{ m: 1, bgcolor: "primary.main" }}></Avatar>
       <Box
@@ -142,69 +119,6 @@ const StudentSignup = () => {
         sx={{ mt: 3 }}
       >
         <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <TextField
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              value={formik.values.email}
-              onChange={formik.handleChange}
-              error={formik.touched.email && Boolean(formik.errors.email)}
-              helperText={formik.touched.email && formik.errors.email}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="new-password"
-              value={formik.values.password}
-              onChange={formik.handleChange}
-              error={formik.touched.password && Boolean(formik.errors.password)}
-              helperText={formik.touched.password && formik.errors.password}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              required
-              fullWidth
-              name="confirmPassword"
-              label="Confirm Password"
-              type="password"
-              id="confirm-password"
-              autoComplete="confirm-password"
-              value={formik.values.confirmPassword}
-              onChange={formik.handleChange}
-              error={
-                formik.touched.confirmPassword &&
-                Boolean(formik.errors.confirmPassword)
-              }
-              helperText={
-                formik.touched.confirmPassword && formik.errors.confirmPassword
-              }
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              required
-              fullWidth
-              name="username"
-              label="Username"
-              id="username"
-              autoComplete="username"
-              value={formik.values.username}
-              onChange={formik.handleChange}
-              error={formik.touched.username && Boolean(formik.errors.username)}
-              helperText={formik.touched.username && formik.errors.username}
-            />
-          </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
               autoComplete="given-name"
@@ -317,20 +231,11 @@ const StudentSignup = () => {
           variant="contained"
           sx={{ mt: 3, mb: 2 }}
         >
-          Sign Up
-        </Button>
-        <Button
-          type="submit"
-          fullWidth
-          variant="outlined"
-          sx={{ margin: "auto" }}
-          onClick={() => history.push("/login")}
-        >
-          Already has an account? Login!
+          Submit
         </Button>
       </Box>
     </Paper>
   );
 };
 
-export default StudentSignup;
+export default EditStudentProfile;
