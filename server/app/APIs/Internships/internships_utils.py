@@ -580,5 +580,12 @@ class InternshipsUtils:
                         'company_name': get_company_info(internship.company_id)[0], 'company_logo': get_company_info(internship.company_id)[1]
                 } ]
 
-            result.append(all_internships)
-        return jsonify(result)
+                result.append(all_internships)
+
+        return_list = []
+        for r in result:
+            if r not in return_list:
+                return_list.append(r)
+        
+
+        return return_list,200
