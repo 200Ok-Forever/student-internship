@@ -16,7 +16,7 @@ export const getInternshipHistory = async (token) => (
     `/Internship/internships/history`,
     {
       headers: {
-        'Authorization': token
+        'Authorization': `Bearer ${token}`
       }
     }
   )

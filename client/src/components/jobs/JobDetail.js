@@ -93,10 +93,11 @@ const JobDetail = () => {
   const query = queryString.parse(search);
   const id = query.id;
   const [load, setLoad] = useState(true);
+  const { user } = useContext(UserContext);
 
   useEffect(() => {
     const getData = async () => {
-      const resp = await getJob(id);
+      const resp = await getJob(id, user.token);
       setInfo(resp.data);
       setLoad(false);
     };
@@ -105,7 +106,7 @@ const JobDetail = () => {
     } catch (e) {
       console.log(e);
     }
-  }, [id]);
+  }, [id, user.token]);
 
   return (
     <Box
