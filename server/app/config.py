@@ -22,6 +22,8 @@ class Config:
     # JWT
     JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY", os.urandom(24))
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=7)
+    JWT_COOKIE_SECURE = False
+    JWT_TOKEN_LOCATION = ["cookies"]
 
     # Database
     SQLALCHEMY_DATABASE_URI = "mysql+pymysql://admin:admin123@database-2.c97z4t8dhno9.us-west-1.rds.amazonaws.com" \
