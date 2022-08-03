@@ -268,7 +268,7 @@ class InternshipStatus(db.Model):
     is_seen = db.Column(db.VARCHAR(255))
     is_save = db.Column(db.VARCHAR(255))
     is_applied = db.Column(db.VARCHAR(255))
-
+    seen_time = db.Column(db.TIMESTAMP)
     internship = db.relationship('Internship', back_populates='status')
     user = db.relationship('User', back_populates='status')
 
@@ -276,7 +276,7 @@ class File(db.Model):
     __tablename__ = 't_uploadfile'
     id = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.VARCHAR(255))
-    student_id = db.Column(db.Integer, db.ForeignKey('t_student.id'))
+    uid = db.Column(db.Integer, db.ForeignKey('t_user.uid'))
     data = db.Column(db.LargeBinary(length=(2**32)-1))
     file_type = db.Column(db.VARCHAR(255))
     upload_time = db.Column(db.TIMESTAMP)

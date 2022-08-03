@@ -25,3 +25,24 @@ class InternshipsAPI:
             "parent_id": fields.Integer(required=True)
         }
     )
+
+    internship_apply = api.model(
+        "apply internship", {
+            # "internship_id": fields.Integer(required=True),
+            "resume": fields.String,
+            "coverletter":fields.String,
+            "question": fields.String,
+            "answer":fields.String
+        }
+    )
+
+    internship_calendar = api.model(
+        "calendar",{
+            "name": fields.String,
+            "type":fields.String,
+            "start": fields.DateTime,
+            "end": fields.DateTime,
+            "internshipId": fields.String,
+
+        }
+    )
