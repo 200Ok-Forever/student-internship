@@ -605,3 +605,15 @@ class InternshipsUtils:
         
 
         return return_list,200
+
+    def getUser():
+        user = db.session.query(User).all()
+        results = []
+        for u in user:
+            result = {
+                "userid": u.uid,
+                "name": u.username,
+                "avatar": u.avatar
+            }
+            results.append(result)
+        return dumps(results),200
