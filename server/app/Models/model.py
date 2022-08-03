@@ -209,7 +209,6 @@ class Calendar(db.Model):
     internship_id = db.Column(db.Integer,db.ForeignKey("t_internships.id"))
     student_id = db.Column(db.Integer,db.ForeignKey("t_student.id"))
     start = db.Column(db.DATETIME)
-    end = db.Column(db.DATETIME)
     title = db.Column(db.VARCHAR(255))
     type = db.Column(db.VARCHAR(255))
     link = db.Column(db.VARCHAR(255))

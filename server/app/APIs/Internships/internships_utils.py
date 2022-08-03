@@ -509,22 +509,22 @@ class InternshipsUtils:
         return calander_list, 200
 
     @staticmethod
-    def addCalendar(arg):
-        get_student = db.session.query(Student).filter(Student.id == 102)
+    def addCalendar(arg, uid):
+        get_student = db.session.query(Student).filter(Student.id == uid)
         if not get_student:
             return {
                        'msg': 'no related student'
                    }, 400
         data = arg
         newCalendar = Calendar(title=data['name'], type=data['type'] \
-                               , start=data['start'], end=data['end'], internship_id=data['internshipId'], \
-                               user_id=data['uid'])
+                               , start=data['start'], internship_id=data['internshipId'], \
+                               student_id=uid)
 
         try:
             db.session.add(newCalendar)
             db.session.commit()
 
-            return dumps({'message': 'yes', 'comment_id': newCalendar.id}), 200
+            return dumps({'message': 'Success'}), 200
         except Exception as error:
 
             return dumps({'msg': error}), 400

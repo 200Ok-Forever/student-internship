@@ -160,11 +160,12 @@ class GetViewedInternships(Resource):
 @internships_api.route('/internships/calendar')
 class InternshipCalendar(Resource):
     internship_calendar = InternshipsAPI.internship_calendar
+    @jwt_required()
     @internships_api.expect(saveParser,internship_calendar)
     def post(self):
         arg = request.get_json()
-        return InternshipsUtils.addCalendar(arg)
-        pass
+        uid = get_jwt_identity()
+        return InternshipsUtils.addCalendar(arg, uid)
  
 @internships_api.route('/internships/uncalendar')
 class InternshipCalendar(Resource):
