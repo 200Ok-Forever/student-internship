@@ -6,15 +6,22 @@ class InternshipsAPI:
 
     internship_get = api.model('Internship info', {
         'id': fields.Integer,
-        
+
     })
 
     search_internships = api.model('Search Interships Info', {
-        'job':fields.String,
-        'location':fields.String,
-        'sort':fields.String,
-        'paid':fields.String,
+        'job': fields.String,
+        'location': fields.String,
+        'sort': fields.String,
+        'paid': fields.String,
         'is_remote': fields.String,
         'job_type': fields.String,
         'current_page': fields.Integer
     })
+
+    internship_comment = api.model(
+        "update internship comment", {
+            "comment": fields.String(required=True),
+            "parent_id": fields.Integer(required=True)
+        }
+    )
