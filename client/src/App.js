@@ -44,6 +44,7 @@ const getSession = () => {
   if (!cookie) { return }
 
   var decoded = jwt_decode(cookie);
+
   return {
     avatar: decoded.avatar,
     email: decoded.email,
