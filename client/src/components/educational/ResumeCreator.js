@@ -22,7 +22,7 @@ const ResumeCreator = () => {
   const [itemList, setItemList] = useState(ResumeItem);
 
   return (
-    <Box sx={{ width: "80%", mx: "auto" }}>
+    <Box sx={{ mx: "auto" }}>
       <Stepper activeStep={activeStep}>
         {steps.map((label, index) => {
           const stepProps = {};

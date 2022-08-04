@@ -78,6 +78,8 @@ const SelectSection = ({ itemList, setItemList }) => {
                           style={{
                             fontFamily: "inherit",
                             flex: 2,
+                            maxWidth: "240px",
+                            wordBreak: "break-all",
                           }}
                         >
                           {item}
