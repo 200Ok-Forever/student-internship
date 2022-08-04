@@ -40,6 +40,8 @@ const Login = () => {
             const userInfoWithToken = { token: res.token, ...res.user };
             document.cookie = "user=" + res.token + "; Path=/;";
             setUser(userInfoWithToken);
+            console.log(userInfoWithToken);
+            setTimeout(() => {}, 300);
             history.push("/");
           } else if (
             res.response.status === 404 ||

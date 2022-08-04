@@ -8,13 +8,15 @@ import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { useFormik } from "formik";
 import { studentEditValidationSchema } from "../auth/ValidationSchema";
-import { Paper } from "@mui/material";
-import { StudentSignupAPI } from "../../api/auth-api";
-import { UserContext } from "../auth/UserContext";
+import { Paper, IconButton } from "@mui/material";
+import { UserContext } from "../../store/UserContext";
 import ErrorMessage from "../UI/ErrorMessage";
-import { editStudentProfileAPI } from "../../api/auth-api";
+import { changeAvatarApi, editStudentProfileAPI } from "../../api/auth-api";
+import { useHistory } from "react-router-dom";
 
 const EditStudentProfile = () => {
+  const history = useHistory();
+
   const { user, setUser } = useContext(UserContext);
   const [errorModalState, setErrorModalState] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -22,7 +24,22 @@ const EditStudentProfile = () => {
     setErrorMessage(msg);
     setErrorModalState(true);
   };
-  const handleClose = () => setErrorModalState(false);
+  const handleClose = () => {
+    setErrorModalState(false);
+    history.push("/")
+  };
+
+  const [avatar, setAvatar] = useState(user.avatar);
+  const onAvatarChange = (event) => {
+    const imageFile = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      const base64String = reader.result;
+      setAvatar(base64String);
+    };
+    reader.readAsDataURL(imageFile);
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -47,7 +64,6 @@ const EditStudentProfile = () => {
           position: values.positions,
           skills: values.skills,
           description: values.description,
-          avatar: "",
         };
         console.log(editValues, user.token)
         try {
@@ -73,11 +89,15 @@ const EditStudentProfile = () => {
           handleOpen(err);
         }
       };
+
+      const changeAvatar = async () => {
+        await changeAvatarApi({avatar: avatar}, user.token);
+      }
       edit(values);
+      changeAvatar();
+      user.token = user.token;
     },
   });
-
-
 
   return (
     <Paper
@@ -112,7 +132,10 @@ const EditStudentProfile = () => {
       >
         Edit Profile
       </Typography>
-      <Avatar sx={{ m: 1, bgcolor: "primary.main" }}></Avatar>
+      <IconButton color="primary" aria-label="upload picture" component="label">
+        <input hidden accept="image/*" type="file" onChange={onAvatarChange} />
+        <Avatar sx={{ m: 1, bgcolor: "primary.main" }} src={avatar} />
+      </IconButton>
       <Box
         component="form"
         noValidate

@@ -33,7 +33,7 @@ import ResetPassword from "./components/auth/ResetPassword";
 import ResumeCreator from "./components/educational/ResumeCreator";
 import Chat from "./components/chat/Chat";
 import Profile from "./components/student/Profile";
-import { UserContext } from "./components/auth/UserContext";
+import { UserContext } from "./store/UserContext";
 import UserPosts from './components/forum/UserPosts';
 import CreateInternship from './components/recruiter/CreateInternship';
 import EditStudentProfile from "./components/student/EditStudentProfile";

@@ -1,9 +1,9 @@
 import axios from "axios";
 
-export const getAxios = (url, data = {}) =>
+export const getAxios = (url, configs) =>
   new Promise((resolve, reject) => {
     axios
-      .get(url, { ...data })
+      .get(url, configs)
       .then((res) => {
         resolve(res);
       })
