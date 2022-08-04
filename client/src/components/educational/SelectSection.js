@@ -34,7 +34,7 @@ const SelectSection = ({ itemList, setItemList }) => {
         mx: "auto",
         height: "auto",
         mt: "60px",
-        minHeight: "400px",
+        minHeight: "450px",
       }}
     >
       <DragDropContext
