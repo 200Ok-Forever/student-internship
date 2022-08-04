@@ -60,11 +60,11 @@ export const postInternshipUncalendar = async (id, token) => (
   await postRequest(
     '/Internship/internships/uncalendar',
     {
-      internship_id: id
+      id: id
     }, 
     {
       headers: {
-        'Authorization': token
+        'Authorization': `Bearer ${token}`
       }
     }
   )

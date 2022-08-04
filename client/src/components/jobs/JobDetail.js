@@ -25,7 +25,7 @@ import queryString from "query-string";
 import { getJob } from "../../api/search-api";
 import getSymbolFromCurrency from "currency-symbol-map";
 import { postComment, replyComment } from "../../api/comment-api";
-import { postInternshipCalendar, postInternshipSave, postInternshipUnsave } from "../../api/internship-api";
+import { postInternshipCalendar, postInternshipSave, postInternshipUncalendar, postInternshipUnsave } from "../../api/internship-api";
 import { UserContext } from "../auth/UserContext";
 
 const DATA = {
@@ -133,6 +133,7 @@ const BasicInfo = ({ info }) => {
   console.log("🚀 ~ info", info);
   const { user } = useContext(UserContext);
   const history = useHistory();
+  const [isCalendar, setIsCalendar] = useState(info.is_calendar === "True");
   const [saved, setSaved] = useState(false);
   const [shareBar, setShareBar] = useState(false);
   const processes =
@@ -164,7 +165,6 @@ const BasicInfo = ({ info }) => {
     setSaved(DATA.saved);
   }, []);
   const saveJobHandler = (e) => {
-    e.preventDefault();
     if (saved) {
       postInternshipUnsave(info.internship_id, user.token)
     } else {
@@ -187,12 +187,17 @@ const BasicInfo = ({ info }) => {
   };
 
   const addCalendarHandler = () => {
-    postInternshipCalendar({
-      name: info.jobTitle,
-      start: info.closedDate !== "None" ? info.closedDate : moment().add(2, 'w').format('YYYY-MM-DD hh:mm:ss'),
-      type: 'internship',
-      internshipId: info.internship_id
-    }, user.token)
+    if (!isCalendar) {
+      postInternshipCalendar({
+        name: info.jobTitle,
+        start: info.closedDate !== "None" ? info.closedDate : moment().add(2, 'w').format('YYYY-MM-DD hh:mm:ss'),
+        type: 'internship',
+        internshipId: info.internship_id
+      }, user.token)
+    } else {
+      postInternshipUncalendar(info.internship_id, user.token);
+    }
+    setIsCalendar(!isCalendar);
   }
 
   return (
@@ -255,8 +260,9 @@ const BasicInfo = ({ info }) => {
           startIcon={<CalendarMonthIcon />}
           size="small"
           onClick={addCalendarHandler}
+          color={isCalendar ? "error" : 'primary'}
         >
-          Add to Calendar
+          {isCalendar ? "Remove from Calendar" : "Add to Calendar"}
         </Button>
         <Button variant="outlined" startIcon={<MailOutlineIcon />} size="small">
           Chat

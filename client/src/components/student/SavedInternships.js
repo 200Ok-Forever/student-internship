@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { IconButton, Box, Typography } from "@mui/material";
+import CircularProgress from '@mui/material/CircularProgress';
 import JobBlock from "../jobs/JobBlock";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { UserContext } from "../auth/UserContext";
@@ -9,12 +10,13 @@ const boxStyling = { display: "flex", flexDirection: "column", gap: "30px" };
 
 const SavedInternships = () => {
   const { user } = useContext(UserContext);
-  // eslint-disable-next-line no-unused-vars
+  const [loading, setLoading] = useState(true);
   const [internships, setInternships] = useState([]);
 
   useEffect(() => {
     const getSaved = async () => {
       const res = await getSavedInternships(user.token);
+      setLoading(false);
       setInternships(res.is_save);
     };
     getSaved();
@@ -31,13 +33,17 @@ const SavedInternships = () => {
         Saved Internships
       </Typography>
       <Box sx={boxStyling}>
-        {internships.map((i) => (
-          <JobBlock job={i} key={i.job_id}>
-            <IconButton color="error" onClick={() => onDelete(i.job_id)}>
-              <DeleteIcon />
-            </IconButton>
-          </JobBlock>
-        ))}
+        {loading ? 
+          <CircularProgress sx={{ alignSelf: 'center' }} />
+        : internships.length === 0 ?
+          <Typography>You have not saved any internships yet</Typography>
+        : internships.map((i) => (
+            <JobBlock job={i} key={i.job_id}>
+              <IconButton color="error" onClick={() => onDelete(i.job_id)}>
+                <DeleteIcon />
+              </IconButton>
+            </JobBlock>
+          ))}
       </Box>
     </Box>
   );
