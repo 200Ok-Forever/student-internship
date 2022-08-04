@@ -3,7 +3,7 @@ import { Box, IconButton, Typography } from "@mui/material";
 import JobBlock from "../jobs/JobBlock";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import { UserContext } from "../auth/UserContext";
+import { UserContext } from "../../store/UserContext";
 import { getInternshipHistory } from "../../api/internship-api";
 
 const boxStyling = { display: "flex", flexDirection: "column", gap: "30px" };
@@ -16,9 +16,9 @@ const History = () => {
     const getHistory = async () => {
       const res = await getInternshipHistory(user.token);
       setInternships(res.is_seen);
-    }
+    };
     getHistory();
-  }, [user.token])
+  }, [user.token]);
 
   return (
     <Box sx={boxStyling} mb="30px">

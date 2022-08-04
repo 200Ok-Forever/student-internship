@@ -417,4 +417,10 @@ export const SKILLS = [
   { id: "377", name: "work-life balance" },
   { id: "360", name: "writing" },
 ];
-
+export const RESUME = [
+  "Personal Information",
+  "Education",
+  "Work Experience",
+  "Relavant Project",
+  "Skills",
+];
