@@ -7,14 +7,6 @@ import { useState } from "react";
 import SelectSection from "./SelectSection";
 import ResumeForm from "./ResumeForm";
 
-const resumeItem = [
-  { title: "Personal Information", contents: {} },
-  { title: "Education", contents: [] },
-  { title: "Work Experience", contents: [] },
-  { title: "Relavant Project", contents: [] },
-  { title: "Skills", contents: [] },
-];
-
 const steps = [
   "Select and order sections",
   "Fill up your infomation",
