@@ -1,420 +1,1571 @@
 export const STUDENT_ROLE = 1;
 export const RECRUITER_ROLE = 2;
-export const SKILLS = [
-  { id: "180", name: "AGILE SCRUM" },
-  { id: "276", name: "ANALYSIS DESIGN" },
-  { id: "101", name: "ANDROID" },
-  { id: "113", name: "ARTICULATE" },
-  { id: "138", name: "ARTIFICIAL INTELLIGENCE" },
-  { id: "89", name: "AWS" },
-  { id: "17", name: "Accredited Pension Representative" },
-  { id: "61", name: "Active Listening" },
-  { id: "119", name: "Adobe" },
-  { id: "273", name: "Advanced Software Engineer" },
-  { id: "87", name: "Agile" },
-  { id: "107", name: "AngularJS" },
-  { id: "357", name: "Antivirus" },
-  { id: "386", name: "Asic Design Engineer" },
-  { id: "345", name: "Associate Software Design Engineer" },
-  { id: "405", name: "Associate Technology Support Engineer" },
-  { id: "123", name: "BOOTSTRAP" },
-  { id: "358", name: "Backups" },
-  { id: "18", name: "Banking Industry" },
-  { id: "26", name: "Building Partnerships" },
-  { id: "274", name: "Business & Technology Integration" },
-  { id: "25", name: "Business Development" },
-  { id: "342", name: "C# Software Engineer" },
-  { id: "68", name: "C++ (Programming Language)" },
-  { id: "277", name: "CDH" },
-  { id: "103", name: "CRM" },
-  { id: "120", name: "CSS" },
-  { id: "205", name: "CTI" },
-  { id: "31", name: "Communication" },
-  { id: "14", name: "Communications" },
-  { id: "66", name: "Complex Problem Solving" },
-  { id: "56", name: "Composition Software Engineer" },
-  { id: "201", name: "Configure" },
-  { id: "23", name: "Consulting" },
-  { id: "129", name: "Containerization" },
-  { id: "64", name: "Critical Thinking" },
-  { id: "37", name: "Customer Engineer Internship-I" },
-  { id: "198", name: "Cyber Security" },
-  { id: "139", name: "DATA GOVERNANCE" },
-  { id: "140", name: "DATA MANAGEMENT" },
-  { id: "278", name: "DATA MIGRATION" },
-  { id: "141", name: "DATA SCIENCE" },
-  { id: "124", name: "DEPLOYMENT" },
-  { id: "91", name: "DESIGN PATTERNS" },
-  { id: "71", name: "Data Structures" },
-  { id: "41", name: "Design Automation Intern" },
-  { id: "190", name: "Designer & Project Manager" },
-  { id: "382", name: "Digital Design Engineer" },
-  { id: "197", name: "Director of Technical Project Services" },
-  { id: "30", name: "Diversity" },
-  { id: "12", name: "Documentation" },
-  { id: "279", name: "ENTERPRISE APPLICATION" },
-  { id: "54", name: "ES Application Dev Engineer" },
-  { id: "92", name: "EXCELLENT VERBAL AND WRITTEN COMMUNICATION SKILLS" },
-  { id: "88", name: "Ecommerce" },
-  { id: "385", name: "Embedded Design Engineer" },
-  { id: "42", name: "Embedded Software Internship" },
-  { id: "380", name: "Embedded Systems Engineer" },
-  { id: "384", name: "Emulation Engineer" },
-  { id: "57", name: "Encriss Software Developer Trainee - Hadoop" },
-  { id: "78", name: "Engineering" },
-  { id: "36", name: "Engineering Intern" },
-  { id: "16", name: "English Language" },
-  { id: "1", name: "Equity" },
-  { id: "381", name: "FPGA Design Engineer" },
-  { id: "93", name: "FRONT END DEVELOPER" },
-  { id: "20", name: "Financial" },
-  { id: "199", name: "Financial Services" },
-  { id: "383", name: "Firmware Engineer" },
-  { id: "73", name: "Front End (Software Engineering)" },
-  { id: "122", name: "GIT" },
-  { id: "108", name: "HTML" },
-  { id: "90", name: "HTML5" },
-  { id: "349", name: "Hardware Design" },
-  { id: "378", name: "Hardware Engineer" },
-  { id: "40", name: "Hardware Engineer Intern" },
-  { id: "264", name: "Hardware Systems Architect" },
-  { id: "352", name: "Hardware Testing" },
-  { id: "351", name: "Hardware Troubleshooting" },
-  { id: "272", name: "Harward Systems Architect - ARM Architecture" },
-  { id: "179", name: "HyperText Markup Language" },
-  { id: "206", name: "INCIDENT RESPONSE" },
-  { id: "121", name: "IONIC" },
-  { id: "408", name: "IT Helpdesk Support Engineer" },
-  { id: "403", name: "IT Support Engineer" },
-  { id: "404", name: "IT Support Technician" },
-  { id: "27", name: "Information Technology" },
-  { id: "407", name: "Information Technology Support Engineer" },
-  {
-    id: "412",
-    name: "Information Technology Support Engineer Technical Support",
-  },
-  { id: "72", name: "Infrastructure" },
-  { id: "19", name: "Investment Banking" },
-  { id: "52", name: "Irrt Software Panel Engineer" },
-  { id: "280", name: "JAVA" },
-  { id: "111", name: "JAVASCRIPT" },
-  { id: "94", name: "JENKINS" },
-  { id: "75", name: "Java" },
-  { id: "70", name: "Java (Programming Language)" },
-  { id: "104", name: "Javascript" },
-  { id: "51", name: "Javascript Developer - Procat" },
-  { id: "55", name: "Jira Tools Developer" },
-  { id: "67", name: "Judgment and Decision Making" },
-  { id: "411", name: "L1 Support Engineer" },
-  { id: "281", name: "LARGE-SCALE" },
-  { id: "212", name: "LEADERSHIP" },
-  { id: "193", name: "Land Development - Project Manager" },
-  { id: "176", name: "Lead Software Developer" },
-  { id: "170", name: "Lead Software Engineer" },
-  { id: "79", name: "Leadership" },
-  { id: "11", name: "Legal" },
-  { id: "128", name: "Linux" },
-  { id: "142", name: "MACHINE LEARNING" },
-  { id: "213", name: "MANAGEMENT" },
-  { id: "114", name: "MS SQL SERVER" },
-  { id: "13", name: "Management" },
-  { id: "63", name: "Mathematics" },
-  { id: "35", name: "Mechanical Engineer Internship" },
-  { id: "204", name: "NETWORKING" },
-  { id: "353", name: "Networking" },
-  { id: "127", name: "NoSQL" },
-  { id: "106", name: "Node.js" },
-  { id: "83", name: "NodeJS" },
-  { id: "133", name: "OPERATIONS" },
-  { id: "134", name: "OPERATIONS MANAGER" },
-  { id: "202", name: "Operating Systems" },
-  { id: "4", name: "Oral Communications Skills" },
-  { id: "347", name: "Orvito Software Engineer" },
-  { id: "282", name: "PEGA" },
-  { id: "275", name: "PROJECT MANAGEMENT" },
-  { id: "86", name: "People Management" },
-  { id: "24", name: "Portfolio Management" },
-  { id: "267", name: "Principal Development Engineer" },
-  { id: "7", name: "Process Improvements" },
-  { id: "185", name: "Product" },
-  { id: "9", name: "Product Marketing" },
-  { id: "82", name: "Programming Languages" },
-  { id: "191", name: "Project & Implementation Manager" },
-  { id: "188", name: "Project Manager" },
-  { id: "189", name: "Project Manager Lead" },
-  { id: "194", name: "Project Team" },
-  { id: "10", name: "Publishing" },
-  { id: "118", name: "Python" },
-  { id: "266", name: "QE Architect" },
-  { id: "21", name: "Quality" },
-  { id: "28", name: "REST" },
-  { id: "125", name: "RESTFUL WEB SERVICES" },
-  { id: "84", name: "RESTful API" },
-  { id: "34", name: "RF Engineer Internship" },
-  { id: "387", name: "RTL Design Engineer" },
-  { id: "105", name: "React.js" },
-  { id: "60", name: "Reading Comprehension" },
-  { id: "268", name: "Remote Platform Architect" },
-  { id: "177", name: "Research" },
-  { id: "102", name: "SALESFORCE" },
-  { id: "112", name: "SASS" },
-  { id: "283", name: "SDLC" },
-  { id: "207", name: "SIEM" },
-  { id: "110", name: "SOAP" },
-  { id: "208", name: "SOC" },
-  { id: "209", name: "SOP" },
-  { id: "109", name: "SQL" },
-  { id: "137", name: "STAKEHOLDER ENGAGEMENT" },
-  { id: "74", name: "STRONG WORK ETHIC" },
-  { id: "115", name: "STRUCTURED SOFTWARE" },
-  { id: "5", name: "Sales" },
-  { id: "8", name: "SalesForce" },
-  { id: "200", name: "Security" },
-  { id: "203", name: "Security Analyst" },
-  { id: "174", name: "Senior Developer & Software Engineer" },
-  { id: "195", name: "Senior Development Project Manager" },
-  { id: "379", name: "Senior Fpga Design Engineer" },
-  { id: "171", name: "Senior Lead Software Engineer" },
-  { id: "192", name: "Senior Project & Program Manager" },
-  { id: "196", name: "Senior Project Manager - Project Management Office" },
-  { id: "344", name: "Senior Software Design Engineer" },
-  { id: "346", name: "Senior Software Design Engineer & Architect" },
-  { id: "167", name: "Senior Software Developer" },
-  { id: "168", name: "Senior Software Developer Engineer" },
-  { id: "169", name: "Senior Software Engineer" },
-  { id: "343", name: "Senior Software Engineer & Software Engineer" },
-  { id: "175", name: "Senior Software Engineer & UI Developer" },
-  { id: "172", name: "Senior Software Engineer - Java Developer" },
-  { id: "173", name: "Senior Software Engineer III" },
-  { id: "269", name: "Senior System Development Engineer" },
-  { id: "409", name: "Senior Technology Support Engineer" },
-  { id: "355", name: "Server" },
-  { id: "186", name: "Service & Offering Development" },
-  { id: "3", name: "Services" },
-  { id: "65", name: "Social Perceptiveness" },
-  { id: "81", name: "Software" },
-  { id: "43", name: "Software Developer Engineer Intern" },
-  { id: "38", name: "Software Development Engineer Intern" },
-  { id: "69", name: "Software Engineering" },
-  { id: "187", name: "Software Eng" },
-  { id: "39", name: "Software Internship" },
-  { id: "178", name: "Sofware-as-a-Service" },
-  { id: "62", name: "Speaking" },
-  { id: "6", name: "Support" },
-  { id: "265", name: "System Architect" },
-  { id: "270", name: "Systems Architect" },
-  { id: "135", name: "TEACHING" },
-  { id: "214", name: "TEAM MANAGEMENT" },
-  { id: "136", name: "TEAM PLAYER" },
-  { id: "284", name: "TECHNICAL DESIGN" },
-  { id: "285", name: "TEST CASE" },
-  { id: "95", name: "TRANSLATING" },
-  { id: "117", name: "TYPESCRIPT" },
-  { id: "15", name: "Team Player" },
-  { id: "271", name: "Technical Designer Architect" },
-  { id: "76", name: "Technical Lead" },
-  { id: "80", name: "Technical Support" },
-  { id: "410", name: "Technical Support Analyst" },
-  { id: "29", name: "Test" },
-  { id: "406", name: "Tier- Support Engineer" },
-  { id: "53", name: "Tools & IDE Software Developer" },
-  { id: "22", name: "Training" },
-  { id: "354", name: "Troubleshooting" },
-  { id: "58", name: "UI & UX Developer & Master Trainer" },
-  { id: "59", name: "UNAVAILABLE" },
-  { id: "126", name: "UNIT TESTS" },
-  { id: "210", name: "USE CASES" },
-  { id: "96", name: "USER EXPERIENCE DESIGN" },
-  { id: "97", name: "USER INTERFACE" },
-  { id: "100", name: "UX" },
-  { id: "85", name: "Unit Testing" },
-  { id: "98", name: "VERSION CONTROL" },
-  { id: "77", name: "Video" },
-  { id: "116", name: "WEB SERVICES" },
-  { id: "99", name: "WIREFRAME" },
-  { id: "211", name: "WRITTEN AND VERBAL" },
-  { id: "2", name: "Web" },
-  { id: "356", name: "Windows Server" },
-  { id: "235", name: "ability to adapt" },
-  { id: "394", name: "ability to learn quickly" },
-  { id: "294", name: "ai applications" },
-  { id: "332", name: "algorithms" },
-  { id: "306", name: "analytic" },
-  { id: "402", name: "analytical skills" },
-  { id: "166", name: "analytics" },
-  { id: "154", name: "apis" },
-  { id: "45", name: "application" },
-  { id: "152", name: "applications" },
-  { id: "361", name: "assembly" },
-  { id: "216", name: "assessing" },
-  { id: "398", name: "atlassian" },
-  { id: "44", name: "augmented reality" },
-  { id: "301", name: "automation tools" },
-  { id: "319", name: "aws" },
-  { id: "397", name: "azure" },
-  { id: "157", name: "back-end" },
-  { id: "331", name: "big data" },
-  { id: "363", name: "bill of materials" },
-  { id: "261", name: "build trust" },
-  { id: "315", name: "building" },
-  { id: "262", name: "business development" },
-  { id: "130", name: "change management" },
-  { id: "388", name: "cloud technology" },
-  { id: "225", name: "code compliance" },
-  { id: "317", name: "collaborating" },
-  { id: "131", name: "collaboration" },
-  { id: "254", name: "combined cycle" },
-  { id: "289", name: "command line" },
-  { id: "244", name: "commercial processes" },
-  { id: "248", name: "communication" },
-  { id: "144", name: "communication skills" },
-  { id: "287", name: "complex problem solving" },
-  { id: "250", name: "complex solutions" },
-  { id: "295", name: "computational" },
-  { id: "47", name: "computer science" },
-  { id: "257", name: "conceptual thinking" },
-  { id: "223", name: "consensus building" },
-  { id: "230", name: "control technologies" },
-  { id: "240", name: "cross-functional" },
-  { id: "145", name: "css" },
-  { id: "243", name: "customer focus" },
-  { id: "340", name: "data analytics" },
-  { id: "312", name: "data science" },
-  { id: "146", name: "debug" },
-  { id: "224", name: "delivering results" },
-  { id: "372", name: "design" },
-  { id: "184", name: "design thinking" },
-  { id: "370", name: "designs" },
-  { id: "215", name: "developing complex" },
-  { id: "339", name: "development tools" },
-  { id: "338", name: "devops" },
-  { id: "391", name: "dhcp" },
-  { id: "158", name: "django" },
-  { id: "399", name: "dns" },
-  { id: "320", name: "docker" },
-  { id: "247", name: "electrical" },
-  { id: "229", name: "electrical engineering" },
-  { id: "227", name: "electrification" },
-  { id: "258", name: "energy storage" },
-  { id: "234", name: "energy storage systems" },
-  { id: "368", name: "engineer" },
-  { id: "369", name: "engineering analysis" },
-  { id: "241", name: "excellent organizational skills" },
-  { id: "359", name: "fault finding" },
-  { id: "162", name: "flask" },
-  { id: "303", name: "flexibility" },
-  { id: "373", name: "flexible" },
-  { id: "291", name: "full stack development" },
-  { id: "153", name: "full-stack web development" },
-  { id: "321", name: "gcp" },
-  { id: "292", name: "git" },
-  { id: "392", name: "great communication skills" },
-  { id: "324", name: "hadoop" },
-  { id: "348", name: "hardware" },
-  { id: "366", name: "hardware design" },
-  { id: "350", name: "hardware design engineer" },
-  { id: "159", name: "html" },
-  { id: "183", name: "human centred design" },
-  { id: "33", name: "impact" },
-  { id: "323", name: "infrastructure" },
-  { id: "316", name: "innovative" },
-  { id: "242", name: "integrated systems" },
-  { id: "333", name: "intellectually curious" },
-  { id: "165", name: "interpersonal" },
-  { id: "328", name: "it infrastructure" },
-  { id: "393", name: "jamf" },
-  { id: "164", name: "javascript" },
-  { id: "329", name: "jenkins" },
-  { id: "304", name: "kubernetes" },
-  { id: "255", name: "leaders" },
-  { id: "302", name: "lean" },
-  { id: "219", name: "marketing" },
-  { id: "325", name: "mathematical programming" },
-  { id: "298", name: "mathematics" },
-  { id: "375", name: "mechanical engineering" },
-  { id: "251", name: "meet goals" },
-  { id: "220", name: "meet tight deadlines" },
-  { id: "335", name: "mongodb" },
-  { id: "150", name: "motivated" },
-  { id: "32", name: "national security" },
-  { id: "253", name: "negotiation" },
-  { id: "395", name: "network" },
-  { id: "390", name: "network administration" },
-  { id: "362", name: "network design" },
-  { id: "334", name: "node.js" },
-  { id: "293", name: "object-oriented programming" },
-  { id: "400", name: "operating systems" },
-  { id: "326", name: "organisations" },
-  { id: "367", name: "organizing" },
-  { id: "237", name: "ownership" },
-  { id: "310", name: "pandas" },
-  { id: "396", name: "platforms" },
-  { id: "337", name: "postgres" },
-  { id: "228", name: "power plants" },
-  { id: "160", name: "proactive" },
-  { id: "314", name: "problem solving" },
-  { id: "305", name: "problem-solver" },
-  { id: "239", name: "problem-solving" },
-  { id: "238", name: "problem-solving skills" },
-  { id: "401", name: "production systems" },
-  { id: "376", name: "program delivery" },
-  { id: "50", name: "programming" },
-  { id: "46", name: "programming skills" },
-  { id: "132", name: "project delivery" },
-  { id: "263", name: "proposals" },
-  { id: "365", name: "prototyping" },
-  { id: "143", name: "python" },
-  { id: "217", name: "quote" },
-  { id: "336", name: "reasoning" },
-  { id: "299", name: "redis" },
-  { id: "245", name: "reliable" },
-  { id: "374", name: "requirements analysis" },
-  { id: "231", name: "research" },
-  { id: "233", name: "resilient" },
-  { id: "149", name: "rest apis" },
-  { id: "246", name: "result-oriented" },
-  { id: "389", name: "saas" },
-  { id: "252", name: "sales force" },
-  { id: "341", name: "scipy" },
-  { id: "221", name: "segments" },
-  { id: "308", name: "service" },
-  { id: "311", name: "software design" },
-  { id: "307", name: "software development" },
-  { id: "290", name: "software development life cycle" },
-  { id: "151", name: "software development lifecycle" },
-  { id: "286", name: "software development practices" },
-  { id: "49", name: "software engineering" },
-  { id: "313", name: "software solutions" },
-  { id: "318", name: "spark" },
-  { id: "327", name: "sql" },
-  { id: "163", name: "stakeholders" },
-  { id: "297", name: "strong communication skills" },
-  { id: "371", name: "systems engineering" },
-  { id: "148", name: "tech savvy" },
-  { id: "260", name: "technical development" },
-  { id: "236", name: "technical leadership" },
-  { id: "226", name: "technical proposal" },
-  { id: "259", name: "technical sales" },
-  { id: "218", name: "technical solutions" },
-  { id: "322", name: "technical teams" },
-  { id: "309", name: "test-driven development" },
-  { id: "222", name: "turbines" },
-  { id: "288", name: "typescript" },
-  { id: "156", name: "ui" },
-  { id: "296", name: "unix" },
-  { id: "364", name: "unix operating system" },
-  { id: "181", name: "user experience" },
-  { id: "182", name: "user interface" },
-  { id: "161", name: "ux" },
-  { id: "256", name: "verbal" },
-  { id: "330", name: "version control" },
-  { id: "155", name: "vuejs" },
-  { id: "48", name: "web applications" },
-  { id: "147", name: "web development" },
-  { id: "300", name: "web technologies" },
-  { id: "249", name: "willingness" },
-  { id: "232", name: "willingness to travel" },
-  { id: "377", name: "work-life balance" },
-  { id: "360", name: "writing" },
+export const RESUME = [
+  "Personal Information",
+  "Education",
+  "Work Experience",
+  "Relavant Project",
+  "Skills",
 ];
-
+export const SKILLS = [
+  {
+    name: "Agile Scrum",
+    id: "180",
+  },
+  {
+    name: "Analysis Design",
+    id: "276",
+  },
+  {
+    name: "Android",
+    id: "101",
+  },
+  {
+    name: "Articulate",
+    id: "113",
+  },
+  {
+    name: "Artificial Intelligence",
+    id: "138",
+  },
+  {
+    name: "Aws",
+    id: "89",
+  },
+  {
+    name: "Accredited Pension Representative",
+    id: "17",
+  },
+  {
+    name: "Active Listening",
+    id: "61",
+  },
+  {
+    name: "Adobe",
+    id: "119",
+  },
+  {
+    name: "Advanced Software Engineer",
+    id: "273",
+  },
+  {
+    name: "Agile",
+    id: "87",
+  },
+  {
+    name: "Angularjs",
+    id: "107",
+  },
+  {
+    name: "Antivirus",
+    id: "357",
+  },
+  {
+    name: "Asic Design Engineer",
+    id: "386",
+  },
+  {
+    name: "Associate Software Design Engineer",
+    id: "345",
+  },
+  {
+    name: "Associate Technology Support Engineer",
+    id: "405",
+  },
+  {
+    name: "Bootstrap",
+    id: "123",
+  },
+  {
+    name: "Backups",
+    id: "358",
+  },
+  {
+    name: "Banking Industry",
+    id: "18",
+  },
+  {
+    name: "Building Partnerships",
+    id: "26",
+  },
+  {
+    name: "Business & Technology Integration",
+    id: "274",
+  },
+  {
+    name: "Business Development",
+    id: "25",
+  },
+  {
+    name: "C# Software Engineer",
+    id: "342",
+  },
+  {
+    name: "C++ (Programming Language)",
+    id: "68",
+  },
+  {
+    name: "Cdh",
+    id: "277",
+  },
+  {
+    name: "Crm",
+    id: "103",
+  },
+  {
+    name: "Css",
+    id: "120",
+  },
+  {
+    name: "Cti",
+    id: "205",
+  },
+  {
+    name: "Communication",
+    id: "31",
+  },
+  {
+    name: "Communications",
+    id: "14",
+  },
+  {
+    name: "Complex Problem Solving",
+    id: "66",
+  },
+  {
+    name: "Composition Software Engineer",
+    id: "56",
+  },
+  {
+    name: "Configure",
+    id: "201",
+  },
+  {
+    name: "Consulting",
+    id: "23",
+  },
+  {
+    name: "Containerization",
+    id: "129",
+  },
+  {
+    name: "Critical Thinking",
+    id: "64",
+  },
+  {
+    name: "Customer Engineer Internship-i",
+    id: "37",
+  },
+  {
+    name: "Cyber Security",
+    id: "198",
+  },
+  {
+    name: "Data Governance",
+    id: "139",
+  },
+  {
+    name: "Data Management",
+    id: "140",
+  },
+  {
+    name: "Data Migration",
+    id: "278",
+  },
+  {
+    name: "Data Science",
+    id: "141",
+  },
+  {
+    name: "Deployment",
+    id: "124",
+  },
+  {
+    name: "Design Patterns",
+    id: "91",
+  },
+  {
+    name: "Data Structures",
+    id: "71",
+  },
+  {
+    name: "Design Automation Intern",
+    id: "41",
+  },
+  {
+    name: "Designer & Project Manager",
+    id: "190",
+  },
+  {
+    name: "Digital Design Engineer",
+    id: "382",
+  },
+  {
+    name: "Director Of Technical Project Services",
+    id: "197",
+  },
+  {
+    name: "Diversity",
+    id: "30",
+  },
+  {
+    name: "Documentation",
+    id: "12",
+  },
+  {
+    name: "Enterprise Application",
+    id: "279",
+  },
+  {
+    name: "Es Application Dev Engineer",
+    id: "54",
+  },
+  {
+    name: "Excellent Verbal And Written Communication Skills",
+    id: "92",
+  },
+  {
+    name: "Ecommerce",
+    id: "88",
+  },
+  {
+    name: "Embedded Design Engineer",
+    id: "385",
+  },
+  {
+    name: "Embedded Software Internship",
+    id: "42",
+  },
+  {
+    name: "Embedded Systems Engineer",
+    id: "380",
+  },
+  {
+    name: "Emulation Engineer",
+    id: "384",
+  },
+  {
+    name: "Encriss Software Developer Trainee - Hadoop",
+    id: "57",
+  },
+  {
+    name: "Engineering",
+    id: "78",
+  },
+  {
+    name: "Engineering Intern",
+    id: "36",
+  },
+  {
+    name: "English Language",
+    id: "16",
+  },
+  {
+    name: "Equity",
+    id: "1",
+  },
+  {
+    name: "Fpga Design Engineer",
+    id: "381",
+  },
+  {
+    name: "Front End Developer",
+    id: "93",
+  },
+  {
+    name: "Financial",
+    id: "20",
+  },
+  {
+    name: "Financial Services",
+    id: "199",
+  },
+  {
+    name: "Firmware Engineer",
+    id: "383",
+  },
+  {
+    name: "Front End (Software Engineering)",
+    id: "73",
+  },
+  {
+    name: "Git",
+    id: "122",
+  },
+  {
+    name: "Html",
+    id: "108",
+  },
+  {
+    name: "Html5",
+    id: "90",
+  },
+  {
+    name: "Hardware Design",
+    id: "349",
+  },
+  {
+    name: "Hardware Engineer",
+    id: "378",
+  },
+  {
+    name: "Hardware Engineer Intern",
+    id: "40",
+  },
+  {
+    name: "Hardware Systems Architect",
+    id: "264",
+  },
+  {
+    name: "Hardware Testing",
+    id: "352",
+  },
+  {
+    name: "Hardware Troubleshooting",
+    id: "351",
+  },
+  {
+    name: "Harward Systems Architect - Arm Architecture",
+    id: "272",
+  },
+  {
+    name: "Hypertext Markup Language",
+    id: "179",
+  },
+  {
+    name: "Incident Response",
+    id: "206",
+  },
+  {
+    name: "Ionic",
+    id: "121",
+  },
+  {
+    name: "It Helpdesk Support Engineer",
+    id: "408",
+  },
+  {
+    name: "It Support Engineer",
+    id: "403",
+  },
+  {
+    name: "It Support Technician",
+    id: "404",
+  },
+  {
+    name: "Information Technology",
+    id: "27",
+  },
+  {
+    name: "Information Technology Support Engineer",
+    id: "407",
+  },
+  {
+    name: "Information Technology Support Engineer Technical Support",
+    id: "412",
+  },
+  {
+    name: "Infrastructure",
+    id: "72",
+  },
+  {
+    name: "Investment Banking",
+    id: "19",
+  },
+  {
+    name: "Irrt Software Panel Engineer",
+    id: "52",
+  },
+  {
+    name: "Java",
+    id: "280",
+  },
+  {
+    name: "Javascript",
+    id: "111",
+  },
+  {
+    name: "Jenkins",
+    id: "94",
+  },
+  {
+    name: "Java (Programming Language)",
+    id: "70",
+  },
+  {
+    name: "Javascript Developer - Procat",
+    id: "51",
+  },
+  {
+    name: "Jira Tools Developer",
+    id: "55",
+  },
+  {
+    name: "Judgment And Decision Making",
+    id: "67",
+  },
+  {
+    name: "L1 Support Engineer",
+    id: "411",
+  },
+  {
+    name: "Large-scale",
+    id: "281",
+  },
+  {
+    name: "Leadership",
+    id: "212",
+  },
+  {
+    name: "Land Development - Project Manager",
+    id: "193",
+  },
+  {
+    name: "Lead Software Developer",
+    id: "176",
+  },
+  {
+    name: "Lead Software Engineer",
+    id: "170",
+  },
+  {
+    name: "Legal",
+    id: "11",
+  },
+  {
+    name: "Linux",
+    id: "128",
+  },
+  {
+    name: "Machine Learning",
+    id: "142",
+  },
+  {
+    name: "Management",
+    id: "213",
+  },
+  {
+    name: "Ms Sql Server",
+    id: "114",
+  },
+  {
+    name: "Mathematics",
+    id: "63",
+  },
+  {
+    name: "Mechanical Engineer Internship",
+    id: "35",
+  },
+  {
+    name: "Networking",
+    id: "204",
+  },
+  {
+    name: "Nosql",
+    id: "127",
+  },
+  {
+    name: "Node.js",
+    id: "106",
+  },
+  {
+    name: "Nodejs",
+    id: "83",
+  },
+  {
+    name: "Operations",
+    id: "133",
+  },
+  {
+    name: "Operations Manager",
+    id: "134",
+  },
+  {
+    name: "Operating Systems",
+    id: "202",
+  },
+  {
+    name: "Oral Communications Skills",
+    id: "4",
+  },
+  {
+    name: "Orvito Software Engineer",
+    id: "347",
+  },
+  {
+    name: "Pega",
+    id: "282",
+  },
+  {
+    name: "Project Management",
+    id: "275",
+  },
+  {
+    name: "People Management",
+    id: "86",
+  },
+  {
+    name: "Portfolio Management",
+    id: "24",
+  },
+  {
+    name: "Principal Development Engineer",
+    id: "267",
+  },
+  {
+    name: "Process Improvements",
+    id: "7",
+  },
+  {
+    name: "Product",
+    id: "185",
+  },
+  {
+    name: "Product Marketing",
+    id: "9",
+  },
+  {
+    name: "Programming Languages",
+    id: "82",
+  },
+  {
+    name: "Project & Implementation Manager",
+    id: "191",
+  },
+  {
+    name: "Project Manager",
+    id: "188",
+  },
+  {
+    name: "Project Manager Lead",
+    id: "189",
+  },
+  {
+    name: "Project Team",
+    id: "194",
+  },
+  {
+    name: "Publishing",
+    id: "10",
+  },
+  {
+    name: "Python",
+    id: "118",
+  },
+  {
+    name: "Qe Architect",
+    id: "266",
+  },
+  {
+    name: "Quality",
+    id: "21",
+  },
+  {
+    name: "Rest",
+    id: "28",
+  },
+  {
+    name: "Restful Web Services",
+    id: "125",
+  },
+  {
+    name: "Restful Api",
+    id: "84",
+  },
+  {
+    name: "Rf Engineer Internship",
+    id: "34",
+  },
+  {
+    name: "Rtl Design Engineer",
+    id: "387",
+  },
+  {
+    name: "React.js",
+    id: "105",
+  },
+  {
+    name: "Reading Comprehension",
+    id: "60",
+  },
+  {
+    name: "Remote Platform Architect",
+    id: "268",
+  },
+  {
+    name: "Research",
+    id: "177",
+  },
+  {
+    name: "Salesforce",
+    id: "102",
+  },
+  {
+    name: "Sass",
+    id: "112",
+  },
+  {
+    name: "Sdlc",
+    id: "283",
+  },
+  {
+    name: "Siem",
+    id: "207",
+  },
+  {
+    name: "Soap",
+    id: "110",
+  },
+  {
+    name: "Soc",
+    id: "208",
+  },
+  {
+    name: "Sop",
+    id: "209",
+  },
+  {
+    name: "Sql",
+    id: "109",
+  },
+  {
+    name: "Stakeholder Engagement",
+    id: "137",
+  },
+  {
+    name: "Strong Work Ethic",
+    id: "74",
+  },
+  {
+    name: "Structured Software",
+    id: "115",
+  },
+  {
+    name: "Sales",
+    id: "5",
+  },
+  {
+    name: "Security",
+    id: "200",
+  },
+  {
+    name: "Security Analyst",
+    id: "203",
+  },
+  {
+    name: "Senior Developer & Software Engineer",
+    id: "174",
+  },
+  {
+    name: "Senior Development Project Manager",
+    id: "195",
+  },
+  {
+    name: "Senior Fpga Design Engineer",
+    id: "379",
+  },
+  {
+    name: "Senior Lead Software Engineer",
+    id: "171",
+  },
+  {
+    name: "Senior Project & Program Manager",
+    id: "192",
+  },
+  {
+    name: "Senior Project Manager - Project Management Office",
+    id: "196",
+  },
+  {
+    name: "Senior Software Design Engineer",
+    id: "344",
+  },
+  {
+    name: "Senior Software Design Engineer & Architect",
+    id: "346",
+  },
+  {
+    name: "Senior Software Developer",
+    id: "167",
+  },
+  {
+    name: "Senior Software Developer Engineer",
+    id: "168",
+  },
+  {
+    name: "Senior Software Engineer",
+    id: "169",
+  },
+  {
+    name: "Senior Software Engineer & Software Engineer",
+    id: "343",
+  },
+  {
+    name: "Senior Software Engineer & Ui Developer",
+    id: "175",
+  },
+  {
+    name: "Senior Software Engineer - Java Developer",
+    id: "172",
+  },
+  {
+    name: "Senior Software Engineer Iii",
+    id: "173",
+  },
+  {
+    name: "Senior System Development Engineer",
+    id: "269",
+  },
+  {
+    name: "Senior Technology Support Engineer",
+    id: "409",
+  },
+  {
+    name: "Server",
+    id: "355",
+  },
+  {
+    name: "Service & Offering Development",
+    id: "186",
+  },
+  {
+    name: "Services",
+    id: "3",
+  },
+  {
+    name: "Social Perceptiveness",
+    id: "65",
+  },
+  {
+    name: "Software",
+    id: "81",
+  },
+  {
+    name: "Software Developer Engineer Intern",
+    id: "43",
+  },
+  {
+    name: "Software Development Engineer Intern",
+    id: "38",
+  },
+  {
+    name: "Software Engineering",
+    id: "69",
+  },
+  {
+    name: "Software Eng",
+    id: "187",
+  },
+  {
+    name: "Software Internship",
+    id: "39",
+  },
+  {
+    name: "Sofware-as-a-service",
+    id: "178",
+  },
+  {
+    name: "Speaking",
+    id: "62",
+  },
+  {
+    name: "Support",
+    id: "6",
+  },
+  {
+    name: "System Architect",
+    id: "265",
+  },
+  {
+    name: "Systems Architect",
+    id: "270",
+  },
+  {
+    name: "Teaching",
+    id: "135",
+  },
+  {
+    name: "Team Management",
+    id: "214",
+  },
+  {
+    name: "Team Player",
+    id: "136",
+  },
+  {
+    name: "Technical Design",
+    id: "284",
+  },
+  {
+    name: "Test Case",
+    id: "285",
+  },
+  {
+    name: "Translating",
+    id: "95",
+  },
+  {
+    name: "Typescript",
+    id: "117",
+  },
+  {
+    name: "Technical Designer Architect",
+    id: "271",
+  },
+  {
+    name: "Technical Lead",
+    id: "76",
+  },
+  {
+    name: "Technical Support",
+    id: "80",
+  },
+  {
+    name: "Technical Support Analyst",
+    id: "410",
+  },
+  {
+    name: "Test",
+    id: "29",
+  },
+  {
+    name: "Tier- Support Engineer",
+    id: "406",
+  },
+  {
+    name: "Tools & Ide Software Developer",
+    id: "53",
+  },
+  {
+    name: "Training",
+    id: "22",
+  },
+  {
+    name: "Troubleshooting",
+    id: "354",
+  },
+  {
+    name: "Ui & Ux Developer & Master Trainer",
+    id: "58",
+  },
+  {
+    name: "Unavailable",
+    id: "59",
+  },
+  {
+    name: "Unit Tests",
+    id: "126",
+  },
+  {
+    name: "Use Cases",
+    id: "210",
+  },
+  {
+    name: "User Experience Design",
+    id: "96",
+  },
+  {
+    name: "User Interface",
+    id: "97",
+  },
+  {
+    name: "Ux",
+    id: "100",
+  },
+  {
+    name: "Unit Testing",
+    id: "85",
+  },
+  {
+    name: "Version Control",
+    id: "98",
+  },
+  {
+    name: "Video",
+    id: "77",
+  },
+  {
+    name: "Web Services",
+    id: "116",
+  },
+  {
+    name: "Wireframe",
+    id: "99",
+  },
+  {
+    name: "Written And Verbal",
+    id: "211",
+  },
+  {
+    name: "Web",
+    id: "2",
+  },
+  {
+    name: "Windows Server",
+    id: "356",
+  },
+  {
+    name: "Ability To Adapt",
+    id: "235",
+  },
+  {
+    name: "Ability To Learn Quickly",
+    id: "394",
+  },
+  {
+    name: "Ai Applications",
+    id: "294",
+  },
+  {
+    name: "Algorithms",
+    id: "332",
+  },
+  {
+    name: "Analytic",
+    id: "306",
+  },
+  {
+    name: "Analytical Skills",
+    id: "402",
+  },
+  {
+    name: "Analytics",
+    id: "166",
+  },
+  {
+    name: "Apis",
+    id: "154",
+  },
+  {
+    name: "Application",
+    id: "45",
+  },
+  {
+    name: "Applications",
+    id: "152",
+  },
+  {
+    name: "Assembly",
+    id: "361",
+  },
+  {
+    name: "Assessing",
+    id: "216",
+  },
+  {
+    name: "Atlassian",
+    id: "398",
+  },
+  {
+    name: "Augmented Reality",
+    id: "44",
+  },
+  {
+    name: "Automation Tools",
+    id: "301",
+  },
+  {
+    name: "Azure",
+    id: "397",
+  },
+  {
+    name: "Back-end",
+    id: "157",
+  },
+  {
+    name: "Big Data",
+    id: "331",
+  },
+  {
+    name: "Bill Of Materials",
+    id: "363",
+  },
+  {
+    name: "Build Trust",
+    id: "261",
+  },
+  {
+    name: "Building",
+    id: "315",
+  },
+  {
+    name: "Change Management",
+    id: "130",
+  },
+  {
+    name: "Cloud Technology",
+    id: "388",
+  },
+  {
+    name: "Code Compliance",
+    id: "225",
+  },
+  {
+    name: "Collaborating",
+    id: "317",
+  },
+  {
+    name: "Collaboration",
+    id: "131",
+  },
+  {
+    name: "Combined Cycle",
+    id: "254",
+  },
+  {
+    name: "Command Line",
+    id: "289",
+  },
+  {
+    name: "Commercial Processes",
+    id: "244",
+  },
+  {
+    name: "Communication Skills",
+    id: "144",
+  },
+  {
+    name: "Complex Solutions",
+    id: "250",
+  },
+  {
+    name: "Computational",
+    id: "295",
+  },
+  {
+    name: "Computer Science",
+    id: "47",
+  },
+  {
+    name: "Conceptual Thinking",
+    id: "257",
+  },
+  {
+    name: "Consensus Building",
+    id: "223",
+  },
+  {
+    name: "Control Technologies",
+    id: "230",
+  },
+  {
+    name: "Cross-functional",
+    id: "240",
+  },
+  {
+    name: "Customer Focus",
+    id: "243",
+  },
+  {
+    name: "Data Analytics",
+    id: "340",
+  },
+  {
+    name: "Debug",
+    id: "146",
+  },
+  {
+    name: "Delivering Results",
+    id: "224",
+  },
+  {
+    name: "Design",
+    id: "372",
+  },
+  {
+    name: "Design Thinking",
+    id: "184",
+  },
+  {
+    name: "Designs",
+    id: "370",
+  },
+  {
+    name: "Developing Complex",
+    id: "215",
+  },
+  {
+    name: "Development Tools",
+    id: "339",
+  },
+  {
+    name: "Devops",
+    id: "338",
+  },
+  {
+    name: "Dhcp",
+    id: "391",
+  },
+  {
+    name: "Django",
+    id: "158",
+  },
+  {
+    name: "Dns",
+    id: "399",
+  },
+  {
+    name: "Docker",
+    id: "320",
+  },
+  {
+    name: "Electrical",
+    id: "247",
+  },
+  {
+    name: "Electrical Engineering",
+    id: "229",
+  },
+  {
+    name: "Electrification",
+    id: "227",
+  },
+  {
+    name: "Energy Storage",
+    id: "258",
+  },
+  {
+    name: "Energy Storage Systems",
+    id: "234",
+  },
+  {
+    name: "Engineer",
+    id: "368",
+  },
+  {
+    name: "Engineering Analysis",
+    id: "369",
+  },
+  {
+    name: "Excellent Organizational Skills",
+    id: "241",
+  },
+  {
+    name: "Fault Finding",
+    id: "359",
+  },
+  {
+    name: "Flask",
+    id: "162",
+  },
+  {
+    name: "Flexibility",
+    id: "303",
+  },
+  {
+    name: "Flexible",
+    id: "373",
+  },
+  {
+    name: "Full Stack Development",
+    id: "291",
+  },
+  {
+    name: "Full-stack Web Development",
+    id: "153",
+  },
+  {
+    name: "Gcp",
+    id: "321",
+  },
+  {
+    name: "Great Communication Skills",
+    id: "392",
+  },
+  {
+    name: "Hadoop",
+    id: "324",
+  },
+  {
+    name: "Hardware",
+    id: "348",
+  },
+  {
+    name: "Hardware Design Engineer",
+    id: "350",
+  },
+  {
+    name: "Human Centred Design",
+    id: "183",
+  },
+  {
+    name: "Impact",
+    id: "33",
+  },
+  {
+    name: "Innovative",
+    id: "316",
+  },
+  {
+    name: "Integrated Systems",
+    id: "242",
+  },
+  {
+    name: "Intellectually Curious",
+    id: "333",
+  },
+  {
+    name: "Interpersonal",
+    id: "165",
+  },
+  {
+    name: "It Infrastructure",
+    id: "328",
+  },
+  {
+    name: "Jamf",
+    id: "393",
+  },
+  {
+    name: "Kubernetes",
+    id: "304",
+  },
+  {
+    name: "Leaders",
+    id: "255",
+  },
+  {
+    name: "Lean",
+    id: "302",
+  },
+  {
+    name: "Marketing",
+    id: "219",
+  },
+  {
+    name: "Mathematical Programming",
+    id: "325",
+  },
+  {
+    name: "Mechanical Engineering",
+    id: "375",
+  },
+  {
+    name: "Meet Goals",
+    id: "251",
+  },
+  {
+    name: "Meet Tight Deadlines",
+    id: "220",
+  },
+  {
+    name: "Mongodb",
+    id: "335",
+  },
+  {
+    name: "Motivated",
+    id: "150",
+  },
+  {
+    name: "National Security",
+    id: "32",
+  },
+  {
+    name: "Negotiation",
+    id: "253",
+  },
+  {
+    name: "Network",
+    id: "395",
+  },
+  {
+    name: "Network Administration",
+    id: "390",
+  },
+  {
+    name: "Network Design",
+    id: "362",
+  },
+  {
+    name: "Object-oriented Programming",
+    id: "293",
+  },
+  {
+    name: "Organisations",
+    id: "326",
+  },
+  {
+    name: "Organizing",
+    id: "367",
+  },
+  {
+    name: "Ownership",
+    id: "237",
+  },
+  {
+    name: "Pandas",
+    id: "310",
+  },
+  {
+    name: "Platforms",
+    id: "396",
+  },
+  {
+    name: "Postgres",
+    id: "337",
+  },
+  {
+    name: "Power Plants",
+    id: "228",
+  },
+  {
+    name: "Proactive",
+    id: "160",
+  },
+  {
+    name: "Problem Solving",
+    id: "314",
+  },
+  {
+    name: "Problem-solver",
+    id: "305",
+  },
+  {
+    name: "Problem-solving",
+    id: "239",
+  },
+  {
+    name: "Problem-solving Skills",
+    id: "238",
+  },
+  {
+    name: "Production Systems",
+    id: "401",
+  },
+  {
+    name: "Program Delivery",
+    id: "376",
+  },
+  {
+    name: "Programming",
+    id: "50",
+  },
+  {
+    name: "Programming Skills",
+    id: "46",
+  },
+  {
+    name: "Project Delivery",
+    id: "132",
+  },
+  {
+    name: "Proposals",
+    id: "263",
+  },
+  {
+    name: "Prototyping",
+    id: "365",
+  },
+  {
+    name: "Quote",
+    id: "217",
+  },
+  {
+    name: "Reasoning",
+    id: "336",
+  },
+  {
+    name: "Redis",
+    id: "299",
+  },
+  {
+    name: "Reliable",
+    id: "245",
+  },
+  {
+    name: "Requirements Analysis",
+    id: "374",
+  },
+  {
+    name: "Resilient",
+    id: "233",
+  },
+  {
+    name: "Rest Apis",
+    id: "149",
+  },
+  {
+    name: "Result-oriented",
+    id: "246",
+  },
+  {
+    name: "Saas",
+    id: "389",
+  },
+  {
+    name: "Sales Force",
+    id: "252",
+  },
+  {
+    name: "Scipy",
+    id: "341",
+  },
+  {
+    name: "Segments",
+    id: "221",
+  },
+  {
+    name: "Service",
+    id: "308",
+  },
+  {
+    name: "Software Design",
+    id: "311",
+  },
+  {
+    name: "Software Development",
+    id: "307",
+  },
+  {
+    name: "Software Development Life Cycle",
+    id: "290",
+  },
+  {
+    name: "Software Development Lifecycle",
+    id: "151",
+  },
+  {
+    name: "Software Development Practices",
+    id: "286",
+  },
+  {
+    name: "Software Solutions",
+    id: "313",
+  },
+  {
+    name: "Spark",
+    id: "318",
+  },
+  {
+    name: "Stakeholders",
+    id: "163",
+  },
+  {
+    name: "Strong Communication Skills",
+    id: "297",
+  },
+  {
+    name: "Systems Engineering",
+    id: "371",
+  },
+  {
+    name: "Tech Savvy",
+    id: "148",
+  },
+  {
+    name: "Technical Development",
+    id: "260",
+  },
+  {
+    name: "Technical Leadership",
+    id: "236",
+  },
+  {
+    name: "Technical Proposal",
+    id: "226",
+  },
+  {
+    name: "Technical Sales",
+    id: "259",
+  },
+  {
+    name: "Technical Solutions",
+    id: "218",
+  },
+  {
+    name: "Technical Teams",
+    id: "322",
+  },
+  {
+    name: "Test-driven Development",
+    id: "309",
+  },
+  {
+    name: "Turbines",
+    id: "222",
+  },
+  {
+    name: "Ui",
+    id: "156",
+  },
+  {
+    name: "Unix",
+    id: "296",
+  },
+  {
+    name: "Unix Operating System",
+    id: "364",
+  },
+  {
+    name: "User Experience",
+    id: "181",
+  },
+  {
+    name: "Verbal",
+    id: "256",
+  },
+  {
+    name: "Vuejs",
+    id: "155",
+  },
+  {
+    name: "Web Applications",
+    id: "48",
+  },
+  {
+    name: "Web Development",
+    id: "147",
+  },
+  {
+    name: "Web Technologies",
+    id: "300",
+  },
+  {
+    name: "Willingness",
+    id: "249",
+  },
+  {
+    name: "Willingness To Travel",
+    id: "232",
+  },
+  {
+    name: "Work-life Balance",
+    id: "377",
+  },
+  {
+    name: "Writing",
+    id: "360",
+  },
+];
+export const RESUME_DATA = {
+  Personal_Info: {
+    first_name: "",
+    last_name: "",
+    Email: "",
+    Phone: "",
+    City: "",
+    Personal_Website: "",
+    LinkedIn: "",
+  },
+  Education: {
+    School: "",
+    Degree: "",
+    Major: "",
+    Start: "",
+    End: "",
+    Description: "",
+  },
+  Relavant_Projects: {
+    Project_Name: "",
+    Start: "",
+    End: "",
+    Description: "",
+  },
+  Work_Experience: {
+    Company: "",
+    Position: "",
+    Start: "",
+    End: "",
+    Description: "",
+  },
+};

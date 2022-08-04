@@ -6,7 +6,7 @@ import classes from "./style/home.module.scss";
 import wave from "../../asset/wave.svg";
 import PostedInternships from "../recruiter/PostedInternships";
 import RecommendedInternships from "../student/RecommendedInternships";
-import { UserContext } from "../auth/UserContext";
+import { UserContext } from "../../store/UserContext";
 
 const Home = () => {
   const { user } = useContext(UserContext);

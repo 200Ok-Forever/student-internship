@@ -11,8 +11,9 @@ import { studentSignupValidationSchema } from "./ValidationSchema";
 import { useHistory } from "react-router-dom";
 import { Paper } from "@mui/material";
 import { StudentSignupAPI } from "../../api/auth-api";
-import { UserContext } from "./UserContext";
+import { UserContext } from "../../store/UserContext";
 import ErrorMessage from "../UI/ErrorMessage";
+import { IconButton } from "@mui/material";
 
 const StudentSignup = () => {
   const { setUser } = useContext(UserContext);
@@ -23,6 +24,8 @@ const StudentSignup = () => {
     setErrorModalState(true);
   };
   const handleClose = () => setErrorModalState(false);
+
+  const [avatar, setAvatar] = useState("");
 
   const formik = useFormik({
     initialValues: {
@@ -54,7 +57,7 @@ const StudentSignup = () => {
           positions: values.positions,
           skills: values.skills,
           description: values.description,
-          avatar: "",
+          avatar: avatar,
         };
         try {
           const res = await StudentSignupAPI(signupValues);
@@ -84,6 +87,17 @@ const StudentSignup = () => {
   });
 
   const history = useHistory();
+
+  const onAvatarChange = (event) => {
+    const imageFile = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      const base64String = reader.result;
+      setAvatar(base64String);
+    };
+    reader.readAsDataURL(imageFile);
+  };
 
   return (
     <Paper
@@ -118,7 +132,10 @@ const StudentSignup = () => {
       >
         Student Sign Up
       </Typography>
-      <Avatar sx={{ m: 1, bgcolor: "primary.main" }}></Avatar>
+      <IconButton color="primary" aria-label="upload picture" component="label">
+        <input hidden accept="image/*" type="file" onChange={onAvatarChange} />
+        <Avatar sx={{ m: 1, bgcolor: "primary.main" }} src={avatar} />
+      </IconButton>
       <Box
         component="form"
         noValidate

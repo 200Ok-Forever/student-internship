@@ -5,7 +5,12 @@ from flask import current_app, jsonify
 from flask_jwt_extended import create_access_token, get_jwt, jwt_required, create_refresh_token, get_jwt_identity
 from flask_mail import Message
 from ...Models.model import User, Student, Company
-from ... import db, mail
+from ... import db, mail, jwt
+from datetime import timedelta
+import redis
+
+r = redis.StrictRedis(host='redis-16963.c90.us-east-1-3.ec2.cloud.redislabs.com', port=16963,
+                      username='default', password='=200ok=forever', decode_responses=True)
 
 
 class AuthUtils:
@@ -25,9 +30,11 @@ class AuthUtils:
             elif user and user.verify_password(password):
                 user_info = User.get_info(user)
                 print(user_info)
-                access_token = create_access_token(identity=user_info['uid'], additional_claims=user_info)
+                access_token = create_access_token(identity=user_info['uid'])
+
                 resp = {"status": True,
                         "message": "Successfully logged in.",
+                        "user_info": user_info,
                         "token": access_token
                         }
                 return resp, 200
@@ -143,7 +150,6 @@ class AuthUtils:
                     "message": "Successfully signup.",
                     "user": user_info,
                     "token": access_token,
-                    'refresh_token': create_refresh_token(identity=username)
                     }
             return resp, 201
         except Exception as error:
@@ -152,6 +158,20 @@ class AuthUtils:
                        "status": False,
                        "message": "Something went wrong during the process!",
                    }, 500
+
+    @staticmethod
+    @jwt.token_in_blocklist_loader
+    def check_if_token_is_revoked(jwt_header, jwt_payload: dict):
+        jti = jwt_payload["jti"]
+        token_in_redis = r.get(jti)
+        print(jti, token_in_redis, token_in_redis is not None)
+        return token_in_redis is not None
+
+    @staticmethod
+    def logout():
+        jti = get_jwt()["jti"]
+        r.set(jti, "", ex=timedelta(hours=1))
+        return jsonify(msg="logout successful")
 
     @staticmethod
     def send_confirmation_email(email, flag):
@@ -274,6 +294,7 @@ if you did not request a password reset, please ignore this email.
                 return {
                            "status": True,
                            "message": "User info updated.",
+                           "student_info": Student.get_info(current_student)
                        }, 200
             else:
                 return {
@@ -285,3 +306,21 @@ if you did not request a password reset, please ignore this email.
                        "status": False,
                        "message": "please fill in required data correctly.",
                    }, 400
+
+    @staticmethod
+    def updateUserInfoShort(data):
+        current_user_id = get_jwt_identity()
+        current_user = User.query.filter_by(uid=current_user_id).first()
+        if data["avatar"] is not None:
+            current_user.avatar = data["avatar"]
+            db.session.commit()
+            return {
+                       "status": True,
+                       "message": "User info updated.",
+                       "user_info": current_user.get_info()
+                   }, 200
+        else:
+            return {
+                       "status": False,
+                       "message": "please fill in required data correctly.",
+                   }, 404
