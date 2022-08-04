@@ -4,7 +4,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import AddIcon from "@mui/icons-material/Add";
 
 const WorkExperience = () => {
-  return () => (
+  return (
     <>
       <Grid item xs={12} sm={6}>
         <Typography

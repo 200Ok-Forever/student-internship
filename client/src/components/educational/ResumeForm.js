@@ -7,8 +7,47 @@ import WorkExperience from "./formItem/WorkExperience";
 import Projects from "./formItem/Projects";
 import Skills from "./formItem/Skills";
 import NewSection from "./formItem/NewSection";
+import { useContext, useEffect } from "react";
+import { ResumeInfoContext } from "../../store/ResumeInfoContext";
+import { RESUME_DATA } from "../../constants";
 
 const ResumeForm = ({ order }) => {
+  const { allInfo, setAllInfo } = useContext(ResumeInfoContext);
+  // console.log("🚀 ~ allInfo", allInfo);
+
+  useEffect(() => {
+    order.forEach((section, idx) => {
+      if (section === RESUME[0]) {
+        setAllInfo((prev) => ({
+          ...prev,
+          Personal_Info: [RESUME_DATA.Personal_Info, idx],
+        }));
+      } else if (section === RESUME[1]) {
+        setAllInfo((prev) => ({
+          ...prev,
+          Education: [RESUME_DATA.Education, idx],
+        }));
+      } else if (section === RESUME[2]) {
+        setAllInfo((prev) => ({
+          ...prev,
+          Work_Experience: [RESUME_DATA.Work_Experience, idx],
+        }));
+      } else if (section === RESUME[3]) {
+        setAllInfo((prev) => ({
+          ...prev,
+          Relavant_Projects: [RESUME_DATA.Relavant_Projects, idx],
+        }));
+      } else {
+        setAllInfo((prev) => {
+          let newInfo = { ...prev };
+          newInfo[section] = ["", idx];
+          return newInfo;
+        });
+      }
+    });
+  }, [order, setAllInfo]);
+  console.log("🚀 ~ allInfo", allInfo);
+
   return (
     <Box
       component="form"
