@@ -34,6 +34,7 @@ class AuthUtils:
 
                 resp = {"status": True,
                         "message": "Successfully logged in.",
+                        "user_info": user_info,
                         "token": access_token
                         }
                 return resp, 200
