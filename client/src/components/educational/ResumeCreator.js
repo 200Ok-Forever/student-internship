@@ -15,7 +15,7 @@ const steps = ["Select Sections", "Info", "Generate Resume"];
 const ResumeCreator = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [itemList, setItemList] = useState(RESUME);
-  const [allInfo, setAllInfo] = useState({});
+  const [allInfo, setAllInfo] = useState({ haveInfo: false });
 
   return (
     <ResumeInfoContext.Provider value={{ allInfo, setAllInfo }}>

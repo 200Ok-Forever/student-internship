@@ -1545,6 +1545,7 @@ export const RESUME_DATA = {
     Phone: "",
     City: "",
     Personal_Website: "",
+    LinkedIn: "",
   },
   Education: {
     School: "",
