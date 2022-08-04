@@ -7,11 +7,7 @@ import { useState } from "react";
 import SelectSection from "./SelectSection";
 import ResumeForm from "./ResumeForm";
 
-const steps = [
-  "Select and order sections",
-  "Fill up your infomation",
-  "Generate resume",
-];
+const steps = ["Select Sections", "Info", "Generate Resume"];
 
 const ResumeItem = [
   "Personal Information",
