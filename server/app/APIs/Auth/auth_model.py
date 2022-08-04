@@ -158,3 +158,9 @@ class AuthAPI:
             "description": fields.String,
         }
     )
+
+    update_user_info_short = api.model(
+        "Update user info short request", {
+            "avatar": fields.String(required=True),
+        }
+    )

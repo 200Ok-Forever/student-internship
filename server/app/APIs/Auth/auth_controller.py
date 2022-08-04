@@ -166,6 +166,7 @@ class PasswordResetReset(Resource):
 
 @auth_api.route("/userInfoShort")
 class UserInfoShort(Resource):
+    update_user_info_short = AuthAPI.update_user_info_short
     @auth_api.doc(
         "User info short",
         responses={
@@ -178,6 +179,14 @@ class UserInfoShort(Resource):
     def get(self):
         """ User info short """
         return AuthUtils.userInfoShort()
+
+    @jwt_required()
+    @auth_api.expect(authParser, update_user_info_short, validate=True)
+    def post(self):
+        """ User info short """
+        # Grab the json data
+        update_form, update_data = request.form, request.get_json()
+        return AuthUtils.updateUserInfoShort(update_data)
 
 
 @auth_api.route("/userInfoLong")
