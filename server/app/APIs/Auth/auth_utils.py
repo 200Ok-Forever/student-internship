@@ -30,7 +30,7 @@ class AuthUtils:
             elif user and user.verify_password(password):
                 user_info = User.get_info(user)
                 print(user_info)
-                access_token = create_access_token(identity=user_info['uid'], additional_claims=user_info)
+                access_token = create_access_token(identity=user_info['uid'])
 
                 resp = {"status": True,
                         "message": "Successfully logged in.",
@@ -150,7 +150,6 @@ class AuthUtils:
                     "message": "Successfully signup.",
                     "user": user_info,
                     "token": access_token,
-                    'refresh_token': create_refresh_token(identity=username)
                     }
             return resp, 201
         except Exception as error:
@@ -295,6 +294,7 @@ if you did not request a password reset, please ignore this email.
                 return {
                            "status": True,
                            "message": "User info updated.",
+                           "student_info": Student.get_info(current_student)
                        }, 200
             else:
                 return {
@@ -306,3 +306,21 @@ if you did not request a password reset, please ignore this email.
                        "status": False,
                        "message": "please fill in required data correctly.",
                    }, 400
+
+    @staticmethod
+    def updateUserInfoShort(data):
+        current_user_id = get_jwt_identity()
+        current_user = User.query.filter_by(uid=current_user_id).first()
+        if data["avatar"] is not None:
+            current_user.avatar = data["avatar"]
+            db.session.commit()
+            return {
+                       "status": True,
+                       "message": "User info updated.",
+                       "user_info": current_user.get_info()
+                   }, 200
+        else:
+            return {
+                       "status": False,
+                       "message": "please fill in required data correctly.",
+                   }, 404
