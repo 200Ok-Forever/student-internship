@@ -1,7 +1,17 @@
 import { Grid, TextField, Typography } from "@mui/material";
-import React from "react";
+import React, { useContext } from "react";
+import { ResumeInfoContext } from "../../../store/ResumeInfoContext";
 
 const PersonInfo = () => {
+  const { allInfo, setAllInfo } = useContext(ResumeInfoContext);
+  const GetNewInfo = (name, value) => {
+    setAllInfo((prev) => {
+      let newInfo = { ...prev };
+      newInfo["Personal_Info"][1][name] = value;
+      return newInfo;
+    });
+  };
+
   return (
     <>
       <Grid item xs={12}>
@@ -17,6 +27,10 @@ const PersonInfo = () => {
           label="First Name"
           name="firstName"
           autoComplete="firstName"
+          value={
+            allInfo.Personal_Info ? allInfo?.Personal_Info[1]?.first_name : ""
+          }
+          onChange={(e) => GetNewInfo("first_name", e.target.value)}
         />
       </Grid>
       <Grid item xs={12} sm={6}>
@@ -27,6 +41,10 @@ const PersonInfo = () => {
           label="Last Name"
           name="lastName"
           autoComplete="lastName"
+          value={
+            allInfo.Personal_Info ? allInfo?.Personal_Info[1]?.last_name : ""
+          }
+          onChange={(e) => GetNewInfo("last_name", e.target.value)}
         />
       </Grid>
       <Grid item xs={12}>
@@ -37,6 +55,8 @@ const PersonInfo = () => {
           label="Email"
           id="email"
           autoComplete="email"
+          value={allInfo.Personal_Info ? allInfo?.Personal_Info[1]?.Email : ""}
+          onChange={(e) => GetNewInfo("Email", e.target.value)}
         />
       </Grid>
       <Grid item xs={12} sm={6}>
@@ -47,6 +67,8 @@ const PersonInfo = () => {
           fullWidth
           id="phone"
           label="Phone"
+          value={allInfo.Personal_Info ? allInfo?.Personal_Info[1]?.Phone : ""}
+          onChange={(e) => GetNewInfo("Phone", e.target.value)}
         />
       </Grid>
       <Grid item xs={12} sm={6}>
@@ -57,6 +79,8 @@ const PersonInfo = () => {
           label="City"
           name="city"
           autoComplete="city"
+          value={allInfo.Personal_Info ? allInfo?.Personal_Info[1]?.City : ""}
+          onChange={(e) => GetNewInfo("City", e.target.value)}
         />
       </Grid>
       <Grid item xs={12}>
@@ -66,6 +90,12 @@ const PersonInfo = () => {
           label="Personal Website"
           id="personalWebsite"
           autoComplete="personalWebsite"
+          value={
+            allInfo.Personal_Info
+              ? allInfo?.Personal_Info[1]?.Personal_Website
+              : ""
+          }
+          onChange={(e) => GetNewInfo("Personal_Website", e.target.value)}
         />
       </Grid>
       <Grid item xs={12}>
@@ -75,6 +105,10 @@ const PersonInfo = () => {
           label="LinkedIn"
           id="linkedIn"
           autoComplete="linkedIn"
+          value={
+            allInfo.Personal_Info ? allInfo?.Personal_Info[1]?.LinkedIn : ""
+          }
+          onChange={(e) => GetNewInfo("LinkedIn", e.target.value)}
         />
       </Grid>
     </>

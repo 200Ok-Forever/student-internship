@@ -3,12 +3,12 @@ import React, { useContext } from "react";
 import { ResumeInfoContext } from "../../../store/ResumeInfoContext";
 import ShowExample from "./ShowExample";
 
-const Skills = () => {
+const OtherSection = ({ section }) => {
   const { allInfo, setAllInfo } = useContext(ResumeInfoContext);
   const GetNewInfo = (value) => {
     setAllInfo((prev) => {
       let newInfo = { ...prev };
-      newInfo["Skills"][1] = value;
+      newInfo[section][1] = value;
       return newInfo;
     });
   };
@@ -22,21 +22,23 @@ const Skills = () => {
           variant="h6"
           sx={{ mt: 2 }}
         >
-          Skills
+          {section}
         </Typography>
       </Grid>
-      <Grid item xs={12} sm={6}>
-        <ShowExample section={"Projects"} />
-      </Grid>
+      {section === "Skills" && (
+        <Grid item xs={12} sm={6}>
+          <ShowExample section={"Skills"} />
+        </Grid>
+      )}
       <Grid item xs={12}>
         <TextField
           required
-          id="description"
+          id={`des_${section}`}
           label="Description"
           multiline
           fullWidth
           rows={4}
-          value={allInfo.Skills ? allInfo?.Skills[1] : ""}
+          value={allInfo[section] ? allInfo[section][1] : ""}
           onChange={(e) => GetNewInfo(e.target.value)}
         />
       </Grid>
@@ -44,4 +46,4 @@ const Skills = () => {
   );
 };
 
-export default Skills;
+export default OtherSection;

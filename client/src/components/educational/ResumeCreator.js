@@ -8,13 +8,14 @@ import SelectSection from "./SelectSection";
 import ResumeForm from "./ResumeForm";
 import { RESUME } from "../../constants";
 import { ResumeInfoContext } from "../../store/ResumeInfoContext";
+import GenerateResume from "./GenerateResume";
 
 const steps = ["Select Sections", "Info", "Generate Resume"];
 
 const ResumeCreator = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [itemList, setItemList] = useState(RESUME);
-  const [allInfo, setAllInfo] = useState({});
+  const [allInfo, setAllInfo] = useState({ haveInfo: false });
 
   return (
     <ResumeInfoContext.Provider value={{ allInfo, setAllInfo }}>
@@ -46,7 +47,7 @@ const ResumeCreator = () => {
               <SelectSection itemList={itemList} setItemList={setItemList} />
             )}
             {activeStep === 1 && <ResumeForm order={itemList} />}
-            {activeStep === 2 && <SelectSection />}
+            {activeStep === 2 && <GenerateResume />}
             <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
               <Button
                 color="inherit"

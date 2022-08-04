@@ -5,10 +5,50 @@ import PersonInfo from "./formItem/PersonInfo";
 import Education from "./formItem/Education";
 import WorkExperience from "./formItem/WorkExperience";
 import Projects from "./formItem/Projects";
-import Skills from "./formItem/Skills";
-import NewSection from "./formItem/NewSection";
+import { useContext, useEffect } from "react";
+import { ResumeInfoContext } from "../../store/ResumeInfoContext";
+import { RESUME_DATA } from "../../constants";
+import OtherSection from "./formItem/OtherSection";
 
 const ResumeForm = ({ order }) => {
+  const { allInfo, setAllInfo } = useContext(ResumeInfoContext);
+  // console.log("🚀 ~ allInfo", allInfo);
+
+  useEffect(() => {
+    if (!allInfo.haveInfo) {
+      order.forEach((section, idx) => {
+        if (section === RESUME[0]) {
+          setAllInfo((prev) => ({
+            ...prev,
+            Personal_Info: [idx, RESUME_DATA.Personal_Info],
+          }));
+        } else if (section === RESUME[1]) {
+          setAllInfo((prev) => ({
+            ...prev,
+            Education: [idx],
+          }));
+        } else if (section === RESUME[2]) {
+          setAllInfo((prev) => ({
+            ...prev,
+            Work_Experience: [idx],
+          }));
+        } else if (section === RESUME[3]) {
+          setAllInfo((prev) => ({
+            ...prev,
+            Relavant_Projects: [idx],
+          }));
+        } else {
+          setAllInfo((prev) => {
+            let newInfo = { ...prev };
+            newInfo[section] = [idx, ""];
+            return newInfo;
+          });
+        }
+      });
+      setAllInfo((prev) => ({ ...prev, haveInfo: true }));
+    }
+  }, [order, setAllInfo, allInfo.haveInfo]);
+
   return (
     <Box
       component="form"
@@ -32,10 +72,8 @@ const ResumeForm = ({ order }) => {
             return <WorkExperience key={idx} />;
           } else if (section === RESUME[3]) {
             return <Projects key={idx} />;
-          } else if (section === RESUME[4]) {
-            return <Skills key={idx} />;
           }
-          return <NewSection name={section} key={idx} />;
+          return <OtherSection section={section} key={idx} />;
         })}
       </Grid>
     </Box>
