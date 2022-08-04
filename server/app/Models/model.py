@@ -281,6 +281,12 @@ class File(db.Model):
     file_type = db.Column(db.VARCHAR(255))
     upload_time = db.Column(db.TIMESTAMP)
 
+class StudentInterveiwQuestion(db.Model):
+    __tablename__ = 'r_intern_question_answer'
+    student_id = db.Column(db.Integer, db.ForeignKey('t_student.id'))
+    question_id = db.Column(db.Integer, db.ForeignKey('t_intern_question.id'))
+    answer = db.Column(db.VARCHAR(1000))
+
 class LoginSchema(Form):
     email = StringField('Email Address', [validators.Length(min=6, max=35)])
     password = PasswordField('Password', [validators.Length(min=6, max=16), validators.DataRequired()])

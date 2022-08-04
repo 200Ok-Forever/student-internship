@@ -7,7 +7,7 @@ from json import dumps
 from requests import session
 from sqlalchemy import null
 from torch import is_same_size
-from ...Models.model import Calendar, StudentSkills,Internship, City, Company, Comment, User, Skill,InternshipStatus,Student, File
+from ...Models.model import Calendar, StudentSkills,Internship, City, Company, Comment, User, Skill,InternshipStatus,Student, File,StudentInterveiwQuestion
 from flask_restx import Resource, reqparse
 from ...extension import db
 from string import digits
@@ -374,29 +374,33 @@ class InternshipsUtils:
         resume = arg.get('resume', None)
         coverletter = arg.get('coverletter', None)
         
-        question = arg.get('question')
+        question_id = arg.get('question_id')
         answer = arg.get('answer')
 
         internship=Internship.query.filter(Internship.id==id).first()
         if internship:
-            print("______________")
+         
+            #update is_applied status
+            
             apply =  db.session.query(InternshipStatus)\
                 .filter(InternshipStatus.intern_id == id )\
                 .filter(InternshipStatus.uid==current_user_id)\
                 .update({InternshipStatus.is_applied: "True"})
 
-            
+            #get student id
+            student = db.session.query(Student).join(User, Student.email == User.email).filter(User.uid == current_user_id).first()
+         
+
+            #store question and answer
+            new_interview_question = StudentInterveiwQuestion(student_id = student.id, question_id = question_id, answer = answer)
+            db.session.add(new_interview_question)
             if resume:
-                print("__________000000000____")
+            
                 
                 file = File(uid = current_user_id, data = resume, file_type = "resume", upload_time = datetime.datetime.now())
                 print(file)
-                try:
-                    db.session.add(file)
-                    db.session.commit()
-                    return dumps({"msg": "save sucessfully"}), 200
-                except Exception as error:
-                    return dumps({"msg":error}),400
+                db.session.add(file)
+               
 
             if coverletter:
                 file = File(uid = current_user_id, data = coverletter, file_type = "coverletter", upload_time = datetime.datetime.now())
