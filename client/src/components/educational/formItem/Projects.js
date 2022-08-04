@@ -33,16 +33,6 @@ const Projects = () => {
           autoComplete="projectName"
         />
       </Grid>
-      <Grid item xs={12}>
-        <TextField
-          fullWidth
-          required
-          name="role"
-          label="Role"
-          id="role"
-          autoComplete="role"
-        />
-      </Grid>
       <Grid item xs={12} sm={6}>
         <TextField
           name="start"

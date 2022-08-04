@@ -20,33 +20,32 @@ const ResumeForm = ({ order }) => {
       if (section === RESUME[0]) {
         setAllInfo((prev) => ({
           ...prev,
-          Personal_Info: [RESUME_DATA.Personal_Info, idx],
+          Personal_Info: [idx, RESUME_DATA.Personal_Info],
         }));
       } else if (section === RESUME[1]) {
         setAllInfo((prev) => ({
           ...prev,
-          Education: [RESUME_DATA.Education, idx],
+          Education: [idx, RESUME_DATA.Education],
         }));
       } else if (section === RESUME[2]) {
         setAllInfo((prev) => ({
           ...prev,
-          Work_Experience: [RESUME_DATA.Work_Experience, idx],
+          Work_Experience: [idx, RESUME_DATA.Work_Experience],
         }));
       } else if (section === RESUME[3]) {
         setAllInfo((prev) => ({
           ...prev,
-          Relavant_Projects: [RESUME_DATA.Relavant_Projects, idx],
+          Relavant_Projects: [idx, RESUME_DATA.Relavant_Projects],
         }));
       } else {
         setAllInfo((prev) => {
           let newInfo = { ...prev };
-          newInfo[section] = ["", idx];
+          newInfo[section] = [idx, ""];
           return newInfo;
         });
       }
     });
   }, [order, setAllInfo]);
-  console.log("🚀 ~ allInfo", allInfo);
 
   return (
     <Box
