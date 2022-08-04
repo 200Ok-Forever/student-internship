@@ -1,6 +1,5 @@
 import React from "react";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import AddIcon from "@mui/icons-material/Add";
 import { Button, Grid, TextField, Typography } from "@mui/material";
 
 const Projects = () => {
