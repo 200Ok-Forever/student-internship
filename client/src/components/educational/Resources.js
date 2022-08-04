@@ -29,7 +29,7 @@ const Resources = () => {
             color="secondary"
             variant="outlined"
             component={RouterLink}
-            to="/resume/s1"
+            to="/resume-creator"
           >
             Generate Resume
           </Button>
