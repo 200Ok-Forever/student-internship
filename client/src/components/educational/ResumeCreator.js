@@ -13,8 +13,17 @@ const steps = [
   "Generate resume",
 ];
 
+const ResumeItem = [
+  "Personal Information",
+  "Education",
+  "Work Experience",
+  "Relavant Project",
+  "Skills",
+];
+
 const ResumeCreator = () => {
   const [activeStep, setActiveStep] = useState(0);
+  const [itemList, setItemList] = useState(ResumeItem);
 
   return (
     <Box sx={{ width: "80%", mx: "auto" }}>
@@ -41,7 +50,9 @@ const ResumeCreator = () => {
         </React.Fragment>
       ) : (
         <React.Fragment>
-          {activeStep === 0 && <SelectSection />}
+          {activeStep === 0 && (
+            <SelectSection itemList={itemList} setItemList={setItemList} />
+          )}
           {activeStep === 1 && <ResumeForm />}
           {activeStep === 2 && <SelectSection />}
           <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
