@@ -126,6 +126,13 @@ def changeDateFormat(date):
     result = re.sub('T.+', '', str(date))
     return result
 
+def check_is_seen(internship_id, uid):
+    if uid != None and internship_id != None:
+        is_seen = db.session.query(InternshipStatus).filter(InternshipStatus.intern_id==internship_id).filter(InternshipStatus.uid==uid).first()
+        if is_seen!= None:
+            return "True"
+        else:
+            return "False"
 
 class InternshipsUtils:
     @staticmethod
@@ -239,7 +246,7 @@ class InternshipsUtils:
         sort = data.get("sort", "Default")
         paid = data.get("paid", None)
         remote = data.get("is_remote", None)
-
+        uid = data.get("uid", None)
         if paid:
             paid = paid.upper()
         if remote:
@@ -304,7 +311,8 @@ class InternshipsUtils:
                             'numAllResults': {"total_count": count}, 'location': get_location(internship.city),
                             'company_id': internship.company_id,
                             'company_name': get_company_info(internship.company_id)[0],
-                            'company_logo': get_company_info(internship.company_id)[1]
+                            'company_logo': get_company_info(internship.company_id)[1],
+                            'is_seen':check_is_seen(internship.id, uid),
                             } for internship in internships]
 
         return jsonify(all_internships)

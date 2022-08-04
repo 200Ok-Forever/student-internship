@@ -56,7 +56,7 @@ class Student(db.Model):
     description = db.Column(db.VARCHAR(200))
 
 
-    skills = db.relationship('Skill', secondary='r_student_skill', back_populates='students', lazy=True)
+    # student_skills = db.relationship('Skill', secondary='r_student_skill', back_populates='students', lazy=True)
     def __repr__(self):
         return f"<Student: {self.email}, {self.first_name} {self.last_name}>"
 
@@ -207,7 +207,7 @@ class Calendar(db.Model):
     __tablename__= 't_calendar'
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     internship_id = db.Column(db.Integer,db.ForeignKey("t_internships.id"))
-    student_id = db.Column(db.Integer,db.ForeignKey("t_student.id"))
+    uid = db.Column(db.Integer,db.ForeignKey("t_user.id"))
     start = db.Column(db.DATETIME)
     end = db.Column(db.DATETIME)
     title = db.Column(db.VARCHAR(255))
