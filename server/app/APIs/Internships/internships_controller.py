@@ -169,20 +169,20 @@ class InternshipCalendar(Resource):
  
 @internships_api.route('/internships/uncalendar')
 class InternshipCalendar(Resource):
- 
+    @jwt_required()
     @internships_api.expect(saveParser)
     def post(self):
         arg = request.get_json()
-        return InternshipsUtils.deleteCalendar(arg)
-        pass
-
+        uid = get_jwt_identity()
+        return InternshipsUtils.deleteCalendar(arg, uid)
 
 @internships_api.route('/events')
 class Events(Resource):
+    @jwt_required()
     @internships_api.expect(saveParser)
     def get(self):
-        arg = request.args
-        return InternshipsUtils.getCalendar(arg)
+        uid = get_jwt_identity()
+        return InternshipsUtils.getCalendar(uid)
 
 
 recommendParser = internships_api.parser()

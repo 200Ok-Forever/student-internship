@@ -483,26 +483,23 @@ class InternshipsUtils:
             return dumps({"msg": "Internship not found"}), 404
 
     @staticmethod
-    def getCalendar(arg):
-        get_student = db.session.query(Student).filter(Student.id == 102)
+    def getCalendar(uid):
+        get_student = db.session.query(Student).filter(Student.id == uid)
         if not get_student:
             return {
                        'msg': 'no related student'
                    }, 400
 
-        calendars = db.session.query(Calendar).filter(Calendar.student_id == 102)
+        calendars = db.session.query(Calendar).filter(Calendar.student_id == uid)
         calander_list = []
         if calendars:
             for calendar in calendars:
                 calendar_result = {
                     'internship_id': calendar.id,
-                    'student_id': calendar.student_id,
                     'start': calendar.start,
-                    'end': calendar.end,
                     'title': calendar.title,
                     'type': calendar.type,
                     'link': calendar.link,
-                    'is_calendar': calendar.is_calendar
                 }
                 calander_list.append(calendar_result)
 
@@ -530,8 +527,8 @@ class InternshipsUtils:
             return dumps({'msg': error}), 400
 
     @staticmethod
-    def deleteCalendar(arg):
-        get_student = db.session.query(Student).filter(Student.id == 102)
+    def deleteCalendar(arg, uid):
+        get_student = db.session.query(Student).filter(Student.id == uid)
         if not get_student:
             return {
                        'msg': 'no related student'
