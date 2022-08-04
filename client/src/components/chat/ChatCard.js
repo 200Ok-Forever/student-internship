@@ -4,7 +4,7 @@ import React, { useContext } from "react";
 import { ChatEngineContext } from "react-chat-engine";
 
 const ChatCard = ({ chat, index }) => {
-  const { activeChat, creds, setActiveChat } = useContext(ChatEngineContext);
+  const { activeChat, setActiveChat } = useContext(ChatEngineContext);
 
   return (
     <Box

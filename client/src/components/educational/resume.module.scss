@@ -20,3 +20,15 @@
   justify-content: center;
   cursor: pointer;
 }
+
+.new-section {
+  @extend .card;
+  justify-content: space-between;
+}
+
+.typing {
+  font-family: inherit;
+  &:focus {
+    outline: 0;
+  }
+}

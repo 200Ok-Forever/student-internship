@@ -1,4 +1,4 @@
-import { Box, Typography } from "@material-ui/core";
+import { Box, Input, Typography } from "@material-ui/core";
 import { IconButton } from "@mui/material";
 import React, { useState } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
@@ -7,8 +7,10 @@ import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
 
 const SelectSection = ({ itemList, setItemList }) => {
-  console.log("🚀 ~ itemList", itemList);
   const [isDragging, setIsDragging] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
+  const [name, setName] = useState("");
+
   const onDragEnd = (result) => {
     if (!result.destination) {
       return;
@@ -19,6 +21,12 @@ const SelectSection = ({ itemList, setItemList }) => {
     setItemList(newItems);
     setIsDragging(false);
   };
+
+  const AddSection = () => {
+    setItemList((prev) => [...prev, name]);
+    setIsTyping(false);
+  };
+
   return (
     <Box
       sx={{
@@ -53,7 +61,7 @@ const SelectSection = ({ itemList, setItemList }) => {
                       <Typography
                         variant="subtitle1"
                         style={{
-                          fontFamily: "Montserrat",
+                          fontFamily: "inherit",
                           flex: 2,
                         }}
                       >
@@ -71,19 +79,39 @@ const SelectSection = ({ itemList, setItemList }) => {
                   )}
                 </Draggable>
               ))}
-              {!isDragging && (
-                <div className={classes["add-section"]}>
-                  <AddIcon fontSize="small" color="primary" />
-                  <Typography
-                    variant="subtitle1"
-                    style={{
-                      fontFamily: "Montserrat",
-                    }}
+              {!isDragging &&
+                (!isTyping ? (
+                  <div
+                    className={classes["add-section"]}
+                    onClick={() => setIsTyping(true)}
                   >
-                    Add Section
-                  </Typography>
-                </div>
-              )}
+                    <AddIcon fontSize="small" color="primary" />
+                    <Typography
+                      variant="subtitle1"
+                      style={{
+                        fontFamily: "inherit",
+                      }}
+                    >
+                      Add Section
+                    </Typography>
+                  </div>
+                ) : (
+                  <div className={classes["new-section"]}>
+                    <IconButton
+                      color="primary"
+                      onClick={() => setIsTyping(false)}
+                    >
+                      <CloseIcon fontSize="small" />
+                    </IconButton>
+                    <Input
+                      placeholder="Name of new section"
+                      onChange={(e) => setName(e.target.value)}
+                    />
+                    <IconButton color="primary" onClick={AddSection}>
+                      <AddIcon fontSize="small" />
+                    </IconButton>
+                  </div>
+                ))}
             </div>
           )}
         </Droppable>
