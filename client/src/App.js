@@ -31,7 +31,6 @@ import RecommendedCandidates from "./components/recruiter/RecommendedCandidates"
 import ForgottenPassword from "./components/auth/ForgottenPassword";
 import ResetPassword from "./components/auth/ResetPassword";
 import ResumeCreator from "./components/educational/ResumeCreator";
-import ResumeCreatorStep2 from "./components/educational/ResumeCreatorStep2";
 import Chat from "./components/chat/Chat";
 import Profile from "./components/student/Profile";
 import { UserContext } from "./components/auth/UserContext";
@@ -97,8 +96,7 @@ function App() {
               exact
               component={ResetPassword}
             />
-            <Route path="/resume/s1" exact component={ResumeCreator} />
-            <Route path="/resume/s2" exact component={ResumeCreatorStep2} />
+            <Route path="/resume-creator" exact component={ResumeCreator} />
             <Route path="/forum" exact component={Forum} />
             <Route path="/chat" exact component={Chat} />
             <PrivateRoute
