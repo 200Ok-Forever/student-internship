@@ -12,16 +12,16 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import { UserContext } from "./UserContext";
+import { UserContext } from "../../store/UserContext";
 import { CompanySignupAPI } from "../../api/auth-api";
 import { useFormik } from "formik";
 import { companySignupValidationSchema } from "./ValidationSchema";
-import { Modal,IconButton } from "@mui/material";
+import { Modal, IconButton } from "@mui/material";
 import ErrorMessage from "../UI/ErrorMessage";
 
 const CompanySignup = () => {
   const { setUser } = useContext(UserContext);
-  const [avatar, setAvatar] = useState("")
+  const [avatar, setAvatar] = useState("");
   const [errorModalState, setErrorModalState] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const handleOpen = (msg) => {
@@ -99,13 +99,13 @@ const CompanySignup = () => {
   const onAvatarChange = (event) => {
     const imageFile = event.target.files[0];
     const reader = new FileReader();
-    
+
     reader.onload = () => {
       const base64String = reader.result;
       setAvatar(base64String);
-    }
+    };
     reader.readAsDataURL(imageFile);
-  }
+  };
 
   return (
     <Paper
@@ -133,7 +133,7 @@ const CompanySignup = () => {
         Company Sign Up
       </Typography>
       <IconButton color="primary" aria-label="upload picture" component="label">
-        <input hidden accept="image/*" type="file" onChange={onAvatarChange}/>
+        <input hidden accept="image/*" type="file" onChange={onAvatarChange} />
         <Avatar sx={{ m: 1, bgcolor: "primary.main" }} src={avatar} />
       </IconButton>
       <Box

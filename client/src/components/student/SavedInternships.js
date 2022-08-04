@@ -2,8 +2,11 @@ import React, { useState, useContext, useEffect } from "react";
 import { IconButton, Box, Typography } from "@mui/material";
 import JobBlock from "../jobs/JobBlock";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { UserContext } from "../auth/UserContext";
-import { getSavedInternships, postInternshipUnsave } from "../../api/internship-api";
+import { UserContext } from "../../store/UserContext";
+import {
+  getSavedInternships,
+  postInternshipUnsave,
+} from "../../api/internship-api";
 
 const boxStyling = { display: "flex", flexDirection: "column", gap: "30px" };
 
@@ -23,7 +26,7 @@ const SavedInternships = () => {
   const onDelete = async (internship_id) => {
     const res = await postInternshipUnsave(internship_id, user.token);
     setInternships(res.is_save);
-  }
+  };
 
   return (
     <Box sx={boxStyling} mb="30px">

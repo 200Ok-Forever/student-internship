@@ -1,5 +1,12 @@
 export const STUDENT_ROLE = 1;
 export const RECRUITER_ROLE = 2;
+export const RESUME = [
+  "Personal Information",
+  "Education",
+  "Work Experience",
+  "Relavant Project",
+  "Skills",
+];
 export const SKILLS =
   [
     {
