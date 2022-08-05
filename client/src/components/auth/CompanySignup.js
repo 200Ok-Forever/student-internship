@@ -12,15 +12,16 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import { UserContext } from "./UserContext";
+import { UserContext } from "../../store/UserContext";
 import { CompanySignupAPI } from "../../api/auth-api";
 import { useFormik } from "formik";
 import { companySignupValidationSchema } from "./ValidationSchema";
-import { Modal } from "@mui/material";
+import { Modal, IconButton } from "@mui/material";
 import ErrorMessage from "../UI/ErrorMessage";
 
 const CompanySignup = () => {
   const { setUser } = useContext(UserContext);
+  const [avatar, setAvatar] = useState("");
   const [errorModalState, setErrorModalState] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const handleOpen = (msg) => {
@@ -28,6 +29,7 @@ const CompanySignup = () => {
     setErrorModalState(true);
   };
   const handleClose = () => setErrorModalState(false);
+  const history = useHistory();
 
   const formik = useFormik({
     initialValues: {
@@ -61,18 +63,16 @@ const CompanySignup = () => {
           company_url: values.company_url,
           location: values.location,
           description: values.description,
-          avatar: "",
+          avatar: avatar,
           company_logo: "",
           company_size: values.size,
           founded_year: values.founded_year,
         };
         try {
-          console.log(signupValues);
           const res = await CompanySignupAPI(signupValues);
           if (res.status === true) {
             const userInfo = res.user;
             const userInfoWithToken = { token: res.token, ...userInfo };
-            console.log(userInfo, userInfoWithToken);
             setUser(userInfoWithToken);
             history.push("/");
           } else if (
@@ -96,7 +96,16 @@ const CompanySignup = () => {
     },
   });
 
-  const history = useHistory();
+  const onAvatarChange = (event) => {
+    const imageFile = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      const base64String = reader.result;
+      setAvatar(base64String);
+    };
+    reader.readAsDataURL(imageFile);
+  };
 
   return (
     <Paper
@@ -123,7 +132,10 @@ const CompanySignup = () => {
       >
         Company Sign Up
       </Typography>
-      <Avatar sx={{ m: 1, bgcolor: "primary.main" }}></Avatar>
+      <IconButton color="primary" aria-label="upload picture" component="label">
+        <input hidden accept="image/*" type="file" onChange={onAvatarChange} />
+        <Avatar sx={{ m: 1, bgcolor: "primary.main" }} src={avatar} />
+      </IconButton>
       <Box
         component="form"
         noValidate

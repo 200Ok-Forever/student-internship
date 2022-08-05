@@ -31,13 +31,12 @@ import RecommendedCandidates from "./components/recruiter/RecommendedCandidates"
 import ForgottenPassword from "./components/auth/ForgottenPassword";
 import ResetPassword from "./components/auth/ResetPassword";
 import ResumeCreator from "./components/educational/ResumeCreator";
-import ResumeCreatorStep2 from "./components/educational/ResumeCreatorStep2";
 import Chat from "./components/chat/Chat";
 import Profile from "./components/student/Profile";
-import { UserContext } from "./components/auth/UserContext";
-import UserPosts from './components/forum/UserPosts';
-import CreateInternship from './components/recruiter/CreateInternship';
-import { STUDENT_ROLE, RECRUITER_ROLE } from './constants';
+import { UserContext } from "./store/UserContext";
+import UserPosts from "./components/forum/UserPosts";
+import CreateInternship from "./components/recruiter/CreateInternship";
+import { STUDENT_ROLE, RECRUITER_ROLE } from "./constants";
 
 export const decodeToken = (token) => {
   if (!token) { return }
@@ -58,7 +57,7 @@ export const decodeToken = (token) => {
 function getCookie(name) {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop().split(';').shift();
+  if (parts.length === 2) return parts.pop().split(";").shift();
 }
 
 function App() {
@@ -68,7 +67,7 @@ function App() {
   return (
     <Fragment>
       <UserContext.Provider value={{ user, setUser }}>
-        <NavBar />
+        {location.pathname !== "/chat" && <NavBar />}
         <Container
           maxWidth={false}
           className={location.pathname !== "/chat" && classes.rootContainer}
@@ -94,11 +93,15 @@ function App() {
               exact
               component={ResetPassword}
             />
-            <Route path="/resume/s1" exact component={ResumeCreator} />
-            <Route path="/resume/s2" exact component={ResumeCreatorStep2} />
+            <Route path="/resume-creator" exact component={ResumeCreator} />
             <Route path="/forum" exact component={Forum} />
             <Route path="/chat" exact component={Chat} />
-            <PrivateRoute role={RECRUITER_ROLE} path="/applications" exact component={Applications} />
+            <PrivateRoute
+              role={RECRUITER_ROLE}
+              path="/applications"
+              exact
+              component={Applications}
+            />
             <Route path="/profile" exact component={Profile} />
             <PrivateRoute
               path="/recommended-candidates"
@@ -134,8 +137,18 @@ const NarrowContainerRoutes = () => {
         <PrivateRoute role={STUDENT_ROLE} path="/saved" component={Saved} />
         <PrivateRoute role={STUDENT_ROLE} path="/history" component={History} />
         <Route path="/resources" exact component={Resources} />
-        <PrivateRoute role={RECRUITER_ROLE} path="/job/create" exact component={CreateInternship} />
-        <PrivateRoute role={RECRUITER_ROLE} path="/job/:id/edit" exact component={CreateInternship} />
+        <PrivateRoute
+          role={RECRUITER_ROLE}
+          path="/job/create"
+          exact
+          component={CreateInternship}
+        />
+        <PrivateRoute
+          role={RECRUITER_ROLE}
+          path="/job/:id/edit"
+          exact
+          component={CreateInternship}
+        />
         <Route path="*" component={NotFound} />
       </Switch>
     </Box>
@@ -150,15 +163,19 @@ const PrivateRoute = ({ component: Component, role, ...rest }) => {
   return (
     <Route
       {...rest}
-      render={props =>
-        isLoggedIn && authorised ?
+      render={(props) =>
+        isLoggedIn && authorised ? (
           <Component {...props} />
-        : !isLoggedIn ?
-          <Redirect to={{ pathname: '/login', state: { from: props.location } }} />
-        : <Redirect to={{ pathname: '/'}} />
+        ) : !isLoggedIn ? (
+          <Redirect
+            to={{ pathname: "/login", state: { from: props.location } }}
+          />
+        ) : (
+          <Redirect to={{ pathname: "/" }} />
+        )
       }
     />
-  )
-}
+  );
+};
 
 export default App;

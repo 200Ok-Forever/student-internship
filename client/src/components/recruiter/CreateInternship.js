@@ -20,6 +20,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { CURRENCY_CODES } from "./constants";
+import SkillsSelect from "../UI/SkillsSelect";
 
 const CreateInternship = () => {
   const { id } = useParams();
@@ -34,6 +35,8 @@ const CreateInternship = () => {
   const [maxSalary, setMaxSalary] = useState(0);
   const [remote, setRemote] = useState(false);
   const [type, setType] = useState("full time");
+  const [skills, setSkills] = useState([]);
+  const [description, setDescription] = useState("");
   const [steps, setSteps] = useState([""]);
   const [questions, setQuestions] = useState([""]);
   const [resume, setResume] = useState(true);
@@ -191,6 +194,21 @@ const CreateInternship = () => {
               <MenuItem value="part time">Part Time</MenuItem>
             </Select>
           </FormControl>
+        </Box>
+        <Box>
+          <SkillsSelect skills={skills} setSkills={setSkills} label="Required Skills" />
+        </Box>
+        <Box>
+          <TextField
+            id="description"
+            label="Role Description"
+            placeholder="A description of the role"
+            multiline
+            rows={5}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            fullWidth
+          />
         </Box>
         <Box>
           <Typography variant="h5" component="div" sx={{ mb: 1 }}>

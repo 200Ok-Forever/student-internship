@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { Box, Typography } from "@mui/material";
 import CircularProgress from '@mui/material/CircularProgress';
 import JobBlock from "../jobs/JobBlock";
-import { UserContext } from "../auth/UserContext";
+import { UserContext } from "../../store/UserContext";
 import { getInternshipHistory } from "../../api/internship-api";
 
 const boxStyling = { display: "flex", flexDirection: "column", gap: "30px" };
@@ -17,9 +17,9 @@ const History = () => {
       const res = await getInternshipHistory(user.token);
       setLoading(false);
       setInternships(res.is_seen);
-    }
+    };
     getHistory();
-  }, [user.token])
+  }, [user.token]);
 
   return (
     <Box sx={boxStyling} mb="30px">

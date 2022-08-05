@@ -6,7 +6,7 @@ import moment from "moment";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import VideoCameraFrontIcon from "@mui/icons-material/VideoCameraFront";
 import RemoveButton from "../UI/RemoveButton";
-import { UserContext } from "../auth/UserContext";
+import { UserContext } from "../../store/UserContext";
 import { getInternshipEvents } from "../../api/internship-api";
 import { useHistory } from "react-router-dom";
 import { postInternshipUncalendar } from "../../api/internship-api";

@@ -10,7 +10,7 @@ import { useHistory } from "react-router-dom";
 import { Paper } from "@mui/material";
 import { loginValidationSchema } from "./ValidationSchema";
 import { LoginAPI } from "../../api/auth-api";
-import { UserContext } from "./UserContext";
+import { UserContext } from "../../store/UserContext";
 import { Modal } from "@mui/material";
 import ErrorMessage from "../UI/ErrorMessage";
 import { decodeToken } from '../../App';

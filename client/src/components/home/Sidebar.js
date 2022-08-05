@@ -14,7 +14,7 @@ import { Link as RouteLink, useHistory } from "react-router-dom";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import VideoCameraFrontIcon from "@mui/icons-material/VideoCameraFront";
 import RemoveButton from "../UI/RemoveButton";
-import { UserContext } from "../auth/UserContext";
+import { UserContext } from "../../store/UserContext";
 import { getInternshipEvents, postInternshipUncalendar } from "../../api/internship-api";
 
 const Sidebar = () => {

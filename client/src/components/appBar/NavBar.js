@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 import Logo from "../../asset/logo.svg";
 import ChatIcon from "@mui/icons-material/Chat";
-import { UserContext } from "../auth/UserContext";
+import { UserContext } from "../../store/UserContext";
 import { LogoutAPI } from "../../api/auth-api";
 
 const NavBar = () => {
@@ -123,7 +123,7 @@ const NavBar = () => {
                   aria-label="account of current user"
                   aria-controls="user-menu-appbar"
                   aria-haspopup="true"
-                  onClick={() => history.push("/chat")}
+                  onClick={() => window.open(`/chat`, "_blank")}
                   color="primary"
                 >
                   <ChatIcon />
