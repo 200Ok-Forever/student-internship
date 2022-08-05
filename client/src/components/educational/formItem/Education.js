@@ -131,6 +131,7 @@ const EducationForm = ({ idx }) => {
       <PickDate
         start={allInfo.Education ? allInfo?.Education[idx]?.Start : new Date()}
         end={allInfo.Education ? allInfo?.Education[idx]?.End : new Date()}
+        present={allInfo.Education ? allInfo?.Education[idx]?.Present : false}
         setValue={GetNewInfo}
       />
       <Grid item xs={12}>

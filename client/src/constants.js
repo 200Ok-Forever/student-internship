@@ -1560,6 +1560,7 @@ export const RESUME_DATA = {
     Major: "",
     Start: new Date(),
     End: new Date(),
+    Present: false,
     Description: "",
   },
   Relevant_Projects: {
@@ -1572,6 +1573,7 @@ export const RESUME_DATA = {
     Location: "",
     Start: new Date(),
     End: new Date(),
+    Present: false,
     Description: "",
   },
 };

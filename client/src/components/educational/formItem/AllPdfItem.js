@@ -72,7 +72,9 @@ export const EducationItem = ({ listEdu }) => {
             </Text>
             <Text style={styles.time}>
               {item?.Start.toLocaleString().split(",")[0]} -{" "}
-              {item?.End.toLocaleString().split(",")[0]}
+              {item.Present
+                ? "Present"
+                : item?.End.toLocaleString().split(",")[0]}
             </Text>
           </View>
           <Text style={styles.text}>
@@ -97,7 +99,9 @@ export const WorkItem = ({ listWork }) => {
             </Text>
             <Text style={styles.time}>
               {item?.Start.toLocaleString().split(",")[0]} -{" "}
-              {item?.End.toLocaleString().split(",")[0]}
+              {item?.Present
+                ? "Present"
+                : item?.End.toLocaleString().split(",")[0]}
             </Text>
           </View>
           <Text style={styles.text}>{item?.Position}</Text>

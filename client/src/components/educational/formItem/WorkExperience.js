@@ -137,6 +137,11 @@ const WorkForm = ({ idx }) => {
             ? allInfo?.Work_Experience[idx]?.End
             : new Date()
         }
+        present={
+          allInfo.Work_Experience
+            ? allInfo?.Work_Experience[idx]?.Present
+            : false
+        }
         setValue={GetNewInfo}
       />
       <Grid item xs={12}>
