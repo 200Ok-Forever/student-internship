@@ -259,6 +259,24 @@ if you did not request a password reset, please ignore this email.
                }, 404
 
     @staticmethod
+    def updateUserInfoShort(data):
+        current_user_id = get_jwt_identity()
+        current_user = User.query.filter_by(uid=current_user_id).first()
+        if data["avatar"] is not None:
+            current_user.avatar = data["avatar"]
+            db.session.commit()
+            return {
+                       "status": True,
+                       "message": "User info updated.",
+                       "user_info": current_user.get_info()
+                   }, 200
+        else:
+            return {
+                       "status": False,
+                       "message": "please fill in required data correctly.",
+                   }, 404
+
+    @staticmethod
     def userInfoLong(uid):
         user = User.query.filter_by(uid=uid).first()
         if user.email is not None:
@@ -303,21 +321,3 @@ if you did not request a password reset, please ignore this email.
                        "status": False,
                        "message": "please fill in required data correctly.",
                    }, 400
-
-    @staticmethod
-    def updateUserInfoShort(data):
-        current_user_id = get_jwt_identity()
-        current_user = User.query.filter_by(uid=current_user_id).first()
-        if data["avatar"] is not None:
-            current_user.avatar = data["avatar"]
-            db.session.commit()
-            return {
-                       "status": True,
-                       "message": "User info updated.",
-                       "user_info": current_user.get_info()
-                   }, 200
-        else:
-            return {
-                       "status": False,
-                       "message": "please fill in required data correctly.",
-                   }, 404
