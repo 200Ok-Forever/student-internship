@@ -71,14 +71,14 @@ export const EducationItem = ({ listEdu }) => {
               {item?.School} {item?.Location}
             </Text>
             <Text style={styles.time}>
-              {item?.Start.toLocaleString().split(",")[0]} -{" "}
+              {item?.Start.toLocaleString().split(",")[0]} -{"  "}
               {item.Present
                 ? "Present"
                 : item?.End.toLocaleString().split(",")[0]}
             </Text>
           </View>
           <Text style={styles.text}>
-            {item?.Degree} {item?.Major && "(" + item.Major + ")"}
+            {item?.Degree} {item?.Major}
           </Text>
           <Text style={styles.text}>{item?.Description}</Text>
         </View>

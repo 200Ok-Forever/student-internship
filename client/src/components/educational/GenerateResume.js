@@ -1,9 +1,9 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { ResumeInfoContext } from "../../store/ResumeInfoContext";
 import { Box, Typography } from "@material-ui/core";
 import classes from "./resume.module.scss";
 import { PDFViewer } from "@react-pdf/renderer";
-import { Page, Text, View, Document } from "@react-pdf/renderer";
+import { Page, Document } from "@react-pdf/renderer";
 import { styles } from "./ResumeStyle";
 import { RESUME_UNDERSCORE } from "../../constants";
 import {
