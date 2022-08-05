@@ -15,6 +15,9 @@ class SendMeetingInvitation(Resource):
         200: "success",
         404: "User not found!",
     })
-    # @jwt_required()
+    @chat_api.expect(zoom_link)
     def post(self):
-        return ChatUtils.send_zoom_meeting_invitation()
+        """ Send Zoom meeting invitation link """
+        # Grab the json data
+        data = request.get_json()
+        return ChatUtils.send_zoom_meeting_invitation(data)
