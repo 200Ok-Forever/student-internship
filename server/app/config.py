@@ -31,6 +31,9 @@ class Config:
     # Language
     SUPPORTED_LOCALES = ['en']
 
+    # CORS
+    CORS_HEADERS = 'Content-Type'
+
 
 # Use this for demo
 class DevConfig(Config):

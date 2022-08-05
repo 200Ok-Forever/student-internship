@@ -247,9 +247,8 @@ if you did not request a password reset, please ignore this email.
                    }, 404
 
     @staticmethod
-    def userInfoShort():
-        current_user_id = get_jwt_identity()
-        user = User.query.filter_by(uid=current_user_id).first()
+    def userInfoShort(uid):
+        user = User.query.filter_by(uid=uid).first()
         if user is not None:
             user_info = User.get_info(user)
             return user_info, 200
@@ -259,9 +258,8 @@ if you did not request a password reset, please ignore this email.
                }, 404
 
     @staticmethod
-    def userInfoLong():
-        current_user_id = get_jwt_identity()
-        user = User.query.filter_by(uid=current_user_id).first()
+    def userInfoLong(uid):
+        user = User.query.filter_by(uid=uid).first()
         if user.email is not None:
             current_student = Student.query.filter_by(email=user.email).first()
             print(current_student)
