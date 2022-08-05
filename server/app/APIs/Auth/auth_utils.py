@@ -33,7 +33,8 @@ class AuthUtils:
                 access_token = create_access_token(identity=user_info['uid'])
                 resp = {"status": True,
                         "message": "Successfully logged in.",
-                        "token": access_token
+                        "token": access_token,
+                        "user_info": user_info
                         }
                 return resp, 200
 
