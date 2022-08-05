@@ -13,7 +13,6 @@ import { LoginAPI } from "../../api/auth-api";
 import { UserContext } from "../../store/UserContext";
 import { Modal } from "@mui/material";
 import ErrorMessage from "../UI/ErrorMessage";
-import { decodeToken } from '../../App';
 
 const Login = () => {
   const history = useHistory();
@@ -40,10 +39,10 @@ const Login = () => {
             console.log(res);
             // If success, store the user info and token to UserContext then route to main page
             document.cookie = "user=" + res.token + "; Path=/;";
-            console.log(document.cookie)
-            const userInfoWithToken = {...res.user_info, token: res.token}
+            console.log(document.cookie);
+            const userInfoWithToken = { ...res.user_info, token: res.token };
             setUser(userInfoWithToken);
-            setTimeout(() => {}, 300); // user not completely set after pushing to main page, if no timeout (Weird!) 
+            setTimeout(() => {}, 300); // user not completely set after pushing to main page, if no timeout (Weird!)
             history.push("/");
           } else if (
             res.response.status === 404 ||

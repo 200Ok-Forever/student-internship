@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
@@ -11,13 +11,13 @@ import { studentEditValidationSchema } from "../auth/ValidationSchema";
 import { Paper, IconButton } from "@mui/material";
 import { UserContext } from "../../store/UserContext";
 import ErrorMessage from "../UI/ErrorMessage";
-import { changeAvatarApi, editStudentProfileAPI, getLongUserInfo } from "../../api/auth-api";
+import { changeAvatarApi, editStudentProfileAPI } from "../../api/auth-api";
 import { useHistory } from "react-router-dom";
 
 const EditStudentProfile = () => {
   const history = useHistory();
 
-  const { user, setUser } = useContext(UserContext);
+  const { user } = useContext(UserContext);
 
   // Handle the error modal
   const [errorModalState, setErrorModalState] = useState(false);
@@ -32,7 +32,7 @@ const EditStudentProfile = () => {
   };
 
   // get user's original info
-  const [info, setInfo] = useState({});
+  // const [info, setInfo] = useState({});
   // useEffect(() => {
   //   const loadInfo = async () => {
   //     const res = await getLongUserInfo(user.uid);

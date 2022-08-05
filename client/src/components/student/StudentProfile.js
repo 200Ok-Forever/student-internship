@@ -2,8 +2,7 @@ import { Typography, Avatar, Button } from "@mui/material";
 import { Box } from "@mui/system";
 import React from "react";
 import ProfileInfo from "./ProfileInfo";
-import { useHistory } from "react-router-dom";
-import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
+import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
 
 const StudentProfile = () => {
   const infoData = {
@@ -17,7 +16,6 @@ const StudentProfile = () => {
     description:
       "Hello! asdkljfaskldjfaskldjfaskldjfa klsdfjaskldfjaskldjfalskdfjasklfklasdjfklasf",
   };
-  const history = useHistory();
 
   return (
     <Box
@@ -32,7 +30,9 @@ const StudentProfile = () => {
       <Avatar sx={{ m: 1, bgcolor: "primary.main" }} />
       <Typography variant="h4" fontWeight="bold" fontFamily="inherit">
         {infoData.first_name} {infoData.last_name}
-				<Button size="small"><ChatOutlinedIcon/></Button>
+        <Button size="small">
+          <ChatOutlinedIcon />
+        </Button>
       </Typography>
       <ProfileInfo data={infoData} />
     </Box>

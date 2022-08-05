@@ -45,20 +45,20 @@ const data = [
   },
 ];
 
-const infoData = {
-  first_name: "Leon",
-  last_name: "Wu",
-  university: "UNSW",
-  degree: "Bachelor of Computer Science",
-  positions: "Software Engineer, IT consultant",
-  major: "AI",
-  skills: "Java,C",
-  description:
-    "Hello! asdkljfaskldjfaskldjfaskldjfa klsdfjaskldfjaskldjfalskdfjasklfklasdjfklasf",
-};
+// const infoData = {
+//   first_name: "Leon",
+//   last_name: "Wu",
+//   university: "UNSW",
+//   degree: "Bachelor of Computer Science",
+//   positions: "Software Engineer, IT consultant",
+//   major: "AI",
+//   skills: "Java,C",
+//   description:
+//     "Hello! asdkljfaskldjfaskldjfaskldjfa klsdfjaskldfjaskldjfalskdfjasklfklasdjfklasf",
+// };
 
 const Profile = () => {
-  const { user, setUser } = useContext(UserContext);
+  const { user } = useContext(UserContext);
 
   // get user's infomations
   const [info, setInfo] = useState({});
