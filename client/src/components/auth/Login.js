@@ -13,6 +13,7 @@ import { LoginAPI } from "../../api/auth-api";
 import { UserContext } from "./UserContext";
 import { Modal } from "@mui/material";
 import ErrorMessage from "../UI/ErrorMessage";
+import { decodeToken } from '../../App';
 
 const Login = () => {
   const history = useHistory();
@@ -37,9 +38,8 @@ const Login = () => {
           const res = await LoginAPI(values);
           if (res.status === true) {
             // If success, store the user info and token to UserContext then route to main page
-            const userInfoWithToken = { token: res.token, ...res.user };
             document.cookie = "user=" + res.token + "; Path=/;";
-            setUser(userInfoWithToken);
+            setUser(decodeToken(res.token));
             history.push("/");
           } else if (
             res.response.status === 404 ||

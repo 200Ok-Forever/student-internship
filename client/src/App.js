@@ -39,11 +39,10 @@ import UserPosts from './components/forum/UserPosts';
 import CreateInternship from './components/recruiter/CreateInternship';
 import { STUDENT_ROLE, RECRUITER_ROLE } from './constants';
 
-const getSession = () => {
-  const cookie = getCookie("user");
-  if (!cookie) { return }
+export const decodeToken = (token) => {
+  if (!token) { return }
 
-  var decoded = jwt_decode(cookie);
+  var decoded = jwt_decode(token);
 
   return {
     avatar: decoded.avatar,
@@ -52,7 +51,7 @@ const getSession = () => {
     uid: decoded.uid,
     username: decoded.username,
     verification_code: decoded.verification_code,
-    token: cookie
+    token: token
   }
 }
 
@@ -64,7 +63,7 @@ function getCookie(name) {
 
 function App() {
   const location = useLocation();
-  const [user, setUser] = useState(getSession() || {});
+  const [user, setUser] = useState(decodeToken(getCookie("user")) || {});
 
   return (
     <Fragment>
