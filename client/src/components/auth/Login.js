@@ -36,6 +36,7 @@ const Login = () => {
       const login = async (values) => {
         try {
           const res = await LoginAPI(values);
+          console.log(res);
           if (res.status === true) {
             // If success, store the user info and token to UserContext then route to main page
             document.cookie = "user=" + res.token + "; Path=/;";

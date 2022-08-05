@@ -18,7 +18,7 @@ import {
 import Logo from "../../asset/logo.svg";
 import ChatIcon from "@mui/icons-material/Chat";
 import { UserContext } from "../../store/UserContext";
-import { LogoutAPI, userInfoShortApi } from "../../api/auth-api";
+import { LogoutAPI, getShortUserInfo } from "../../api/auth-api";
 
 const NavBar = () => {
   const history = useHistory();
@@ -79,7 +79,7 @@ const NavBar = () => {
     const update = async () => {
       console.log(user);
       if (user.token) {
-        const res = await userInfoShortApi(user.token);
+        const res = await getShortUserInfo(user.uid);
         setUser({
           ...user,
           uid: res.userId,

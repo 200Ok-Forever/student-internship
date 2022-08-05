@@ -68,13 +68,10 @@ export const resetPasswordAPI = async (data) => {
   }
 };
 
-export const userInfoShortApi = async (token) => {
+export const getShortUserInfo = async (uid) => {
   try {
-    console.log(token);
-    const url = `${baseURL}/auth/userInfoShort`;
-    const res = await getAxios(url, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const url = `${baseURL}/auth/userInfoShort/${uid}`;
+    const res = await getAxios(url, {});
 
     return res.data;
   } catch (err) {
