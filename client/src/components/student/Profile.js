@@ -1,6 +1,6 @@
 import { Paper, Typography, Avatar, Button } from "@mui/material";
 import { Box } from "@mui/system";
-import React from "react";
+import React, { useEffect, useContext, useState } from "react";
 import TitleWithIcon from "../UI/TitleWithIcon";
 import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
 import JobBasicCard from "../UI/JobBasicCard";
@@ -9,6 +9,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import ProfileInfo from "./ProfileInfo";
 import { useHistory } from "react-router-dom";
+import { getLongUserInfo } from "../../api/auth-api";
+import { UserContext } from "../../store/UserContext";
 
 const data = [
   {
@@ -56,7 +58,20 @@ const infoData = {
 };
 
 const Profile = () => {
+  const { user, setUser } = useContext(UserContext);
+
+  // get user's infomations
+  const [info, setInfo] = useState({});
+  useEffect(() => {
+    const loadInfo = async () => {
+      const res = await getLongUserInfo(user.uid);
+      setInfo(res);
+    };
+    loadInfo();
+  }, []);
+
   const history = useHistory();
+
   return (
     <Box
       sx={{
@@ -69,7 +84,7 @@ const Profile = () => {
     >
       <Avatar sx={{ m: 1, bgcolor: "primary.main" }} />
       <Typography variant="h4" fontWeight="bold" fontFamily="inherit">
-        {infoData.first_name} {infoData.last_name}
+        {info.first_name} {info.last_name}
       </Typography>
       <Button
         variant="outlined"
@@ -80,7 +95,7 @@ const Profile = () => {
       >
         Edit Profile
       </Button>
-      <ProfileInfo data={infoData} />
+      <ProfileInfo data={info} />
       <TitleWithIcon
         sx={{}}
         icon={<WorkHistoryIcon color="primary" />}

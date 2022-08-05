@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
@@ -11,13 +11,15 @@ import { studentEditValidationSchema } from "../auth/ValidationSchema";
 import { Paper, IconButton } from "@mui/material";
 import { UserContext } from "../../store/UserContext";
 import ErrorMessage from "../UI/ErrorMessage";
-import { changeAvatarApi, editStudentProfileAPI } from "../../api/auth-api";
+import { changeAvatarApi, editStudentProfileAPI, getLongUserInfo } from "../../api/auth-api";
 import { useHistory } from "react-router-dom";
 
 const EditStudentProfile = () => {
   const history = useHistory();
 
   const { user, setUser } = useContext(UserContext);
+
+  // Handle the error modal
   const [errorModalState, setErrorModalState] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const handleOpen = (msg) => {
@@ -29,6 +31,17 @@ const EditStudentProfile = () => {
     history.push("/");
   };
 
+  // get user's original info
+  const [info, setInfo] = useState({});
+  // useEffect(() => {
+  //   const loadInfo = async () => {
+  //     const res = await getLongUserInfo(user.uid);
+  //     setInfo(res);
+  //   }
+  //   loadInfo();
+  // }, []);
+
+  // change avatar state
   const [avatar, setAvatar] = useState(user.avatar);
   const onAvatarChange = (event) => {
     const imageFile = event.target.files[0];
@@ -43,6 +56,14 @@ const EditStudentProfile = () => {
 
   const formik = useFormik({
     initialValues: {
+      // firstName: info.firstName,
+      // lastName: info.lastName,
+      // university: info.university,
+      // degree: info.degree,
+      // major: info.major,
+      // positions: info.position,
+      // skills: info.skills,
+      // description: info.description,
       firstName: "",
       lastName: "",
       university: "",
@@ -95,7 +116,6 @@ const EditStudentProfile = () => {
       };
       edit(values);
       changeAvatar();
-      user.token = user.token;
     },
   });
 

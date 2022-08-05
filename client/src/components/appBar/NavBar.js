@@ -80,13 +80,7 @@ const NavBar = () => {
       console.log(user);
       if (user.token) {
         const res = await getShortUserInfo(user.uid);
-        setUser({
-          ...user,
-          uid: res.userId,
-          avatar: res.avatar,
-          username: res.userName,
-        });
-        console.log(res);
+        setUser({...res, token: user.token});
         setAvatar(res.avatar);
       }
     };

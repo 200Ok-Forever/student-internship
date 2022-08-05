@@ -79,6 +79,17 @@ export const getShortUserInfo = async (uid) => {
   }
 };
 
+export const getLongUserInfo = async (uid) => {
+  try {
+    const url = `${baseURL}/auth/userInfoLong/${uid}`;
+    const res = await getAxios(url, {});
+
+    return res.data;
+  } catch (err) {
+    return err;
+  }
+};
+
 export const editStudentProfileAPI = async (data, token) => {
   try {
     const url = `${baseURL}/auth/userInfoLong`;
