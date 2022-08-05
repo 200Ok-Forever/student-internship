@@ -56,12 +56,10 @@ export const postInternshipCalendar = async (data, token) => (
   )
 )
 
-export const postInternshipUncalendar = async (id, token) => (
+export const postInternshipUncalendar = async (data, token) => (
   await postRequest(
     '/Internship/internships/uncalendar',
-    {
-      id: id
-    }, 
+    data,
     {
       headers: {
         'Authorization': `Bearer ${token}`

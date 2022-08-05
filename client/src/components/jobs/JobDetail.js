@@ -189,7 +189,7 @@ const BasicInfo = ({ info }) => {
   const addCalendarHandler = () => {
     if (!isCalendar) {
       postInternshipCalendar({
-        name: info.jobTitle,
+        name: info.companyName + " - " + info.jobTitle,
         start: info.closedDate !== "None" ? info.closedDate : moment().add(2, 'w').format('YYYY-MM-DD hh:mm:ss'),
         type: 'internship',
         internshipId: info.internship_id
