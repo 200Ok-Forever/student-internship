@@ -20,17 +20,3 @@
   border: 1px solid #3d70b2;
   margin: 0 5px;
 }
-
-/* CHAT STYLES */
-
-.ce-chat-list {
-  @media (max-width: 570px) {
-    margin-top: 80px;
-  }
-}
-
-.ce-chat-engine {
-  @media (max-width: 570px) {
-    margin-top: 80px !important;
-  }
-}

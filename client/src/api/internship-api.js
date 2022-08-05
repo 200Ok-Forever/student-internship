@@ -1,7 +1,14 @@
 import { getRequest, postRequest } from './base';
 
-export const getInternshipRecommendations = async (params) => (
-  await getRequest(`/Internship/internships/recommend?type=${params.type}`)
+export const getInternshipRecommendations = async (type, token) => (
+  await getRequest(
+    `/Internship/internships/recommend?type=${type}`,
+    {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    }
+  )
 )
 
 export const getInternshipHistory = async (token) => (
@@ -9,7 +16,7 @@ export const getInternshipHistory = async (token) => (
     `/Internship/internships/history`,
     {
       headers: {
-        'Authorization': token
+        'Authorization': `Bearer ${token}`
       }
     }
   )
@@ -20,7 +27,7 @@ export const getSavedInternships = async (token) => (
     `/Internship/internships/save`,
     {
       headers: {
-        'Authorization': token
+        'Authorization': `Bearer ${token}`
       }
     }
   )
@@ -73,7 +80,7 @@ export const postInternshipSave = async (id, token) => (
     }, 
     {
       headers: {
-        'Authorization': token
+        'Authorization': `Bearer ${token}`
       }
     }
   )
@@ -87,7 +94,7 @@ export const postInternshipUnsave = async (id, token) => (
     }, 
     {
       headers: {
-        'Authorization': token
+        'Authorization': `Bearer ${token}`
       }
     }
   )

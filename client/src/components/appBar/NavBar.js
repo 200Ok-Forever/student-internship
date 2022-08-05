@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 import Logo from "../../asset/logo.svg";
 import ChatIcon from "@mui/icons-material/Chat";
-import { UserContext } from "../auth/UserContext";
+import { UserContext } from "../../store/UserContext";
 import { LogoutAPI } from "../../api/auth-api";
 
 const NavBar = () => {
@@ -55,7 +55,6 @@ const NavBar = () => {
 
   const { user, setUser } = useContext(UserContext);
   const loginState = user === "" ? false : true;
-  console.log(user, loginState);
 
   const LogoutHandler = () => {
     const logout = async () => {
@@ -80,7 +79,7 @@ const NavBar = () => {
         console.log(err);
       }
     };
-    document.cookie = "user" +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    document.cookie = "user=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;";
     logout();
     setUser("");
   };
@@ -124,7 +123,7 @@ const NavBar = () => {
                   aria-label="account of current user"
                   aria-controls="user-menu-appbar"
                   aria-haspopup="true"
-                  onClick={() => history.push("/chat")}
+                  onClick={() => window.open(`/chat`, "_blank")}
                   color="primary"
                 >
                   <ChatIcon />

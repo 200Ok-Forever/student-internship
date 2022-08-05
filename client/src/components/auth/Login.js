@@ -10,7 +10,7 @@ import { useHistory } from "react-router-dom";
 import { Paper } from "@mui/material";
 import { loginValidationSchema } from "./ValidationSchema";
 import { LoginAPI } from "../../api/auth-api";
-import { UserContext } from "./UserContext";
+import { UserContext } from "../../store/UserContext";
 import { Modal } from "@mui/material";
 import ErrorMessage from "../UI/ErrorMessage";
 
@@ -38,7 +38,7 @@ const Login = () => {
           if (res.status === true) {
             // If success, store the user info and token to UserContext then route to main page
             const userInfoWithToken = { token: res.token, ...res.user };
-            document.cookie = "user" +'='+ res.token +'; Path=/;';
+            document.cookie = "user=" + res.token + "; Path=/;";
             setUser(userInfoWithToken);
             history.push("/");
           } else if (
