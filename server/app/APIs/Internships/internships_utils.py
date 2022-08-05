@@ -171,7 +171,7 @@ class InternshipsUtils:
                     if student:
                         
                         calendar = db.session.query(Calendar).filter(Calendar.internship_id == id) \
-                            .filter(Calendar.student_id == student.id).all()
+                            .filter(Calendar.uid == uid).all()
 
                         if calendar:
                             is_calendar = "True"
@@ -484,18 +484,13 @@ class InternshipsUtils:
 
     @staticmethod
     def getCalendar(uid):
-        get_student = db.session.query(Student).filter(Student.id == uid)
-        if not get_student:
-            return {
-                       'msg': 'no related student'
-                   }, 400
-
-        calendars = db.session.query(Calendar).filter(Calendar.student_id == uid)
+        calendars = db.session.query(Calendar).filter(Calendar.uid == uid)
         calander_list = []
         if calendars:
             for calendar in calendars:
                 calendar_result = {
-                    'internship_id': calendar.id,
+                    "id": calendar.id,
+                    'internship_id': calendar.internship_id,
                     'start': calendar.start,
                     'title': calendar.title,
                     'type': calendar.type,
@@ -503,19 +498,14 @@ class InternshipsUtils:
                 }
                 calander_list.append(calendar_result)
 
-        return calander_list, 200
+        return dumps(calander_list, default=str), 200
 
     @staticmethod
     def addCalendar(arg, uid):
-        get_student = db.session.query(Student).filter(Student.id == uid)
-        if not get_student:
-            return {
-                       'msg': 'no related student'
-                   }, 400
         data = arg
         newCalendar = Calendar(title=data['name'], type=data['type'] \
-                               , start=data['start'], internship_id=data['internshipId'], \
-                               student_id=uid)
+                    , start=data['start'], internship_id=data['internshipId'], \
+                    uid=uid)
 
         try:
             db.session.add(newCalendar)
@@ -528,18 +518,14 @@ class InternshipsUtils:
 
     @staticmethod
     def deleteCalendar(arg, uid):
-        get_student = db.session.query(Student).filter(Student.id == uid)
-        if not get_student:
-            return {
-                       'msg': 'no related student'
-                   }, 400
-
-        obj = Calendar.query.filter_by(id=arg['id']).one()
         try:
-
-            db.delete(obj)
+            if arg['internshipId']:
+                obj = Calendar.query.filter_by(internship_id=arg['internshipId'], uid=uid).first()
+            else: # arg['id'] for zoom invites
+                obj = Calendar.query.filter_by(id=arg['id']).first()
+            db.session.delete(obj)
             db.session.commit()
-            return dumps({'message': 'delete sucessfully'}), 200
+            return InternshipsUtils.getCalendar(uid)
         except Exception as error:
 
             return dumps({'msg': error}), 400

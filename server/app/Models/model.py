@@ -207,7 +207,7 @@ class Calendar(db.Model):
     __tablename__= 't_calendar'
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     internship_id = db.Column(db.Integer,db.ForeignKey("t_internships.id"))
-    student_id = db.Column(db.Integer,db.ForeignKey("t_student.id"))
+    uid = db.Column(db.Integer,db.ForeignKey("t_user.uid"))
     start = db.Column(db.DATETIME)
     title = db.Column(db.VARCHAR(255))
     type = db.Column(db.VARCHAR(255))
