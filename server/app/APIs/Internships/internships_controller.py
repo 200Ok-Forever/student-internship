@@ -54,11 +54,12 @@ class GetInternship(Resource):
         404: "Internship not found!",
     })
     @internships_api.doc(body = get_internship_parser)
+    @jwt_required(optional=True)
     def get(self, id):
         try:
-            data = request.args
+            uid = get_jwt_identity()
             # print(data)
-            return InternshipsUtils.get_Internship(id, data)
+            return InternshipsUtils.get_Internship(id, uid)
         except Exception as error:
             return {
                        "message": error
@@ -123,62 +124,65 @@ savePostParser = internships_api.parser()
 savePostParser.add_argument('internship_id')
 @internships_api.route('/internships/save')
 class SaveInternship(Resource):
-    # @jwt_required()
+    @jwt_required()
     @internships_api.expect(saveParser, validate=True)
     def get(self):
-        arg = request.args
-        return InternshipsUtils.getSaveList(arg)
-
+        uid = get_jwt_identity()
+        return InternshipsUtils.getSaveList(uid)
+   
+    @jwt_required()
     @internships_api.expect(saveParser, savePostParser)
     def post(self):
         arg = request.get_json()
-        print(arg)
-        return InternshipsUtils.saveInternship(arg)
+        uid = get_jwt_identity()
+        return InternshipsUtils.saveInternship(arg, uid)
 
 
 @internships_api.route('/internships/unsave')
 class UnsaveInternship(Resource):
-
+    @jwt_required()
     @internships_api.expect(saveParser, validate=True)
     def post(self):
         arg = request.get_json()
-        print(arg)
-        return InternshipsUtils.unSaveInternship(arg)
+        uid = get_jwt_identity()
+        return InternshipsUtils.unSaveInternship(arg, uid)
 
 
 @internships_api.route('/internships/history')
 class GetViewedInternships(Resource):
+    @jwt_required()
     @internships_api.expect(saveParser, validate=True)
     def get(self):
-        arg = request.args
-        return InternshipsUtils.getViewedHistory(arg)
+        uid = get_jwt_identity()
+        return InternshipsUtils.getViewedHistory(uid)
 
 
 @internships_api.route('/internships/calendar')
 class InternshipCalendar(Resource):
     internship_calendar = InternshipsAPI.internship_calendar
+    @jwt_required()
     @internships_api.expect(saveParser,internship_calendar)
     def post(self):
         arg = request.get_json()
-        return InternshipsUtils.addCalendar(arg)
-        pass
+        uid = get_jwt_identity()
+        return InternshipsUtils.addCalendar(arg, uid)
  
 @internships_api.route('/internships/uncalendar')
 class InternshipCalendar(Resource):
- 
+    @jwt_required()
     @internships_api.expect(saveParser)
     def post(self):
         arg = request.get_json()
-        return InternshipsUtils.deleteCalendar(arg)
-        pass
-
+        uid = get_jwt_identity()
+        return InternshipsUtils.deleteCalendar(arg, uid)
 
 @internships_api.route('/events')
 class Events(Resource):
+    @jwt_required()
     @internships_api.expect(saveParser)
     def get(self):
-        arg = request.args
-        return InternshipsUtils.getCalendar(arg)
+        uid = get_jwt_identity()
+        return InternshipsUtils.getCalendar(uid)
 
 
 recommendParser = internships_api.parser()
@@ -192,4 +196,9 @@ class Recommend(Resource):
         arg = request.args
         print(arg)
         return InternshipsUtils.getRecommend(arg)
-        
+
+
+@internships_api.route('chat/users')
+class GetUser(Resource):
+    def get(self):
+        return InternshipsUtils.getUser()

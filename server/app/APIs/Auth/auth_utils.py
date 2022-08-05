@@ -30,11 +30,9 @@ class AuthUtils:
             elif user and user.verify_password(password):
                 user_info = User.get_info(user)
                 print(user_info)
-                access_token = create_access_token(identity=user_info['uid'])
-
+                access_token = create_access_token(identity=user_info['uid'], additional_claims=user_info)
                 resp = {"status": True,
                         "message": "Successfully logged in.",
-                        "user_info": user_info,
                         "token": access_token
                         }
                 return resp, 200
@@ -249,9 +247,8 @@ if you did not request a password reset, please ignore this email.
                    }, 404
 
     @staticmethod
-    def userInfoShort():
-        current_user_id = get_jwt_identity()
-        user = User.query.filter_by(uid=current_user_id).first()
+    def userInfoShort(uid):
+        user = User.query.filter_by(uid=uid).first()
         if user is not None:
             user_info = User.get_info(user)
             return user_info, 200
@@ -261,9 +258,8 @@ if you did not request a password reset, please ignore this email.
                }, 404
 
     @staticmethod
-    def userInfoLong():
-        current_user_id = get_jwt_identity()
-        user = User.query.filter_by(uid=current_user_id).first()
+    def userInfoLong(uid):
+        user = User.query.filter_by(uid=uid).first()
         if user.email is not None:
             current_student = Student.query.filter_by(email=user.email).first()
             print(current_student)

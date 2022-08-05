@@ -1,5 +1,5 @@
 from flask import request, jsonify, current_app
-from flask_restx import Resource
+from flask_restx import Resource, reqparse
 from .auth_model import AuthAPI
 from ...Models.model import LoginSchema, StudentSignUpSchema, CompanySignUpSchema
 from .auth_utils import AuthUtils
@@ -164,9 +164,25 @@ class PasswordResetReset(Resource):
         return AuthUtils.verify_code(send_data)
 
 
-@auth_api.route("/userInfoShort")
+@auth_api.route("/userInfoShort/<int:uid>")
 class UserInfoShort(Resource):
+    @auth_api.doc(
+        "User info short",
+        params={'uid': 'User ID'},
+        responses={
+            200: "Successfully get user info",
+            400: "Malformed data or validations failed.",
+        },
+    )
+    def get(self, uid):
+        """ User info short """
+        return AuthUtils.userInfoShort(uid)
+
+
+@auth_api.route("/userInfoShort")
+class updateUserInfoShort(Resource):
     update_user_info_short = AuthAPI.update_user_info_short
+
     @auth_api.doc(
         "User info short",
         responses={
@@ -174,12 +190,6 @@ class UserInfoShort(Resource):
             400: "Malformed data or validations failed.",
         },
     )
-    @jwt_required()
-    @auth_api.expect(authParser, validate=True)
-    def get(self):
-        """ User info short """
-        return AuthUtils.userInfoShort()
-
     @jwt_required()
     @auth_api.expect(authParser, update_user_info_short, validate=True)
     def post(self):
@@ -189,8 +199,24 @@ class UserInfoShort(Resource):
         return AuthUtils.updateUserInfoShort(update_data)
 
 
-@auth_api.route("/userInfoLong")
+@auth_api.route("/userInfoLong/<int:uid>")
 class UserInfoLong(Resource):
+
+    @auth_api.doc(
+        "User info long",
+        params={'uid': 'User ID'},
+        responses={
+            200: "Successfully get user info",
+            400: "Malformed data or validations failed.",
+        },
+    )
+    def get(self, uid):
+        """ User info long """
+        return AuthUtils.userInfoLong(uid)
+
+
+@auth_api.route("/userInfoLong")
+class updateUserInfoLong(Resource):
     update_user_info_long = AuthAPI.update_user_info_long
 
     @auth_api.doc(
@@ -200,12 +226,6 @@ class UserInfoLong(Resource):
             400: "Malformed data or validations failed.",
         },
     )
-    @jwt_required()
-    @auth_api.expect(authParser, validate=True)
-    def get(self):
-        """ User info long """
-        return AuthUtils.userInfoLong()
-
     @jwt_required()
     @auth_api.expect(authParser, update_user_info_long, validate=True)
     def post(self):

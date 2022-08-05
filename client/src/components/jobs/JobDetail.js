@@ -1,4 +1,5 @@
 import { Button, Grid, Snackbar, Typography } from "@mui/material";
+import moment from 'moment';
 import { Box } from "@mui/system";
 import React, { useContext, useEffect } from "react";
 import { useHistory, useLocation } from "react-router-dom";
@@ -24,10 +25,7 @@ import queryString from "query-string";
 import { getJob } from "../../api/search-api";
 import getSymbolFromCurrency from "currency-symbol-map";
 import { postComment, replyComment } from "../../api/comment-api";
-import {
-  postInternshipSave,
-  postInternshipUnsave,
-} from "../../api/internship-api";
+import { postInternshipCalendar, postInternshipSave, postInternshipUncalendar, postInternshipUnsave } from "../../api/internship-api";
 import { UserContext } from "../../store/UserContext";
 
 const DATA = {
@@ -135,6 +133,7 @@ const BasicInfo = ({ info }) => {
   console.log("🚀 ~ info", info);
   const { user } = useContext(UserContext);
   const history = useHistory();
+  const [isCalendar, setIsCalendar] = useState(info.is_calendar === "True");
   const [saved, setSaved] = useState(false);
   const [shareBar, setShareBar] = useState(false);
   const processes =
@@ -166,7 +165,6 @@ const BasicInfo = ({ info }) => {
     setSaved(DATA.saved);
   }, []);
   const saveJobHandler = (e) => {
-    e.preventDefault();
     if (saved) {
       postInternshipUnsave(info.internship_id, user.token);
     } else {
@@ -187,6 +185,20 @@ const BasicInfo = ({ info }) => {
     }
     setShareBar(false);
   };
+
+  const addCalendarHandler = () => {
+    if (!isCalendar) {
+      postInternshipCalendar({
+        name: info.companyName + " - " + info.jobTitle,
+        start: info.closedDate !== "None" ? info.closedDate : moment().add(2, 'w').format('YYYY-MM-DD hh:mm:ss'),
+        type: 'internship',
+        internshipId: info.internship_id
+      }, user.token)
+    } else {
+      postInternshipUncalendar(info.internship_id, user.token);
+    }
+    setIsCalendar(!isCalendar);
+  }
 
   return (
     <Box
@@ -247,8 +259,10 @@ const BasicInfo = ({ info }) => {
           variant="outlined"
           startIcon={<CalendarMonthIcon />}
           size="small"
+          onClick={addCalendarHandler}
+          color={isCalendar ? "error" : 'primary'}
         >
-          Add to Calendar
+          {isCalendar ? "Remove from Calendar" : "Add to Calendar"}
         </Button>
         <Button variant="outlined" startIcon={<MailOutlineIcon />} size="small">
           Chat

@@ -205,10 +205,9 @@ class Internship(db.Model):
 class Calendar(db.Model):
     __tablename__ = 't_calendar'
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    internship_id = db.Column(db.Integer, db.ForeignKey("t_internships.id"))
-    student_id = db.Column(db.Integer, db.ForeignKey("t_student.id"))
+    internship_id = db.Column(db.Integer,db.ForeignKey("t_internships.id"))
+    uid = db.Column(db.Integer,db.ForeignKey("t_user.uid"))
     start = db.Column(db.DATETIME)
-    end = db.Column(db.DATETIME)
     title = db.Column(db.VARCHAR(255))
     type = db.Column(db.VARCHAR(255))
     link = db.Column(db.VARCHAR(255))
@@ -267,7 +266,7 @@ class InternshipStatus(db.Model):
     is_seen = db.Column(db.VARCHAR(255))
     is_save = db.Column(db.VARCHAR(255))
     is_applied = db.Column(db.VARCHAR(255))
-
+    seen_time = db.Column(db.TIMESTAMP)
     internship = db.relationship('Internship', back_populates='status')
     user = db.relationship('User', back_populates='status')
 
