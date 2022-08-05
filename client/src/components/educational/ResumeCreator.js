@@ -49,16 +49,18 @@ const ResumeCreator = () => {
             {activeStep === 1 && <ResumeForm order={itemList} />}
             {activeStep === 2 && <GenerateResume />}
             <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-              <Button
-                color="inherit"
-                disabled={activeStep === 0}
-                onClick={() =>
-                  setActiveStep((prevActiveStep) => prevActiveStep - 1)
-                }
-                sx={{ mr: 1 }}
-              >
-                Back
-              </Button>
+              {activeStep !== 1 && (
+                <Button
+                  color="inherit"
+                  disabled={activeStep === 0}
+                  onClick={() =>
+                    setActiveStep((prevActiveStep) => prevActiveStep - 1)
+                  }
+                  sx={{ mr: 1 }}
+                >
+                  Back
+                </Button>
+              )}
               <Box sx={{ flex: "1 1 auto" }} />
               <Button
                 onClick={() =>
