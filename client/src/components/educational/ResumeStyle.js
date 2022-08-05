@@ -5,12 +5,12 @@ Font.register({ family: "Roboto", fontStyle: "normal", fontWeight: "bold" });
 export const styles = StyleSheet.create({
   page: {
     flexDirection: "column",
+    marginTop: "20px",
   },
   personInfo: {
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    marginTop: "20px",
   },
   username: {
     fontFamily: "Helvetica-Bold",
@@ -18,7 +18,6 @@ export const styles = StyleSheet.create({
   },
   text: {
     fontSize: "10px",
-    marginTop: "1px",
   },
   infoRow: {
     flexDirection: "row",
@@ -62,6 +61,7 @@ export const styles = StyleSheet.create({
   subtitle: {
     fontSize: "10px",
     fontFamily: "Helvetica-Bold",
+    marginBottom: "1px",
   },
   time: {
     fontSize: "8px",

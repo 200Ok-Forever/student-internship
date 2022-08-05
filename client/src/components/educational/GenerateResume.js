@@ -28,7 +28,6 @@ const GenerateResume = () => {
   };
 
   const sortInfo = getSortInfo();
-  // console.log("🚀 ~ sortInfo", sortInfo);
 
   return (
     <Box
@@ -59,7 +58,6 @@ const ResumeDoc = ({ info }) => {
     <Document>
       <Page size="A4" style={styles.page}>
         {info.map((section) => {
-          console.log("🚀 ~ section", section);
           if (section[0] === RESUME_UNDERSCORE[0]) {
             return <PersonItem info={section[1][1]} />;
           } else if (section[0] === RESUME_UNDERSCORE[1]) {

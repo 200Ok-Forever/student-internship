@@ -119,7 +119,6 @@ const EducationForm = ({ idx }) => {
       <Grid item xs={12}>
         <TextField
           name="major"
-          required
           label="Major"
           id={`major_${idx}`}
           autoComplete="major"
