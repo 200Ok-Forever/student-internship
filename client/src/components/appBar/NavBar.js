@@ -25,7 +25,7 @@ const NavBar = () => {
   const [openDrawer, setOpenDrawer] = useState(false);
 
   const { user, setUser } = useContext(UserContext);
-  const [avatar, setAvatar] = useState("")
+  const [avatar, setAvatar] = useState("");
 
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -74,17 +74,22 @@ const NavBar = () => {
     setUser("");
     console.log(user);
   };
-  
+
   useEffect(() => {
     const update = async () => {
       console.log(user);
       if (user.token) {
         const res = await userInfoShortApi(user.token);
-        setUser({...user, uid: res.userId, avatar: res.avatar, username: res.userName});
-        console.log(res)
-        setAvatar(res.avatar)
+        setUser({
+          ...user,
+          uid: res.userId,
+          avatar: res.avatar,
+          username: res.userName,
+        });
+        console.log(res);
+        setAvatar(res.avatar);
       }
-    }
+    };
     update();
   }, [user.token]);
 
@@ -140,7 +145,7 @@ const NavBar = () => {
                   aria-haspopup="true"
                   onClick={handleMenu}
                 >
-                  <Avatar src={avatar}/>
+                  <Avatar src={avatar} />
                 </IconButton>
                 <MUIMenu
                   id="user-menu-appbar"

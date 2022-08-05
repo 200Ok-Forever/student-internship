@@ -16,7 +16,11 @@ export const LoginAPI = async (data) => {
 export const LogoutAPI = async (token) => {
   try {
     const url = `${baseURL}/auth/logout`;
-    const res = await deleteAxios(url, {},  { headers: { Authorization: token }});
+    const res = await deleteAxios(
+      url,
+      {},
+      { headers: { Authorization: token } }
+    );
 
     return res.data;
   } catch (err) {
@@ -66,9 +70,11 @@ export const resetPasswordAPI = async (data) => {
 
 export const userInfoShortApi = async (token) => {
   try {
-    console.log(token)
+    console.log(token);
     const url = `${baseURL}/auth/userInfoShort`;
-    const res = await getAxios(url, { headers: { Authorization : `Bearer ${token}` }});
+    const res = await getAxios(url, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
 
     return res.data;
   } catch (err) {
@@ -79,7 +85,9 @@ export const userInfoShortApi = async (token) => {
 export const editStudentProfileAPI = async (data, token) => {
   try {
     const url = `${baseURL}/auth/userInfoLong`;
-    const res = await postAxios(url, data, { headers: { Authorization : `Bearer ${token}` }});
+    const res = await postAxios(url, data, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
 
     return res.data;
   } catch (err) {
@@ -90,7 +98,9 @@ export const editStudentProfileAPI = async (data, token) => {
 export const changeAvatarApi = async (data, token) => {
   try {
     const url = `${baseURL}/auth/userInfoShort`;
-    const res = await postAxios(url, data, { headers: { Authorization : `Bearer ${token}` }});
+    const res = await postAxios(url, data, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
 
     return res.data;
   } catch (err) {

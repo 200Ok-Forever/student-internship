@@ -34,11 +34,11 @@ import ResumeCreator from "./components/educational/ResumeCreator";
 import Chat from "./components/chat/Chat";
 import Profile from "./components/student/Profile";
 import { UserContext } from "./store/UserContext";
-import UserPosts from './components/forum/UserPosts';
-import CreateInternship from './components/recruiter/CreateInternship';
+import UserPosts from "./components/forum/UserPosts";
+import CreateInternship from "./components/recruiter/CreateInternship";
 import EditStudentProfile from "./components/student/EditStudentProfile";
 import StudentProfile from "./components/student/StudentProfile";
-import { STUDENT_ROLE, RECRUITER_ROLE } from './constants';
+import { STUDENT_ROLE, RECRUITER_ROLE } from "./constants";
 
 const getSession = () => {
   const cookie = getCookie("user");
@@ -101,8 +101,16 @@ function App() {
             <Route path="/resume-creator" exact component={ResumeCreator} />
             <Route path="/forum" exact component={Forum} />
             <Route path="/chat" exact component={Chat} />
-            <Route path="/editstudentprofile" exact component={EditStudentProfile} />
-            <Route path="/studentprofile/:id" exact component={StudentProfile} />
+            <Route
+              path="/editstudentprofile"
+              exact
+              component={EditStudentProfile}
+            />
+            <Route
+              path="/studentprofile/:id"
+              exact
+              component={StudentProfile}
+            />
             <PrivateRoute
               role={RECRUITER_ROLE}
               path="/applications"

@@ -26,7 +26,7 @@ const EditStudentProfile = () => {
   };
   const handleClose = () => {
     setErrorModalState(false);
-    history.push("/")
+    history.push("/");
   };
 
   const [avatar, setAvatar] = useState(user.avatar);
@@ -65,7 +65,7 @@ const EditStudentProfile = () => {
           skills: values.skills,
           description: values.description,
         };
-        console.log(editValues, user.token)
+        console.log(editValues, user.token);
         try {
           const res = await editStudentProfileAPI(editValues, user.token);
           if (res.status === true) {
@@ -91,8 +91,8 @@ const EditStudentProfile = () => {
       };
 
       const changeAvatar = async () => {
-        await changeAvatarApi({avatar: avatar}, user.token);
-      }
+        await changeAvatarApi({ avatar: avatar }, user.token);
+      };
       edit(values);
       changeAvatar();
       user.token = user.token;
