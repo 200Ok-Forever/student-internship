@@ -95,36 +95,6 @@ const ProjForm = ({ idx }) => {
           onChange={(e) => GetNewInfo("Project_Name", e.target.value)}
         />
       </Grid>
-      <Grid item xs={12} sm={6}>
-        <TextField
-          name="start"
-          label="Start ('MM/YYYY')"
-          id={`proj_start_${idx}`}
-          autoComplete="start"
-          fullWidth
-          value={
-            allInfo.Relavant_Projects
-              ? allInfo?.Relavant_Projects[idx]?.Start
-              : ""
-          }
-          onChange={(e) => GetNewInfo("Start", e.target.value)}
-        />
-      </Grid>
-      <Grid item xs={12} sm={6}>
-        <TextField
-          name="end"
-          label="End ('MM/YYYY' or 'Now')"
-          id={`proj_end_${idx}`}
-          autoComplete="end"
-          fullWidth
-          value={
-            allInfo.Relavant_Projects
-              ? allInfo?.Relavant_Projects[idx]?.End
-              : ""
-          }
-          onChange={(e) => GetNewInfo("End", e.target.value)}
-        />
-      </Grid>
       <Grid item xs={12}>
         <TextField
           required

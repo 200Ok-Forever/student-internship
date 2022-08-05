@@ -5,9 +5,11 @@ import ShowExample from "./ShowExample";
 import { ResumeInfoContext } from "../../../store/ResumeInfoContext";
 import { useState } from "react";
 import { RESUME_DATA } from "../../../constants";
+import PickDate from "../../UI/PickDate";
 
 const Education = () => {
   const { allInfo, setAllInfo } = useContext(ResumeInfoContext);
+  console.log("🚀 ~ allInfo", allInfo);
   const [numEducation, setNumEducation] = useState(
     allInfo.Education ? allInfo.Education.length - 1 : 0
   );
@@ -115,30 +117,11 @@ const EducationForm = ({ idx }) => {
           onChange={(e) => GetNewInfo("Major", e.target.value)}
         />
       </Grid>
-      <Grid item xs={12} sm={6}>
-        <TextField
-          required
-          name="start"
-          label="Start ('MM/YYYY')"
-          id={`start_${idx}`}
-          autoComplete="start"
-          fullWidth
-          value={allInfo.Education ? allInfo?.Education[idx]?.Start : ""}
-          onChange={(e) => GetNewInfo("Start", e.target.value)}
-        />
-      </Grid>
-      <Grid item xs={12} sm={6}>
-        <TextField
-          required
-          name="end"
-          label="End ('MM/YYYY' or 'Now')"
-          id={`end_${idx}`}
-          autoComplete="end"
-          fullWidth
-          value={allInfo.Education ? allInfo?.Education[idx]?.End : ""}
-          onChange={(e) => GetNewInfo("End", e.target.value)}
-        />
-      </Grid>
+      <PickDate
+        start={allInfo.Education ? allInfo?.Education[idx]?.Start : new Date()}
+        end={allInfo.Education ? allInfo?.Education[idx]?.End : new Date()}
+        setValue={GetNewInfo}
+      />
       <Grid item xs={12}>
         <TextField
           required

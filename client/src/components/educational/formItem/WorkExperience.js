@@ -4,6 +4,7 @@ import AddIcon from "@mui/icons-material/Add";
 import ShowExample from "./ShowExample";
 import { ResumeInfoContext } from "../../../store/ResumeInfoContext";
 import { RESUME_DATA } from "../../../constants";
+import PickDate from "../../UI/PickDate";
 
 const WorkExperience = () => {
   const { allInfo, setAllInfo } = useContext(ResumeInfoContext);
@@ -110,34 +111,19 @@ const WorkForm = ({ idx }) => {
           onChange={(e) => GetNewInfo("Position", e.target.value)}
         />
       </Grid>
-      <Grid item xs={12} sm={6}>
-        <TextField
-          required
-          name="start"
-          label="Start ('MM/YYYY')"
-          id={`comp_start_${idx}`}
-          autoComplete="start"
-          fullWidth
-          value={
-            allInfo.Work_Experience ? allInfo?.Work_Experience[idx]?.Start : ""
-          }
-          onChange={(e) => GetNewInfo("Start", e.target.value)}
-        />
-      </Grid>
-      <Grid item xs={12} sm={6}>
-        <TextField
-          required
-          name="end"
-          label="End ('MM/YYYY' or 'Now')"
-          id={`comp_end_${idx}`}
-          autoComplete="end"
-          fullWidth
-          value={
-            allInfo.Work_Experience ? allInfo?.Work_Experience[idx]?.End : ""
-          }
-          onChange={(e) => GetNewInfo("End", e.target.value)}
-        />
-      </Grid>
+      <PickDate
+        start={
+          allInfo.Work_Experience
+            ? allInfo?.Work_Experience[idx]?.Start
+            : new Date()
+        }
+        end={
+          allInfo.Work_Experience
+            ? allInfo?.Work_Experience[idx]?.End
+            : new Date()
+        }
+        setValue={GetNewInfo}
+      />
       <Grid item xs={12}>
         <TextField
           required
