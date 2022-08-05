@@ -17,6 +17,7 @@ import MenuBookIcon from "@mui/icons-material/MenuBook";
 import WorkIcon from "@mui/icons-material/Work";
 import JobBlock from "../jobs/JobBlock";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
+import { getCompanyInfo } from "../../api/company-api";
 
 const data = {
   company_avatar: "https://img.icons8.com/officel/344/google-logo.png",
@@ -89,6 +90,14 @@ const Company = () => {
   const [isOverview, setIsOverview] = useState(true);
 
   useEffect(() => {
+    const getData = async () => {
+      const queryString = window.location.search;
+      const urlParams = new URLSearchParams(queryString);
+      const id = urlParams.get('id')
+      const res = await getCompanyInfo(id);
+      console.log(res);
+    }
+    getData()
     setInfo(data);
   }, []);
 
