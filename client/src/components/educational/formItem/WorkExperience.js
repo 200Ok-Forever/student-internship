@@ -98,6 +98,21 @@ const WorkForm = ({ idx }) => {
       <Grid item xs={12}>
         <TextField
           fullWidth
+          name="location"
+          label="Location"
+          id={`work_location_${idx}`}
+          autoComplete="location"
+          value={
+            allInfo.Work_Experience
+              ? allInfo?.Work_Experience[idx]?.Location
+              : ""
+          }
+          onChange={(e) => GetNewInfo("Location", e.target.value)}
+        />
+      </Grid>
+      <Grid item xs={12}>
+        <TextField
+          fullWidth
           required
           name="position"
           label="Position"
@@ -126,7 +141,6 @@ const WorkForm = ({ idx }) => {
       />
       <Grid item xs={12}>
         <TextField
-          required
           id={`comp_des_${idx}`}
           label="Description"
           multiline

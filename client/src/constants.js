@@ -1550,6 +1550,7 @@ export const RESUME_DATA = {
   Education: {
     School: "",
     Degree: "",
+    Location: "",
     Major: "",
     Start: new Date(),
     End: new Date(),
@@ -1562,6 +1563,7 @@ export const RESUME_DATA = {
   Work_Experience: {
     Company: "",
     Position: "",
+    Location: "",
     Start: new Date(),
     End: new Date(),
     Description: "",

@@ -23,7 +23,9 @@ const PickDate = ({ start, end, setValue }) => {
             onChange={(newTime) => {
               setValue("Start", newTime);
             }}
-            renderInput={(params) => <TextField {...params} fullWidth />}
+            renderInput={(params) => (
+              <TextField {...params} fullWidth required />
+            )}
             inputFormat="dd/MM/yyyy"
           />
         </LocalizationProvider>
@@ -36,7 +38,9 @@ const PickDate = ({ start, end, setValue }) => {
             onChange={(newTime) => {
               setValue("End", newTime);
             }}
-            renderInput={(params) => <TextField {...params} fullWidth />}
+            renderInput={(params) => (
+              <TextField {...params} fullWidth required />
+            )}
             inputFormat="dd/MM/yyyy"
             disabled={untiilNow}
           />

@@ -97,6 +97,17 @@ const EducationForm = ({ idx }) => {
       <Grid item xs={12}>
         <TextField
           fullWidth
+          name="location"
+          label="Location"
+          id={`school_location_${idx}`}
+          autoComplete="location"
+          value={allInfo.Education ? allInfo?.Education[idx]?.Location : ""}
+          onChange={(e) => GetNewInfo("Location", e.target.value)}
+        />
+      </Grid>
+      <Grid item xs={12}>
+        <TextField
+          fullWidth
           required
           name="degree"
           label="Degree"
@@ -109,6 +120,7 @@ const EducationForm = ({ idx }) => {
       <Grid item xs={12}>
         <TextField
           name="major"
+          required
           label="Major"
           id={`major_${idx}`}
           autoComplete="major"
@@ -124,7 +136,6 @@ const EducationForm = ({ idx }) => {
       />
       <Grid item xs={12}>
         <TextField
-          required
           id={`des_${idx}`}
           label="Description"
           multiline
