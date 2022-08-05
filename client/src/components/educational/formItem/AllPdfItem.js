@@ -1,30 +1,69 @@
-import { Text, View } from "@react-pdf/renderer";
+import { Image, Text, View } from "@react-pdf/renderer";
 import { styles } from "../ResumeStyle";
 
 export const PersonItem = ({ info }) => {
   return (
-    <View style={styles.section}>
-      <Text>
+    <View style={styles.personInfo}>
+      <Text style={styles.username}>
         {info?.first_name} {info?.last_name}
       </Text>
-      <Text>{info?.first_name}</Text>
-      <Text>{info?.Phone}</Text>
-      <Text>{info?.Email}</Text>
-      <Text>{info?.LinkedIn}</Text>
-      <Text>{info?.Personal_Website}</Text>
+      <View style={styles.infoRow}>
+        {info?.Phone && (
+          <View style={styles.iconInfo}>
+            <Image
+              style={styles.icon}
+              src="https://img.icons8.com/ios/50/000000/phone.png"
+            />
+            <Text style={styles.text}>{info.Phone}</Text>
+          </View>
+        )}
+        {info?.Email && (
+          <View style={styles.iconInfo}>
+            <Image
+              style={styles.icon}
+              src="https://img.icons8.com/windows/32/000000/new-post.png"
+            />
+            <Text style={styles.text}>{info.Email}</Text>
+          </View>
+        )}
+        {info?.City && (
+          <View style={styles.iconInfo}>
+            <Image
+              style={styles.icon}
+              src="https://img.icons8.com/ios/50/000000/marker--v1.png"
+            />
+            <Text style={styles.text}>{info.City}</Text>
+          </View>
+        )}
+      </View>
+      <View style={styles.infoRow}>
+        {info?.LinkedIn && (
+          <View style={styles.iconInfo}>
+            <Image
+              style={styles.icon}
+              src="https://img.icons8.com/ios/50/000000/linkedin.png"
+            />
+            <Text style={styles.text}>{info.LinkedIn}</Text>
+          </View>
+        )}
+        {info?.Personal_Website && (
+          <View style={styles.iconInfo}>
+            <Image
+              style={styles.icon}
+              src="https://img.icons8.com/fluency-systems-regular/48/000000/monitor--v1.png"
+            />
+            <Text style={styles.text}>{info.Personal_Website}</Text>
+          </View>
+        )}
+      </View>
     </View>
   );
 };
 
 export const EducationItem = ({ listEdu }) => {
-  console.log(
-    "🚀 ~ item?.Start.toLocaleString()",
-    listEdu[0]?.Start.toLocaleString().split(",")[0]
-  );
-
   return (
     <View style={styles.section}>
-      <Text>EDUCATION</Text>
+      <Text style={styles.title}>EDUCATION</Text>
       {listEdu.map((item, i) => (
         <View key={`edu_${i}`}>
           <Text>{item?.School}</Text>
@@ -43,7 +82,7 @@ export const EducationItem = ({ listEdu }) => {
 export const WorkItem = ({ listWork }) => {
   return (
     <View style={styles.section}>
-      <Text>ADDITIONAL EXPERIENCES</Text>
+      <Text style={styles.title}>ADDITIONAL EXPERIENCES</Text>
       {listWork.map((item, i) => (
         <View key={`work_${i}`}>
           <Text>{item?.Company}</Text>
@@ -59,9 +98,10 @@ export const WorkItem = ({ listWork }) => {
 };
 
 export const ProjItem = ({ listProj }) => {
+  console.log("🚀 ~ listProj", listProj);
   return (
     <View style={styles.section}>
-      <Text>RELEVANT PROJECTS</Text>
+      <Text style={styles.title}>RELEVANT PROJECTS</Text>
       {listProj.map((item, i) => (
         <View key={`Proj_${i}`}>
           <Text>{item?.Project_Name}</Text>
@@ -75,7 +115,7 @@ export const ProjItem = ({ listProj }) => {
 export const OtherItem = ({ section, description }) => {
   return (
     <View style={styles.section}>
-      <Text>{section}</Text>
+      <Text style={styles.title}>{section.toUpperCase()}</Text>
       <Text>{description}</Text>
     </View>
   );

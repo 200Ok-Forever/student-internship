@@ -15,7 +15,7 @@ const Projects = () => {
     setAllInfo((prev) => {
       let newInfo = prev.Relevant_Projects;
       newInfo.push({ ...RESUME_DATA.Relevant_Projects });
-      return { ...prev, Relavant_Projects: newInfo };
+      return { ...prev, Relevant_Projects: newInfo };
     });
     setNumProj((prev) => prev + 1);
   };
