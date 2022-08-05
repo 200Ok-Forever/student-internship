@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Chip, Box, Typography, Button, Popover } from "@mui/material";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -6,24 +6,38 @@ import moment from "moment";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import VideoCameraFrontIcon from "@mui/icons-material/VideoCameraFront";
 import RemoveButton from "../UI/RemoveButton";
+import { UserContext } from "../../store/UserContext";
+import { getInternshipEvents } from "../../api/internship-api";
+import { useHistory } from "react-router-dom";
+import { postInternshipUncalendar } from "../../api/internship-api";
 
 const localizer = momentLocalizer(moment);
-const events = [
-  {
-    start: moment().toDate(),
-    end: moment().toDate(),
-    title: "Google Software Engineering Internship",
-    type: "internship",
-  },
-  {
-    start: moment().add(4, "days").toDate(),
-    end: moment().add(4, "days").add(10, "minutes").toDate(),
-    title: "INTERCHANGE interview",
-    type: "meeting",
-  },
-];
 
 const CalendarScreen = () => {
+  const { user } = useContext(UserContext)
+  const [events, setEvents] = useState([])
+
+  const formatEvents = (events) => (
+    events.map(event => ({
+      ...event,
+      start: moment(event.start, "YYYY-MM-DD hh:mm:ss"),
+      end: moment(event.start, "YYYY-MM-DD hh:mm:ss"),
+    }))
+  )
+
+  useEffect(() => {
+    const getEvents = async () => {
+      const res = await getInternshipEvents(user.token);
+      setEvents(formatEvents(JSON.parse(res)))
+    }
+    getEvents();
+  }, [user.token])
+
+  const onRemove = async (data) => {
+    const res = await postInternshipUncalendar(data, user.token);
+    setEvents(formatEvents(JSON.parse(res)));
+  }
+
   return (
     <Box>
       <Typography variant="h4" component="div" gutterBottom>
@@ -35,7 +49,7 @@ const CalendarScreen = () => {
         defaultView="month"
         events={events}
         components={{
-          event: Event,
+          event: (event) => <Event eventWrapper={event} onRemove={(data) => onRemove(data)} />,
         }}
         style={{ height: "80vh", marginTop: "2em" }}
       />
@@ -43,8 +57,10 @@ const CalendarScreen = () => {
   );
 };
 
-const Event = ({ event }) => {
+const Event = ({ eventWrapper, onRemove }) => {
+  const { event } = eventWrapper;
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const history = useHistory();
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -60,7 +76,7 @@ const Event = ({ event }) => {
   return (
     <Box>
       <div onClick={handleClick}>
-        <Typography variant="h6">{event.title}</Typography>
+        <Typography variant="subtitle1">{event.title}</Typography>
         <EventTime event={event} />
       </div>
       <Popover
@@ -87,12 +103,17 @@ const Event = ({ event }) => {
             sx={{ mb: 1, mr: 1 }}
             color={event.type === "internship" ? "error" : "success"}
           />
-          <EventTime event={event} />
+          <EventTime event={event} inclDay />
           <Box sx={{ pt: 3 }}>
             <Button
               variant="contained"
               sx={{ mr: 2 }}
               size="small"
+              onClick={() => { 
+                if (event.type === 'internship') {
+                  history.push('/job?id='+event.internship_id)}
+                }
+              }
               startIcon={
                 event.type === "internship" ? (
                   <RemoveRedEyeIcon />
@@ -103,7 +124,13 @@ const Event = ({ event }) => {
             >
               {event.type === "internship" ? "View" : "Join"}
             </Button>
-            <RemoveButton />
+            <RemoveButton onClick={() => {
+              if (event.type === 'internship') {
+                onRemove({ internshipId: event.internship_id})
+              } else {
+                onRemove({ id: event.id })
+              }
+            }} />
           </Box>
         </Box>
       </Popover>
@@ -111,13 +138,9 @@ const Event = ({ event }) => {
   );
 };
 
-const EventTime = ({ event }) => (
-  <Typography variant="subtitle1" component="span">
-    {moment(event.start).format("hh:mm a")}
-    {(event.start.toDateString() !== event.end.toDateString() ||
-      event.start.toTimeString() !== event.end.toTimeString()) && (
-      <> - {moment(event.end).format("hh:mm a")}</>
-    )}
+const EventTime = ({ event, inclDay = false }) => (
+  <Typography variant="subtitle2" component="span">
+    {moment(event.start).format(`${inclDay && "D MMM "}hh:mm a`)}
   </Typography>
 );
 
