@@ -8,13 +8,13 @@ import AddIcon from "@mui/icons-material/Add";
 const Projects = () => {
   const { allInfo, setAllInfo } = useContext(ResumeInfoContext);
   const [numProj, setNumProj] = useState(
-    allInfo.Relavant_Projects ? allInfo.Relavant_Projects.length - 1 : 0
+    allInfo.Relevant_Projects ? allInfo.Relevant_Projects.length - 1 : 0
   );
 
   const AddProjects = () => {
     setAllInfo((prev) => {
-      let newInfo = prev.Relavant_Projects;
-      newInfo.push({ ...RESUME_DATA.Relavant_Projects });
+      let newInfo = prev.Relevant_Projects;
+      newInfo.push({ ...RESUME_DATA.Relevant_Projects });
       return { ...prev, Relavant_Projects: newInfo };
     });
     setNumProj((prev) => prev + 1);
@@ -22,9 +22,9 @@ const Projects = () => {
 
   const DeleteProjects = () => {
     setAllInfo((prev) => {
-      let newInfo = prev.Relavant_Projects;
+      let newInfo = prev.Relevant_Projects;
       newInfo.pop();
-      return { ...prev, Relavant_Projects: newInfo };
+      return { ...prev, Relevant_Projects: newInfo };
     });
     setNumProj((prev) => prev - 1);
   };
@@ -38,7 +38,7 @@ const Projects = () => {
           variant="h6"
           sx={{ mt: 2 }}
         >
-          Relavant Projects
+          Relevant Projects
         </Typography>
       </Grid>
       <Grid item xs={12} sm={6}>
@@ -71,9 +71,9 @@ const ProjForm = ({ idx }) => {
 
   const GetNewInfo = (name, value) => {
     setAllInfo((prev) => {
-      let newInfo = prev.Relavant_Projects;
+      let newInfo = prev.Relevant_Projects;
       newInfo[idx][name] = value;
-      return { ...prev, Relavant_Projects: newInfo };
+      return { ...prev, Relevant_Projects: newInfo };
     });
   };
 
@@ -88,8 +88,8 @@ const ProjForm = ({ idx }) => {
           id={`proj_name_${idx}`}
           autoComplete="projectName"
           value={
-            allInfo.Relavant_Projects
-              ? allInfo?.Relavant_Projects[idx]?.Project_Name
+            allInfo.Relevant_Projects
+              ? allInfo?.Relevant_Projects[idx]?.Project_Name
               : ""
           }
           onChange={(e) => GetNewInfo("Project_Name", e.target.value)}
@@ -104,8 +104,8 @@ const ProjForm = ({ idx }) => {
           fullWidth
           rows={4}
           value={
-            allInfo.Relavant_Projects
-              ? allInfo?.Relavant_Projects[idx]?.Description
+            allInfo.Relevant_Projects
+              ? allInfo?.Relevant_Projects[idx]?.Description
               : ""
           }
           onChange={(e) => GetNewInfo("Description", e.target.value)}

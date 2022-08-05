@@ -9,7 +9,6 @@ import PickDate from "../../UI/PickDate";
 
 const Education = () => {
   const { allInfo, setAllInfo } = useContext(ResumeInfoContext);
-  console.log("🚀 ~ allInfo", allInfo);
   const [numEducation, setNumEducation] = useState(
     allInfo.Education ? allInfo.Education.length - 1 : 0
   );

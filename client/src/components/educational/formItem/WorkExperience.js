@@ -38,7 +38,7 @@ const WorkExperience = () => {
           variant="h6"
           sx={{ mt: 2 }}
         >
-          Work Experience
+          Additional Experience
         </Typography>
       </Grid>
       <Grid item xs={12} sm={6}>

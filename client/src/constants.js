@@ -3,9 +3,15 @@ export const RECRUITER_ROLE = 2;
 export const RESUME = [
   "Personal Information",
   "Education",
-  "Work Experience",
-  "Relavant Project",
+  "Additional Experience",
+  "Relevant Project",
   "Skills",
+];
+export const RESUME_UNDERSCORE = [
+  "Personal_Info",
+  "Education",
+  "Work_Experience",
+  "Relevant_Projects",
 ];
 export const SKILLS = [
   {
@@ -1556,7 +1562,7 @@ export const RESUME_DATA = {
     End: new Date(),
     Description: "",
   },
-  Relavant_Projects: {
+  Relevant_Projects: {
     Project_Name: "",
     Description: "",
   },
