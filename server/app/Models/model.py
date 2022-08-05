@@ -162,8 +162,8 @@ class Internship(db.Model):
 
     status = db.relationship('InternshipStatus', back_populates='internship')
 
-    skills = db.relationship('Skill', secondary=job_skills,
-                             backref='internship', overlaps="internship")
+    # skills = db.relationship('Skill', secondary=job_skills,
+                            #  backref='internship', overlaps="internship")
 
     def __repr__(self):
         return f"<Internship: {self.publisher}, {self.title}, {self.company_id} {self.max_salary}>"
@@ -243,7 +243,7 @@ class Skill(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.VARCHAR(255))
     internships = db.relationship('Internship', secondary=job_skills, backref='skill', overlaps="skills")
-    students = db.relationship('Student', secondary='r_student_skill', back_populates='skills', lazy=True)
+    # students = db.relationship('Student', secondary='r_student_skill', back_populates='skills', lazy=True)
     def get_info(self):
         return {
             "id": self.id,
@@ -283,8 +283,8 @@ class File(db.Model):
 
 class StudentInterveiwQuestion(db.Model):
     __tablename__ = 'r_intern_question_answer'
-    student_id = db.Column(db.Integer, db.ForeignKey('t_student.id'))
-    question_id = db.Column(db.Integer, db.ForeignKey('t_intern_question.id'))
+    student_id = db.Column(db.Integer, db.ForeignKey('t_student.id'), primary_key = True)
+    question_id = db.Column(db.Integer, db.ForeignKey('t_intern_question.id'), primary_key = True)
     answer = db.Column(db.VARCHAR(1000))
 
 class LoginSchema(Form):
