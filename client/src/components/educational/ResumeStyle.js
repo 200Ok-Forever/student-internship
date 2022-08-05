@@ -18,12 +18,19 @@ export const styles = StyleSheet.create({
   },
   text: {
     fontSize: "10px",
+    marginTop: "1px",
   },
   infoRow: {
     flexDirection: "row",
     alignItems: "center",
     marginRight: "10px",
     marginTop: "2px",
+  },
+  timeRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+    alignItems: "center",
   },
   iconInfo: {
     flexDirection: "row",
@@ -32,7 +39,11 @@ export const styles = StyleSheet.create({
   },
   section: {
     flexDirection: "column",
-    margin: "20px 40px",
+    margin: "0 40px",
+    marginTop: "10px",
+  },
+  subsection: {
+    marginTop: "5px",
   },
   icon: {
     width: "10px",
@@ -46,5 +57,13 @@ export const styles = StyleSheet.create({
     width: "100%",
     paddingBottom: "3px",
     borderBottom: "1px solid #4183FF",
+    marginBottom: "2px",
+  },
+  subtitle: {
+    fontSize: "10px",
+    fontFamily: "Helvetica-Bold",
+  },
+  time: {
+    fontSize: "8px",
   },
 });

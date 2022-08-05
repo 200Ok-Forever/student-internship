@@ -52,7 +52,7 @@ const PickDate = ({ start, end, setValue }) => {
               onChange={() => setUntiilNow((prev) => !prev)}
             />
           }
-          label="Currently work there"
+          label="Present"
         />
       </Grid>
     </>

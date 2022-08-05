@@ -65,14 +65,20 @@ export const EducationItem = ({ listEdu }) => {
     <View style={styles.section}>
       <Text style={styles.title}>EDUCATION</Text>
       {listEdu.map((item, i) => (
-        <View key={`edu_${i}`}>
-          <Text>{item?.School}</Text>
-          <Text>{item?.Major}</Text>
-          <Text>{item?.Degree}</Text>
-          <Text>{item?.Location}</Text>
-          <Text>{item?.Start.toLocaleString().split(",")[0]}</Text>
-          <Text>{item?.End.toLocaleString().split(",")[0]}</Text>
-          <Text>{item?.Description}</Text>
+        <View key={`edu_${i}`} style={styles.subsection}>
+          <View style={styles.timeRow}>
+            <Text style={styles.subtitle}>
+              {item?.School} {item?.Location}
+            </Text>
+            <Text style={styles.time}>
+              {item?.Start.toLocaleString().split(",")[0]} -{" "}
+              {item?.End.toLocaleString().split(",")[0]}
+            </Text>
+          </View>
+          <Text style={styles.text}>
+            {item?.Degree} {item?.Major && "(" + item.Major + ")"}
+          </Text>
+          <Text style={styles.text}>{item?.Description}</Text>
         </View>
       ))}
     </View>
@@ -84,13 +90,18 @@ export const WorkItem = ({ listWork }) => {
     <View style={styles.section}>
       <Text style={styles.title}>ADDITIONAL EXPERIENCES</Text>
       {listWork.map((item, i) => (
-        <View key={`work_${i}`}>
-          <Text>{item?.Company}</Text>
-          <Text>{item?.Location}</Text>
-          <Text>{item?.Position}</Text>
-          <Text>{item?.Start.toLocaleString().split(",")[0]}</Text>
-          <Text>{item?.End.toLocaleString().split(",")[0]}</Text>
-          <Text>{item?.Description}</Text>
+        <View key={`work_${i}`} style={styles.subsection}>
+          <View style={styles.timeRow}>
+            <Text style={styles.subtitle}>
+              {item?.Company} {item?.Location}
+            </Text>
+            <Text style={styles.time}>
+              {item?.Start.toLocaleString().split(",")[0]} -{" "}
+              {item?.End.toLocaleString().split(",")[0]}
+            </Text>
+          </View>
+          <Text style={styles.text}>{item?.Position}</Text>
+          <Text style={styles.text}> {item?.Description}</Text>
         </View>
       ))}
     </View>
@@ -98,14 +109,13 @@ export const WorkItem = ({ listWork }) => {
 };
 
 export const ProjItem = ({ listProj }) => {
-  console.log("🚀 ~ listProj", listProj);
   return (
     <View style={styles.section}>
       <Text style={styles.title}>RELEVANT PROJECTS</Text>
       {listProj.map((item, i) => (
-        <View key={`Proj_${i}`}>
-          <Text>{item?.Project_Name}</Text>
-          <Text>{item?.Description}</Text>
+        <View key={`Proj_${i}`} style={styles.subsection}>
+          <Text style={styles.subtitle}>{item?.Project_Name}</Text>
+          <Text style={styles.text}>{item?.Description}</Text>
         </View>
       ))}
     </View>
@@ -116,7 +126,7 @@ export const OtherItem = ({ section, description }) => {
   return (
     <View style={styles.section}>
       <Text style={styles.title}>{section.toUpperCase()}</Text>
-      <Text>{description}</Text>
+      <Text style={styles.text}>{description}</Text>
     </View>
   );
 };
