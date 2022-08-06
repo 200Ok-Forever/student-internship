@@ -85,7 +85,7 @@ const NavBar = () => {
       }
     };
     update();
-  }, [setUser, user, user.token]);
+  }, [user.token]);
 
   console.log(user);
   return (
