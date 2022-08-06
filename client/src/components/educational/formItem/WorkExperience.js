@@ -76,6 +76,7 @@ const WorkForm = ({ idx }) => {
       return { ...prev, Work_Experience: newInfo };
     });
   };
+  const format = "Recommand Format: \n - xxx xxxx \n - xxx xxxx \n   .......";
 
   return (
     <>
@@ -157,6 +158,7 @@ const WorkForm = ({ idx }) => {
               : ""
           }
           onChange={(e) => GetNewInfo("Description", e.target.value)}
+          placeholder={format}
         />
       </Grid>
     </>

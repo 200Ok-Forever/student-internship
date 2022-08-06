@@ -79,6 +79,8 @@ const EducationForm = ({ idx }) => {
     });
   };
 
+  const format = "Recommand Format: \n - xxx xxxx \n - xxx xxxx \n   .......";
+
   return (
     <>
       <Grid item xs={12}>
@@ -142,6 +144,7 @@ const EducationForm = ({ idx }) => {
           rows={4}
           value={allInfo.Education ? allInfo?.Education[idx]?.Description : ""}
           onChange={(e) => GetNewInfo("Description", e.target.value)}
+          placeholder={format}
         />
       </Grid>
     </>
