@@ -74,9 +74,7 @@ class Student(db.Model):
             "description": self.description
         }
 
-
 class Company(db.Model):
-    """Company table"""
     __tablename__ = 't_company'
     id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
     email = db.Column(db.VARCHAR(320), nullable=False, unique=True)
