@@ -1,4 +1,4 @@
-import { postAxios, getRequest } from "./base";
+import { postAxios } from "./base";
 
 const baseURL = "http://localhost:5004";
 
@@ -63,14 +63,3 @@ export const resetPasswordAPI = async (data) => {
     return err;
   }
 };
-
-export const getContinueSession = async (token) => (
-  await getRequest(
-    `/auth/continueSession`,
-    {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    }
-  )
-)

@@ -1,5 +1,5 @@
 // import classes from "./App.module.scss";
-import { useContext, Fragment, useState, useEffect } from "react";
+import { useContext, Fragment, useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { Redirect, Route, Switch, useLocation } from "react-router-dom";
@@ -36,32 +36,19 @@ import { UserContext } from "./store/UserContext";
 import UserPosts from "./components/forum/UserPosts";
 import CreateInternship from "./components/recruiter/CreateInternship";
 import { STUDENT_ROLE, RECRUITER_ROLE } from "./constants";
-import { getContinueSession } from "./api/auth-api";
+
+const loadSession = () => {
+  const storedUser = localStorage.getItem("user")
+  if (storedUser) {
+    const user = JSON.parse(storedUser);
+    return user
+  }
+  return {}
+}
 
 function App() {
   const location = useLocation();
-  const [user, setUser] = useState({});
-
-  const getCookie = (name) => {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(";").shift();
-  }
-
-  useEffect(() => {
-    const token = getCookie("user")
-    const getUser = async () => {
-      if (token) {
-        try {
-          const user = await getContinueSession(token);
-          setUser({ ...user, token: token });
-        } catch (err) {
-          console.log(err)
-        }
-      }
-    }
-    getUser();
-  }, [])
+  const [user, setUser] = useState(loadSession());
 
   return (
     <Fragment>
