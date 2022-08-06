@@ -1,9 +1,9 @@
 import axios from "axios";
 
-export const getAxios = (url, data = {}) =>
+export const getAxios = (url, configs) =>
   new Promise((resolve, reject) => {
     axios
-      .get(url, { ...data })
+      .get(url, configs)
       .then((res) => {
         resolve(res);
       })
@@ -12,10 +12,22 @@ export const getAxios = (url, data = {}) =>
       });
   });
 
-export const postAxios = (url, data = {}) =>
+export const postAxios = (url, data = {}, configs) =>
   new Promise((resolve, reject) => {
     axios
-      .post(url, { ...data })
+      .post(url, { ...data }, configs)
+      .then((res) => {
+        resolve(res);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+
+export const deleteAxios = (url, data = {}) =>
+  new Promise((resolve, reject) => {
+    axios
+      .delete(url, { ...data })
       .then((res) => {
         resolve(res);
       })
@@ -31,47 +43,47 @@ export const getRequest = async (path, config) => {
     const res = await API.get(path, config);
     return res.data;
   } catch (err) {
-    console.log(err)
+    console.log(err);
     return err;
-  };
-}
+  }
+};
 
 export const postRequest = async (path, data, config) => {
   try {
     const res = await API.post(path, data, config);
-    return res.data
+    return res.data;
   } catch (err) {
-    console.log(err)
+    console.log(err);
     return err;
   }
-}
+};
 
 export const deleteRequest = async (path, config) => {
   try {
     const res = await API.delete(path, config);
-    return res.data
+    return res.data;
   } catch (err) {
-    console.log(err)
+    console.log(err);
     return err;
   }
-}
+};
 
 export const patchRequest = async (path, data, config) => {
   try {
     const res = await API.patch(path, data, config);
-    return res.data
+    return res.data;
   } catch (err) {
-    console.log(err)
+    console.log(err);
     return err;
   }
-}
+};
 
 export const putRequest = async (path, data, config) => {
   try {
     const res = await API.put(path, data, config);
-    return res.data
+    return res.data;
   } catch (err) {
-    console.log(err)
+    console.log(err);
     return err;
   }
-}
+};

@@ -21,3 +21,10 @@ class SendMeetingInvitation(Resource):
         # Grab the json data
         data = request.get_json()
         return ChatUtils.send_zoom_meeting_invitation(data)
+
+    
+
+@chat_api.route('/chat/users')
+class GetUser(Resource):
+    def get(self):
+        return ChatUtils.getUser()
