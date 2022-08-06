@@ -14,6 +14,7 @@ import { StudentSignupAPI } from "../../api/auth-api";
 import { UserContext } from "../../store/UserContext";
 import ErrorMessage from "../UI/ErrorMessage";
 import { IconButton } from "@mui/material";
+import SkillsSelect from "../UI/SkillsSelect";
 
 const StudentSignup = () => {
   const { setUser } = useContext(UserContext);
@@ -27,6 +28,8 @@ const StudentSignup = () => {
 
   const [avatar, setAvatar] = useState("");
 
+  const [skills, setSkills] = useState([]);
+
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -39,7 +42,6 @@ const StudentSignup = () => {
       degree: "",
       major: "",
       positions: "",
-      skills: "",
       description: "",
     },
     validationSchema: studentSignupValidationSchema,
@@ -55,7 +57,7 @@ const StudentSignup = () => {
           degree: values.degree,
           major: values.major,
           positions: values.positions,
-          skills: values.skills,
+          skills: skills.map((item) => (item.name)).toString(),
           description: values.description,
           avatar: avatar,
         };
@@ -282,7 +284,7 @@ const StudentSignup = () => {
             <TextField
               fullWidth
               name="positions"
-              label="What positions you are searching?"
+              label="What positions you are searching? (Separated by comma)"
               id="positions"
               autoComplete="positions"
               value={formik.values.positions}
@@ -290,15 +292,7 @@ const StudentSignup = () => {
             />
           </Grid>
           <Grid item xs={12}>
-            <TextField
-              fullWidth
-              name="skills"
-              label="Skills"
-              id="skills"
-              autoComplete="skills"
-              value={formik.values.skills}
-              onChange={formik.handleChange}
-            />
+            <SkillsSelect label="Skills" skills={skills} setSkills={setSkills} />
           </Grid>
           <Grid item xs={12}>
             <TextField

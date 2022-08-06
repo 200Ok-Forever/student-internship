@@ -15,11 +15,11 @@ import Select from "@mui/material/Select";
 import { UserContext } from "../../store/UserContext";
 import { CompanySignupAPI } from "../../api/auth-api";
 import { useFormik } from "formik";
-import { companySignupValidationSchema } from "./ValidationSchema";
+import { companySignupValidationSchema } from "../auth/ValidationSchema";
 import { Modal, IconButton } from "@mui/material";
 import ErrorMessage from "../UI/ErrorMessage";
 
-const CompanySignup = () => {
+const EditCompanyProfile = () => {
   const { setUser } = useContext(UserContext);
   const [avatar, setAvatar] = useState("");
   const [errorModalState, setErrorModalState] = useState(false);
@@ -33,9 +33,6 @@ const CompanySignup = () => {
 
   const formik = useFormik({
     initialValues: {
-      email: "",
-      password: "",
-      confirmPassword: "",
       username: "",
       firstName: "",
       lastName: "",
@@ -50,11 +47,8 @@ const CompanySignup = () => {
     },
     validationSchema: companySignupValidationSchema,
     onSubmit: (values) => {
-      const signup = async (values) => {
+      const edit = async (values) => {
         const signupValues = {
-          email: values.email,
-          username: values.username,
-          password: values.password,
           first_name: values.firstName,
           last_name: values.lastName,
           company_name: values.company_name,
@@ -92,7 +86,7 @@ const CompanySignup = () => {
         }
       };
 
-      signup(values);
+      edit(values);
     },
   });
 
@@ -130,7 +124,7 @@ const CompanySignup = () => {
         sx={{ textAlign: "center" }}
         fontFamily="inherit"
       >
-        Company Sign Up
+        Edit Profile
       </Typography>
       <IconButton color="primary" aria-label="upload picture" component="label">
         <input hidden accept="image/*" type="file" onChange={onAvatarChange} />
@@ -151,60 +145,6 @@ const CompanySignup = () => {
           <ErrorMessage errorMessage={errorMessage} />
         </Modal>
         <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <TextField
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              value={formik.values.email}
-              onChange={formik.handleChange}
-              error={formik.touched.email && Boolean(formik.errors.email)}
-              helperText={formik.touched.email && formik.errors.email}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="new-password"
-              value={formik.values.password}
-              onChange={formik.handleChange}
-              error={formik.touched.password && Boolean(formik.errors.password)}
-              helperText={formik.touched.password && formik.errors.password}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              required
-              fullWidth
-              name="confirmPassword"
-              label="Confirm Password"
-              type="password"
-              id="confirm-password"
-              autoComplete="confirm-password"
-              value={formik.values.confirmPassword}
-              onChange={formik.handleChange}
-              error={
-                formik.touched.confirmPassword &&
-                Boolean(formik.errors.confirmPassword)
-              }
-              helperText={
-                formik.touched.confirmPassword && formik.errors.confirmPassword
-              }
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <Typography fontWeight="bold" fontFamily="inherit" variant="h6">
-              Recruiter:
-            </Typography>
-          </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
               autoComplete="given-name"
@@ -303,21 +243,6 @@ const CompanySignup = () => {
             />
           </Grid>
           <Grid item xs={12} sm={6}>
-            {/* <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DatePicker
-                disableFuture
-                fullWidth
-                name="foundedYear"
-                label="Founded Year"
-                id="foundedYear"
-                autoComplete="foundedYear"
-                openTo="year"
-                views={["year"]}
-                renderInput={(params) => <TextField {...params} />}
-                value={formik.values.foundedYear}
-                onChange={formik.handleChange}
-              />
-            </LocalizationProvider> */}
             <TextField
               fullWidth
               name="founded_year"
@@ -380,20 +305,11 @@ const CompanySignup = () => {
           variant="contained"
           sx={{ mt: 3, mb: 2 }}
         >
-          Sign Up
-        </Button>
-        <Button
-          type="submit"
-          fullWidth
-          variant="outlined"
-          sx={{ margin: "auto" }}
-          onClick={() => history.push("/login")}
-        >
-          Already has an account? Login!
+          Edit
         </Button>
       </Box>
     </Paper>
   );
 };
 
-export default CompanySignup;
+export default EditCompanyProfile;
