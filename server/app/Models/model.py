@@ -127,7 +127,7 @@ class Internship(db.Model):
     __tablename__ = 't_internships'
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
 
-    company_id = db.Column(db.VARCHAR(255), nullable=False)
+    company_id = db.Column(db.VARCHAR(255), db.ForeignKey('new_company.id'), nullable=False)
     publisher = db.Column(db.VARCHAR(255))
     type = db.Column(db.VARCHAR(255))
     title = db.Column(db.VARCHAR(255))

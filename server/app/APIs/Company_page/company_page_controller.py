@@ -7,6 +7,7 @@ from pkg_resources import resource_listdir
 from .company_page_model import CompanyPageAPI
 from .company_page_utils import CompanyPageUtils
 from  ...Models import company as Company
+from  ...Models import model
 from ...Helpers.other_util import convert_object_to_dict, convert_model_to_dict
 from ... import db
 from flask_jwt_extended import jwt_required
@@ -70,6 +71,7 @@ class GetCompany(Resource):
         return {"message": "Successfully"}, 200
     """
 
+
     """
     @company_ns.response(200, "Successfully")
     @company_ns.response(400, "Something wrong")
@@ -83,3 +85,59 @@ class GetCompany(Resource):
         db.session.commit()
         return {"message": "Successfully"}, 200
     """
+
+@company_ns.route("/<id>/jobs")
+class CompanyJobs(Resource):
+
+    @company_ns.response(200, "Successfully")
+    @company_ns.response(400, "Something wrong")
+    def get(self, id):
+        parser = reqparse.RequestParser()
+        parser.add_argument('searchTerm', type=str, location='args')
+        parser.add_argument('sort', type=str, choices=['closing', 'newest'], location='args', default='newest')
+        parser.add_argument('current_page', type=int, location='args', required=True, default=1)
+        parser.add_argument('location', type=str, location='args')
+        args = parser.parse_args()
+
+        jobs = None
+        # for search keyword
+        if args['searchTerm'] != None:
+            search = "%{}%".format(args['searchTerm'])
+            jobs = db.session.query(model.Internship).filter(model.Internship.company_id == id, or_(model.Internship.title.ilike(search), model.Internship.description.ilike(search)))
+        else:
+            jobs = db.session.query(model.Internship).filter(model.Internship.company_id == id)
+        
+        # for locatiom
+        if args['location'] != None:
+            location = search = "%{}%".format(args['location'])
+            jobs = jobs.filter(model.City.name.ilike(location),model.City.id == model.Internship.city)
+
+        # sort
+        if args['sort'] == 'newest':
+            jobs = jobs.order_by(model.Internship.posted_time.desc())
+        else:
+            jobs = jobs.order_by(model.Internship.expiration_datetime_utc.desc())
+        
+        # paging, 10 per page
+        jobs = jobs.offset((args['current_page'] - 1) * 10).limit(10).all()
+
+        # format result
+        result = {"jobs": []}
+        result['numAllResults'] = {"total_count": len(jobs)}
+        for job in jobs:
+            company_name = job.company.company_name
+            company_logo = job.company.logo
+            data = convert_object_to_dict(job)
+            # TODO: update database
+            data['closeDate'] = data['expiration_datetime_utc']
+            data['city'] = job.citys.name
+            result['jobs'].append(data)
+        result['company_name'] = company_name
+        result['company_logo'] = company_logo
+        
+
+        return result, 200
+
+
+
+

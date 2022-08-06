@@ -10,6 +10,7 @@ class Companies(db.Model):
     first_name = db.Column(db.VARCHAR(255), nullable=False, unique=True)
     last_name = db.Column(db.VARCHAR(255), nullable=False, unique=True)
     linkedin = db.Column(db.VARCHAR(255))
+    company_url = db.Column(db.VARCHAR(255))
     company_size = db.Column(db.Integer)
     description = db.Column(db.VARCHAR(10000))
     country = db.Column(db.VARCHAR(255))
@@ -18,6 +19,7 @@ class Companies(db.Model):
     logo = db.Column(db.VARCHAR(255))
     founded_year = db.Column(db.VARCHAR(255))
     industries =  db.relationship('Industry', secondary='r_industry_company', back_populates='companies', lazy=True)
+    internships =  db.relationship('Internship', backref='company', lazy=True)
 
 
 
@@ -25,6 +27,7 @@ class Companies(db.Model):
         return '<Company id:{} name:>'.format(self.id, self.company_name)
   
     def __init__(self, data):
+        self. company_url = data['company_url']
         self.company_name = data['company_name']
         self.first_name = data['first_name']
         self.last_name = data['last_name']
