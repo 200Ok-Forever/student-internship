@@ -279,6 +279,10 @@ class File(db.Model):
     upload_time = db.Column(db.TIMESTAMP)
 
 
+# class Forum(db.Model):
+#     __tablename__ = 't_forum'
+
+
 class LoginSchema(Form):
     email = StringField('Email Address', [validators.Length(min=6, max=35)])
     password = PasswordField('Password', [validators.Length(min=6, max=16), validators.DataRequired()])

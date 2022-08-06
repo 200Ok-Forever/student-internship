@@ -30,10 +30,11 @@ class AuthUtils:
             elif user and user.verify_password(password):
                 user_info = User.get_info(user)
                 print(user_info)
-                access_token = create_access_token(identity=user_info['uid'], additional_claims=user_info)
+                access_token = create_access_token(identity=user_info['uid'])
                 resp = {"status": True,
                         "message": "Successfully logged in.",
-                        "token": access_token
+                        "token": access_token,
+                        "user_info": user_info
                         }
                 return resp, 200
 
@@ -258,6 +259,24 @@ if you did not request a password reset, please ignore this email.
                }, 404
 
     @staticmethod
+    def updateUserInfoShort(data):
+        current_user_id = get_jwt_identity()
+        current_user = User.query.filter_by(uid=current_user_id).first()
+        if data["avatar"] is not None:
+            current_user.avatar = data["avatar"]
+            db.session.commit()
+            return {
+                       "status": True,
+                       "message": "User info updated.",
+                       "user_info": current_user.get_info()
+                   }, 200
+        else:
+            return {
+                       "status": False,
+                       "message": "please fill in required data correctly.",
+                   }, 404
+
+    @staticmethod
     def userInfoLong(uid):
         user = User.query.filter_by(uid=uid).first()
         if user.email is not None:
@@ -302,21 +321,3 @@ if you did not request a password reset, please ignore this email.
                        "status": False,
                        "message": "please fill in required data correctly.",
                    }, 400
-
-    @staticmethod
-    def updateUserInfoShort(data):
-        current_user_id = get_jwt_identity()
-        current_user = User.query.filter_by(uid=current_user_id).first()
-        if data["avatar"] is not None:
-            current_user.avatar = data["avatar"]
-            db.session.commit()
-            return {
-                       "status": True,
-                       "message": "User info updated.",
-                       "user_info": current_user.get_info()
-                   }, 200
-        else:
-            return {
-                       "status": False,
-                       "message": "please fill in required data correctly.",
-                   }, 404

@@ -12,7 +12,7 @@ import OtherSection from "./formItem/OtherSection";
 
 const ResumeForm = ({ order }) => {
   const { allInfo, setAllInfo } = useContext(ResumeInfoContext);
-  // console.log("🚀 ~ allInfo", allInfo);
+  console.log("🚀 ~ REsumeform", allInfo);
 
   useEffect(() => {
     if (!allInfo.haveInfo) {
@@ -35,7 +35,7 @@ const ResumeForm = ({ order }) => {
         } else if (section === RESUME[3]) {
           setAllInfo((prev) => ({
             ...prev,
-            Relavant_Projects: [idx],
+            Relevant_Projects: [idx],
           }));
         } else {
           setAllInfo((prev) => {
