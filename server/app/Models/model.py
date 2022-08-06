@@ -17,6 +17,9 @@ class User(db.Model):
     avatar = db.Column(db.TEXT, nullable=True)
     verification_code = db.Column(db.VARCHAR(6))
     status = db.relationship('InternshipStatus', back_populates='user')
+    student = db.relationship('Student', backref='user')
+    company = db.relationship('Companies', backref='user')
+
 
     @property
     def password(self):
@@ -44,7 +47,7 @@ class User(db.Model):
 class Student(db.Model):
     """Student table"""
     __tablename__ = 't_student_copy1'
-    id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
+    id = db.Column(db.Integer, db.ForeignKey('t_user.id'), primary_key=True, nullable=False, unique=True)
     email = db.Column(db.VARCHAR(320), nullable=False, unique=True)
     first_name = db.Column(db.VARCHAR(50), nullable=False)
     last_name = db.Column(db.VARCHAR(50), nullable=False)
