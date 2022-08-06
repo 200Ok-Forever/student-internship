@@ -1,4 +1,4 @@
-import { postAxios, deleteAxios, getAxios, getRequest } from "./base";
+import { postAxios, deleteAxios, getAxios } from "./base";
 
 const baseURL = "http://localhost:5004";
 
