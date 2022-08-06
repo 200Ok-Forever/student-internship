@@ -14,7 +14,7 @@ def signup_company_quick(data):
         user = User(
             username=d['company_name'],
             email=d['email'],
-            password='',
+            password='123456',
             role=2,
             avatar='',
         )

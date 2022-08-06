@@ -53,7 +53,12 @@ class Student(db.Model):
     major = db.Column(db.VARCHAR(15))
     position = db.Column(db.VARCHAR(50))
     description = db.Column(db.VARCHAR(200))
+<<<<<<< HEAD
     students_skills = db.relationship('Skill', secondary='r_student_skill', back_populates='students', lazy=True)
+=======
+
+    skills = db.relationship('Skill', secondary='r_student_skill', back_populates='students', lazy=True)
+>>>>>>> 74c8a954d4dec83fb6a6a8d98e50da7df10ae1cc
 
     # student_skills = db.relationship('Skill', secondary='r_student_skill', back_populates='students', lazy=True)
     def __repr__(self):
