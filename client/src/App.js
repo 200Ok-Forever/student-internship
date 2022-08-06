@@ -1,6 +1,5 @@
 // import classes from "./App.module.scss";
-import jwt_decode from "jwt-decode";
-import { useContext, Fragment, useState } from "react";
+import { useContext, Fragment, useState, useEffect } from "react";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { Redirect, Route, Switch, useLocation } from "react-router-dom";
@@ -39,32 +38,32 @@ import CreateInternship from "./components/recruiter/CreateInternship";
 import EditStudentProfile from "./components/student/EditStudentProfile";
 import StudentProfile from "./components/student/StudentProfile";
 import { STUDENT_ROLE, RECRUITER_ROLE } from "./constants";
-
-export const decodeToken = (token) => {
-  if (!token) { return }
-
-  var decoded = jwt_decode(token);
-
-  return {
-    avatar: decoded.avatar,
-    email: decoded.email,
-    role: decoded.role,
-    uid: decoded.uid,
-    username: decoded.username,
-    verification_code: decoded.verification_code,
-    token: token
-  }
-}
-
-function getCookie(name) {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop().split(";").shift();
-}
+import { getContinueSession } from "./api/auth-api";
 
 function App() {
   const location = useLocation();
-  const [user, setUser] = useState(decodeToken(getCookie("user")) || {});
+  const [user, setUser] = useState({});
+
+  const getCookie = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(";").shift();
+  }
+
+  useEffect(() => {
+    const token = getCookie("user")
+    const getUser = async () => {
+      if (token) {
+        try {
+          const user = await getContinueSession(token);
+          setUser({ ...user, token: token });
+        } catch (err) {
+          console.log(err)
+        }
+      }
+    }
+    getUser();
+  }, [])
 
   return (
     <Fragment>

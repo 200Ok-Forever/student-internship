@@ -1,4 +1,4 @@
-import { postAxios, deleteAxios, getAxios } from "./base";
+import { postAxios, deleteAxios, getAxios, getRequest } from "./base";
 
 const baseURL = "http://localhost:5004";
 
@@ -115,3 +115,14 @@ export const changeAvatarApi = async (data, token) => {
     return err;
   }
 };
+
+export const getContinueSession = async (token) => (
+  await getRequest(
+    `/auth/continueSession`,
+    {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    }
+  )
+)

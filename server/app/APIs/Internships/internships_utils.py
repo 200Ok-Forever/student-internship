@@ -193,7 +193,11 @@ class InternshipsUtils:
                 #     print(skills_list)
 
                 # get related course id
-                video_id_list = get_youtube(internship.title)
+                try:
+                    video_id_list = get_youtube(internship.title)
+                except:
+                    video_id_list = []
+
                 if video_id_list == 404:
                     return {'msg': "API KEY PROBELMS"}, 404
 
