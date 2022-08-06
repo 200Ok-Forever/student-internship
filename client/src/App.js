@@ -1,8 +1,8 @@
 // import classes from "./App.module.scss";
-import { Fragment, useState } from "react";
+import { useContext, Fragment, useState, useEffect } from "react";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { Route, Switch, useLocation } from "react-router-dom";
+import { Redirect, Route, Switch, useLocation } from "react-router-dom";
 import NotFound from "./components/404Page/NotFound";
 import Login from "./components/auth/Login";
 import Signup from "./components/auth/Signup";
@@ -30,29 +30,51 @@ import RecommendedCandidates from "./components/recruiter/RecommendedCandidates"
 import ForgottenPassword from "./components/auth/ForgottenPassword";
 import ResetPassword from "./components/auth/ResetPassword";
 import ResumeCreator from "./components/educational/ResumeCreator";
-import ResumeCreatorStep2 from "./components/educational/ResumeCreatorStep2";
 import Chat from "./components/chat/Chat";
 import Profile from "./components/student/Profile";
-import { UserContext } from "./components/auth/UserContext";
-import UserPosts from './components/forum/UserPosts';
-import CreateInternship from './components/recruiter/CreateInternship';
+import { UserContext } from "./store/UserContext";
+import UserPosts from "./components/forum/UserPosts";
+import CreateInternship from "./components/recruiter/CreateInternship";
+import { STUDENT_ROLE, RECRUITER_ROLE } from "./constants";
+import { getContinueSession } from "./api/auth-api";
 
 function App() {
   const location = useLocation();
   const [user, setUser] = useState({});
 
+  const getCookie = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(";").shift();
+  }
+
+  useEffect(() => {
+    const token = getCookie("user")
+    const getUser = async () => {
+      if (token) {
+        try {
+          const user = await getContinueSession(token);
+          setUser({ ...user, token: token });
+        } catch (err) {
+          console.log(err)
+        }
+      }
+    }
+    getUser();
+  }, [])
+
   return (
     <Fragment>
       <UserContext.Provider value={{ user, setUser }}>
-        <NavBar />
+        {location.pathname !== "/chat" && <NavBar />}
         <Container
           maxWidth={false}
           className={location.pathname !== "/chat" && classes.rootContainer}
         >
           <Switch>
             <Route path="/" exact component={Home}></Route>
-            <Route path="/calendar" exact component={Calendar} />
-            <Route path="/apply" exact component={ApplyIntern} />
+            <PrivateRoute path="/calendar" exact component={Calendar} />
+            <PrivateRoute path="/apply" exact component={ApplyIntern} />
             <Route path="/search" exact component={JobList} />
             <Route path="/job" exact component={JobDetail} />
             <Route path="/login" exact component={Login} />
@@ -70,14 +92,19 @@ function App() {
               exact
               component={ResetPassword}
             />
-            <Route path="/resume/s1" exact component={ResumeCreator} />
-            <Route path="/resume/s2" exact component={ResumeCreatorStep2} />
+            <Route path="/resume-creator" exact component={ResumeCreator} />
             <Route path="/forum" exact component={Forum} />
             <Route path="/chat" exact component={Chat} />
-            <Route path="/applications" exact component={Applications} />
+            <PrivateRoute
+              role={RECRUITER_ROLE}
+              path="/applications"
+              exact
+              component={Applications}
+            />
             <Route path="/profile" exact component={Profile} />
-            <Route
+            <PrivateRoute
               path="/recommended-candidates"
+              role={RECRUITER_ROLE}
               exact
               component={RecommendedCandidates}
             />
@@ -106,14 +133,47 @@ const NarrowContainerRoutes = () => {
         <Route path="/forum/create" component={CreatePost} />
         <Route path="/forum/:id/edit" component={CreatePost} />
         <Route path="/forum/*" component={Forum} />
-        <Route path="/saved" component={Saved} />
-        <Route path="/history" component={History} />
+        <PrivateRoute role={STUDENT_ROLE} path="/saved" component={Saved} />
+        <PrivateRoute role={STUDENT_ROLE} path="/history" component={History} />
         <Route path="/resources" exact component={Resources} />
-        <Route path="/job/create" exact component={CreateInternship} />
-        <Route path="/job/:id/edit" exact component={CreateInternship} />
+        <PrivateRoute
+          role={RECRUITER_ROLE}
+          path="/job/create"
+          exact
+          component={CreateInternship}
+        />
+        <PrivateRoute
+          role={RECRUITER_ROLE}
+          path="/job/:id/edit"
+          exact
+          component={CreateInternship}
+        />
         <Route path="*" component={NotFound} />
       </Switch>
     </Box>
+  );
+};
+
+const PrivateRoute = ({ component: Component, role, ...rest }) => {
+  const { user } = useContext(UserContext);
+  const isLoggedIn = !!user.token;
+  const authorised = !role || user.role === role;
+
+  return (
+    <Route
+      {...rest}
+      render={(props) =>
+        isLoggedIn && authorised ? (
+          <Component {...props} />
+        ) : !isLoggedIn ? (
+          <Redirect
+            to={{ pathname: "/login", state: { from: props.location } }}
+          />
+        ) : (
+          <Redirect to={{ pathname: "/" }} />
+        )
+      }
+    />
   );
 };
 

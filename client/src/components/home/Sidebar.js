@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState, useContext } from "react";
+import { STUDENT_ROLE } from '../../constants';
 import moment from "moment";
 import {
   Card,
@@ -9,45 +10,34 @@ import {
   Typography,
   Button,
 } from "@mui/material";
-import { Link as RouteLink } from "react-router-dom";
+import { Link as RouteLink, useHistory } from "react-router-dom";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import VideoCameraFrontIcon from "@mui/icons-material/VideoCameraFront";
 import RemoveButton from "../UI/RemoveButton";
+import { UserContext } from "../../store/UserContext";
+import { getInternshipEvents, postInternshipUncalendar } from "../../api/internship-api";
 
 const Sidebar = () => {
-  // TODO fix when user setup
-  const user = 'recruiter';
+  const { user } = useContext(UserContext)
+  const [events, setEvents] = useState([])
 
-  const events = [
-    {
-      start: moment().add(1, "d").toDate(),
-      end: moment().add(1, "d").toDate(),
-      title: "Google Software Engineering Internship",
-      type: "internship",
-    },
-    {
-      start: moment().add(1, "days").toDate(),
-      end: moment().add(4, "days").add(2, "days").toDate(),
-      title: "Interview with Ashley Zimmer",
-      type: "meeting",
-    },
-    {
-      start: moment().add(1, "d").toDate(),
-      end: moment().add(1, "d").toDate(),
-      title: "Google Software Engineering Internship",
-      type: "internship",
-    },
-    {
-      start: moment().add(2, "days").add(15, 'm').toDate(),
-      end: moment().add(2, "days").add(2, "hours").toDate(),
-      title: "Interview with Jacob Li",
-      type: "meeting",
-    },
-  ];
+  useEffect(() => {
+    const getEvents = async () => {
+      const res = await getInternshipEvents(user.token)
+      setEvents(JSON.parse(res));
+    }
 
-  // events in the next week
-  const upcomingEvents = events
-    .filter((e) => moment(e.start).isBetween(moment(), moment().add(7, "d")))
+    getEvents();
+  }, [user.token])
+
+  const onRemove = async (data) => {
+    const res = await postInternshipUncalendar(data, user.token);
+    setEvents(JSON.parse(res));
+  }
+
+  // events in the next fortnight
+  const upcomingEvents = () => events
+    .filter((e) => moment(e.start, "YYYY-MM-DD hh:mm:ss").isBetween(moment(), moment().add(14, "d")))
     .sort((a, b) => a.start - b.start);
 
   return (
@@ -58,17 +48,23 @@ const Sidebar = () => {
       <Link component={RouteLink} to="/calendar" color="primary">
         View Full Calendar
       </Link>
-      <Meetings events={upcomingEvents.filter((e) => e.type === "meeting")} />
-      {user === 'student' && 
+      <Meetings 
+        events={upcomingEvents().filter((e) => e.type === "meeting")} 
+        onRemove={onRemove}
+      />
+      {user.role === STUDENT_ROLE && 
         <Internships
-          events={upcomingEvents.filter((e) => e.type === "internship")}
+          events={upcomingEvents().filter((e) => e.type === "internship")}
+          onRemove={onRemove}
         />
       }
     </Grid>
   );
 };
 
-const Internships = ({ events }) => {
+const Internships = ({ events, onRemove }) => {
+  const history = useHistory();
+
   return (
     <Box sx={{ mt: 4 }}>
       <Typography variant="h6" component="div" gutterBottom fontWeight={700}>
@@ -76,7 +72,7 @@ const Internships = ({ events }) => {
       </Typography>
       {events.length === 0 ? (
         <Typography variant="subtitle2" sx={{ mt: 1 }}>
-          <i>No application deadlines in the next week</i>
+          <i>No application deadlines in the next fornight</i>
         </Typography>
       ) : (
         events.map((e, i) => (
@@ -94,10 +90,11 @@ const Internships = ({ events }) => {
                   sx={{ mr: 2 }}
                   size="small"
                   startIcon={<RemoveRedEyeIcon />}
+                  onClick={() => history.push('/job?id='+e.internship_id)}
                 >
                   view
                 </Button>
-                <RemoveButton />
+                <RemoveButton onClick={() => onRemove({ internshipId: e.internship_id })} />
               </Box>
             </CardContent>
           </Card>
@@ -107,7 +104,7 @@ const Internships = ({ events }) => {
   );
 };
 
-const Meetings = ({ events }) => {
+const Meetings = ({ events, onRemove }) => {
   return (
     <Box sx={{ mt: 4 }}>
       <Typography variant="h6" component="div" fontWeight={700}>
@@ -115,7 +112,7 @@ const Meetings = ({ events }) => {
       </Typography>
       {events.length === 0 ? (
         <Typography variant="subtitle2" sx={{ mt: 1 }}>
-          <i>No meetings in the next week</i>
+          <i>No meetings in the next fornight</i>
         </Typography>
       ) : (
         events.map((e, i) => (
@@ -136,7 +133,7 @@ const Meetings = ({ events }) => {
                 >
                   Join
                 </Button>
-                <RemoveButton />
+                <RemoveButton onClick={() => onRemove({ id: e.id })} />
               </Box>
             </CardContent>
           </Card>

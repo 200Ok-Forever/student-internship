@@ -10,12 +10,13 @@ import { useHistory } from "react-router-dom";
 import { Paper } from "@mui/material";
 import { loginValidationSchema } from "./ValidationSchema";
 import { LoginAPI } from "../../api/auth-api";
-import { UserContext } from "./UserContext";
+import { UserContext } from "../../store/UserContext";
 import { Modal } from "@mui/material";
+import ErrorMessage from "../UI/ErrorMessage";
 
 const Login = () => {
   const history = useHistory();
-  const { user, setUser } = useContext(UserContext);
+  const { setUser } = useContext(UserContext);
   const [errorModalState, setErrorModalState] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const handleOpen = (msg) => {
@@ -36,9 +37,8 @@ const Login = () => {
           const res = await LoginAPI(values);
           if (res.status === true) {
             // If success, store the user info and token to UserContext then route to main page
-            const userInfo = res.user;
-            const userInfoWithToken = { token: res.token, ...userInfo };
-            setUser(userInfoWithToken);
+            document.cookie = "user=" + res.token + "; Path=/;";
+            setUser({ ...res.user_info, token: res.token });
             history.push("/");
           } else if (
             res.response.status === 404 ||
@@ -49,11 +49,11 @@ const Login = () => {
             handleOpen(res.response.data.message);
           } else {
             console.log(res);
-            handleOpen(res);
+            //handleOpen(res);
           }
         } catch (err) {
           console.log(err);
-          handleOpen(err);
+          //handleOpen(err);
         }
       };
       login(values);
@@ -82,24 +82,7 @@ const Login = () => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: 400,
-            bgcolor: 'background.paper',
-            border: '2px solid #000',
-            boxShadow: 24,
-            p: 4
-        }}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Error
-          </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            {errorMessage}
-          </Typography>
-        </Box>
+        <ErrorMessage errorMessage={errorMessage} />
       </Modal>
       <Typography
         component="h1"

@@ -35,3 +35,5 @@
 
 #         # Post.query.filter(Post.id = id).update(Post.content:arg['content'])
 #         pass
+class ForumUtils:
+    pass

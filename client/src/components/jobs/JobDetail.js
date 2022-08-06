@@ -1,6 +1,7 @@
 import { Button, Grid, Snackbar, Typography } from "@mui/material";
+import moment from 'moment';
 import { Box } from "@mui/system";
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import JobBasicCard from "../UI/JobBasicCard";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
@@ -24,6 +25,8 @@ import queryString from "query-string";
 import { getJob } from "../../api/search-api";
 import getSymbolFromCurrency from "currency-symbol-map";
 import { postComment, replyComment } from "../../api/comment-api";
+import { postInternshipCalendar, postInternshipSave, postInternshipUncalendar, postInternshipUnsave } from "../../api/internship-api";
+import { UserContext } from "../../store/UserContext";
 
 const DATA = {
   job_id: "1",
@@ -91,10 +94,11 @@ const JobDetail = () => {
   const query = queryString.parse(search);
   const id = query.id;
   const [load, setLoad] = useState(true);
+  const { user } = useContext(UserContext);
 
   useEffect(() => {
     const getData = async () => {
-      const resp = await getJob(id);
+      const resp = await getJob(id, user.token);
       setInfo(resp.data);
       setLoad(false);
     };
@@ -103,7 +107,7 @@ const JobDetail = () => {
     } catch (e) {
       console.log(e);
     }
-  }, [id]);
+  }, [id, user.token]);
 
   return (
     <Box
@@ -127,7 +131,9 @@ const JobDetail = () => {
 
 const BasicInfo = ({ info }) => {
   console.log("🚀 ~ info", info);
+  const { user } = useContext(UserContext);
   const history = useHistory();
+  const [isCalendar, setIsCalendar] = useState(info.is_calendar === "True");
   const [saved, setSaved] = useState(false);
   const [shareBar, setShareBar] = useState(false);
   const processes =
@@ -158,7 +164,12 @@ const BasicInfo = ({ info }) => {
   useEffect(() => {
     setSaved(DATA.saved);
   }, []);
-  const saveJobHandler = () => {
+  const saveJobHandler = (e) => {
+    if (saved) {
+      postInternshipUnsave(info.internship_id, user.token);
+    } else {
+      postInternshipSave(info.internship_id, user.token);
+    }
     setSaved((prev) => !prev);
   };
 
@@ -174,6 +185,20 @@ const BasicInfo = ({ info }) => {
     }
     setShareBar(false);
   };
+
+  const addCalendarHandler = () => {
+    if (!isCalendar) {
+      postInternshipCalendar({
+        name: info.companyName + " - " + info.jobTitle,
+        start: info.closedDate !== "None" ? info.closedDate : moment().add(2, 'w').format('YYYY-MM-DD hh:mm:ss'),
+        type: 'internship',
+        internshipId: info.internship_id
+      }, user.token)
+    } else {
+      postInternshipUncalendar(info.internship_id, user.token);
+    }
+    setIsCalendar(!isCalendar);
+  }
 
   return (
     <Box
@@ -234,8 +259,10 @@ const BasicInfo = ({ info }) => {
           variant="outlined"
           startIcon={<CalendarMonthIcon />}
           size="small"
+          onClick={addCalendarHandler}
+          color={isCalendar ? "error" : 'primary'}
         >
-          Add to Calendar
+          {isCalendar ? "Remove from Calendar" : "Add to Calendar"}
         </Button>
         <Button variant="outlined" startIcon={<MailOutlineIcon />} size="small">
           Chat

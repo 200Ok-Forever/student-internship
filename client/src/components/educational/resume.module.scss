@@ -1,0 +1,43 @@
+.card {
+  min-height: 60px;
+  height: auto;
+  max-width: 330px;
+  width: 60vw;
+  box-shadow: 0px 0px 10px 2px rgba($color: #ccc, $alpha: 0.5);
+  border-radius: 10px;
+  padding: 0 20px;
+  margin-bottom: 10px;
+  background-color: white;
+  display: flex;
+  align-items: center;
+}
+
+.item {
+  @extend .card;
+  justify-content: space-between;
+}
+
+.add-section {
+  @extend .card;
+  justify-content: center;
+  cursor: pointer;
+  white-space: "pre-wrap";
+}
+
+.new-section {
+  @extend .card;
+  justify-content: space-between;
+}
+
+.typing {
+  font-family: inherit;
+  &:focus {
+    outline: 0;
+  }
+}
+
+.view-resume {
+  max-width: 900px;
+  width: 90vw;
+  height: 800px;
+}

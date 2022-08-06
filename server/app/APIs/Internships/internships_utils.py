@@ -136,7 +136,7 @@ def check_is_seen(internship_id, uid):
 
 class InternshipsUtils:
     @staticmethod
-    def get_Internship(id, data):
+    def get_Internship(id, uid):
         is_save = "False"
         is_calendar = "False"
 
@@ -150,11 +150,7 @@ class InternshipsUtils:
                 }
                 return internship_not_found, 404
             else:
-
-                uid = data.get("uid", None)
-                print(uid)
                 if uid is not None:
-
                     # update the interhsip status as is_seen
                     update = db.session.query(InternshipStatus) \
                         .filter(InternshipStatus.intern_id == id) \
@@ -182,7 +178,7 @@ class InternshipsUtils:
                     if student:
                         
                         calendar = db.session.query(Calendar).filter(Calendar.internship_id == id) \
-                            .filter(Calendar.student_id == student.id).all()
+                            .filter(Calendar.uid == uid).all()
 
                         if calendar:
                             is_calendar = "True"
@@ -415,42 +411,30 @@ class InternshipsUtils:
             return dumps({"msg": "Internship not found"}), 404
 
     @staticmethod
-    def getSaveList(arg):
-
-        # id = arg['id']
-        # uid should not be 102, should change later
+    def getSaveList(uid):
         is_save = db.session.query(Internship) \
             .join(InternshipStatus, Internship.id == InternshipStatus.intern_id) \
-            .filter(InternshipStatus.uid == 102).filter(InternshipStatus.is_save == "True").all()
-        if is_save:
-            info = []
-            all_internships = [{'job_id': internship.id, 'title': internship.title, \
-                                'job_type': changeTypeFormat(internship.type), "status": "",
-                                'is_remote': internship.is_remote,
-                                'posted_time': changeDateFormat(internship.posted_time),
-                                'closed_time': changeDateFormat(internship.expiration_datetime_utc), \
-                                'min_salary': internship.min_salary, 'max_salary': internship.max_salary,
-                                'description': internship.description, "salary_currency": internship.salary_curreny, \
- \
-                                'location': get_location(internship.city), 'company_id': internship.company_id, \
-                                'company_name': get_company_info(internship.company_id)[0],
-                                'company_logo': get_company_info(internship.company_id)[1]
-                                } for internship in is_save]
-            # for save in is_save:
-            #     info.append(Internship.get_info(save))
-            # # print(info)
-            result = {
-                "is_save": all_internships,
-
-            }
-            # print(result)
-            return result, 200
-
-        else:
-            return dumps({"msg": "Internship not found"}), 404
+            .filter(InternshipStatus.uid == uid).filter(InternshipStatus.is_save == "True").all()
+        all_internships = [{'job_id': internship.id, 'title': internship.title, \
+                            'job_type': changeTypeFormat(internship.type), "status": "",
+                            'is_remote': internship.is_remote,
+                            'posted_time': changeDateFormat(internship.posted_time),
+                            'closed_time': changeDateFormat(internship.expiration_datetime_utc), \
+                            'min_salary': internship.min_salary, 'max_salary': internship.max_salary,
+                            'description': internship.description, "salary_currency": internship.salary_curreny, \
+\
+                            'location': get_location(internship.city), 'company_id': internship.company_id, \
+                            'company_name': get_company_info(internship.company_id)[0],
+                            'company_logo': get_company_info(internship.company_id)[1]
+                            } for internship in is_save]
+        result = {
+            "is_save": all_internships,
+        }
+        # print(result)
+        return result, 200
 
     @staticmethod
-    def saveInternship(arg):
+    def saveInternship(arg, uid):
         internship_id = arg.get('internship_id')
         # (internship_id)
         print(internship_id)
@@ -460,107 +444,100 @@ class InternshipsUtils:
             return dumps({"msg": "Internship not found"}), 404
         update = db.session.query(InternshipStatus) \
             .filter(InternshipStatus.intern_id == internship_id) \
-            .filter(InternshipStatus.uid == 102) \
+            .filter(InternshipStatus.uid == uid) \
             .update({InternshipStatus.is_save: "True"})
         if update:
             db.session.commit()
             return dumps({"msg": "save sucessfully"}), 200
         else:
-            save_internship = InternshipStatus(uid=102, intern_id=internship_id, is_save="True")
+            save_internship = InternshipStatus(uid=uid, intern_id=internship_id, is_save="True")
             db.session.add(save_internship)
+            db.session.commit()
             return dumps({"msg": "add save sucessfully"}), 200
 
     @staticmethod
-    def unSaveInternship(arg):
+    def unSaveInternship(arg, uid):
         internship_id = arg.get('internship_id')
         print(internship_id)
 
         update = db.session.query(InternshipStatus) \
             .filter(InternshipStatus.intern_id == internship_id) \
-            .filter(InternshipStatus.uid == 102) \
+            .filter(InternshipStatus.uid == uid) \
             .update({InternshipStatus.is_save: "False"})
         if update:
             db.session.commit()
-            return dumps({"msg": "unsave sucessfully"}), 200
+            return InternshipsUtils.getSaveList(uid)
         else:
             return dumps({"msg": "Internship not found"}), 404
 
     @staticmethod
-    def getViewedHistory(arg):
+    def getViewedHistory(uid):
         is_seen = db.session.query(Internship).join(InternshipStatus, Internship.id == InternshipStatus.intern_id) \
-            .filter(InternshipStatus.uid == 143).filter(InternshipStatus.is_seen == "True").order_by(InternshipStatus.seen_time).all()
+            .filter(InternshipStatus.uid == uid).filter(InternshipStatus.is_seen == "True").order_by(InternshipStatus.seen_time.desc()).limit(15).all()
         if is_seen:
-            info = []
-            for applied in is_seen:
-                info.append(Internship.get_info(applied))
+            all_internships = [{'job_id': internship.id, 'title': internship.title, \
+                    'job_type': changeTypeFormat(internship.type), "status": "",
+                    'is_remote': internship.is_remote,
+                    'posted_time': changeDateFormat(internship.posted_time),
+                    'closed_time': changeDateFormat(internship.expiration_datetime_utc), \
+                    'min_salary': internship.min_salary, 'max_salary': internship.max_salary,
+                    'description': internship.description, "salary_currency": internship.salary_curreny, \
+    \
+                    'location': get_location(internship.city), 'company_id': internship.company_id, \
+                    'company_name': get_company_info(internship.company_id)[0],
+                    'company_logo': get_company_info(internship.company_id)[1]
+                    } for internship in is_seen]
             result = {
-                "is_seen": info
+                "is_seen": all_internships
             }
             return result, 200
         else:
             return dumps({"msg": "Internship not found"}), 404
 
     @staticmethod
-    def getCalendar(arg):
-        get_student = db.session.query(Student).filter(Student.id == 102)
-        if not get_student:
-            return {
-                       'msg': 'no related student'
-                   }, 400
-
-        calendars = db.session.query(Calendar).filter(Calendar.student_id == 102)
+    def getCalendar(uid):
+        calendars = db.session.query(Calendar).filter(Calendar.uid == uid)
         calander_list = []
         if calendars:
             for calendar in calendars:
                 calendar_result = {
-                    'internship_id': calendar.id,
-                    'student_id': calendar.student_id,
+                    "id": calendar.id,
+                    'internship_id': calendar.internship_id,
                     'start': calendar.start,
-                    'end': calendar.end,
                     'title': calendar.title,
                     'type': calendar.type,
                     'link': calendar.link,
-                    'is_calendar': calendar.is_calendar
                 }
                 calander_list.append(calendar_result)
 
-        return calander_list, 200
+        return dumps(calander_list, default=str), 200
 
     @staticmethod
-    def addCalendar(arg):
-        get_student = db.session.query(Student).filter(Student.id == 102)
-        if not get_student:
-            return {
-                       'msg': 'no related student'
-                   }, 400
+    def addCalendar(arg, uid):
         data = arg
         newCalendar = Calendar(title=data['name'], type=data['type'] \
-                               , start=data['start'], end=data['end'], internship_id=data['internshipId'], \
-                               user_id=data['uid'])
+                    , start=data['start'], internship_id=data['internshipId'], \
+                    uid=uid)
 
         try:
             db.session.add(newCalendar)
             db.session.commit()
 
-            return dumps({'message': 'yes', 'comment_id': newCalendar.id}), 200
+            return dumps({'message': 'Success'}), 200
         except Exception as error:
 
             return dumps({'msg': error}), 400
 
     @staticmethod
-    def deleteCalendar(arg):
-        get_student = db.session.query(Student).filter(Student.id == 102)
-        if not get_student:
-            return {
-                       'msg': 'no related student'
-                   }, 400
-
-        obj = Calendar.query.filter_by(id=arg['id']).one()
+    def deleteCalendar(arg, uid):
         try:
-
-            db.delete(obj)
+            if arg['internshipId']:
+                obj = Calendar.query.filter_by(internship_id=arg['internshipId'], uid=uid).first()
+            else: # arg['id'] for zoom invites
+                obj = Calendar.query.filter_by(id=arg['id']).first()
+            db.session.delete(obj)
             db.session.commit()
-            return dumps({'message': 'delete sucessfully'}), 200
+            return InternshipsUtils.getCalendar(uid)
         except Exception as error:
 
             return dumps({'msg': error}), 400

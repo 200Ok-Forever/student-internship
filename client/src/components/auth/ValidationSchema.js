@@ -1,22 +1,11 @@
 import * as yup from "yup";
 
-// const emailRule = yup
-//   .string("Enter your email")
-//   .email("Enter a valid email")
-//   .required("Email is required");
-
-// const passwordRule = yup
-//   .string("Enter your password")
-//   .min(6, "Password should be of minimum 6 characters length")
-//   .required("Password is required");
-
-// const confirmPasswordRule = yup
-//   .string("Please confirm your password")
-//   .min(6, "Password should be of minimum 6 characters length")
-//   .required("Confirming password is required")
-//   .oneOf([yup.ref("password")], "Passwords do not match");
-
-// const emailValidationObject = { email: emailRule };
+const sendResetEmailValidationObject = {
+  email: yup
+    .string("Enter your email")
+    .email("Enter a valid email")
+    .required("Email is required"),
+};
 
 const loginValidationObject = {
   email: yup
@@ -27,6 +16,18 @@ const loginValidationObject = {
     .string("Enter your password")
     .min(6, "Password should be of minimum 6 characters length")
     .required("Password is required"),
+};
+
+const resetPasswordValidationObject = {
+  ...loginValidationObject,
+  confirmPassword: yup
+    .string("Please confirm your password")
+    .required("Confirming password is required")
+    .min(6, "Password should be of minimum 6 characters length")
+    .oneOf([yup.ref("password")], "Passwords do not match"),
+  resetCode: yup
+    .string("Enter your reset code")
+    .required("Reset code is required"),
 };
 
 const studentSignupValidationObject = {
@@ -51,16 +52,38 @@ const studentSignupValidationObject = {
   degree: yup.string("Please enter your degree").required("Degree is required"),
 };
 
-// const resetPasswordValidationObject = {
-//   password: passwordRule,
-//   confirmPassword: confirmPasswordRule,
-// };
+const companySignupValidationObject = {
+  ...loginValidationObject,
+  confirmPassword: yup
+    .string("Please confirm your password")
+    .required("Confirming password is required")
+    .min(6, "Password should be of minimum 6 characters length")
+    .oneOf([yup.ref("password")], "Passwords do not match"),
+  firstName: yup
+    .string("Please enter your first name")
+    .required("First name is required"),
+  lastName: yup
+    .string("Please enter your last name")
+    .required("Last name is required"),
+  username: yup
+    .string("Please enter your last name")
+    .required("Last name is required"),
+  company_name: yup
+    .string("Please enter your company name")
+    .required("Company name is required"),
+};
 
+export const sendResetEmailValidationSchema = yup.object(
+  sendResetEmailValidationObject
+);
 export const studentSignupValidationSchema = yup.object(
   studentSignupValidationObject
 );
 export const loginValidationSchema = yup.object(loginValidationObject);
-// export const resetPasswordValidationSchema = yup.object(
-//   resetPasswordValidationObject
-// );
+export const companySignupValidationSchema = yup.object(
+  companySignupValidationObject
+);
+export const resetPasswordValidationSchema = yup.object(
+  resetPasswordValidationObject
+);
 // export const emailValidationSchema = yup.object(emailValidationObject);

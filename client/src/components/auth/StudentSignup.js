@@ -11,10 +11,12 @@ import { studentSignupValidationSchema } from "./ValidationSchema";
 import { useHistory } from "react-router-dom";
 import { Paper } from "@mui/material";
 import { StudentSignupAPI } from "../../api/auth-api";
-import { UserContext } from "./UserContext";
+import { UserContext } from "../../store/UserContext";
+import ErrorMessage from "../UI/ErrorMessage";
+import { IconButton } from "@mui/material";
 
 const StudentSignup = () => {
-  const { user, setUser } = useContext(UserContext);
+  const { setUser } = useContext(UserContext);
   const [errorModalState, setErrorModalState] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const handleOpen = (msg) => {
@@ -22,6 +24,8 @@ const StudentSignup = () => {
     setErrorModalState(true);
   };
   const handleClose = () => setErrorModalState(false);
+
+  const [avatar, setAvatar] = useState("");
 
   const formik = useFormik({
     initialValues: {
@@ -50,9 +54,10 @@ const StudentSignup = () => {
           university: values.university,
           degree: values.degree,
           major: values.major,
+          positions: values.positions,
           skills: values.skills,
           description: values.description,
-          avatar: "",
+          avatar: avatar,
         };
         try {
           const res = await StudentSignupAPI(signupValues);
@@ -60,6 +65,7 @@ const StudentSignup = () => {
             const userInfo = res.user;
             const userInfoWithToken = { token: res.token, ...userInfo };
             setUser(userInfoWithToken);
+            history.push("/");
           } else if (
             res.response.status === 404 ||
             res.response.status === 403 ||
@@ -69,11 +75,11 @@ const StudentSignup = () => {
             handleOpen(res.response.data.message);
           } else {
             console.log(res);
-            handleOpen(res);
+            //handleOpen(res);
           }
         } catch (err) {
           console.log(err);
-          handleOpen(err);
+          //handleOpen(err);
         }
       };
       signup(values);
@@ -81,6 +87,17 @@ const StudentSignup = () => {
   });
 
   const history = useHistory();
+
+  const onAvatarChange = (event) => {
+    const imageFile = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      const base64String = reader.result;
+      setAvatar(base64String);
+    };
+    reader.readAsDataURL(imageFile);
+  };
 
   return (
     <Paper
@@ -104,26 +121,7 @@ const StudentSignup = () => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 400,
-            bgcolor: "background.paper",
-            border: "2px solid #000",
-            boxShadow: 24,
-            p: 4,
-          }}
-        >
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Error
-          </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            {errorMessage}
-          </Typography>
-        </Box>
+        <ErrorMessage errorMessage={errorMessage} />
       </Modal>
       <Typography
         component="h1"
@@ -134,7 +132,10 @@ const StudentSignup = () => {
       >
         Student Sign Up
       </Typography>
-      <Avatar sx={{ m: 1, bgcolor: "primary.main" }}></Avatar>
+      <IconButton color="primary" aria-label="upload picture" component="label">
+        <input hidden accept="image/*" type="file" onChange={onAvatarChange} />
+        <Avatar sx={{ m: 1, bgcolor: "primary.main" }} src={avatar} />
+      </IconButton>
       <Box
         component="form"
         noValidate

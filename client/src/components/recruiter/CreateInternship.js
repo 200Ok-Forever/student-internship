@@ -1,12 +1,26 @@
-import React, { useEffect, useState } from 'react';
-import CurrencyTextField from '@unicef/material-ui-currency-textfield'
-import { useParams, Link as RouterLink } from 'react-router-dom';
-import { Link, IconButton, Button, FormControl, InputLabel, Select, MenuItem, FormControlLabel, Checkbox, TextField, Box, Typography } from '@mui/material';
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { CURRENCY_CODES } from './constants';
+import React, { useEffect, useState } from "react";
+import CurrencyTextField from "@unicef/material-ui-currency-textfield";
+import { useParams, Link as RouterLink } from "react-router-dom";
+import {
+  Link,
+  IconButton,
+  Button,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  FormControlLabel,
+  Checkbox,
+  TextField,
+  Box,
+  Typography,
+} from "@mui/material";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { CURRENCY_CODES } from "./constants";
+import SkillsSelect from "../UI/SkillsSelect";
 
 const CreateInternship = () => {
   const { id } = useParams();
@@ -21,8 +35,10 @@ const CreateInternship = () => {
   const [maxSalary, setMaxSalary] = useState(0);
   const [remote, setRemote] = useState(false);
   const [type, setType] = useState("full time");
+  const [skills, setSkills] = useState([]);
+  const [description, setDescription] = useState("");
   const [steps, setSteps] = useState([""]);
-  const [questions, setQuestions] = useState(['']);
+  const [questions, setQuestions] = useState([""]);
   const [resume, setResume] = useState(true);
   const [coverLetter, setCoverLetter] = useState(false);
 
@@ -31,19 +47,19 @@ const CreateInternship = () => {
       // TODO get internship info
       // TODO check this company owns the job
       const job = {
-        title: 'test',
+        title: "test",
         closeDate: new Date(),
-        location: 'Sydney',
-        currency: 'AUD',
-        minSalary: '50000',
-        maxSalary: '60000',
+        location: "Sydney",
+        currency: "AUD",
+        minSalary: "50000",
+        maxSalary: "60000",
         remote: true,
-        type: 'full time',
-        steps: ['Step 1', 'Step 2'],
-        questions: ['How are you?'],
+        type: "full time",
+        steps: ["Step 1", "Step 2"],
+        questions: ["How are you?"],
         resume: true,
         coverLetter: true,
-      }
+      };
       setTitle(job.title);
       setCloseDate(job.closeDate);
       setLocation(job.location);
@@ -58,14 +74,14 @@ const CreateInternship = () => {
       setCoverLetter(job.coverLetter);
       setLoading(false);
     }
-  }, [])
+  }, [id]);
 
   useEffect(() => {
     if (!paid) {
       setMinSalary(0);
       setMaxSalary(0);
     }
-  }, [paid])
+  }, [paid]);
 
   if (loading) {
     return;
@@ -73,15 +89,21 @@ const CreateInternship = () => {
 
   return (
     <Box>
-      <Typography variant="h4" component='div' sx={{ mb: 1 }}>
+      <Typography variant="h4" component="div" sx={{ mb: 1 }}>
         {id ? "Edit" : "Post"} an Internship
       </Typography>
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }} mt={4}>
-        <Typography variant="h5" component='div'>
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }} mt={4}>
+        <Typography variant="h5" component="div">
           General Details
         </Typography>
-        <TextField id="title" label="Position Title" variant="outlined" value={title} onChange={e => setTitle(e.target.value)} />
-        <Box sx={{ display: 'flex', gap: 2 }}>
+        <TextField
+          id="title"
+          label="Position Title"
+          variant="outlined"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
+        <Box sx={{ display: "flex", gap: 2 }}>
           <LocalizationProvider dateAdapter={AdapterMoment}>
             <DesktopDatePicker
               label="Application Close Date"
@@ -91,12 +113,23 @@ const CreateInternship = () => {
               renderInput={(params) => <TextField {...params} />}
             />
           </LocalizationProvider>
-          <TextField id="location" label="Location" variant="outlined" value={location} onChange={e => setLocation(e.target.value)} />
+          <TextField
+            id="location"
+            label="Location"
+            variant="outlined"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+          />
         </Box>
-        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-          <FormControlLabel 
-            control={<Checkbox checked={paid} onChange={e => setPaid(e.target.checked)} />} 
-            label="Paid Role" 
+        <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={paid}
+                onChange={(e) => setPaid(e.target.checked)}
+              />
+            }
+            label="Paid Role"
           />
           <FormControl>
             <InputLabel id="currency">Salary Currency</InputLabel>
@@ -106,13 +139,13 @@ const CreateInternship = () => {
               id="currency"
               value={currency}
               label="Salary Currency"
-              onChange={e => setCurrency(e.target.value)}
+              onChange={(e) => setCurrency(e.target.value)}
             >
-              {CURRENCY_CODES.map(c => (
+              {CURRENCY_CODES.map((c) => (
                 <MenuItem value={c}>{c}</MenuItem>
               ))}
             </Select>
-          </FormControl> 
+          </FormControl>
           <CurrencyTextField
             label="Min Salary"
             variant="outlined"
@@ -138,9 +171,14 @@ const CreateInternship = () => {
             onChange={(event, value) => setMaxSalary(value)}
           />
         </Box>
-        <Box sx={{ display: 'flex', gap: 3, alignItems: 'center' }}>
-          <FormControlLabel 
-            control={<Checkbox checked={remote} onChange={e => setRemote(e.target.checked)} />} 
+        <Box sx={{ display: "flex", gap: 3, alignItems: "center" }}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={remote}
+                onChange={(e) => setRemote(e.target.checked)}
+              />
+            }
             label="Remote Role"
           />
           <FormControl>
@@ -150,89 +188,137 @@ const CreateInternship = () => {
               id="type"
               value={type}
               label="Job Type"
-              onChange={e => setType(e.target.value)}
+              onChange={(e) => setType(e.target.value)}
             >
-              <MenuItem value='full time'>Full Time</MenuItem>
-              <MenuItem value='part time'>Part Time</MenuItem>
+              <MenuItem value="full time">Full Time</MenuItem>
+              <MenuItem value="part time">Part Time</MenuItem>
             </Select>
-          </FormControl>   
+          </FormControl>
         </Box>
         <Box>
-          <Typography variant="h5" component='div' sx={{ mb: 1 }}>
+          <SkillsSelect skills={skills} setSkills={setSkills} label="Required Skills" />
+        </Box>
+        <Box>
+          <TextField
+            id="description"
+            label="Role Description"
+            placeholder="A description of the role"
+            multiline
+            rows={5}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            fullWidth
+          />
+        </Box>
+        <Box>
+          <Typography variant="h5" component="div" sx={{ mb: 1 }}>
             Recruitment Process
           </Typography>
-          <List values={steps} setValues={setSteps} placeholder="e.g. phone interview, technical interview etc" />        
+          <List
+            values={steps}
+            setValues={setSteps}
+            placeholder="e.g. phone interview, technical interview etc"
+          />
         </Box>
         <Box>
-          <Typography variant="h5" component='div' sx={{ mb: 1 }}>
+          <Typography variant="h5" component="div" sx={{ mb: 1 }}>
             Applicaiton Details
           </Typography>
-          <Box sx={{ display: 'flex', gap: 2 }}>
-            <FormControlLabel 
-              control={<Checkbox checked={resume} onChange={e => setResume(e.target.checked)} />} 
+          <Box sx={{ display: "flex", gap: 2 }}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={resume}
+                  onChange={(e) => setResume(e.target.checked)}
+                />
+              }
               label="Resume Required"
             />
-            <FormControlLabel 
-              control={<Checkbox checked={coverLetter} onChange={e => setCoverLetter(e.target.value)} />} 
-              label="Cover Letter Required" 
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={coverLetter}
+                  onChange={(e) => setCoverLetter(e.target.value)}
+                />
+              }
+              label="Cover Letter Required"
             />
           </Box>
-          <Typography variant="h6" component='div' sx={{ mb: 1 }}>
+          <Typography variant="h6" component="div" sx={{ mb: 1 }}>
             Questions
           </Typography>
-          <List setValues={setQuestions} values={questions} placeholder="E.g. why are you interested in this role?" />
+          <List
+            setValues={setQuestions}
+            values={questions}
+            placeholder="E.g. why are you interested in this role?"
+          />
         </Box>
       </Box>
-      <Box sx={{ display: 'flex', alignItems: 'center' }} mt={4} >
+      <Box sx={{ display: "flex", alignItems: "center" }} mt={4}>
         <Button color="primary" variant="contained" sx={{ px: 5, mr: 3 }}>
           Post
         </Button>
-        <Link underline="none" component={RouterLink} to='/'>Cancel</Link>
+        <Link underline="none" component={RouterLink} to="/">
+          Cancel
+        </Link>
       </Box>
     </Box>
-  )
-}
+  );
+};
 
 const List = ({ values, setValues, placeholder }) => {
   const onTextChange = (val, i) => {
-    let newValues = [...values]
+    let newValues = [...values];
     newValues[i] = val;
-    setValues(newValues)
-  }
+    setValues(newValues);
+  };
 
   const onDelete = (i) => {
     let newValues = [...values];
     newValues.splice(i, 1);
     setValues(newValues);
-  }
+  };
 
   const onAdd = () => {
     let newValues = [...values];
-    newValues.push('');
+    newValues.push("");
     setValues(newValues);
-  }
+  };
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }} mt={3}>
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }} mt={3}>
       {values.map((v, i) => (
-        <Box sx={{ display: 'flex', alignItems: 'center'}}>
-          <Typography variant="subtitle1" sx={{ width: '30px'}}>
-            {i+1}
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          <Typography variant="subtitle1" sx={{ width: "30px" }}>
+            {i + 1}
           </Typography>
-          <TextField 
-            sx={{ flexGrow: 1 }} 
-            placeholder={placeholder} 
-            variant="outlined" value={v} 
-            onChange={e => onTextChange(e.target.value, i)} 
+          <TextField
+            sx={{ flexGrow: 1 }}
+            placeholder={placeholder}
+            variant="outlined"
+            value={v}
+            onChange={(e) => onTextChange(e.target.value, i)}
           />
-          <IconButton color="error" onClick={() => onDelete(i)} disabled={values.length === 1}>
+          <IconButton
+            color="error"
+            onClick={() => onDelete(i)}
+            disabled={values.length === 1}
+          >
             <DeleteIcon />
           </IconButton>
         </Box>
       ))}
-      <Button sx={{ alignSelf: 'flex-start' }} onClick={onAdd} color="primary" variant="outlined" size="large">Add</Button>
+      <Button
+        sx={{ alignSelf: "flex-start" }}
+        onClick={onAdd}
+        color="primary"
+        variant="outlined"
+        size="large"
+      >
+        Add
+      </Button>
     </Box>
-  )
-}
+  );
+};
 
 export default CreateInternship;

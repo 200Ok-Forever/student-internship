@@ -1,29 +1,37 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Grid, Box } from "@mui/material";
 import EventsSidebar from "./Sidebar";
 import Search from "./Search";
 import classes from "./style/home.module.scss";
 import wave from "../../asset/wave.svg";
-import PostedInternships from '../recruiter/PostedInternships';
-import RecommendedInternships from '../student/RecommendedInternships';
+import PostedInternships from "../recruiter/PostedInternships";
+import RecommendedInternships from "../student/RecommendedInternships";
+import { UserContext } from "../../store/UserContext";
 
 const Home = () => {
-  // TODO update when auth setup
-  const user = 'recruiter'
+  const { user } = useContext(UserContext);
 
   return (
     <Box>
       <SearchBanner />
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={9} order={{ xs: 2, md: 1 }} mt={{ xs: 5, md: 0 }}>
-          {user === 'student' ? (
-            <RecommendedInternships />
-          ) : (
-            <PostedInternships />
-          )}
+      {user.token && (
+        <Grid container spacing={3}>
+          <Grid
+            item
+            xs={12}
+            md={9}
+            order={{ xs: 2, md: 1 }}
+            mt={{ xs: 5, md: 0 }}
+          >
+            {user.role === 1 ? (
+              <RecommendedInternships />
+            ) : (
+              <PostedInternships />
+            )}
+          </Grid>
+          <EventsSidebar />
         </Grid>
-        <EventsSidebar />
-      </Grid>
+      )}
     </Box>
   );
 };

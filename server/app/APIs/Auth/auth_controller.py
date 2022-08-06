@@ -1,5 +1,5 @@
 from flask import request, jsonify, current_app
-from flask_restx import Resource
+from flask_restx import Resource, reqparse
 from .auth_model import AuthAPI
 from ...Models.model import LoginSchema, StudentSignUpSchema, CompanySignUpSchema
 from .auth_utils import AuthUtils
@@ -45,7 +45,6 @@ class Login(Resource):
 
         return AuthUtils.login(login_data)
 
-
 @auth_api.route("/logout")
 class Logout(Resource):
     """ User logout endpoint """
@@ -63,16 +62,7 @@ class Logout(Resource):
     @auth_api.expect(authParser, validate=True)
     def delete(self):
         """ Logout """
-        try:
-            response = jsonify({"msg": "logout successful"})
-            unset_jwt_cookies(response)
-            return response
-        except Exception as error:
-            current_app.logger.error(error)
-            return {
-                       "status": False,
-                       "message": error,
-                   }, 405
+        return AuthUtils.logout()
 
 
 @auth_api.route("/signup/student")
@@ -172,9 +162,41 @@ class PasswordResetReset(Resource):
 
         return AuthUtils.verify_code(send_data)
 
+@auth_api.route("/continueSession")
+class ContinueSession(Resource):
+    @auth_api.doc(
+        "Continue session",
+        responses={
+            200: "Successfully continuing session",
+            400: "Malformed data or validations failed.",
+        },
+    )
+    @auth_api.expect(authParser, validate=True)
+    @jwt_required()
+    def get(self):
+        uid = get_jwt_identity()
+        return AuthUtils.userInfoShort(uid)
+
+
+@auth_api.route("/userInfoShort/<int:uid>")
+class UserInfoShort(Resource):
+    @auth_api.doc(
+        "User info short",
+        params={'uid': 'User ID'},
+        responses={
+            200: "Successfully get user info",
+            400: "Malformed data or validations failed.",
+        },
+    )
+    def get(self, uid):
+        """ User info short """
+        return AuthUtils.userInfoShort(uid)
+
 
 @auth_api.route("/userInfoShort")
-class UserInfoShort(Resource):
+class updateUserInfoShort(Resource):
+    update_user_info_short = AuthAPI.update_user_info_short
+
     @auth_api.doc(
         "User info short",
         responses={
@@ -183,14 +205,32 @@ class UserInfoShort(Resource):
         },
     )
     @jwt_required()
-    @auth_api.expect(authParser, validate=True)
-    def get(self):
+    @auth_api.expect(authParser, update_user_info_short, validate=True)
+    def post(self):
         """ User info short """
-        return AuthUtils.userInfoShort()
+        # Grab the json data
+        update_form, update_data = request.form, request.get_json()
+        return AuthUtils.updateUserInfoShort(update_data)
+
+
+@auth_api.route("/userInfoLong/<int:uid>")
+class UserInfoLong(Resource):
+
+    @auth_api.doc(
+        "User info long",
+        params={'uid': 'User ID'},
+        responses={
+            200: "Successfully get user info",
+            400: "Malformed data or validations failed.",
+        },
+    )
+    def get(self, uid):
+        """ User info long """
+        return AuthUtils.userInfoLong(uid)
 
 
 @auth_api.route("/userInfoLong")
-class UserInfoLong(Resource):
+class updateUserInfoLong(Resource):
     update_user_info_long = AuthAPI.update_user_info_long
 
     @auth_api.doc(
@@ -200,12 +240,6 @@ class UserInfoLong(Resource):
             400: "Malformed data or validations failed.",
         },
     )
-    @jwt_required()
-    @auth_api.expect(authParser, validate=True)
-    def get(self):
-        """ User info long """
-        return AuthUtils.userInfoLong()
-
     @jwt_required()
     @auth_api.expect(authParser, update_user_info_long, validate=True)
     def post(self):
