@@ -5,7 +5,7 @@ from pyrsistent import get_in
 from .internships_model import InternshipsAPI
 from .internships_utils import InternshipsUtils
 
-from ...Models.model import Internship, InternshipSearchSchema
+from ...Models.model import InternshipSearchSchema
 from flask_jwt_extended import create_access_token, get_jwt, jwt_required, create_refresh_token, get_jwt_identity
 
 internships_api = InternshipsAPI.api
@@ -23,6 +23,7 @@ searrch_parser.add_argument('paid',  location='args', help = 'TRUE/FALSE')
 searrch_parser.add_argument('is_remote',  location='args', help = 'TRUE/FALSE')
 searrch_parser.add_argument('job_type',  location='args')
 searrch_parser.add_argument('current_page',  location='args')
+searrch_parser.add_argument('uid', location='args')
 @internships_api.route('/internships')
 class GetInternshipList(Resource):
 
@@ -197,8 +198,3 @@ class Recommend(Resource):
         print(arg)
         return InternshipsUtils.getRecommend(arg)
 
-
-@internships_api.route('chat/users')
-class GetUser(Resource):
-    def get(self):
-        return InternshipsUtils.getUser()

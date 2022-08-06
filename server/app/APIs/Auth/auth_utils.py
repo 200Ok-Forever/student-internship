@@ -78,7 +78,6 @@ class AuthUtils:
                 university=data["university"],
                 degree=data["degree"],
                 major=data["major"],
-                skills=data["skills"],
                 description=data["description"]
             )
             db.session.add(new_user)
@@ -303,7 +302,6 @@ if you did not request a password reset, please ignore this email.
                 current_student.degree = data['degree']
                 current_student.major = data['major']
                 current_student.position = data['position']
-                current_student.skills = data['skills']
                 current_student.description = data['description']
                 db.session.commit()
                 return {

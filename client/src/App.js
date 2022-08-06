@@ -1,5 +1,4 @@
 // import classes from "./App.module.scss";
-import jwt_decode from "jwt-decode";
 import { useContext, Fragment, useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -36,33 +35,22 @@ import Profile from "./components/student/Profile";
 import { UserContext } from "./store/UserContext";
 import UserPosts from "./components/forum/UserPosts";
 import CreateInternship from "./components/recruiter/CreateInternship";
+import EditStudentProfile from "./components/student/EditStudentProfile";
+import StudentProfile from "./components/student/StudentProfile";
 import { STUDENT_ROLE, RECRUITER_ROLE } from "./constants";
 
-export const decodeToken = (token) => {
-  if (!token) { return }
-
-  var decoded = jwt_decode(token);
-
-  return {
-    avatar: decoded.avatar,
-    email: decoded.email,
-    role: decoded.role,
-    uid: decoded.uid,
-    username: decoded.username,
-    verification_code: decoded.verification_code,
-    token: token
+const loadSession = () => {
+  const storedUser = localStorage.getItem("user")
+  if (storedUser) {
+    const user = JSON.parse(storedUser);
+    return user
   }
-}
-
-function getCookie(name) {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop().split(";").shift();
+  return {}
 }
 
 function App() {
   const location = useLocation();
-  const [user, setUser] = useState(decodeToken(getCookie("user")) || {});
+  const [user, setUser] = useState(loadSession());
 
   return (
     <Fragment>
@@ -96,6 +84,16 @@ function App() {
             <Route path="/resume-creator" exact component={ResumeCreator} />
             <Route path="/forum" exact component={Forum} />
             <Route path="/chat" exact component={Chat} />
+            <Route
+              path="/editstudentprofile"
+              exact
+              component={EditStudentProfile}
+            />
+            <Route
+              path="/studentprofile/:id"
+              exact
+              component={StudentProfile}
+            />
             <PrivateRoute
               role={RECRUITER_ROLE}
               path="/applications"
