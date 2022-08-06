@@ -55,7 +55,7 @@ class Student(db.Model):
     skills = db.Column(db.VARCHAR(100))
     description = db.Column(db.VARCHAR(200))
 
-    students_skills = db.relationship('Skill', secondary='r_student_skill', back_populates='students', lazy=True)
+    skills = db.relationship('Skill', secondary='r_student_skill', back_populates='students', lazy=True)
 
     # student_skills = db.relationship('Skill', secondary='r_student_skill', back_populates='students', lazy=True)
     def __repr__(self):
