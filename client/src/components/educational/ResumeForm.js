@@ -12,7 +12,6 @@ import OtherSection from "./formItem/OtherSection";
 
 const ResumeForm = ({ order }) => {
   const { allInfo, setAllInfo } = useContext(ResumeInfoContext);
-  console.log("🚀 ~ REsumeform", allInfo);
 
   useEffect(() => {
     if (!allInfo.haveInfo) {
