@@ -25,9 +25,9 @@ const OtherSection = ({ section }) => {
           {section}
         </Typography>
       </Grid>
-      {section === "Skills" && (
+      {(section === "Skills" || section === "Summary") && (
         <Grid item xs={12} sm={6}>
-          <ShowExample section={"Skills"} />
+          <ShowExample section={section} />
         </Grid>
       )}
       <Grid item xs={12}>
