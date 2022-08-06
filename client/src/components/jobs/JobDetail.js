@@ -1,5 +1,5 @@
 import { Button, Grid, Snackbar, Typography } from "@mui/material";
-import moment from 'moment';
+import moment from "moment";
 import { Box } from "@mui/system";
 import React, { useContext, useEffect } from "react";
 import { useHistory, useLocation } from "react-router-dom";
@@ -25,68 +25,13 @@ import queryString from "query-string";
 import { getJob } from "../../api/search-api";
 import getSymbolFromCurrency from "currency-symbol-map";
 import { postComment, replyComment } from "../../api/comment-api";
-import { postInternshipCalendar, postInternshipSave, postInternshipUncalendar, postInternshipUnsave } from "../../api/internship-api";
+import {
+  postInternshipCalendar,
+  postInternshipSave,
+  postInternshipUncalendar,
+  postInternshipUnsave,
+} from "../../api/internship-api";
 import { UserContext } from "../../store/UserContext";
-
-const DATA = {
-  job_id: "1",
-  closed_date: "10/10/2022",
-  posted_date: "03/03/2022",
-  saved: false,
-  recruiting_processes: [
-    "Phone Interview",
-    "Coding Test",
-    "Technical Interview",
-  ],
-  min_salary: "$12",
-  max_salary: "$40",
-  salary_currency: "Au",
-  company_name: "Google",
-  company_avatar: "https://img.icons8.com/officel/344/google-logo.png",
-  company_id: "c1",
-  remote: true,
-  job_type: "Full-time",
-  city: "Sydney",
-  title: "Software engineer intern",
-  description:
-    "Lorem ipsum dolorf sit amet, consectetur adipiscing elit. Etiam sit amet erat id est consequat fermentum. Sed efficitur ligula et ante lacinia, quis pulvinar massa eleifend. Duis interdum ornare nunc, ac tincidunt diam rhoncus non. Vestibulum tincidunt tellus rutrum quam gravida lobortis. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Mauris viverra erat et enim efficitur porta. In hac habitasse platea dictumst. In at erat quis mi accumsan fringilla sit amet eu mi. Phasellus dignissim leo eros, sed rhoncus est vestibulum nec. \n Ut congue, purus sit amet porttitor pellentesque, ex diam pellentesque mi, ac scelerisque nibh dui eu neque. In finibus, eros sit amet consectetur sagittis, arcu orci semper tortor, sit amet blandit est purus ut turpis. Aliquam quis diam ornare, pharetra metus eget, finibus neque. Sed nec mauris id tortor tempus efficitur a cursus nibh. Donec a sollicitudin augue. Mauris auctor nibh ut molestie semper. Praesent felis orci, rhoncus quis pulvinar a, bibendum non lectus. \n Nunc vehicula pulvinar lorem suscipit malesuada. Donec malesuada velit massa, eget ullamcorper ligula convallis nec. Aenean ac mollis elit. Pellentesque ut ultricies velit. Nam quis posuere orci. Etiam nibh sem, venenatis a rutrum id, condimentum non velit. Mauris at tincidunt mauris. Phasellus viverra est a arcu facilisis, ac auctor elit egestas. Quisque eget risus condimentum, molestie leo vel, venenatis nunc. In hac habitasse platea dictumst. Morbi quis dui non metus ultricies aliquam. Vestibulum ornare, sapien ut vehicula ornare, nibh nunc porta magna, eget accumsan ipsum enim eget est. Donec et ligula ac arcu lobortis finibus sit amet lobortis felis.\n",
-  related_courses: [
-    "5fb2aPlgoys",
-    "ua-CiDNNj30",
-    "rfscVS0vtbw",
-    "grEKMHGYyns",
-    "5fb2aPlgoys",
-  ],
-  comments: [
-    {
-      cmtId: "1",
-      text: "Lorem hipsum dolorf sit amet, consectetur adipiscing elit. Etiam sit amet erat id est consequat fermentum. ",
-      createdAt: new Date(),
-      avatar:
-        "https://images.unsplash.com/photo-1491308056676-205b7c9a7dc1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2073&q=80",
-      username: "cmt_user1",
-      reply: [
-        {
-          repliedId: "1",
-          createdAt: new Date(),
-          text: "Lorem ipsum dolorf sit amet, consectetur adipiscing elit, Lorem ipsum dolorf sit amet, consectetur adipiscing elit , Lorem ipsum dolorf sit amet, consectetur adipiscing elit  ",
-          avatar:
-            "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2340&q=80",
-          username: "reply1",
-        },
-      ],
-    },
-    {
-      cmtId: "2",
-      createdAt: new Date(),
-      text: "Lorem ipsum dolorf sit amet, consectetur adipiscing elit. Etiam sit amet erat id est consequat fermentum. ",
-      avatar:
-        "https://images.unsplash.com/photo-1491308056676-205b7c9a7dc1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2073&q=80",
-      username: "cmt_user2",
-      reply: [],
-    },
-  ],
-};
 
 const JobDetail = () => {
   const [info, setInfo] = useState([]);
@@ -99,8 +44,10 @@ const JobDetail = () => {
   useEffect(() => {
     const getData = async () => {
       const resp = await getJob(id, user.token);
-      setInfo(resp.data);
-      setLoad(false);
+      if (resp.status === 200) {
+        setInfo(resp.data);
+        setLoad(false);
+      }
     };
     try {
       getData();
@@ -130,11 +77,10 @@ const JobDetail = () => {
 };
 
 const BasicInfo = ({ info }) => {
-  console.log("🚀 ~ info", info);
   const { user } = useContext(UserContext);
   const history = useHistory();
   const [isCalendar, setIsCalendar] = useState(info.is_calendar === "True");
-  const [saved, setSaved] = useState(false);
+  const [saved, setSaved] = useState(info.is_save === "True");
   const [shareBar, setShareBar] = useState(false);
   const processes =
     info.recruiting_process.length === 0
@@ -156,15 +102,19 @@ const BasicInfo = ({ info }) => {
   let post_duration;
 
   if (info.postedDate !== "None" && info.closedDate !== "None") {
-    post_duration = info.postedDate + " - " + info.closedDate.split(" ")[0];
+    post_duration =
+      info.postedDate.split(" ")[0] + " - " + info.closedDate.split(" ")[0];
   } else {
-    post_duration = info.postedDate || info.closedDate;
+    post_duration =
+      info.postedDate.split(" ")[0] || info.closedDate.split(" ")[0];
   }
 
   useEffect(() => {
-    setSaved(DATA.saved);
-  }, []);
-  const saveJobHandler = (e) => {
+    setSaved(info.is_save === "True");
+    setIsCalendar(info.is_calendar === "True");
+  }, [info]);
+
+  const saveJobHandler = () => {
     if (saved) {
       postInternshipUnsave(info.internship_id, user.token);
     } else {
@@ -188,17 +138,26 @@ const BasicInfo = ({ info }) => {
 
   const addCalendarHandler = () => {
     if (!isCalendar) {
-      postInternshipCalendar({
-        name: info.companyName + " - " + info.jobTitle,
-        start: info.closedDate !== "None" ? info.closedDate : moment().add(2, 'w').format('YYYY-MM-DD hh:mm:ss'),
-        type: 'internship',
-        internshipId: info.internship_id
-      }, user.token)
+      postInternshipCalendar(
+        {
+          name: info.companyName + " - " + info.jobTitle,
+          start:
+            info.closedDate !== "None"
+              ? info.closedDate
+              : moment().add(2, "w").format("YYYY-MM-DD hh:mm:ss"),
+          type: "internship",
+          internshipId: info.internship_id,
+        },
+        user.token
+      );
     } else {
-      postInternshipUncalendar(info.internship_id, user.token);
+      postInternshipUncalendar(
+        { internshipId: info.internship_id },
+        user.token
+      );
     }
     setIsCalendar(!isCalendar);
-  }
+  };
 
   return (
     <Box
@@ -260,7 +219,7 @@ const BasicInfo = ({ info }) => {
           startIcon={<CalendarMonthIcon />}
           size="small"
           onClick={addCalendarHandler}
-          color={isCalendar ? "error" : 'primary'}
+          color={isCalendar ? "error" : "primary"}
         >
           {isCalendar ? "Remove from Calendar" : "Add to Calendar"}
         </Button>

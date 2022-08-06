@@ -6,6 +6,7 @@ export const RESUME = [
   "Additional Experience",
   "Relevant Project",
   "Skills",
+  "Summary",
 ];
 export const RESUME_UNDERSCORE = [
   "Personal_Info",

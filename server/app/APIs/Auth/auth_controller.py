@@ -45,7 +45,6 @@ class Login(Resource):
 
         return AuthUtils.login(login_data)
 
-
 @auth_api.route("/logout")
 class Logout(Resource):
     """ User logout endpoint """
@@ -162,6 +161,21 @@ class PasswordResetReset(Resource):
         #     return {"login": False, "errors": errors}, 400
 
         return AuthUtils.verify_code(send_data)
+
+@auth_api.route("/continueSession")
+class ContinueSession(Resource):
+    @auth_api.doc(
+        "Continue session",
+        responses={
+            200: "Successfully continuing session",
+            400: "Malformed data or validations failed.",
+        },
+    )
+    @auth_api.expect(authParser, validate=True)
+    @jwt_required()
+    def get(self):
+        uid = get_jwt_identity()
+        return AuthUtils.userInfoShort(uid)
 
 
 @auth_api.route("/userInfoShort/<int:uid>")

@@ -57,6 +57,7 @@ class Student(db.Model):
 
     # students_skills = db.relationship('Skill', secondary='r_student_skill', back_populates='students', lazy=True)
 
+    # student_skills = db.relationship('Skill', secondary='r_student_skill', back_populates='students', lazy=True)
     def __repr__(self):
         return f"<Student: {self.email}, {self.first_name} {self.last_name}>"
 
@@ -161,8 +162,8 @@ class Internship(db.Model):
 
     status = db.relationship('InternshipStatus', back_populates='internship')
 
-    skills = db.relationship('Skill', secondary=job_skills,
-                             backref='internship', overlaps="internship")
+    # skills = db.relationship('Skill', secondary=job_skills,
+                            #  backref='internship', overlaps="internship")
 
     def __repr__(self):
         return f"<Internship: {self.publisher}, {self.title}, {self.company_id} {self.max_salary}>"
@@ -241,7 +242,6 @@ class Skill(db.Model):
     name = db.Column(db.VARCHAR(255))
     internships = db.relationship('Internship', secondary=job_skills, backref='skill', overlaps="skills")
     # students = db.relationship('Student', secondary='r_student_skill', back_populates='skills', lazy=True)
-
     def get_info(self):
         return {
             "id": self.id,
@@ -280,6 +280,11 @@ class File(db.Model):
     file_type = db.Column(db.VARCHAR(255))
     upload_time = db.Column(db.TIMESTAMP)
 
+class StudentInterveiwQuestion(db.Model):
+    __tablename__ = 'r_intern_question_answer'
+    student_id = db.Column(db.Integer, db.ForeignKey('t_student.id'), primary_key = True)
+    question_id = db.Column(db.Integer, db.ForeignKey('t_intern_question.id'), primary_key = True)
+    answer = db.Column(db.VARCHAR(1000))
 
 class LoginSchema(Form):
     email = StringField('Email Address', [validators.Length(min=6, max=35)])
