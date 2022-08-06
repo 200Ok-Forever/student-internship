@@ -1,5 +1,6 @@
 import requests
-from ...Models.model import User, Student, Company
+from ...Models.model import User, Student
+from ...Models.company import Companies
 from ... import db
 
 
@@ -39,10 +40,11 @@ class ChatUtils:
         else:
             return {"message": "User not found!"}, 404
 
+    @staticmethod
     def getUser():
         user = db.session.query(User).all()
         results = []
-       
+
         for u in user:
             result = {
                 "userid": u.uid,
@@ -50,4 +52,4 @@ class ChatUtils:
                 "avatar": u.avatar
             }
             results.append(result)
-        return results,200
+        return results, 200
