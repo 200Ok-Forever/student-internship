@@ -120,7 +120,10 @@ class CompanyJobs(Resource):
         
         # paging, 10 per page
         jobs = jobs.offset((args['current_page'] - 1) * 10).limit(10).all()
-
+        
+        if len(jobs) == 0:
+            return {"jobs": [], 'company_name': None, 'company_logo': None, 'numAllResults': 0}
+            
         # format result
         result = {"jobs": []}
         result['numAllResults'] = {"total_count": len(jobs)}
