@@ -13,7 +13,6 @@ import { LoginAPI } from "../../api/auth-api";
 import { UserContext } from "../../store/UserContext";
 import { Modal } from "@mui/material";
 import ErrorMessage from "../UI/ErrorMessage";
-import { decodeToken } from '../../App';
 
 const Login = () => {
   const history = useHistory();
