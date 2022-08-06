@@ -1,5 +1,6 @@
-
 from .. import bcrypt, db
+
+
 class Skill(db.Model):
     __tablename__ = 't_skills'
 
@@ -7,12 +8,14 @@ class Skill(db.Model):
     name = db.Column(db.VARCHAR(255))
     internships = db.relationship('Internship', secondary='r_job_skill', back_populates='skills', lazy=True)
     students = db.relationship('Student', secondary='r_student_skill', back_populates='skills', lazy=True)
+
     # students = db.relationship('Student', secondary='r_student_skill', back_populates='skills', lazy=True)
     def get_info(self):
         return {
             "id": self.id,
             "name": self.name
         }
+
 
 class JobSkills(db.Model):
     __tablename__ = 'r_job_skill'
