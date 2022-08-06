@@ -111,19 +111,10 @@ class Company(db.Model):
             "company_logo": self.company_logo
         }
 
-
-
-
-
 class StudentSkills(db.Model):
     __tablename__ = 'r_student_skill'
     student_id = db.Column('student_id', db.Integer, db.ForeignKey('t_student.id'), primary_key=True)
     skill_id = db.Column('skill_id', db.Integer, db.ForeignKey('t_skills.id'), primary_key=True)
-
-
-
-    # more
-
 
 class Calendar(db.Model):
     __tablename__ = 't_calendar'

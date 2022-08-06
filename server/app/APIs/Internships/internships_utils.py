@@ -8,9 +8,11 @@ from requests import session
 from sqlalchemy import null
 from torch import is_same_size
 from ...Models.model import Calendar, StudentSkills, Company, Comment, User, Student, File
+from ...Models.internship import *
 from flask_restx import Resource, reqparse
 from ...extension import db
 from string import digits
+
 import datetime
 from sqlalchemy.sql.functions import coalesce
 from sqlalchemy import nullslast

@@ -6,7 +6,7 @@ from flask_jwt_extended import get_jwt_identity
 from flask_restx import Resource
 from pkg_resources import resource_listdir
 from .company_page_model import CompanyPageAPI
-from .company_page_utils import CompanyPageUtils
+from .company_page_utils import get_intern_process
 from  ...Models import company as Company
 from  ...Models import model
 from  ...Models import internship as Internship
@@ -37,7 +37,7 @@ class GetCompany(Resource):
         industry = convert_model_to_dict(movie.industries)
         data['industries'] = industry
         return data, 200
-    """
+
     @company_ns.response(200, "Successfully")
     @company_ns.response(400, "Something wrong")
     @jwt_required()
@@ -67,11 +67,12 @@ class GetCompany(Resource):
         company.company_size = data['company_size']
         company.location = data['location']
         company.description = data['description']
+        company.require_resume = data['require_resume']
+        company.require_coverLetter = data['require_coverLetter']
         #query.update(data, synchronize_session = False)
 
         db.session.commit()
         return {"message": "Successfully"}, 200
-    """
 
 
     """
@@ -87,6 +88,27 @@ class GetCompany(Resource):
         db.session.commit()
         return {"message": "Successfully"}, 200
     """
+@company_ns.route("/jobs/<id>")
+class JobsManager(Resource):
+    @company_ns.response(200, "Successfully")
+    @company_ns.response(400, "Something wrong")
+    @jwt_required()
+    def delete(self, jobid):
+        uid = get_jwt_identity()
+        # 1. check internship id
+        query = db.session.query(model.Internship).filter(model.Internship.job_id == jobid)
+        job = query.first()
+        if job == None:
+            return {"message": "Invalid internship id"}, 400
+        
+        # 2. check permission
+        if job.company.user_id != uid:
+            return {"message": "No permission"}, 400
+
+        # 3. delete
+        db.session.delete(job)
+        db.session.commit()
+        return {"message": "Successfully"}, 200
 
 @company_ns.route("/<id>/jobs")
 class CompanyJobs(Resource):
@@ -133,34 +155,7 @@ class CompanyJobs(Resource):
 
         return result, 200
 
-def get_intern_process(job):
-    process = []
-    for pro in job.processes:
-        process[pro.order - 1] = pro.name
-    return process
 
-def get_application(job):
-    print(job)
-    applications = db.session.query(Internship.InternshipStatus).filter(Internship.InternshipStatus.intern_id == 1).all()
-    print(applications)
-    for app in applications:
-        internship = app.internship
-
-        data = {}
-        data['application_id'] = app.id
-        data['uid'] = app.uid
-        data['status'] = app.status
-
-        # questions and answer
-        intern_answers = db.session.query(Internship.InternAnswer, Internship.InternQuestion
-        ).filter(Internship.InternQuestion.intern_id == 1, Internship.InternQuestion.id == Internship.InternAnswer.question_id, \
-            Internship.InternAnswer.student_id == app.uid).all()
-        print(intern_answers)
-        answers = {}
-        for an, que in intern_answers:
-            answers[que.content] = an.answer
-
-        print(answers)
 
 
         
