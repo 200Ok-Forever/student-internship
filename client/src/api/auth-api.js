@@ -116,13 +116,9 @@ export const changeAvatarApi = async (data, token) => {
   }
 };
 
-export const getContinueSession = async (token) => (
-  await getRequest(
-    `/auth/continueSession`,
-    {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    }
-  )
-)
+export const getContinueSession = async (token) =>
+  await getRequest(`/auth/continueSession`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
