@@ -1,12 +1,17 @@
-import { Paper, Typography } from "@mui/material";
+import { Paper, Typography, Avatar, Button } from "@mui/material";
 import { Box } from "@mui/system";
-import React from "react";
+import React, { useEffect, useContext, useState } from "react";
 import TitleWithIcon from "../UI/TitleWithIcon";
 import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
 import JobBasicCard from "../UI/JobBasicCard";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import ProfileInfo from "./ProfileInfo";
+import { useHistory } from "react-router-dom";
+import { getLongUserInfo } from "../../api/auth-api";
+import { UserContext } from "../../store/UserContext";
+
 const data = [
   {
     title: "Software Engineer Intern",
@@ -40,10 +45,59 @@ const data = [
   },
 ];
 
+// const infoData = {
+//   first_name: "Leon",
+//   last_name: "Wu",
+//   university: "UNSW",
+//   degree: "Bachelor of Computer Science",
+//   positions: "Software Engineer, IT consultant",
+//   major: "AI",
+//   skills: "Java,C",
+//   description:
+//     "Hello! asdkljfaskldjfaskldjfaskldjfa klsdfjaskldfjaskldjfalskdfjasklfklasdjfklasf",
+// };
+
 const Profile = () => {
+  const { user } = useContext(UserContext);
+
+  // get user's infomations
+  const [info, setInfo] = useState({});
+  useEffect(() => {
+    const loadInfo = async () => {
+      const res = await getLongUserInfo(user.uid);
+      setInfo(res);
+    };
+    loadInfo();
+  }, [user.uid]);
+
+  const history = useHistory();
+
   return (
-    <Box>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: "35px",
+      }}
+    >
+      <Avatar sx={{ m: 1, bgcolor: "primary.main" }} />
+      <Typography variant="h4" fontWeight="bold" fontFamily="inherit">
+        {info.first_name} {info.last_name}
+      </Typography>
+      <Button
+        variant="outlined"
+        sx={{ ml: "440px" }}
+        onClick={() => {
+          history.push("/editstudentprofile");
+        }}
+      >
+        Edit Profile
+      </Button>
+      <ProfileInfo data={info} />
       <TitleWithIcon
+        sx={{}}
         icon={<WorkHistoryIcon color="primary" />}
         text="Applied Internships"
       />

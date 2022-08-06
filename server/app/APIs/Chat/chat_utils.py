@@ -38,3 +38,16 @@ class ChatUtils:
             return response.json(), 200
         else:
             return {"message": "User not found!"}, 404
+
+    def getUser():
+        user = db.session.query(User).all()
+        results = []
+       
+        for u in user:
+            result = {
+                "userid": u.uid,
+                "name": u.username,
+                "avatar": u.avatar
+            }
+            results.append(result)
+        return results,200

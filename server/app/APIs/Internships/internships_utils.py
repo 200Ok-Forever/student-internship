@@ -7,7 +7,7 @@ from json import dumps
 from requests import session
 from sqlalchemy import null
 from torch import is_same_size
-from ...Models.model import Calendar, StudentSkills,Internship, City, Company, Comment, User, Skill,InternshipStatus,Student, File
+from ...Models.model import Calendar, StudentSkills,Internship, City, Company, Comment, User, Skill,InternshipStatus,Student, File,StudentInterveiwQuestion
 from flask_restx import Resource, reqparse
 from ...extension import db
 from string import digits
@@ -68,7 +68,7 @@ def get_youtube(title):
     r = requests.get(search_url, params=search_params)
 
     results = r.json()['items']
-    # print(results)
+    print(results)
 
     if results is None:
         return 404
@@ -126,6 +126,13 @@ def changeDateFormat(date):
     result = re.sub('T.+', '', str(date))
     return result
 
+def check_is_seen(internship_id, uid):
+    if uid != None and internship_id != None:
+        is_seen = db.session.query(InternshipStatus).filter(InternshipStatus.intern_id==internship_id).filter(InternshipStatus.uid==uid).first()
+        if is_seen!= None:
+            return "True"
+        else:
+            return "False"
 
 class InternshipsUtils:
     @staticmethod
@@ -193,7 +200,11 @@ class InternshipsUtils:
                 #     print(skills_list)
 
                 # get related course id
-                video_id_list = get_youtube(internship.title)
+                try:
+                    video_id_list = get_youtube(internship.title)
+                except:
+                    video_id_list = []
+
                 if video_id_list == 404:
                     return {'msg': "API KEY PROBELMS"}, 404
 
@@ -223,7 +234,8 @@ class InternshipsUtils:
         except  Exception as error:
             print(error)
             return {
-                       "message": "something wrong internal"
+                       "message": "something wrong internal",
+                    
                    }, 500
 
     @staticmethod
@@ -235,7 +247,7 @@ class InternshipsUtils:
         sort = data.get("sort", "Default")
         paid = data.get("paid", None)
         remote = data.get("is_remote", None)
-
+        uid = data.get("uid", None)
         if paid:
             paid = paid.upper()
         if remote:
@@ -300,7 +312,8 @@ class InternshipsUtils:
                             'numAllResults': {"total_count": count}, 'location': get_location(internship.city),
                             'company_id': internship.company_id,
                             'company_name': get_company_info(internship.company_id)[0],
-                            'company_logo': get_company_info(internship.company_id)[1]
+                            'company_logo': get_company_info(internship.company_id)[1],
+                            'is_seen':check_is_seen(internship.id, uid),
                             } for internship in internships]
 
         return jsonify(all_internships)
@@ -362,29 +375,33 @@ class InternshipsUtils:
         resume = arg.get('resume', None)
         coverletter = arg.get('coverletter', None)
         
-        question = arg.get('question')
+        question_id = arg.get('question_id')
         answer = arg.get('answer')
 
         internship=Internship.query.filter(Internship.id==id).first()
         if internship:
-            print("______________")
+         
+            #update is_applied status
+            
             apply =  db.session.query(InternshipStatus)\
                 .filter(InternshipStatus.intern_id == id )\
                 .filter(InternshipStatus.uid==current_user_id)\
                 .update({InternshipStatus.is_applied: "True"})
 
-            
+            #get student id
+            student = db.session.query(Student).join(User, Student.email == User.email).filter(User.uid == current_user_id).first()
+         
+
+            #store question and answer
+            new_interview_question = StudentInterveiwQuestion(student_id = student.id, question_id = question_id, answer = answer)
+            db.session.add(new_interview_question)
             if resume:
-                print("__________000000000____")
+            
                 
                 file = File(uid = current_user_id, data = resume, file_type = "resume", upload_time = datetime.datetime.now())
                 print(file)
-                try:
-                    db.session.add(file)
-                    db.session.commit()
-                    return dumps({"msg": "save sucessfully"}), 200
-                except Exception as error:
-                    return dumps({"msg":error}),400
+                db.session.add(file)
+               
 
             if coverletter:
                 file = File(uid = current_user_id, data = coverletter, file_type = "coverletter", upload_time = datetime.datetime.now())
@@ -583,14 +600,4 @@ class InternshipsUtils:
 
         return return_list,200
 
-    def getUser():
-        user = db.session.query(User).all()
-        results = []
-        for u in user:
-            result = {
-                "userid": u.uid,
-                "name": u.username,
-                "avatar": u.avatar
-            }
-            results.append(result)
-        return dumps(results),200
+   

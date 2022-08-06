@@ -1,5 +1,5 @@
 import { Button, Grid, Snackbar, Typography } from "@mui/material";
-import moment from 'moment';
+import moment from "moment";
 import { Box } from "@mui/system";
 import React, { useContext, useEffect } from "react";
 import { useHistory, useLocation } from "react-router-dom";
@@ -25,7 +25,12 @@ import queryString from "query-string";
 import { getJob } from "../../api/search-api";
 import getSymbolFromCurrency from "currency-symbol-map";
 import { postComment, replyComment } from "../../api/comment-api";
-import { postInternshipCalendar, postInternshipSave, postInternshipUncalendar, postInternshipUnsave } from "../../api/internship-api";
+import {
+  postInternshipCalendar,
+  postInternshipSave,
+  postInternshipUncalendar,
+  postInternshipUnsave,
+} from "../../api/internship-api";
 import { UserContext } from "../../store/UserContext";
 
 const JobDetail = () => {
@@ -39,8 +44,10 @@ const JobDetail = () => {
   useEffect(() => {
     const getData = async () => {
       const resp = await getJob(id, user.token);
-      setInfo(resp.data);
-      setLoad(false);
+      if (resp.status === 200) {
+        setInfo(resp.data);
+        setLoad(false);
+      }
     };
     try {
       getData();
@@ -79,7 +86,7 @@ const BasicInfo = ({ info }) => {
     info.recruiting_process.length === 0
       ? ["Phone Interview", "Coding Test", "Technical Interview"]
       : info.recruiting_process;
-  
+
   let salary_str;
   let salary_curr =
     info.salary_currency !== "AUD"
@@ -95,9 +102,11 @@ const BasicInfo = ({ info }) => {
   let post_duration;
 
   if (info.postedDate !== "None" && info.closedDate !== "None") {
-    post_duration = info.postedDate + " - " + info.closedDate.split(" ")[0];
+    post_duration =
+      info.postedDate.split(" ")[0] + " - " + info.closedDate.split(" ")[0];
   } else {
-    post_duration = info.postedDate || info.closedDate;
+    post_duration =
+      info.postedDate.split(" ")[0] || info.closedDate.split(" ")[0];
   }
 
   const saveJobHandler = (e) => {
@@ -124,17 +133,26 @@ const BasicInfo = ({ info }) => {
 
   const addCalendarHandler = () => {
     if (!isCalendar) {
-      postInternshipCalendar({
-        name: info.companyName + " - " + info.jobTitle,
-        start: info.closedDate !== "None" ? info.closedDate : moment().add(2, 'w').format('YYYY-MM-DD hh:mm:ss'),
-        type: 'internship',
-        internshipId: info.internship_id
-      }, user.token)
+      postInternshipCalendar(
+        {
+          name: info.companyName + " - " + info.jobTitle,
+          start:
+            info.closedDate !== "None"
+              ? info.closedDate
+              : moment().add(2, "w").format("YYYY-MM-DD hh:mm:ss"),
+          type: "internship",
+          internshipId: info.internship_id,
+        },
+        user.token
+      );
     } else {
-      postInternshipUncalendar({ internshipId: info.internship_id }, user.token);
+      postInternshipUncalendar(
+        { internshipId: info.internship_id },
+        user.token
+      );
     }
     setIsCalendar(!isCalendar);
-  }
+  };
 
   return (
     <Box
@@ -196,7 +214,7 @@ const BasicInfo = ({ info }) => {
           startIcon={<CalendarMonthIcon />}
           size="small"
           onClick={addCalendarHandler}
-          color={isCalendar ? "error" : 'primary'}
+          color={isCalendar ? "error" : "primary"}
         >
           {isCalendar ? "Remove from Calendar" : "Add to Calendar"}
         </Button>

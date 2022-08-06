@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -18,12 +18,14 @@ import {
 import Logo from "../../asset/logo.svg";
 import ChatIcon from "@mui/icons-material/Chat";
 import { UserContext } from "../../store/UserContext";
-import { LogoutAPI } from "../../api/auth-api";
+import { LogoutAPI, getShortUserInfo } from "../../api/auth-api";
 
 const NavBar = () => {
   const history = useHistory();
   const [openDrawer, setOpenDrawer] = useState(false);
-  // const { user } = useContext(UserContext);
+
+  const { user, setUser } = useContext(UserContext);
+  const [avatar, setAvatar] = useState("");
 
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -45,17 +47,6 @@ const NavBar = () => {
     setOpenDrawer(false);
   };
 
-  // const [errorModalState, setErrorModalState] = useState(false);
-  // const [errorMessage, setErrorMessage] = useState("");
-  // const handleErrorOpen = (msg) => {
-  //   setErrorMessage(msg);
-  //   setErrorModalState(true);
-  // };
-  // const handleErrorClose = () => setErrorModalState(false);
-
-  const { user, setUser } = useContext(UserContext);
-  const loginState = user === "" ? false : true;
-
   const LogoutHandler = () => {
     const logout = async () => {
       try {
@@ -74,7 +65,6 @@ const NavBar = () => {
           //handleErrorOpen(res.response.data.message);
         } else {
           console.log(res);
-          console.log(user, loginState);
         }
       } catch (err) {
         console.log(err);
@@ -83,9 +73,22 @@ const NavBar = () => {
     logout();
     setUser({});
     window.localStorage.clear()
-    history.push("/");
-  };
+    history.push("/")
+  }
+  
+  useEffect(() => {
+    const update = async () => {
+      console.log(user);
+      if (user.token) {
+        const res = await getShortUserInfo(user.uid);
+        setUser({ ...res, token: user.token });
+        setAvatar(res.avatar);
+      }
+    };
+    update();
+  }, [user.token]);
 
+  console.log(user);
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="fixed" sx={{ height: "80px" }} color="secondary">
@@ -137,7 +140,7 @@ const NavBar = () => {
                   aria-haspopup="true"
                   onClick={handleMenu}
                 >
-                  <Avatar />
+                  <Avatar src={avatar} />
                 </IconButton>
                 <MUIMenu
                   id="user-menu-appbar"
