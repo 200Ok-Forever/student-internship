@@ -55,7 +55,7 @@ class Student(db.Model):
     skills = db.Column(db.VARCHAR(100))
     description = db.Column(db.VARCHAR(200))
 
-    # students_skills = db.relationship('Skill', secondary='r_student_skill', back_populates='students', lazy=True)
+    students_skills = db.relationship('Skill', secondary='r_student_skill', back_populates='students', lazy=True)
 
     # student_skills = db.relationship('Skill', secondary='r_student_skill', back_populates='students', lazy=True)
     def __repr__(self):
@@ -75,9 +75,7 @@ class Student(db.Model):
             "description": self.description
         }
 
-
 class Company(db.Model):
-    """Company table"""
     __tablename__ = 't_company'
     id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
     email = db.Column(db.VARCHAR(320), nullable=False, unique=True)
@@ -114,15 +112,6 @@ class Company(db.Model):
         }
 
 
-job_skills = db.Table('r_job_skill',
-                      db.Column('job_id', db.Integer, db.ForeignKey('t_internships.id'), primary_key=True),
-                      db.Column('skill_id', db.Integer, db.ForeignKey('t_skills.id'), primary_key=True))
-
-
-class StudentSkills(db.Model):
-    __tablename__ = 'r_student_skill'
-    student_id = db.Column('student_id', db.Integer, db.ForeignKey('t_student.id'), primary_key=True)
-    skill_id = db.Column('skill_id', db.Integer, db.ForeignKey('t_skills.id'), primary_key=True)
 
 
 class Internship(db.Model):
@@ -162,8 +151,8 @@ class Internship(db.Model):
 
     status = db.relationship('InternshipStatus', back_populates='internship')
 
-    # skills = db.relationship('Skill', secondary=job_skills,
-                            #  backref='internship', overlaps="internship")
+    #skills = db.relationship('Skill', secondary=job_skills, backref='internship', overlaps="internship")
+    skills = db.relationship('Skill', secondary='r_job_skill', back_populates='internships', lazy=True)
 
     def __repr__(self):
         return f"<Internship: {self.publisher}, {self.title}, {self.company_id} {self.max_salary}>"
@@ -235,18 +224,6 @@ class Comment(db.Model):
         }
 
 
-class Skill(db.Model):
-    __tablename__ = 't_skills'
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.VARCHAR(255))
-    internships = db.relationship('Internship', secondary=job_skills, backref='skill', overlaps="skills")
-    # students = db.relationship('Student', secondary='r_student_skill', back_populates='skills', lazy=True)
-    def get_info(self):
-        return {
-            "id": self.id,
-            "name": self.name
-        }
 
 
 class City(db.Model):

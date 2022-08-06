@@ -109,12 +109,7 @@ const BasicInfo = ({ info }) => {
       info.postedDate.split(" ")[0] || info.closedDate.split(" ")[0];
   }
 
-  useEffect(() => {
-    setSaved(info.is_save === "True");
-    setIsCalendar(info.is_calendar === "True");
-  }, [info]);
-
-  const saveJobHandler = () => {
+  const saveJobHandler = (e) => {
     if (saved) {
       postInternshipUnsave(info.internship_id, user.token);
     } else {
