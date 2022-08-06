@@ -3,7 +3,7 @@ import React, { useContext, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import ShowExample from "./ShowExample";
 import { ResumeInfoContext } from "../../../store/ResumeInfoContext";
-import { RESUME_DATA } from "../../../constants";
+import { RESUME_DATA, RESUME } from "../../../constants";
 import PickDate from "../../UI/PickDate";
 
 const WorkExperience = () => {
@@ -42,7 +42,7 @@ const WorkExperience = () => {
         </Typography>
       </Grid>
       <Grid item xs={12} sm={6}>
-        <ShowExample section={"Work"} />
+        <ShowExample section={RESUME[2]} />
       </Grid>
       {[...Array(numWork).keys()].map((num) => (
         <WorkForm idx={num + 1} key={num + 1} />
@@ -76,6 +76,7 @@ const WorkForm = ({ idx }) => {
       return { ...prev, Work_Experience: newInfo };
     });
   };
+  const format = "Recommend Format: \n - xxx xxxx \n - xxx xxxx \n   .......";
 
   return (
     <>
@@ -157,6 +158,7 @@ const WorkForm = ({ idx }) => {
               : ""
           }
           onChange={(e) => GetNewInfo("Description", e.target.value)}
+          placeholder={format}
         />
       </Grid>
     </>
