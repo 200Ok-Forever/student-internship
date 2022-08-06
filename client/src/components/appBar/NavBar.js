@@ -53,7 +53,8 @@ const NavBar = () => {
         const res = await LogoutAPI(user.token);
         if (res.status === true) {
           // If success, clear userInfo
-          setUser("");
+          setUser({});
+          window.localStorage.clear();
           history.push("/");
         } else if (
           res.response.status === 404 ||
@@ -69,10 +70,10 @@ const NavBar = () => {
         console.log(err);
       }
     };
-    document.cookie = "user=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;";
     logout();
-    setUser("");
-    console.log(user);
+    setUser({});
+    window.localStorage.clear();
+    history.push("/");
   };
 
   useEffect(() => {
@@ -85,6 +86,7 @@ const NavBar = () => {
       }
     };
     update();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user.token]);
 
   console.log(user);
