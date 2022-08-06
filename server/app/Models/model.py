@@ -240,6 +240,7 @@ class InternshipStatus(db.Model):
     is_save = db.Column(db.VARCHAR(255))
     is_applied = db.Column(db.VARCHAR(255))
     seen_time = db.Column(db.TIMESTAMP)
+    status = db.Column(db.VARCHAR(255))
     internship = db.relationship('Internship', back_populates='status')
     #user = db.relationship('User', back_populates='status')
 
@@ -252,11 +253,14 @@ class File(db.Model):
     file_type = db.Column(db.VARCHAR(255))
     upload_time = db.Column(db.TIMESTAMP)
 
+"""
 class StudentInterveiwQuestion(db.Model):
     __tablename__ = 'r_intern_question_answer'
     student_id = db.Column(db.Integer, db.ForeignKey('t_student.id'), primary_key = True)
     question_id = db.Column(db.Integer, db.ForeignKey('t_intern_question.id'), primary_key = True)
     answer = db.Column(db.VARCHAR(1000))
+"""
+
 
 class LoginSchema(Form):
     email = StringField('Email Address', [validators.Length(min=6, max=35)])
