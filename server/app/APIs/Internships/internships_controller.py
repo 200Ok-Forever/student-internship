@@ -198,8 +198,3 @@ class Recommend(Resource):
         print(arg)
         return InternshipsUtils.getRecommend(arg)
 
-
-@internships_api.route('/chat/users')
-class GetUser(Resource):
-    def get(self):
-        return InternshipsUtils.getUser()

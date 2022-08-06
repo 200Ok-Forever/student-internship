@@ -68,7 +68,7 @@ def get_youtube(title):
     r = requests.get(search_url, params=search_params)
 
     results = r.json()['items']
-    # print(results)
+    print(results)
 
     if results is None:
         return 404
@@ -230,7 +230,8 @@ class InternshipsUtils:
         except  Exception as error:
             print(error)
             return {
-                       "message": "something wrong internal"
+                       "message": "something wrong internal",
+                    
                    }, 500
 
     @staticmethod
@@ -595,15 +596,4 @@ class InternshipsUtils:
 
         return return_list,200
 
-    def getUser():
-        user = db.session.query(User).all()
-        results = []
-        print("+++++++")
-        for u in user:
-            result = {
-                "userid": u.uid,
-                "name": u.username,
-                "avatar": u.avatar
-            }
-            results.append(result)
-        return results,200
+   
