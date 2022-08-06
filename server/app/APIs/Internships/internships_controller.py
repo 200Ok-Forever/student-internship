@@ -23,6 +23,7 @@ searrch_parser.add_argument('paid',  location='args', help = 'TRUE/FALSE')
 searrch_parser.add_argument('is_remote',  location='args', help = 'TRUE/FALSE')
 searrch_parser.add_argument('job_type',  location='args')
 searrch_parser.add_argument('current_page',  location='args')
+searrch_parser.add_argument('uid', location='args')
 @internships_api.route('/internships')
 class GetInternshipList(Resource):
 
@@ -197,8 +198,3 @@ class Recommend(Resource):
         print(arg)
         return InternshipsUtils.getRecommend(arg)
 
-
-@internships_api.route('chat/users')
-class GetUser(Resource):
-    def get(self):
-        return InternshipsUtils.getUser()

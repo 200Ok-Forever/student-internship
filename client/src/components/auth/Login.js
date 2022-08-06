@@ -36,8 +36,9 @@ const Login = () => {
         try {
           const res = await LoginAPI(values);
           if (res.status === true) {
+            console.log(res);
             // If success, store the user info and token to UserContext then route to main page
-            document.cookie = "user=" + res.token + "; Path=/;";
+            window.localStorage.setItem('user', JSON.stringify({ ...res.user_info, token: res.token }))
             setUser({ ...res.user_info, token: res.token });
             history.push("/");
           } else if (
