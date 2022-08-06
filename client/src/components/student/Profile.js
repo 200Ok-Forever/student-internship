@@ -68,7 +68,7 @@ const Profile = () => {
       setInfo(res);
     };
     loadInfo();
-  }, []);
+  }, [user.uid]);
 
   const history = useHistory();
 
