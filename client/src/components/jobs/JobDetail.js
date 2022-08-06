@@ -195,7 +195,7 @@ const BasicInfo = ({ info }) => {
         internshipId: info.internship_id
       }, user.token)
     } else {
-      postInternshipUncalendar(info.internship_id, user.token);
+      postInternshipUncalendar({ internshipId: info.internship_id }, user.token);
     }
     setIsCalendar(!isCalendar);
   }
