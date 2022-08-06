@@ -9,7 +9,7 @@ class Fourm(db.Model):
   posts = db.relationship('Post', backref='forum', lazy=True)
 
   def __repr__(self):
-      return f"<Forum: id: {self.id}, name: {self.name}"
+      return f"<Forum: id: {self.id}, name: {self.name}>"
 
   def __init__(self, name, image):
       self.name = name
@@ -28,7 +28,7 @@ class Post(db.Model):
   comments = db.relationship('PostComment', backref='post', lazy=True)
 
   def __repr__(self):
-    return f"<Forum: id: {self.id}, user id: {self.student_id}"
+    return f"<Forum: id: {self.id}, user id: {self.student_id}>"
 
   def __init__(self, title, content, create_time, forum_id, student_id):
     self.title = title
@@ -49,7 +49,7 @@ class PostComment(db.Model):
   comments = db.relationship('PostComment', remote_side=[id])
 
   def __repr__(self):
-    return f"<Forum: id: {self.id}, user id: {self.student_id}"
+    return f"<Forum: id: {self.id}, user id: {self.student_id}>"
 
   def __init__(self, student_id, post_id, parent_id, created_time, content, order):
     self.student_id = student_id

@@ -20,11 +20,11 @@ class Companies(db.Model):
     line1 = db.Column(db.VARCHAR(255))
     description = db.Column(db.VARCHAR(10000))
     company_logo = db.Column('logo', db.TEXT)
-    industries = db.relationship('Industry', secondary='r_industry_company', back_populates='companies', lazy=True)
-    internships = db.relationship('InternQuestion', backref='company', lazy=True)
+    industries =  db.relationship('Industry', secondary='r_industry_company', back_populates='companies', lazy=True)
+    internships =  db.relationship('Internship', backref='company', lazy=True)
 
     def __repr__(self):
-        return f"<Recruiter: {self.email}, {self.first_name} {self.last_name}>"
+        return '<Company id:{} name:>'.format(self.id, self.company_name)
 
     def get_info(self):
         return {

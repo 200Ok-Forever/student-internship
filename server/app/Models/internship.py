@@ -32,6 +32,10 @@ class InternQuestion(db.Model):
     def __repr__(self):
         return f"<InternQuestion: {self.id}, {self.intern_id}>"
 
+    def __init__(self, content, intern_id):
+        self.content = content
+        self.intern_id = intern_id
+
 
 class InternAnswer(db.Model):
     __tablename__ = 'r_intern_question_answer'
@@ -49,6 +53,7 @@ class Process(db.Model):
     name = db.Column(db.VARCHAR(255), nullable=False)
     order = db.Column(db.Integer, nullable=False)
     intern_id = db.Column(db.Integer, db.ForeignKey('t_internships.id'))
+    applications = db.relationship('InternshipStatus', backref='process', lazy=True)
 
     def __repr__(self):
         return f"<Process: id :{self.id}, intern id: {self.intern_id}, name: {self.name}>"
