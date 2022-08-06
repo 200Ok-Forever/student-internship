@@ -134,13 +134,13 @@ const BasicInfo = ({ info }) => {
   const { user } = useContext(UserContext);
   const history = useHistory();
   const [isCalendar, setIsCalendar] = useState(info.is_calendar === "True");
-  const [saved, setSaved] = useState(false);
+  const [saved, setSaved] = useState(info.is_save === "True");
   const [shareBar, setShareBar] = useState(false);
   const processes =
     info.recruiting_process.length === 0
       ? ["Phone Interview", "Coding Test", "Technical Interview"]
       : info.recruiting_process;
-
+  
   let salary_str;
   let salary_curr =
     info.salary_currency !== "AUD"
@@ -162,8 +162,10 @@ const BasicInfo = ({ info }) => {
   }
 
   useEffect(() => {
-    setSaved(DATA.saved);
-  }, []);
+    setSaved(info.is_save === "True")
+    setIsCalendar(info.is_calendar === "True")
+  }, [info]);
+
   const saveJobHandler = (e) => {
     if (saved) {
       postInternshipUnsave(info.internship_id, user.token);
