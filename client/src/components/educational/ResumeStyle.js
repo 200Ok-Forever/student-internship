@@ -18,6 +18,7 @@ export const styles = StyleSheet.create({
   },
   text: {
     fontSize: "10px",
+    letterSpacing: "1px",
   },
   infoRow: {
     flexDirection: "row",

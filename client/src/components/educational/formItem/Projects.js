@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { Button, Grid, TextField, Typography } from "@mui/material";
 import ShowExample from "./ShowExample";
 import { ResumeInfoContext } from "../../../store/ResumeInfoContext";
-import { RESUME_DATA } from "../../../constants";
+import { RESUME_DATA, RESUME } from "../../../constants";
 import AddIcon from "@mui/icons-material/Add";
 
 const Projects = () => {
@@ -42,7 +42,7 @@ const Projects = () => {
         </Typography>
       </Grid>
       <Grid item xs={12} sm={6}>
-        <ShowExample section={"Projects"} />
+        <ShowExample section={RESUME[3]} />
       </Grid>
       {[...Array(numProj).keys()].map((num) => (
         <ProjForm idx={num + 1} key={num + 1} />
@@ -76,6 +76,7 @@ const ProjForm = ({ idx }) => {
       return { ...prev, Relevant_Projects: newInfo };
     });
   };
+  const format = "Recommend Format: \n - xxx xxxx \n - xxx xxxx \n   .......";
 
   return (
     <>
@@ -109,6 +110,7 @@ const ProjForm = ({ idx }) => {
               : ""
           }
           onChange={(e) => GetNewInfo("Description", e.target.value)}
+          placeholder={format}
         />
       </Grid>
     </>
