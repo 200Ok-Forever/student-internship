@@ -5,10 +5,8 @@ from torch import autocast_increment_nesting
 from wtforms import Form, IntegerField, StringField, PasswordField, validators
 from .. import bcrypt, db
 
-job_skills = db.Table('r_job_skill',
-                      db.Column('job_id', db.Integer, db.ForeignKey('t_internships.id'), primary_key=True),
-                      db.Column('skill_id', db.Integer, db.ForeignKey('t_skills.id'), primary_key=True))
 
+"""
 class InternshipStatus(db.Model):
     __tablename__ = 't_intern_user_status'
     id = db.Column(db.Integer, primary_key=True)
@@ -20,6 +18,8 @@ class InternshipStatus(db.Model):
     status = db.Column(db.VARCHAR(255))
     seen_time = db.Column(db.TIMESTAMP)
     internship = db.relationship('Internship', back_populates='status')
+"""
+
 
 class InternQuestion(db.Model):
     __tablename__ = 't_intern_question'
@@ -55,29 +55,7 @@ class Process(db.Model):
         self.order = order
         self.intern_id = intern_id
 
-class Skill(db.Model):
-    __tablename__ = 't_skills'
 
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.VARCHAR(255))
-    internships = db.relationship('Internship', secondary=job_skills, backref='skill', overlaps="skills")
-    # students = db.relationship('Student', secondary='r_student_skill', back_populates='skills', lazy=True)
-
-    def get_info(self):
-        return {
-            "id": self.id,
-            "name": self.name
-        }
-
-class City(db.Model):
-    __tablename__ = 't_cities'
-    id = db.Column(db.Integer, primary_key=True)
-    state_id = db.Column(db.Integer)
-    name = db.Column(db.VARCHAR(255))
-    internships = db.relationship("Internship", backref='citys', lazy='dynamic')
-
-    def __repr__(self):
-        return f"<Internship: {self.publisher}, {self.title}, {self.company_id} {self.max_salary}>"
 
 """
 class Internship(db.Model):
