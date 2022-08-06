@@ -598,6 +598,7 @@ class InternshipsUtils:
     def getUser():
         user = db.session.query(User).all()
         results = []
+        print("+++++++")
         for u in user:
             result = {
                 "userid": u.uid,
@@ -605,4 +606,4 @@ class InternshipsUtils:
                 "avatar": u.avatar
             }
             results.append(result)
-        return dumps(results),200
+        return results,200
