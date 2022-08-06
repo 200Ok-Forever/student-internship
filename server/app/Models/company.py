@@ -5,7 +5,7 @@ from .. import bcrypt, db
 
 class Companies(db.Model):
     __tablename__ = "new_company"
-    id = db.Column(db.Integer, primary_key=True,autoincrement=True, nullable=False, unique=True)
+    id = db.Column(db.Integer, db.ForeignKey('t_user.id'), primary_key=True,autoincrement=True, nullable=False, unique=True)
     company_name = db.Column(db.VARCHAR(255), nullable=False, unique=True)
     first_name = db.Column(db.VARCHAR(255), nullable=False, unique=True)
     last_name = db.Column(db.VARCHAR(255), nullable=False, unique=True)
