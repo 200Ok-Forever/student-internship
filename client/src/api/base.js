@@ -1,9 +1,20 @@
 import axios from "axios";
 
-export const getAxios = (url, configs) =>
+export const API = axios.create({ baseURL: "http://localhost:5004" });
+
+API.interceptors.response.use((response) => {
+  return response;
+}, (error) => {
+  if (error.response.status === 422) {
+    window.localStorage.clear()
+    window.location.href = '/login'
+  }
+});
+
+export const getAxios = (path, configs) =>
   new Promise((resolve, reject) => {
-    axios
-      .get(url, configs)
+    API
+      .get(path, configs)
       .then((res) => {
         resolve(res);
       })
@@ -12,10 +23,10 @@ export const getAxios = (url, configs) =>
       });
   });
 
-export const postAxios = (url, data = {}, configs) =>
+export const postAxios = (path, data = {}, configs) =>
   new Promise((resolve, reject) => {
-    axios
-      .post(url, { ...data }, configs)
+    API
+      .post(path, { ...data }, configs)
       .then((res) => {
         resolve(res);
       })
@@ -24,10 +35,10 @@ export const postAxios = (url, data = {}, configs) =>
       });
   });
 
-export const deleteAxios = (url, data = {}) =>
+export const deleteAxios = (path, data = {}) =>
   new Promise((resolve, reject) => {
-    axios
-      .delete(url, { ...data })
+    API
+      .delete(path, { ...data })
       .then((res) => {
         resolve(res);
       })
@@ -35,8 +46,6 @@ export const deleteAxios = (url, data = {}) =>
         reject(err);
       });
   });
-
-const API = axios.create({ baseURL: "http://localhost:5004" });
 
 export const getRequest = async (path, config) => {
   try {

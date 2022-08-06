@@ -75,7 +75,7 @@ const NavBar = () => {
     window.localStorage.clear()
     history.push("/")
   }
-  
+
   useEffect(() => {
     const update = async () => {
       console.log(user);
@@ -86,7 +86,7 @@ const NavBar = () => {
       }
     };
     update();
-  }, [user.token]);
+  }, [user.token, setUser, user]);
 
   console.log(user);
   return (
