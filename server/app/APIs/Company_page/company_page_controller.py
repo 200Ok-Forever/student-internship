@@ -264,11 +264,11 @@ class CreateIntern(Resource):
     @company_ns.response(200, "Successfully")
     @company_ns.response(400, "Something wrong")
     @company_ns.expect(CompanyPageAPI.intern_data, validate=True)
-    #@jwt_required()
+    @jwt_required()
     def put(self, jobid):
         jobid = int(jobid)
         data = company_ns.payload
-        #uid = get_jwt_identity()
+        uid = get_jwt_identity()
 
         query = db.session.query(model.Internship).filter(model.Internship.id == jobid)
         
@@ -277,8 +277,8 @@ class CreateIntern(Resource):
         if job== None:
             return {"message": "Invalid internship id"}, 400
         # 2. check permission : is recuiter and belongs to this company
-        #if job.company.user_id != uid:
-        #    return {"message": "No permission"}, 400
+        if job.company.user_id != uid:
+            return {"message": "No permission"}, 400
 
         intern_id = job.id
         try:

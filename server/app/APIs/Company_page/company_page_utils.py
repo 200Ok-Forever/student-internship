@@ -3,6 +3,7 @@ from  ...Models import company as Company
 from  ...Models import model
 from  ...Models import internship as Internship
 from ... import db
+from sqlalchemy import and_, null, or_
 
 def get_intern_process(job):
     process = []

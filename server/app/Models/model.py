@@ -51,7 +51,7 @@ class User(db.Model):
 class Student(db.Model):
     """Student table"""
     __tablename__ = 't_student_copy1'
-    id = db.Column(db.Integer, db.ForeignKey('t_user.uid'), primary_key=True, nullable=False, unique=True)
+    id = db.Column(db.Integer,  db.ForeignKey('t_user.uid'), autoincrement=True, primary_key=True, nullable=False, unique=True)
     email = db.Column(db.VARCHAR(320), nullable=False, unique=True)
     first_name = db.Column(db.VARCHAR(50), nullable=False)
     last_name = db.Column(db.VARCHAR(50), nullable=False)
