@@ -79,7 +79,7 @@ const EducationForm = ({ idx }) => {
     });
   };
 
-  const format = "Recommand Format: \n - xxx xxxx \n - xxx xxxx \n   .......";
+  const format = "Recommend Format: \n - xxx xxxx \n - xxx xxxx \n   .......";
 
   return (
     <>

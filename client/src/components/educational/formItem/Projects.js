@@ -76,7 +76,7 @@ const ProjForm = ({ idx }) => {
       return { ...prev, Relevant_Projects: newInfo };
     });
   };
-  const format = "Recommand Format: \n - xxx xxxx \n - xxx xxxx \n   .......";
+  const format = "Recommend Format: \n - xxx xxxx \n - xxx xxxx \n   .......";
 
   return (
     <>
