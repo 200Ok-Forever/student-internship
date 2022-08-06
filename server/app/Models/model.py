@@ -43,7 +43,7 @@ class User(db.Model):
 
 class Student(db.Model):
     """Student table"""
-    __tablename__ = 't_student'
+    __tablename__ = 't_student_copy1'
     id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
     email = db.Column(db.VARCHAR(320), nullable=False, unique=True)
     first_name = db.Column(db.VARCHAR(50), nullable=False)
@@ -52,9 +52,10 @@ class Student(db.Model):
     degree = db.Column(db.VARCHAR(15), nullable=False)
     major = db.Column(db.VARCHAR(15))
     position = db.Column(db.VARCHAR(50))
-    skills = db.Column(db.VARCHAR(100))
     description = db.Column(db.VARCHAR(200))
     students_skills = db.relationship('Skill', secondary='r_student_skill', back_populates='students', lazy=True)
+
+    skills = db.relationship('Skill', secondary='r_student_skill', back_populates='students', lazy=True)
 
     # student_skills = db.relationship('Skill', secondary='r_student_skill', back_populates='students', lazy=True)
     def __repr__(self):
