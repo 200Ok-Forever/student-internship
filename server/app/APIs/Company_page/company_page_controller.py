@@ -1,3 +1,4 @@
+from email.mime import application
 from operator import mod, pos
 from re import L, S
 from flask import request, jsonify
@@ -8,6 +9,7 @@ from .company_page_model import CompanyPageAPI
 from .company_page_utils import CompanyPageUtils
 from  ...Models import company as Company
 from  ...Models import model
+from  ...Models import internship as Internship
 from ...Helpers.other_util import convert_object_to_dict, convert_model_to_dict
 from ... import db
 from flask_jwt_extended import jwt_required
@@ -91,6 +93,7 @@ class CompanyJobs(Resource):
 
     @company_ns.response(200, "Successfully")
     @company_ns.response(400, "Something wrong")
+    @jwt_required(optional=True)
     def get(self, id):
         parser = reqparse.RequestParser()
         parser.add_argument('searchTerm', type=str, location='args')
@@ -99,28 +102,9 @@ class CompanyJobs(Resource):
         parser.add_argument('location', type=str, location='args')
         args = parser.parse_args()
 
-        jobs = None
-        # for search keyword
-        if args['searchTerm'] != None:
-            search = "%{}%".format(args['searchTerm'])
-            jobs = db.session.query(model.Internship).filter(model.Internship.company_id == id, or_(model.Internship.title.ilike(search), model.Internship.description.ilike(search)))
-        else:
-            jobs = db.session.query(model.Internship).filter(model.Internship.company_id == id)
-        
-        # for locatiom
-        if args['location'] != None:
-            location = search = "%{}%".format(args['location'])
-            jobs = jobs.filter(model.City.name.ilike(location),model.City.id == model.Internship.city)
+        uid = get_jwt_identity()
 
-        # sort
-        if args['sort'] == 'newest':
-            jobs = jobs.order_by(model.Internship.posted_time.desc())
-        else:
-            jobs = jobs.order_by(model.Internship.expiration_datetime_utc.desc())
-        
-        # paging, 10 per page
-        jobs = jobs.offset((args['current_page'] - 1) * 10).limit(10).all()
-        
+        jobs = search_jobs(args, id)
         if len(jobs) == 0:
             return {"jobs": [], 'company_name': None, 'company_logo': None, 'numAllResults': 0}
             
@@ -134,13 +118,75 @@ class CompanyJobs(Resource):
             # TODO: update database
             data['closeDate'] = data['expiration_datetime_utc']
             data['city'] = job.citys.name
+
+            # get identity, if has token, is recruiter
+            if uid != None:
+                process_list = get_intern_process(job)
+                data['processes'] = process_list
+                data['require_resume'] = job.require_resume
+                data['require_coverLetter'] = job.require_coverLetter
             result['jobs'].append(data)
+
         result['company_name'] = company_name
         result['company_logo'] = company_logo
         
 
         return result, 200
 
+def get_intern_process(job):
+    process = []
+    for pro in job.processes:
+        process[pro.order - 1] = pro.name
+    return process
+
+def get_application(job):
+    print(job)
+    applications = db.session.query(Internship.InternshipStatus).filter(Internship.InternshipStatus.intern_id == 1).all()
+    print(applications)
+    for app in applications:
+        internship = app.internship
+
+        data = {}
+        data['application_id'] = app.id
+        data['uid'] = app.uid
+        data['status'] = app.status
+
+        # questions and answer
+        intern_answers = db.session.query(Internship.InternAnswer, Internship.InternQuestion
+        ).filter(Internship.InternQuestion.intern_id == 1, Internship.InternQuestion.id == Internship.InternAnswer.question_id, \
+            Internship.InternAnswer.student_id == app.uid).all()
+        print(intern_answers)
+        answers = {}
+        for an, que in intern_answers:
+            answers[que.content] = an.answer
+
+        print(answers)
 
 
+        
 
+def search_jobs(args, id):
+    # for search keyword
+    if args['searchTerm'] != None:
+        search = "%{}%".format(args['searchTerm'])
+        jobs = db.session.query(Internship.Internship).filter(Internship.Internship.company_id == id, or_(Internship.Internship.title.ilike(search), Internship.Internship.description.ilike(search)))
+    else:
+        jobs = db.session.query(Internship.Internship).filter(Internship.Internship.company_id == id)
+    
+    # for locatiom
+    if args['location'] != None:
+        location = search = "%{}%".format(args['location'])
+        jobs = jobs.filter(Internship.City.name.ilike(location),Internship.City.id == Internship.Internship.city)
+
+    # sort
+    if args['sort'] == 'newest':
+        jobs = jobs.order_by(Internship.Internship.posted_time.desc())
+    else:
+        jobs = jobs.order_by(Internship.Internship.expiration_datetime_utc.desc())
+    
+    # paging, 10 per page
+    jobs = jobs.offset((args['current_page'] - 1) * 10).limit(10).all()
+    
+
+    
+    return jobs

@@ -5,7 +5,7 @@ from pyrsistent import get_in
 from .internships_model import InternshipsAPI
 from .internships_utils import InternshipsUtils
 
-from ...Models.model import Internship, InternshipSearchSchema
+from ...Models.model import InternshipSearchSchema
 from flask_jwt_extended import create_access_token, get_jwt, jwt_required, create_refresh_token, get_jwt_identity
 
 internships_api = InternshipsAPI.api

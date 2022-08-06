@@ -7,7 +7,7 @@ from json import dumps
 from requests import session
 from sqlalchemy import null
 from torch import is_same_size
-from ...Models.model import Calendar, StudentSkills,Internship, City, Company, Comment, User, Skill,InternshipStatus,Student, File
+from ...Models.model import Calendar, StudentSkills, Company, Comment, User, Student, File
 from flask_restx import Resource, reqparse
 from ...extension import db
 from string import digits
