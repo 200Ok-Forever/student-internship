@@ -5,7 +5,6 @@ from torch import autocast_increment_nesting
 from wtforms import Form, IntegerField, StringField, PasswordField, validators
 from .. import bcrypt, db
 
-
 """
 class InternshipStatus(db.Model):
     __tablename__ = 't_intern_user_status'
@@ -26,7 +25,10 @@ class InternQuestion(db.Model):
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     content = db.Column(db.VARCHAR(10000))
     intern_id = db.Column(db.Integer, db.ForeignKey('t_internships.id'))
-    students =  db.relationship('Student', secondary='r_intern_question_answer', back_populates='questions', lazy=True)
+    students = db.relationship('Student', secondary='r_intern_question_answer', back_populates='questions', lazy=True)
+    companies = db.relationship('Companies', secondary='r_intern_question_answer', back_populates='internships',
+                                lazy=True)
+
     def __repr__(self):
         return f"<InternQuestion: {self.id}, {self.intern_id}>"
 
@@ -34,31 +36,32 @@ class InternQuestion(db.Model):
         self.content = content
         self.intern_id = intern_id
 
+
 class InternAnswer(db.Model):
     __tablename__ = 'r_intern_question_answer'
     student_id = db.Column(db.Integer, db.ForeignKey('t_student_copy1.id'), primary_key=True)
     question_id = db.Column(db.Integer, db.ForeignKey('t_intern_question.id'), primary_key=True)
-    answer = db.Column(db.VARCHAR(10000), nullable = False)
+    answer = db.Column(db.VARCHAR(10000), nullable=False)
 
     def __repr__(self):
         return f"<InternAnswer: {self.student_id}, {self.question_id}>"
 
+
 class Process(db.Model):
     __tablename__ = 't_process'
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    name =  db.Column(db.VARCHAR(255), nullable = False)
-    order = db.Column(db.Integer, nullable = False)
+    name = db.Column(db.VARCHAR(255), nullable=False)
+    order = db.Column(db.Integer, nullable=False)
     intern_id = db.Column(db.Integer, db.ForeignKey('t_internships.id'))
     applications = db.relationship('InternshipStatus', backref='process', lazy=True)
 
     def __repr__(self):
         return f"<Process: id :{self.id}, intern id: {self.intern_id}, name: {self.name}>"
-    
+
     def __init__(self, name, order, intern_id):
         self.name = name
         self.order = order
         self.intern_id = intern_id
-
 
 
 """

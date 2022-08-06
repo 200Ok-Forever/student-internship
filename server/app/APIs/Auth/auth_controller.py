@@ -13,6 +13,10 @@ company_signup_schema = CompanySignUpSchema()
 
 authParser = auth_api.parser()
 authParser.add_argument('Authorization', location='headers', help='Bearer [Token]', default='Bearer xxxxxxxxxxxxx')
+skill_name_parser = reqparse.RequestParser()
+skill_name_parser.add_argument('name', type=str, required=True, help='Skill name is required')
+industry_name_parser = reqparse.RequestParser()
+industry_name_parser.add_argument('name', type=str, required=True, help='Industry name is required')
 
 
 @auth_api.route("/login")
@@ -45,6 +49,7 @@ class Login(Resource):
 
         return AuthUtils.login(login_data)
 
+
 @auth_api.route("/logout")
 class Logout(Resource):
     """ User logout endpoint """
@@ -56,6 +61,7 @@ class Logout(Resource):
             400: "Validations failed.",
             403: "Incorrect password or incomplete credentials.",
             404: "Email does not match any account.",
+            422: "Invalid token",
         },
     )
     @jwt_required()
@@ -162,6 +168,7 @@ class PasswordResetReset(Resource):
 
         return AuthUtils.verify_code(send_data)
 
+
 @auth_api.route("/continueSession")
 class ContinueSession(Resource):
     @auth_api.doc(
@@ -169,6 +176,7 @@ class ContinueSession(Resource):
         responses={
             200: "Successfully continuing session",
             400: "Malformed data or validations failed.",
+            422: "Invalid token",
         },
     )
     @auth_api.expect(authParser, validate=True)
@@ -202,6 +210,7 @@ class updateUserInfoShort(Resource):
         responses={
             200: "Successfully get user info",
             400: "Malformed data or validations failed.",
+            422: "Invalid token",
         },
     )
     @jwt_required()
@@ -238,6 +247,7 @@ class updateUserInfoLong(Resource):
         responses={
             200: "Successfully get user info",
             400: "Malformed data or validations failed.",
+            422: "Invalid token",
         },
     )
     @jwt_required()
@@ -246,3 +256,69 @@ class updateUserInfoLong(Resource):
         """ User info long """
         send_form, send_data = request.form, request.get_json()
         return AuthUtils.updateUserInfoLong(send_data)
+
+
+@auth_api.route("/skill_id")
+class GetSkillID(Resource):
+
+    @auth_api.doc(
+        "Get skill ID",
+        responses={
+            200: "Successfully get skill ID",
+            400: "Malformed data or validations failed.",
+        },
+    )
+    @auth_api.expect(skill_name_parser, validate=True)
+    def get(self):
+        """ Get skill ID """
+        # Grab the json data
+        args = skill_name_parser.parse_args()
+        return AuthUtils.getSkillID(args['name'])
+
+
+@auth_api.route("/skills")
+class GetSkillID(Resource):
+
+    @auth_api.doc(
+        "Get all skill data",
+        responses={
+            200: "Successfully get all skill data",
+            400: "Malformed data or validations failed.",
+        },
+    )
+    def get(self):
+        """ Get all skill data """
+        return AuthUtils.getSkills()
+
+
+@auth_api.route("/industry_id")
+class GetIndustryID(Resource):
+
+    @auth_api.doc(
+        "Get industry ID",
+        responses={
+            200: "Successfully get skill ID",
+            400: "Malformed data or validations failed.",
+        },
+    )
+    @auth_api.expect(industry_name_parser, validate=True)
+    def get(self):
+        """ Get skill ID """
+        # Grab the json data
+        args = industry_name_parser.parse_args()
+        return AuthUtils.getIndustryID(args['name'])
+
+
+@auth_api.route("/skills")
+class GetSkillID(Resource):
+
+    @auth_api.doc(
+        "Get all skill data",
+        responses={
+            200: "Successfully get all skill data",
+            400: "Malformed data or validations failed.",
+        },
+    )
+    def get(self):
+        """ Get all skill data """
+        return AuthUtils.getSkills()

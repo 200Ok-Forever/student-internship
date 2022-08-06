@@ -2,9 +2,11 @@ from datetime import datetime, timezone
 
 import pyotp
 from flask import current_app, jsonify
-from flask_jwt_extended import create_access_token, get_jwt, jwt_required, create_refresh_token, get_jwt_identity
+from flask_jwt_extended import create_access_token, get_jwt, get_jwt_identity
 from flask_mail import Message
-from ...Models.model import User, Student, Company
+from ...Models.model import User, Student
+from ...Models.skill import Skill
+from ...Models.company import Companies, Industry
 from ... import db, mail, jwt
 from datetime import timedelta
 import redis
@@ -71,16 +73,22 @@ class AuthUtils:
                 role=1,
                 avatar=data["avatar"],
             )
+            db.session.add(new_user)
+            db.session.commit()
+            user_id = User.query.with_entities(User.uid).filter_by(email=email).first()
             new_student = Student(
+                id=user_id[0],
                 email=email,
                 first_name=data["first_name"],
                 last_name=data["last_name"],
                 university=data["university"],
                 degree=data["degree"],
                 major=data["major"],
-                description=data["description"]
+                description=data["description"],
             )
-            db.session.add(new_user)
+            for skill_id in data["skills"]:
+                skill = Skill.query.filter_by(id=skill_id).first()
+                new_student.skills.append(skill)
             db.session.add(new_student)
             db.session.commit()
 
@@ -122,21 +130,28 @@ class AuthUtils:
                 role=2,
                 avatar=data["avatar"],
             )
-            new_company = Company(
+            db.session.add(new_user)
+            db.session.commit()
+            user_id = User.query.with_entities(User.uid).filter_by(email=email).first()
+            new_company = Companies(
+                id=user_id[0],
                 email=email,
                 company_name=data["company_name"],
                 first_name=data["first_name"],
                 last_name=data["last_name"],
-                industry=data["industry"],
                 linkedin=data["linkedin"],
                 company_url=data["company_url"],
                 founded_year=data["founded_year"],
                 company_size=data["company_size"],
-                location=data["location"],
+                country=data["country"],
+                city=data["city"],
+                line1=data["line1"],
                 description=data["description"],
                 company_logo=data["company_logo"]
             )
-            db.session.add(new_user)
+            for industry_id in data["industry"]:
+                industry = Skill.query.filter_by(id=industry_id).first()
+                new_company.industries.append(industry)
             db.session.add(new_company)
             db.session.commit()
 
@@ -159,7 +174,7 @@ class AuthUtils:
 
     @staticmethod
     @jwt.token_in_blocklist_loader
-    def check_if_token_is_revoked(jwt_header, jwt_payload: dict):
+    def check_if_token_is_revoked(jwt_payload: dict):
         jti = jwt_payload["jti"]
         token_in_redis = r.get(jti)
         print(jti, token_in_redis, token_in_redis is not None)
@@ -319,3 +334,51 @@ if you did not request a password reset, please ignore this email.
                        "status": False,
                        "message": "please fill in required data correctly.",
                    }, 400
+
+    @staticmethod
+    def getSkillID(name):
+        skill = Skill.query.filter_by(name=name).first()
+        if skill:
+            return {
+                       'skill_id': skill.id,
+                   }, 200
+        else:
+            return {
+                       'msg': 'skill not found',
+                   }, 404
+
+    @staticmethod
+    def getSkills():
+        skills = Skill.query.all()
+        if skills:
+            return {
+                       'skills': [skill.get_info() for skill in skills],
+                   }, 200
+        else:
+            return {
+                       'msg': 'skills not found',
+                   }, 404
+
+    @staticmethod
+    def getIndustryID(name):
+        industry = Industry.query.filter_by(name=name).first()
+        if industry:
+            return {
+                       'industry_id': industry.id,
+                   }, 200
+        else:
+            return {
+                       'msg': 'industry not found',
+                   }, 404
+
+    @staticmethod
+    def getIndustries():
+        industries = Industry.query.all()
+        if industries:
+            return {
+                       'industries': [industry.get_info() for industry in industries],
+                   }, 200
+        else:
+            return {
+                       'msg': 'industries not found',
+                   }, 404
