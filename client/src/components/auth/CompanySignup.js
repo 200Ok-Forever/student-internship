@@ -63,8 +63,8 @@ const CompanySignup = () => {
           company_url: values.company_url,
           location: values.location,
           description: values.description,
-          avatar: avatar,
-          company_logo: "",
+          avatar: "",
+          company_logo: avatar,
           company_size: values.size,
           founded_year: values.founded_year,
         };
