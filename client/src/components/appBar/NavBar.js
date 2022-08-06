@@ -54,7 +54,7 @@ const NavBar = () => {
         if (res.status === true) {
           // If success, clear userInfo
           setUser({});
-          window.localStorage.clear()
+          window.localStorage.clear();
           history.push("/");
         } else if (
           res.response.status === 404 ||
@@ -72,10 +72,10 @@ const NavBar = () => {
     };
     logout();
     setUser({});
-    window.localStorage.clear()
-    history.push("/")
-  }
-  
+    window.localStorage.clear();
+    history.push("/");
+  };
+
   useEffect(() => {
     const update = async () => {
       console.log(user);
@@ -86,6 +86,7 @@ const NavBar = () => {
       }
     };
     update();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user.token]);
 
   console.log(user);
