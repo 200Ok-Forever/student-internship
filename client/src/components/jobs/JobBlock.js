@@ -16,9 +16,11 @@ const paper = {
 };
 
 const JobBlock = ({ job, children }) => {
-  console.log("🚀 ~ job", job);
   const date = new Date().toJSON().slice(0, 10);
-  const status = !job.status && date === job.posted_time ? "NEW" : job.status;
+  const status =
+    job.is_seen === "False" && date === job.posted_time.split(" ")[0]
+      ? "NEW"
+      : job.is_seen === "True" && "SEEN";
   let salary_str;
   let salary_curr =
     job.salary_currency !== "AUD"

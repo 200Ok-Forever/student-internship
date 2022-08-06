@@ -43,7 +43,7 @@ const JobDetail = () => {
 
   useEffect(() => {
     const getData = async () => {
-      const resp = await getJob(id, user.token);
+      const resp = await getJob(id, user.uid);
       if (resp.status === 200) {
         setInfo(resp.data);
         setLoad(false);
@@ -54,7 +54,7 @@ const JobDetail = () => {
     } catch (e) {
       console.log(e);
     }
-  }, [id, user.token]);
+  }, [id, user]);
 
   return (
     <Box

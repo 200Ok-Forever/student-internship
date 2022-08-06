@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   Box,
   Fab,
@@ -15,6 +21,7 @@ import { useLocation } from "react-router-dom";
 import queryString from "query-string";
 import { getJobsListData } from "../../api/search-api";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import { UserContext } from "../../store/UserContext";
 
 const center = {
   display: "flex",
@@ -27,6 +34,7 @@ const JobList = () => {
   const { search } = useLocation();
   const info = queryString.parse(search);
   const [jobs, setJobs] = useState([]);
+  console.log("🚀 ~ jobs", jobs);
   const [sortBy, setSortBy] = useState("Default");
   const [currPage, setCurrPage] = useState(1);
   const [load, setLoad] = useState("Loading...");
@@ -38,6 +46,7 @@ const JobList = () => {
     isPaid: "",
   });
   const [showScroll, setShowScroll] = useState(false);
+  const { user } = useContext(UserContext);
 
   const checkScrollTop = () => {
     if (window.pageYOffset > 200) {
@@ -80,7 +89,7 @@ const JobList = () => {
           filter.jobType === "All" ? "" : filter.jobType
         }&is_remote=${filter.isRemote === "All" ? "" : filter.isRemote}&paid=${
           filter.isPaid === "All" ? "" : filter.isPaid
-        }&sort=${sortBy}`
+        }&sort=${sortBy}&uid=${user ? user.uid : ""}`
       );
       if (resp.status === 200) {
         if (resp.data.length === 0) {
