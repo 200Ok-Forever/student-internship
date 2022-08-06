@@ -28,7 +28,6 @@ class InternQuestion(db.Model):
     intern_id = db.Column(db.Integer, db.ForeignKey('t_internships.id'))
     students =  db.relationship('Student', secondary='r_intern_question_answer', back_populates='questions', lazy=True)
 
-
     def __repr__(self):
         return f"<InternQuestion: {self.id}, {self.intern_id}>"
 
@@ -80,8 +79,8 @@ class City(db.Model):
     def __repr__(self):
         return f"<Internship: {self.publisher}, {self.title}, {self.company_id} {self.max_salary}>"
 
+"""
 class Internship(db.Model):
-    """Internship table"""
     __tablename__ = 't_internships'
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
 
@@ -157,3 +156,4 @@ class Internship(db.Model):
             "job_id": self.job_id
 
         }
+"""

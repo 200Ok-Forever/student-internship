@@ -110,6 +110,7 @@ class JobsManager(Resource):
         db.session.commit()
         return {"message": "Successfully"}, 200
 
+
 @company_ns.route("/<id>/jobs")
 class CompanyJobs(Resource):
 
@@ -155,11 +156,6 @@ class CompanyJobs(Resource):
 
         return result, 200
 
-
-
-
-        
-
 def search_jobs(args, id):
     # for search keyword
     if args['searchTerm'] != None:
@@ -181,7 +177,5 @@ def search_jobs(args, id):
     
     # paging, 10 per page
     jobs = jobs.offset((args['current_page'] - 1) * 10).limit(10).all()
-    
-
     
     return jobs

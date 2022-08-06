@@ -16,6 +16,7 @@ class User(db.Model):
     role = db.Column(db.Integer, nullable=False)
     avatar = db.Column(db.TEXT, nullable=True)
     verification_code = db.Column(db.VARCHAR(6))
+    status = db.relationship('InternshipStatus', back_populates='user')
 
     @property
     def password(self):
@@ -53,14 +54,7 @@ class Student(db.Model):
     position = db.Column(db.VARCHAR(50))
     skills = db.Column(db.VARCHAR(100))
     description = db.Column(db.VARCHAR(200))
-
-<<<<<<< HEAD
-    # students_skills = db.relationship('Skill', secondary='r_student_skill', back_populates='students', lazy=True)
-    questions =  db.relationship('InternQuestion', secondary='r_intern_question_answer', back_populates='students', lazy=True)
-    applications = db.relationship('InternshipStatus', backref='student')
-=======
     students_skills = db.relationship('Skill', secondary='r_student_skill', back_populates='students', lazy=True)
->>>>>>> d6a68c6236ae388dd3641998869ae8c1d9cb7ad7
 
     # student_skills = db.relationship('Skill', secondary='r_student_skill', back_populates='students', lazy=True)
     def __repr__(self):
@@ -116,14 +110,6 @@ class Company(db.Model):
             "company_logo": self.company_logo
         }
 
-<<<<<<< HEAD
-class StudentSkills(db.Model):
-    __tablename__ = 'r_student_skill'
-    student_id = db.Column('student_id', db.Integer, db.ForeignKey('t_student.id'), primary_key=True)
-    skill_id = db.Column('skill_id', db.Integer, db.ForeignKey('t_skills.id'), primary_key=True)
-
-=======
-
 
 
 class Internship(db.Model):
@@ -156,13 +142,15 @@ class Internship(db.Model):
     max_salary = db.Column(db.VARCHAR(255))
     salary_curreny = db.Column(db.VARCHAR(255))
     salary_period_id = db.Column(db.VARCHAR(255))
-
+    require_resume = db.Column(db.Boolean)
+    require_coverLetter = db.Column(db.Boolean)
     city = db.Column(db.VARCHAR(255), db.ForeignKey('t_cities.id'))
     job_id = db.Column(db.VARCHAR(255))
-    # citys = db.relationship('City', backref = 'internship', lazy = 'dynamic')
 
     status = db.relationship('InternshipStatus', back_populates='internship')
-
+    processes = db.relationship("Process", backref='internship', lazy=True)
+    questions = db.relationship("InternQuestion", backref='internship', lazy=True)
+    
     #skills = db.relationship('Skill', secondary=job_skills, backref='internship', overlaps="internship")
     skills = db.relationship('Skill', secondary='r_job_skill', back_populates='internships', lazy=True)
 
@@ -204,7 +192,6 @@ class Internship(db.Model):
     # more
 
 
->>>>>>> d6a68c6236ae388dd3641998869ae8c1d9cb7ad7
 class Calendar(db.Model):
     __tablename__ = 't_calendar'
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
@@ -236,11 +223,6 @@ class Comment(db.Model):
             "date": self.date
         }
 
-
-<<<<<<< HEAD
-=======
-
-
 class City(db.Model):
     __tablename__ = 't_cities'
     id = db.Column(db.Integer, primary_key=True)
@@ -248,7 +230,7 @@ class City(db.Model):
     name = db.Column(db.VARCHAR(255))
     internships = db.relationship("Internship", backref='citys', lazy='dynamic')
 
-
+"""
 class InternshipStatus(db.Model):
     __tablename__ = 't_intern_user_status'
     id = db.Column(db.Integer, primary_key=True)
@@ -261,9 +243,10 @@ class InternshipStatus(db.Model):
     seen_time = db.Column(db.TIMESTAMP)
     internship = db.relationship('Internship', back_populates='status')
     user = db.relationship('User', back_populates='status')
+"""
 
 
->>>>>>> d6a68c6236ae388dd3641998869ae8c1d9cb7ad7
+
 class File(db.Model):
     __tablename__ = 't_uploadfile'
     id = db.Column(db.Integer, primary_key=True)
@@ -273,20 +256,11 @@ class File(db.Model):
     file_type = db.Column(db.VARCHAR(255))
     upload_time = db.Column(db.TIMESTAMP)
 
-<<<<<<< HEAD
-
-
-
-# class Forum(db.Model):
-#     __tablename__ = 't_forum'
-
-=======
 class StudentInterveiwQuestion(db.Model):
     __tablename__ = 'r_intern_question_answer'
     student_id = db.Column(db.Integer, db.ForeignKey('t_student.id'), primary_key = True)
     question_id = db.Column(db.Integer, db.ForeignKey('t_intern_question.id'), primary_key = True)
     answer = db.Column(db.VARCHAR(1000))
->>>>>>> d6a68c6236ae388dd3641998869ae8c1d9cb7ad7
 
 class LoginSchema(Form):
     email = StringField('Email Address', [validators.Length(min=6, max=35)])
