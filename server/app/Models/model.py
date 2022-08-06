@@ -62,6 +62,7 @@ class Student(db.Model):
     description = db.Column(db.VARCHAR(200))
     skills = db.relationship('Skill', secondary='r_student_skill', back_populates='students', lazy=True)
     applications = db.relationship('InternshipStatus', backref="student", lazy=True)
+    invitations = db.relationship("Internship", secondary='r_invitation', back_populates='invitations_students', lazy=True)
 
     #skills = db.relationship('Skill', secondary='r_student_skill', back_populates='students', lazy=True)
     questions = db.relationship("InternQuestion", secondary='r_intern_question_answer', back_populates='students', lazy=True)
@@ -159,7 +160,7 @@ class Internship(db.Model):
     status = db.relationship('InternshipStatus', back_populates='internship')
     processes = db.relationship("Process", backref='internship', lazy=True)
     questions = db.relationship("InternQuestion", backref='internship', lazy=True)
-    
+    invitations_students = db.relationship("Student", secondary='r_invitation', back_populates='invitations', lazy=True)
     #skills = db.relationship('Skill', secondary=job_skills, backref='internship', overlaps="internship")
     skills = db.relationship('Skill', secondary='r_job_skill', back_populates='internships', lazy=True)
 
