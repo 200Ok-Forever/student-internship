@@ -6,22 +6,21 @@ from .. import bcrypt, db
 class Companies(db.Model):
     __tablename__ = "new_company"
     id = db.Column(db.Integer, db.ForeignKey('t_user.uid'), primary_key=True,autoincrement=True, nullable=False, unique=True)
+    email = db.Column(db.VARCHAR(320), nullable=False, unique=True)
     company_name = db.Column(db.VARCHAR(255), nullable=False, unique=True)
     first_name = db.Column(db.VARCHAR(255), nullable=False, unique=True)
     last_name = db.Column(db.VARCHAR(255), nullable=False, unique=True)
     linkedin = db.Column(db.VARCHAR(255))
+    founded_year = db.Column(db.VARCHAR(255))
     company_url = db.Column(db.VARCHAR(255))
-    company_size = db.Column(db.Integer)
-    description = db.Column(db.VARCHAR(10000))
+    company_size = db.Column(db.VARCHAR(255))
     country = db.Column(db.VARCHAR(255))
     city = db.Column(db.VARCHAR(255))
     line1 = db.Column(db.VARCHAR(255))
-    logo = db.Column(db.VARCHAR(255))
-    founded_year = db.Column(db.VARCHAR(255))
+    description = db.Column(db.VARCHAR(10000))
+    company_logo = db.Column('logo', db.TEXT)
     industries =  db.relationship('Industry', secondary='r_industry_company', back_populates='companies', lazy=True)
     internships =  db.relationship('Internship', backref='company', lazy=True)
-
-
 
     def __repr__(self):
         return '<Company id:{} name:>'.format(self.id, self.company_name)

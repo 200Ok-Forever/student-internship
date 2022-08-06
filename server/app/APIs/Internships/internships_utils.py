@@ -397,7 +397,7 @@ class InternshipsUtils:
                 User.uid == current_user_id).first()
 
             # store question and answer
-            new_interview_question = StudentInterveiwQuestion(student_id=student.id, question_id=question_id,
+            new_interview_question = InternQuestion(student_id=student.id, question_id=question_id,
                                                               answer=answer)
             db.session.add(new_interview_question)
             if resume:

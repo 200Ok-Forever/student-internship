@@ -6,7 +6,7 @@ from flask_jwt_extended import get_jwt_identity
 from flask_restx import Resource
 from pkg_resources import resource_listdir
 from .company_page_model import CompanyPageAPI
-from .company_page_utils import get_intern_process
+from .company_page_utils import get_intern_process, check_editapplication_permison, search_jobs, create_job
 from  ...Models import company as Company
 from  ...Models import model
 from  ...Models import internship as Internship
@@ -24,6 +24,7 @@ from sqlalchemy import func
 
 company_ns = CompanyPageAPI.company_ns
 
+#--------------------------------COMPANY OPERATOR-----------------------
 @company_ns.route("/<id>")
 class GetCompany(Resource):
 
@@ -44,6 +45,7 @@ class GetCompany(Resource):
     @jwt_required()
     @company_ns.expect(CompanyPageAPI.company_data, validate=True)
     def post(self, id):
+        id = int(id)
         data = company_ns.payload
         uid = get_jwt_identity()
         query = db.session.query(Company.Companies).filter(Company.Companies.id == id)
@@ -57,22 +59,44 @@ class GetCompany(Resource):
             return {"message": "No permission"}, 400
         
         # 3. update
-        company.email = data['email']
-        company.name = data['company_name']
-        company.first_name = data['first_name']
-        company.last_name = data['last_name']
-        company.industry = data['industry']
-        company.linkedin = data['linkedin']
-        company.company_url = data['company_url']
-        company.founded_year = data['founded_year']
-        company.company_size = data['company_size']
-        company.location = data['location']
-        company.description = data['description']
-        company.require_resume = data['require_resume']
-        company.require_coverLetter = data['require_coverLetter']
-        #query.update(data, synchronize_session = False)
+        try:
+            company.email = data['email']
+            company.name = data['company_name']
+            company.first_name = data['first_name']
+            company.last_name = data['last_name']
+            company.linkedin = data['linkedin']
+            company.company_url = data['company_url']
+            company.founded_year = data['founded_year']
+            company.company_size = data['company_size']
+            company.country = data['country']
+            company.city = data['city']
+            company.line1 = data['line1']
+            company.description = data['description']
+            company.company_logo = data['company_logo']
 
-        db.session.commit()
+            industry_list = company.industries
+            industry_name_list = [ind.name for ind in industry_list]
+            for ind in data['industry']:
+                if ind not in industry_name_list:
+                    curr_ind = db.session.query(Company.Industry).filter(Company.Industry.name == ind).first()
+                    # only add the relationship
+                    if curr_ind != None:
+                        company.industries.append(curr_ind)
+                    # add new industry
+                    elif curr_ind == None:
+                        new_ind = Internship.Industry(ind)
+                        company.industries.append(new_ind)
+
+            #remove industry
+            delete_industry_list = industry_name_list - data['industry']
+            for ind in delete_industry_list:
+                curr_ind = db.session.query(Company.Industry).filter(Company.Industry.name == ind).first()
+                if curr_ind != None:
+                    company.industries.remove(curr_ind)
+            db.session.commit()
+        except:
+            return {"message": "Sth Error"}, 400
+
         return {"message": "Successfully"}, 200
 
 
@@ -89,15 +113,18 @@ class GetCompany(Resource):
         db.session.commit()
         return {"message": "Successfully"}, 200
     """
+
+#--------------------------------INTERN OPERATOR-----------------------
 @company_ns.route("/jobs/<id>")
 class JobsManager(Resource):
     @company_ns.response(200, "Successfully")
     @company_ns.response(400, "Something wrong")
     @jwt_required()
     def delete(self, jobid):
+        jobid = int(jobid)
         uid = get_jwt_identity()
         # 1. check internship id
-        query = db.session.query(model.Internship).filter(model.Internship.job_id == jobid)
+        query = db.session.query(model.Internship).filter(model.Internship.id == jobid)
         job = query.first()
         if job == None:
             return {"message": "Invalid internship id"}, 400
@@ -119,6 +146,7 @@ class CompanyJobs(Resource):
     @company_ns.response(400, "Something wrong")
     @jwt_required(optional=True)
     def get(self, id):
+        id = int(id)
         parser = reqparse.RequestParser()
         parser.add_argument('searchTerm', type=str, location='args')
         parser.add_argument('sort', type=str, choices=['closing', 'newest'], location='args', default='newest')
@@ -157,31 +185,6 @@ class CompanyJobs(Resource):
 
         return result, 200
 
-def search_jobs(args, id):
-    # for search keyword
-    if args['searchTerm'] != None:
-        search = "%{}%".format(args['searchTerm'])
-        jobs = db.session.query(model.Internship
-        ).filter(model.Internship.company_id == id, or_(model.Internship.title.ilike(search), model.Internship.description.ilike(search)))
-    else:
-        jobs = db.session.query(model.Internship).filter(model.Internship.company_id == id)
-    
-    # for locatiom
-    if args['location'] != None:
-        location = search = "%{}%".format(args['location'])
-        jobs = jobs.filter(model.City.name.ilike(location),model.City.id == model.Internship.city)
-
-    # sort
-    if args['sort'] == 'newest':
-        jobs = jobs.order_by(model.Internship.posted_time.desc())
-    else:
-        jobs = jobs.order_by(model.Internship.expiration_datetime_utc.desc())
-    
-    # paging, 10 per page
-    jobs = jobs.offset((args['current_page'] - 1) * 10).limit(10).all()
-    
-    return jobs
-
 
 @company_ns.route("/<jobid>/applicant")
 class GetAllApplications(Resource):
@@ -190,10 +193,12 @@ class GetAllApplications(Resource):
     @jwt_required()
     def get(self, jobid):
         uid = get_jwt_identity()
+        jobid = int(jobid)
 
         # 1. check internship id
-        query = db.session.query(model.Internship).filter(model.Internship.job_id == jobid)
+        query = db.session.query(model.Internship).filter(model.Internship.id == jobid)
         job = query.first()
+
         if job == None:
             return {"message": "Invalid internship id"}, 400
 
@@ -202,18 +207,18 @@ class GetAllApplications(Resource):
             return {"message": "No permission"}, 400
 
         # 3. get all applications
-        students = db.session.query(model.Student, model.InternshipStatus).filter(
-        model.InternshipStatus.is_applied == 'True', model.InternshipStatus.intern_id == jobid, 
-        model.InternshipStatus.uid == model.Student.id,
-        model.InternshipStatus.status == 'pending').all()
-        print(students)
+        print(job.status)
         result = []
-        for stu, app in students:
+        for appli in job.status:
+            stu =appli.student
+            if not stu: continue
             data = convert_object_to_dict(stu)
-            data['status'] = app.status
+            data['status'] = appli.status
+            data['avatar'] = stu.user.avatar
+            data['applicationId'] = appli.id
             data['questions'] = {}
             answers = db.session.query(Internship.InternAnswer, Internship.InternQuestion
-            ).filter(Internship.InternAnswer.student_id == stu.id, Internship.InternQuestion.inetrn_id == jobid,
+            ).filter(Internship.InternAnswer.student_id == stu.id, Internship.InternQuestion.intern_id == jobid,
             Internship.InternQuestion.id == Internship.InternAnswer.question_id
             ).all()
             for que, ans in answers:
@@ -221,34 +226,6 @@ class GetAllApplications(Resource):
             result.append(data)
         return {'applicant': result}, 200
 
-@company_ns.route("/<jobid>/<appliedid>/reject")
-class Accept(Resource):
-    @company_ns.response(200, "Successfully")
-    @company_ns.response(400, "Something wrong")
-    @jwt_required()
-    def post(self, jobid, appliedid):
-        uid = get_jwt_identity()
-
-        # 1. check applicant 
-        query = db.session.query(model.InternshipStatus).filter(model.InternshipStatus.id == appliedid)
-        appli = query.first()
-        if appli == None:
-            return {"message": "Invalid applicant id"}, 400
-        
-        # 2. check permission
-        intern = db.session.query(model.Internship).filter(model.Internship.job_id == appli.intership_id).first()
-        if intern.company.user_id != uid:
-            return {"message": "No permission"}, 400
-        
-        # 3. check the applicant status
-        if appli.is_applied != 'True':
-            return {"message":"Not applied yet"}, 400
-
-        # update data
-        appli.status = 'reject'
-        print(appli.status)
-        db.session.commit()
-        return {"message": "Successfully"}, 200
 
 @company_ns.route("/<companyid>/create-job")
 class CreateIntern(Resource):
@@ -257,6 +234,7 @@ class CreateIntern(Resource):
     @company_ns.expect(CompanyPageAPI.intern_data, validate=True)
     @jwt_required()
     def post(self, companyid):
+        companyid = int(companyid)
         now = datetime.now()
         data = company_ns.payload
         uid = get_jwt_identity()
@@ -273,121 +251,76 @@ class CreateIntern(Resource):
 
         # 3. create
         try:
-            # create question
-            intern = model.Internship(data['job_title'], data['closed_date'], data['location'], data['salary_currency'], data['min_salary'], data['max_salary'], data['is_remote'], data['job_type'], data['description'])
-            intern.company_id = companyid
-            intern.posted_time = str(now)
-            db.session.add(intern)
-            db.session.flush()
-
-            if data['application']['resume']:
-                intern.require_resume = 1
-            else:
-                intern.require_resume = 0
-            if data['application']['coverLetter']:
-                intern.require_coverLetter = 1
-            else:
-                intern.require_coverLetter = 0
-
-
-            for que in data['application']['questions']:
-                new_que = Internship.InternQuestion(intern.job_id, que)
-                db.session.add(new_que)
-                db.session.flush()
-        
-            # recruiting_process 
-            order = 1
-            for pro in data['recruiting_process']:
-                new_pro = model.Process(intern.job_id, order, pro)
-                order+=1
-                db.session.add(new_pro)
-                db.session.flush()
-            db.session.commit()
+            create_job(data, None)  
+            print(create_job(data, None).id)
         except:
-            db.session.rollback()
-            return {"message": "Something wrong"}, 400
+           db.session.rollback()
+           return {"message": "Something wrong"}, 400
         return {"message": "Successfuly"}, 200
+
 
 @company_ns.route("/<jobid>/edit")
 class CreateIntern(Resource):
     @company_ns.response(200, "Successfully")
     @company_ns.response(400, "Something wrong")
     @company_ns.expect(CompanyPageAPI.intern_data, validate=True)
-    @jwt_required()
+    #@jwt_required()
     def put(self, jobid):
+        jobid = int(jobid)
         data = company_ns.payload
-        uid = get_jwt_identity()
+        #uid = get_jwt_identity()
 
-        query = db.session.query(model.Internship).filter(model.Internship.job_id == jobid)
+        query = db.session.query(model.Internship).filter(model.Internship.id == jobid)
         
         # 1. check company id
         job = query.first()
         if job== None:
             return {"message": "Invalid internship id"}, 400
         # 2. check permission : is recuiter and belongs to this company
-        if job.company.user_id != uid:
-            return {"message": "No permission"}, 400
+        #if job.company.user_id != uid:
+        #    return {"message": "No permission"}, 400
 
-        intern_id = job.job_id
+        intern_id = job.id
         try:
             # 3. delete
             posted_time = job.posted_time
             company_id = job.company_id
+            for que in job.questions:
+                db.session.delete(que)
+            for pro in job.processes:
+                db.session.delete(pro)
             db.session.delete(job)
             db.session.flush()
 
-            # 4. create
-            # create question
-            intern = model.Internship(data['job_title'], data['closed_date'], data['location'], data['salary_currency'], data['min_salary'], data['max_salary'], data['is_remote'], data['job_type'], data['description'])
-            intern.job_id = intern_id
+            intern = create_job(data, intern_id)
+
+            intern.id = intern_id
             intern.posted_time = posted_time
             intern.company_id = company_id
-            db.session.add(intern)
-            db.session.flush()
 
-            if data['application']['resume']:
-                intern.require_resume = 1
-            else:
-                intern.require_resume = 0
-            if data['application']['coverLetter']:
-                intern.require_coverLetter = 1
-            else:
-                intern.require_coverLetter = 0
-
-
-            for que in data['application']['questions']:
-                new_que = model.Question(intern.job_id, que)
-                db.session.add(new_que)
-                db.session.flush()
-        
-            # recruiting_process 
-            order = 1
-            for pro in data['recruiting_process']:
-                new_pro = model.Process(intern.job_id, order, pro)
-                order+=1
-                db.session.add(new_pro)
-                db.session.flush()
             db.session.commit()
         except:
             db.session.rollback()
             return {"message": "Something wrong"}, 400
         return {"message": "Successfuly"}, 200
 
+#--------------------------------RECOMMENDATION-----------------------
 @company_ns.route("/<jobid>/recommendation")
 class Recomendation(Resource):
     @company_ns.response(200, "Successfully")
     @company_ns.response(400, "Something wrong")
     @jwt_required()
     def get(self, jobid):
+        jobid = int(jobid)
         uid = get_jwt_identity()
-        query = db.session.query(model.Internship).filter(model.Internship.job_id == jobid)
+        query = db.session.query(model.Internship).filter(model.Internship.id == jobid)
         
         # 1. check company id
         job = query.first()
         if job== None:
             return {"message": "Invalid internship id"}, 400
         # 2. check permission : is recuiter and belongs to this company
-        if job.company.user_id != uid:
+        if job.company.id != uid:
             return {"message": "No permission"}, 400
 
         # 3. recomendation
@@ -400,7 +333,7 @@ class Recomendation(Resource):
         # get the pending applicant
         model.InternshipStatus.intern_id == jobid, model.InternshipStatus.uid == model.Student.id, model.InternshipStatus.is_applied == 'True', model.InternshipStatus.status == 'pending',
         # get the skill that the job needs
-        model.Skill.id.in_(jobs_id))
+        Skill.Skill.id.in_(jobs_id))
         
         top6 = query.group_by(model.Student.id).order_by(func.count(model.Student.id).desc()).limit(6).all()
         print(top6)
@@ -443,3 +376,89 @@ class Recomendation(Resource):
         """
 
         return {"reault": result}, 200
+
+#--------------------------------MANAGE THE APPLICATION-----------------------
+@company_ns.route("/<jobid>/<appliedid>/shortlist")
+class AddShortList(Resource):
+    @company_ns.response(200, "Successfully")
+    @company_ns.response(400, "Something wrong")
+    @jwt_required()
+    def post(self, jobid, appliedid):
+        uid = get_jwt_identity()
+
+        valid, data = check_editapplication_permison(jobid, appliedid, uid)
+        
+        if not valid:
+            return data, 400
+
+        # set the shortlist to true
+        data.shortlist = True
+        return {"message": "Succussfully"}, 200
+
+
+@company_ns.route("/<jobid>/<appliedid>/unshortlist")
+class AddShortList(Resource):
+    @company_ns.response(200, "Successfully")
+    @company_ns.response(400, "Something wrong")
+    @jwt_required()
+    def post(self, jobid, appliedid):
+        uid = get_jwt_identity()
+
+        valid, data = check_editapplication_permison(jobid, appliedid, uid)
+        
+        if not valid:
+            return data, 400
+
+        # set the shortlist to true
+        data.shortlist = False
+        return {"message": "Succussfully"}, 200
+    
+@company_ns.route("/<jobid>/<appliedid>/forward")
+class ForwardProcess(Resource):
+    @company_ns.response(200, "Successfully")
+    @company_ns.response(400, "Something wrong")
+    @jwt_required()
+    def post(self, jobid, appliedid):
+        uid = get_jwt_identity()
+        valid, data = check_editapplication_permison(jobid, appliedid, uid)
+        
+        if not valid:
+            return data, 400
+        
+        # forward
+        curr_process = data.process
+
+        # none or already the first
+        if not curr_process or curr_process.order == 1:
+            return 200
+        # forward
+        last_order = curr_process.order - 1
+        """
+        previous = db.session.query(Internship.Process).filter(Internship.Process.intern_id == jobid, Internship.Process.order == last_order).first()
+        if previous == None:
+            return 400"""
+        data.stage = last_order
+        db.session.commit()
+        return 200
+
+@company_ns.route("/<jobid>/<appliedid>/reject")
+class Accept(Resource):
+    @company_ns.response(200, "Successfully")
+    @company_ns.response(400, "Something wrong")
+    #@jwt_required()
+    def post(self, jobid, appliedid):
+        #uid = get_jwt_identity()
+        valid, data = check_editapplication_permison(jobid, appliedid, 1)
+        
+        if not valid:
+            return data, 400
+        
+        #  check the applicant status
+        if data.is_applied != 'True':
+            return {"message":"Not applied yet"}, 400
+
+        # update data
+        data.status = 'reject'
+        print(data.status)
+        db.session.commit()
+        return {"message": "Successfully"}, 200

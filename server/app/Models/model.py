@@ -1,9 +1,13 @@
 """ORM and Schema"""
 
+from datetime import datetime
+from email.mime import application
 from sqlalchemy.ext.hybrid import hybrid_method
 from torch import autocast_increment_nesting
 from wtforms import Form, IntegerField, StringField, PasswordField, validators
 from .. import bcrypt, db
+from sqlalchemy.dialects.mysql import DECIMAL, TINYINT
+
 
 
 class User(db.Model):
@@ -57,12 +61,13 @@ class Student(db.Model):
     position = db.Column(db.VARCHAR(50))
     description = db.Column(db.VARCHAR(200))
     skills = db.relationship('Skill', secondary='r_student_skill', back_populates='students', lazy=True)
+    applications = db.relationship('InternshipStatus', backref="student", lazy=True)
 
     #skills = db.relationship('Skill', secondary='r_student_skill', back_populates='students', lazy=True)
     questions = db.relationship("InternQuestion", secondary='r_intern_question_answer', back_populates='students', lazy=True)
     # student_skills = db.relationship('Skill', secondary='r_student_skill', back_populates='students', lazy=True)
     def __repr__(self):
-        return f"<Student: {self.email}, {self.first_name} {self.last_name}>"
+        return f"<Student: {self .email}, {self.first_name} {self.last_name}>"
 
     def get_info(self):
         return {
@@ -132,7 +137,7 @@ class Internship(db.Model):
     latitude = db.Column(db.VARCHAR(255))
     longitute = db.Column(db.VARCHAR(255))
     google_link = db.Column(db.VARCHAR(255))
-    expiration_datetime_utc = db.Column(db.VARCHAR(255), nullable=True)
+    expiration_datetime = db.Column('expiration_datetime_utc', db.VARCHAR(255), nullable=True)
     expiration_timestamp = db.Column(db.VARCHAR(255), nullable=True)
     no_experience_required = db.Column(db.VARCHAR(255))
     reuiqred_expersience_in_month = db.Column(db.VARCHAR(255), nullable=True)
@@ -193,6 +198,20 @@ class Internship(db.Model):
             "job_id": self.job_id
 
         }
+    def __init__(self, type, title, apply_link, is_remote, description, google_link, expiration_time, min_salary, max_salary, salary_currency, require_resume, require_coverLetter):
+        self.posted_time = str(datetime.now())
+        self.type = type
+        self.title = title
+        self.apply_link = apply_link
+        self.is_remote = is_remote
+        self.description = description
+        self.google_link = google_link
+        self.expiration_datetime = expiration_time
+        self.min_salary = min_salary
+        self.max_salary = max_salary
+        self.salary_curreny = salary_currency
+        self.require_resume = require_resume
+        self.require_coverLetter = require_coverLetter
     # more
 
 
@@ -229,23 +248,28 @@ class Comment(db.Model):
 
 class City(db.Model):
     __tablename__ = 't_cities'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     state_id = db.Column(db.Integer)
     name = db.Column(db.VARCHAR(255))
     internships = db.relationship("Internship", backref='citys', lazy='dynamic')
 
+    def __init__(self, name):
+        self.name = name
+        
 class InternshipStatus(db.Model):
     __tablename__ = 't_intern_user_status'
     id = db.Column(db.Integer, primary_key=True)
     #uid = db.Column(db.Integer, db.ForeignKey('t_user.uid'))
-    uid = db.Column(db.Integer, db.ForeignKey('t_student.id'))
+    uid = db.Column(db.Integer, db.ForeignKey('t_student_copy1.id'))
     intern_id = db.Column(db.Integer, db.ForeignKey('t_internships.id'))
     is_seen = db.Column(db.VARCHAR(255))
     is_save = db.Column(db.VARCHAR(255))
     is_applied = db.Column(db.VARCHAR(255))
     seen_time = db.Column(db.TIMESTAMP)
     status = db.Column(db.VARCHAR(255))
+    shortlist = db.Column(db.Boolean)
     internship = db.relationship('Internship', back_populates='status')
+    stage = db.Column(db.Integer,db.ForeignKey('t_process.id'))
     #user = db.relationship('User', back_populates='status')
 
 class File(db.Model):
