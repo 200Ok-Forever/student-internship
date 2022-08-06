@@ -55,7 +55,7 @@ class Student(db.Model):
     skills = db.Column(db.VARCHAR(100))
     description = db.Column(db.VARCHAR(200))
 
-    # students_skills = db.relationship('Skill', secondary='r_student_skill', back_populates='students', lazy=True)
+    students_skills = db.relationship('Skill', secondary='r_student_skill', back_populates='students', lazy=True)
 
     # student_skills = db.relationship('Skill', secondary='r_student_skill', back_populates='students', lazy=True)
     def __repr__(self):
@@ -111,10 +111,10 @@ class Company(db.Model):
             "company_logo": self.company_logo
         }
 
-
-job_skills = db.Table('r_job_skill',
-                      db.Column('job_id', db.Integer, db.ForeignKey('t_internships.id'), primary_key=True),
-                      db.Column('skill_id', db.Integer, db.ForeignKey('t_skills.id'), primary_key=True))
+class JobSkills(db.Model):
+    __tablename__ = 'r_job_skill'
+    job_id = db.Column('job_id', db.Integer, db.ForeignKey('t_internships.id'), primary_key=True)
+    skill_id = db.Column('skill_id', db.Integer, db.ForeignKey('t_skills.id'), primary_key=True)
 
 
 class StudentSkills(db.Model):
@@ -160,8 +160,8 @@ class Internship(db.Model):
 
     status = db.relationship('InternshipStatus', back_populates='internship')
 
-    # skills = db.relationship('Skill', secondary=job_skills,
-                            #  backref='internship', overlaps="internship")
+    #skills = db.relationship('Skill', secondary=job_skills, backref='internship', overlaps="internship")
+    skills = db.relationship('Skill', secondary='r_job_skill', back_populates='internships', lazy=True)
 
     def __repr__(self):
         return f"<Internship: {self.publisher}, {self.title}, {self.company_id} {self.max_salary}>"
@@ -238,7 +238,8 @@ class Skill(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.VARCHAR(255))
-    internships = db.relationship('Internship', secondary=job_skills, backref='skill', overlaps="skills")
+    internships = db.relationship('Internship', secondary='r_job_skill', back_populates='skills', lazy=True)
+    students = db.relationship('Student', secondary='r_student_skill', back_populates='skills', lazy=True)
     # students = db.relationship('Student', secondary='r_student_skill', back_populates='skills', lazy=True)
     def get_info(self):
         return {
