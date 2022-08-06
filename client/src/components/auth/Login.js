@@ -38,11 +38,8 @@ const Login = () => {
           if (res.status === true) {
             console.log(res);
             // If success, store the user info and token to UserContext then route to main page
-            document.cookie = "user=" + res.token + "; Path=/;";
-            console.log(document.cookie);
-            const userInfoWithToken = { ...res.user_info, token: res.token };
-            setUser(userInfoWithToken);
-            setTimeout(() => {}, 300); // user not completely set after pushing to main page, if no timeout (Weird!)
+            window.localStorage.setItem('user', JSON.stringify({ ...res.user_info, token: res.token }))
+            setUser({ ...res.user_info, token: res.token });
             history.push("/");
           } else if (
             res.response.status === 404 ||
