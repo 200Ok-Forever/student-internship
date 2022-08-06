@@ -16,7 +16,7 @@ class User(db.Model):
     role = db.Column(db.Integer, nullable=False)
     avatar = db.Column(db.TEXT, nullable=True)
     verification_code = db.Column(db.VARCHAR(6))
-    status = db.relationship('InternshipStatus', back_populates='user')
+    #status = db.relationship('InternshipStatus', back_populates='user')
     student = db.relationship('Student', backref='user')
     company = db.relationship('Companies', backref='user')
 
@@ -47,7 +47,7 @@ class User(db.Model):
 class Student(db.Model):
     """Student table"""
     __tablename__ = 't_student_copy1'
-    id = db.Column(db.Integer, db.ForeignKey('t_user.id'), primary_key=True, nullable=False, unique=True)
+    id = db.Column(db.Integer, db.ForeignKey('t_user.uid'), primary_key=True, nullable=False, unique=True)
     email = db.Column(db.VARCHAR(320), nullable=False, unique=True)
     first_name = db.Column(db.VARCHAR(50), nullable=False)
     last_name = db.Column(db.VARCHAR(50), nullable=False)
@@ -56,10 +56,10 @@ class Student(db.Model):
     major = db.Column(db.VARCHAR(15))
     position = db.Column(db.VARCHAR(50))
     description = db.Column(db.VARCHAR(200))
-    students_skills = db.relationship('Skill', secondary='r_student_skill', back_populates='students', lazy=True)
-
     skills = db.relationship('Skill', secondary='r_student_skill', back_populates='students', lazy=True)
 
+    #skills = db.relationship('Skill', secondary='r_student_skill', back_populates='students', lazy=True)
+    questions = db.relationship("InternQuestion", secondary='r_intern_question_answer', back_populates='students', lazy=True)
     # student_skills = db.relationship('Skill', secondary='r_student_skill', back_populates='students', lazy=True)
     def __repr__(self):
         return f"<Student: {self.email}, {self.first_name} {self.last_name}>"
@@ -121,7 +121,7 @@ class Internship(db.Model):
     __tablename__ = 't_internships'
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
 
-    company_id = db.Column(db.VARCHAR(255), nullable=False)
+    company_id = db.Column(db.VARCHAR(255), db.ForeignKey('new_company.id'), nullable=False)
     publisher = db.Column(db.VARCHAR(255))
     type = db.Column(db.VARCHAR(255))
     title = db.Column(db.VARCHAR(255))

@@ -10,6 +10,7 @@ from .company_page_utils import get_intern_process
 from  ...Models import company as Company
 from  ...Models import model
 from  ...Models import internship as Internship
+from ...Models import skill as Skill
 from ...Helpers.other_util import convert_object_to_dict, convert_model_to_dict
 from ... import db
 from flask_jwt_extended import jwt_required
@@ -45,7 +46,7 @@ class GetCompany(Resource):
     def post(self, id):
         data = company_ns.payload
         uid = get_jwt_identity()
-        query = db.session.query(Company.Company).filter(Company.Company.id == id)
+        query = db.session.query(Company.Companies).filter(Company.Companies.id == id)
         
         # 1. check company id
         company = query.first()
@@ -160,20 +161,21 @@ def search_jobs(args, id):
     # for search keyword
     if args['searchTerm'] != None:
         search = "%{}%".format(args['searchTerm'])
-        jobs = db.session.query(Internship.Internship).filter(Internship.Internship.company_id == id, or_(Internship.Internship.title.ilike(search), Internship.Internship.description.ilike(search)))
+        jobs = db.session.query(model.Internship
+        ).filter(model.Internship.company_id == id, or_(model.Internship.title.ilike(search), model.Internship.description.ilike(search)))
     else:
-        jobs = db.session.query(Internship.Internship).filter(Internship.Internship.company_id == id)
+        jobs = db.session.query(model.Internship).filter(model.Internship.company_id == id)
     
     # for locatiom
     if args['location'] != None:
         location = search = "%{}%".format(args['location'])
-        jobs = jobs.filter(Internship.City.name.ilike(location),Internship.City.id == Internship.Internship.city)
+        jobs = jobs.filter(model.City.name.ilike(location),model.City.id == model.Internship.city)
 
     # sort
     if args['sort'] == 'newest':
-        jobs = jobs.order_by(Internship.Internship.posted_time.desc())
+        jobs = jobs.order_by(model.Internship.posted_time.desc())
     else:
-        jobs = jobs.order_by(Internship.Internship.expiration_datetime_utc.desc())
+        jobs = jobs.order_by(model.Internship.expiration_datetime_utc.desc())
     
     # paging, 10 per page
     jobs = jobs.offset((args['current_page'] - 1) * 10).limit(10).all()
@@ -210,9 +212,9 @@ class GetAllApplications(Resource):
             data = convert_object_to_dict(stu)
             data['status'] = app.status
             data['questions'] = {}
-            answers = db.session.query(model.Question, model.InternAnswer
-            ).filter(model.Answer.student_id == stu.id, Internship.InternQuestion.inetrn_id == jobid,
-            model.Question.id == model.Answer.question_id
+            answers = db.session.query(Internship.InternAnswer, Internship.InternQuestion
+            ).filter(Internship.InternAnswer.student_id == stu.id, Internship.InternQuestion.inetrn_id == jobid,
+            Internship.InternQuestion.id == Internship.InternAnswer.question_id
             ).all()
             for que, ans in answers:
                 data['questions'][que.content] = ans.answer
@@ -289,7 +291,7 @@ class CreateIntern(Resource):
 
 
             for que in data['application']['questions']:
-                new_que = model.Question(intern.job_id, que)
+                new_que = Internship.InternQuestion(intern.job_id, que)
                 db.session.add(new_que)
                 db.session.flush()
         
@@ -392,11 +394,11 @@ class Recomendation(Resource):
         job_skills = job.skills
         jobs_id = [skill.id for skill in job_skills]
 
-        query = db.session.query(model.Student, model.Skill, model.StudentSkills, model.InternshipStatus
+        query = db.session.query(model.Student, Skill.Skill, Skill.StudentSkills, model.InternshipStatus
         # join the stuudent , skill, studentskill
-        ).filter(model.Student.id == model.StudentSkills.student_id, model.Skill.id == model.StudentSkills.skill_id, 
+        ).filter(model.Student.id == Skill.StudentSkills.student_id, Skill.Skill.id == Skill.StudentSkills.skill_id, 
         # get the pending applicant
-        model.InternshipStatus.intership_id == jobid, model.InternshipStatus.student_id == model.Student.id, model.InternshipStatus.is_applied == 'True', model.InternshipStatus.status == 'pending',
+        model.InternshipStatus.intern_id == jobid, model.InternshipStatus.uid == model.Student.id, model.InternshipStatus.is_applied == 'True', model.InternshipStatus.status == 'pending',
         # get the skill that the job needs
         model.Skill.id.in_(jobs_id))
         

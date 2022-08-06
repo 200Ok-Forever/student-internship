@@ -27,13 +27,12 @@ class InternQuestion(db.Model):
     content = db.Column(db.VARCHAR(10000))
     intern_id = db.Column(db.Integer, db.ForeignKey('t_internships.id'))
     students =  db.relationship('Student', secondary='r_intern_question_answer', back_populates='questions', lazy=True)
-
     def __repr__(self):
         return f"<InternQuestion: {self.id}, {self.intern_id}>"
 
 class InternAnswer(db.Model):
     __tablename__ = 'r_intern_question_answer'
-    student_id = db.Column(db.Integer, db.ForeignKey('t_student.id'), primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey('t_student_copy1.id'), primary_key=True)
     question_id = db.Column(db.Integer, db.ForeignKey('t_intern_question.id'), primary_key=True)
     answer = db.Column(db.VARCHAR(10000), nullable = False)
 

@@ -7,13 +7,8 @@ from json import dumps
 from requests import session
 from sqlalchemy import null
 from torch import is_same_size
-<<<<<<< HEAD
 from ...Models.model import Calendar,Internship, City, Company, Comment, User, Student, File, InternshipStatus
 from ...Models.internship import InternQuestion, InternAnswer
-=======
-from ...Models.model import Calendar, Internship, City, Company, Comment, User, InternshipStatus, Student, File, \
-    StudentInterveiwQuestion
->>>>>>> 37d327d9f00efd5f47d56dde61b1fab8b637f939
 from ...Models.skill import StudentSkills, Skill
 from flask_restx import Resource, reqparse
 from ...extension import db
