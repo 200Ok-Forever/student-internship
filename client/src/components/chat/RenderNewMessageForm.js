@@ -62,7 +62,7 @@ const RenderNewMessageForm = ({ creds, chatID }) => {
         variant="outlined"
         value={text}
         onChange={(e) => setText(e.target.value)}
-        sx={{ width: "42vw" }}
+        sx={{ width: "41vw" }}
       />
       <IconButton onClick={handleOpen}>
         <InsertInvitationIcon color="primary" fontSize="medium" />
