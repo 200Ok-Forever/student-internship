@@ -13,22 +13,22 @@ internships_api = InternshipsAPI.api
 search_schema = InternshipSearchSchema()
 search_internships = InternshipsAPI.search_internships
 
-
-
 searrch_parser = reqparse.RequestParser()
-searrch_parser.add_argument('job',  location='args', help="search keyword")
-searrch_parser.add_argument('location',  location='args', help = 'city location')
-searrch_parser.add_argument('sort',  location='args', help = 'TRUE/FALSE')
-searrch_parser.add_argument('paid',  location='args', help = 'TRUE/FALSE')
-searrch_parser.add_argument('is_remote',  location='args', help = 'TRUE/FALSE')
-searrch_parser.add_argument('job_type',  location='args')
-searrch_parser.add_argument('current_page',  location='args')
+searrch_parser.add_argument('job', location='args', help="search keyword")
+searrch_parser.add_argument('location', location='args', help='city location')
+searrch_parser.add_argument('sort', location='args', help='TRUE/FALSE')
+searrch_parser.add_argument('paid', location='args', help='TRUE/FALSE')
+searrch_parser.add_argument('is_remote', location='args', help='TRUE/FALSE')
+searrch_parser.add_argument('job_type', location='args')
+searrch_parser.add_argument('current_page', location='args')
 searrch_parser.add_argument('uid', location='args')
+
+
 @internships_api.route('/internships')
 class GetInternshipList(Resource):
 
     # @internships_api.expect(search_internships)
-    @internships_api.doc(body = searrch_parser)
+    @internships_api.doc(body=searrch_parser)
     @internships_api.response(200, "Search successfully")
     @internships_api.response(404, "Internships not found")
     def get(self):
@@ -44,8 +44,10 @@ class GetInternshipList(Resource):
                    }, 500
 
 
+
 get_internship_parser=reqparse.RequestParser()
 get_internship_parser.add_argument('Authorization', location='headers', help='Bearer [Token]', default='Bearer xxxxxxxxxxxxx')
+
 @internships_api.route('/internships/<int:id>')
 class GetInternship(Resource):
     get_internship = InternshipsAPI.internship_get
@@ -54,7 +56,7 @@ class GetInternship(Resource):
         200: "success",
         404: "Internship not found!",
     })
-    @internships_api.doc(body = get_internship_parser)
+    @internships_api.doc(body=get_internship_parser)
     @jwt_required(optional=True)
     def get(self, id):
         try:
@@ -67,9 +69,9 @@ class GetInternship(Resource):
                    }, 500
 
 
-
 applyParser = internships_api.parser()
 applyParser.add_argument('Authorization', location='headers', help='Bearer [Token]', default='Bearer xxxxxxxxxxxxx')
+
 
 @internships_api.route('/internships/<int:id>/apply')
 class ApplyInternship(Resource):
@@ -104,8 +106,12 @@ class CommentInternship(Resource):
         except Exception as error:
             return "error", 500
 
+
 appliedfor_parser = reqparse.RequestParser()
-appliedfor_parser.add_argument('Authorization', location='headers', help='Bearer [Token]', default='Bearer xxxxxxxxxxxxx')
+appliedfor_parser.add_argument('Authorization', location='headers', help='Bearer [Token]',
+                               default='Bearer xxxxxxxxxxxxx')
+
+
 @internships_api.route('/internships/appliedfor')
 class AppliedForInternship(Resource):
 
@@ -123,6 +129,8 @@ saveParser.add_argument('Authorization', location='headers', help='Bearer [Token
 
 savePostParser = internships_api.parser()
 savePostParser.add_argument('internship_id')
+
+
 @internships_api.route('/internships/save')
 class SaveInternship(Resource):
     @jwt_required()
@@ -130,7 +138,7 @@ class SaveInternship(Resource):
     def get(self):
         uid = get_jwt_identity()
         return InternshipsUtils.getSaveList(uid)
-   
+
     @jwt_required()
     @internships_api.expect(saveParser, savePostParser)
     def post(self):
@@ -161,13 +169,15 @@ class GetViewedInternships(Resource):
 @internships_api.route('/internships/calendar')
 class InternshipCalendar(Resource):
     internship_calendar = InternshipsAPI.internship_calendar
+
     @jwt_required()
-    @internships_api.expect(saveParser,internship_calendar)
+    @internships_api.expect(saveParser, internship_calendar)
     def post(self):
         arg = request.get_json()
         uid = get_jwt_identity()
         return InternshipsUtils.addCalendar(arg, uid)
- 
+
+
 @internships_api.route('/internships/uncalendar')
 class InternshipCalendar(Resource):
     @jwt_required()
@@ -176,6 +186,7 @@ class InternshipCalendar(Resource):
         arg = request.get_json()
         uid = get_jwt_identity()
         return InternshipsUtils.deleteCalendar(arg, uid)
+
 
 @internships_api.route('/events')
 class Events(Resource):
@@ -189,6 +200,8 @@ class Events(Resource):
 recommendParser = internships_api.parser()
 recommendParser.add_argument('Authorization', location='headers', help='Bearer [Token]', default='Bearer xxxxxxxxxxxxx')
 recommendParser.add_argument('type', help='recommend/new/closingsoon')
+
+
 @internships_api.route('/internships/recommend')
 class Recommend(Resource):
     @internships_api.expect(recommendParser, validate=True)
@@ -197,4 +210,3 @@ class Recommend(Resource):
         arg = request.args
         print(arg)
         return InternshipsUtils.getRecommend(arg)
-

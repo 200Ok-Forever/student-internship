@@ -32,6 +32,14 @@ class AuthUtils:
             elif user and user.verify_password(password):
                 user_info = User.get_info(user)
                 print(user_info)
+                if user_info['role'] == 1:
+                    student = Student.query.filter_by(email=email).first()
+                    user_info["first_name"] = student.first_name
+                    user_info["last_name"] = student.last_name
+                else:
+                    company = Companies.query.filter_by(email=email).first()
+                    user_info["first_name"] = company.first_name
+                    user_info["last_name"] = company.last_name
                 access_token = create_access_token(identity=user_info['uid'])
                 resp = {"status": True,
                         "message": "Successfully logged in.",
@@ -95,10 +103,12 @@ class AuthUtils:
 
             user = User.query.filter_by(email=email).first()
             user_info = User.get_info(user)
+            user_info["first_name"] = data["first_name"]
+            user_info["last_name"] = data["last_name"]
             # Create access token
             access_token = create_access_token(identity=new_user.uid)
             resp = {"status": True,
-                    "message": "Successfully signup.",
+                    "message": "Student successfully signup.",
                     "user": user_info,
                     "token": access_token
                     }
@@ -160,10 +170,12 @@ class AuthUtils:
 
             user = User.query.filter_by(email=email).first()
             user_info = User.get_info(user)
+            user_info["first_name"] = data["first_name"]
+            user_info["last_name"] = data["last_name"]
             # Create access token
             access_token = create_access_token(identity=new_user.uid)
             resp = {"status": True,
-                    "message": "Successfully signup.",
+                    "message": "Company successfully signup.",
                     "user": user_info,
                     "token": access_token,
                     }

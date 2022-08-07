@@ -2,11 +2,12 @@ from signal import raise_signal
 from  ...Models import company as Company
 from  ...Models import model
 from  ...Models import internship as Internship
+from  ...Models import skill as Skill
 from ... import db
 from sqlalchemy import and_, null, or_
 
 def get_intern_process(job):
-    process = []
+    process = [-1 for i in range(0, len(job.processes))]
     for pro in job.processes:
         process[pro.order - 1] = pro.name
     return process
@@ -42,8 +43,8 @@ def check_editapplication_permison(jobid, appliedid, uid):
         return False, {"message": "job id invalid"}
 
     # check permission
-    #if job.company_id != uid:
-     #   return False, {"message": "No permision"}
+    if int(job.company_id) != int(uid):
+       return False, {"message": "No permision"}
     
 
     # check the application id
@@ -82,43 +83,66 @@ def search_jobs(args, id):
     
     return jobs
 
-def create_job(data, intern_id):
-    try:
-        intern = model.Internship( data['type'], data['title'],  data['apply_link'], data['is_remote'], \
-        data['description'], data['google_link'], data['expiration_time'], data['min_salary'], \
-        data['max_salary'], data['salary_currency'], data['application']['resume'], data['application']['coverLetter'])
-        db.session.add(intern)
+def create_job(data, intern_id, companyid, old_skills):
+    #try:
+    intern = model.Internship( data['type'], data['title'],  data['apply_link'], data['is_remote'], \
+    data['description'], data['google_link'], data['expiration_time'], data['min_salary'], \
+    data['max_salary'], data['salary_currency'], data['application']['resume'], data['application']['coverLetter'])
+    intern.company_id = companyid
+    db.session.add(intern)
+    db.session.flush()
+
+    # update internid
+    if intern_id:
+        intern.id = intern_id
+        db.session.commit()
+    # add question
+    for que in data['application']['questions']:
+        if intern_id:
+            new_que = Internship.InternQuestion(que, intern_id)
+        else:
+            new_que = Internship.InternQuestion(que, intern.id)
+        db.session.add(new_que)
         db.session.flush()
 
-        # add question
-        for que in data['application']['questions']:
-            if intern_id:
-                new_que = Internship.InternQuestion(que, intern_id)
-            else:
-                new_que = Internship.InternQuestion(que, intern.id)
-            db.session.add(new_que)
-            db.session.flush()
+    # recruiting_process 
+    order = 1
+    for pro in data['recruiting_process']:
+        if intern_id:
+            new_pro = Internship.Process(pro, order, intern_id)
+        else:
+            new_pro = Internship.Process(pro, order, intern.id)
+        order+=1
+        db.session.add(new_pro)
+        db.session.flush()
+    # add new skill
+    old_skills_name = [old.name for old in old_skills]
+    new_skills = [new for new in data['skills'] if new not in old_skills_name]    
+    print(old_skills)
+    for skill in new_skills:
+        curr_skill = db.session.query(Skill.Skill).filter(Skill.Skill.name == skill).first()
+        # create
+        if curr_skill == None:
+            curr_skill = Skill.Skill(skill)
+            db.session.add(curr_skill)
+        intern.skills.append(curr_skill)
 
-        # recruiting_process 
-        order = 1
-        for pro in data['recruiting_process']:
-            if intern_id:
-                new_pro = Internship.Process(pro, order, intern_id)
-            else:
-                new_pro = Internship.Process(pro, order, intern.id)
-            order+=1
-            db.session.add(new_pro)
-            db.session.flush()
-        # city
-        city_name = data['city']
-        city = db.session.query(model.City).filter(model.City.name == city_name).first()
-        # create new city
-        if city == None:
-            city = model.City(city_name)
-        intern.city = city.id
+        
+    # city
+    city_name = data['city']
+    print(city_name)
+    city = db.session.query(model.City).filter(model.City.name == city_name).first()
+    # create new city
+    if city == None:
+        city = model.City(city_name)
+        db.session.add(city)
         db.session.commit()
-    except:
-        raise
+        print(city)
+    intern.city = city.id
+    db.session.commit()
+    print(intern.city)
+    #except:
+    #    raise
     return intern
 
 def find_file(type, uid):

@@ -5,8 +5,8 @@ from flask_restx import Resource
 from .chat_model import ChatAPI
 from .chat_utils import ChatUtils
 from flask_jwt_extended import jwt_required
-from  ...Models.chat import Invitation
-from  ...Models.model import User, Internship, Student
+from ...Models.chat import Invitation
+from ...Models.model import User, Internship, Student
 from ...Models.company import Companies
 from flask_jwt_extended import get_jwt_identity
 from ... import db
@@ -31,7 +31,7 @@ class SendMeetingInvitation(Resource):
         return ChatUtils.send_zoom_meeting_invitation(data)
 
 
-@chat_api.route('/chat/users')
+@chat_api.route('/users')
 class GetUser(Resource):
     def get(self):
         return ChatUtils.getUser()
@@ -41,10 +41,9 @@ class GetUser(Resource):
 class GetMeetings(Resource):
     @chat_api.response(200, "Successfully")
     @chat_api.response(400, "Something wrong")
-    # @jwt_required()
+    @jwt_required()
     def get(self):
-        # uid = get_jwt_identity()
-        uid = 162
+        uid = get_jwt_identity()
 
         # check user's role
         user = db.session.query(User).filter(User.uid == uid).first()

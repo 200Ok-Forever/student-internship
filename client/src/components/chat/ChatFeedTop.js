@@ -1,7 +1,10 @@
 import { Box, Typography } from "@mui/material";
-import React from "react";
+import React, { useContext } from "react";
+import { UserContext } from "../../store/UserContext";
 
 const ChatFeedTop = ({ chat }) => {
+  const { user } = useContext(UserContext);
+
   return (
     <Box sx={{ backgroundColor: "white", height: "40px" }}>
       <Typography
@@ -11,7 +14,9 @@ const ChatFeedTop = ({ chat }) => {
         variant="h6"
         mt="10px"
       >
-        {chat?.people[1]?.person?.first_name}
+        {chat?.people[0]?.person?.username === user.uid
+          ? chat?.people[1]?.person?.first_name
+          : chat?.people[0]?.person?.first_name}
       </Typography>
     </Box>
   );
