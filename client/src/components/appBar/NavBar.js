@@ -56,15 +56,6 @@ const NavBar = () => {
           setUser({});
           window.localStorage.clear();
           history.push("/");
-        } else if (
-          res.response.status === 404 ||
-          res.response.status === 403 ||
-          res.response.status === 400
-        ) {
-          console.log(res.response.data.message);
-          //handleErrorOpen(res.response.data.message);
-        } else {
-          console.log(res);
         }
       } catch (err) {
         console.log(err);
@@ -72,9 +63,9 @@ const NavBar = () => {
     };
     logout();
     setUser({});
-    window.localStorage.clear()
-    history.push("/")
-  }
+    window.localStorage.clear();
+    history.push("/");
+  };
 
   useEffect(() => {
     const update = async () => {
