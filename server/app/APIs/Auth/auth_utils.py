@@ -318,6 +318,10 @@ if you did not request a password reset, please ignore this email.
                 current_student.major = data['major']
                 current_student.position = data['position']
                 current_student.description = data['description']
+                current_student.skills = []
+                for skill_id in data["skills"]:
+                    skill = Skill.query.filter_by(id=skill_id).first()
+                    current_student.skills.append(skill)
                 db.session.commit()
                 return {
                            "status": True,
