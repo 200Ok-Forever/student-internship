@@ -18,7 +18,7 @@ class Companies(db.Model):
     city = db.Column(db.VARCHAR(255))
     line1 = db.Column(db.VARCHAR(255))
     description = db.Column(db.VARCHAR(10000))
-    company_logo = db.Column('logo', db.TEXT)
+    company_logo = db.Column(db.TEXT)
     industries =  db.relationship('Industry', secondary='r_industry_company', back_populates='companies', lazy=True)
     internships =  db.relationship('Internship', backref='company', lazy=True)
 
