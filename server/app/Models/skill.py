@@ -25,5 +25,5 @@ class JobSkills(db.Model):
 
 class StudentSkills(db.Model):
     __tablename__ = 'r_student_skill'
-    student_id = db.Column('student_id', db.Integer, db.ForeignKey('t_student_copy1.id'), primary_key=True)
+    student_id = db.Column('student_id', db.Integer, db.ForeignKey('t_students.id'), primary_key=True)
     skill_id = db.Column('skill_id', db.Integer, db.ForeignKey('t_skills.id'), primary_key=True)

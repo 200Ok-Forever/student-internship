@@ -277,7 +277,7 @@ class GetSkillID(Resource):
 
 
 @auth_api.route("/skills")
-class GetSkillID(Resource):
+class GetSkills(Resource):
 
     @auth_api.doc(
         "Get all skill data",
@@ -309,8 +309,8 @@ class GetIndustryID(Resource):
         return AuthUtils.getIndustryID(args['name'])
 
 
-@auth_api.route("/skills")
-class GetSkillID(Resource):
+@auth_api.route("/industries")
+class GetIndustries(Resource):
 
     @auth_api.doc(
         "Get all skill data",
@@ -321,4 +321,4 @@ class GetSkillID(Resource):
     )
     def get(self):
         """ Get all skill data """
-        return AuthUtils.getSkills()
+        return AuthUtils.getIndustries()

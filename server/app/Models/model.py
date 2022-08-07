@@ -9,7 +9,6 @@ from .. import bcrypt, db
 from sqlalchemy.dialects.mysql import DECIMAL, TINYINT
 
 
-
 class User(db.Model):
     """User(student&company) table"""
     __tablename__ = 't_user'
@@ -50,8 +49,9 @@ class User(db.Model):
 
 class Student(db.Model):
     """Student table"""
-    __tablename__ = 't_student_copy1'
-    id = db.Column(db.Integer,  db.ForeignKey('t_user.uid'), autoincrement=True, primary_key=True, nullable=False, unique=True)
+    __tablename__ = 't_students'
+    id = db.Column(db.Integer, db.ForeignKey('t_user.uid'), autoincrement=True, primary_key=True, nullable=False,
+                   unique=True)
     email = db.Column(db.VARCHAR(320), nullable=False, unique=True)
     first_name = db.Column(db.VARCHAR(50), nullable=False)
     last_name = db.Column(db.VARCHAR(50), nullable=False)
@@ -62,13 +62,15 @@ class Student(db.Model):
     description = db.Column(db.VARCHAR(200))
     skills = db.relationship('Skill', secondary='r_student_skill', back_populates='students', lazy=True)
     applications = db.relationship('InternshipStatus', backref="student", lazy=True)
-    invitations = db.relationship("Internship", secondary='r_invitation', back_populates='invitations_students', lazy=True)
-
+    invitations = db.relationship("Internship", secondary='r_invitation', back_populates='invitations_students',
+                                  lazy=True)
     questions = db.relationship("InternQuestion", secondary='r_intern_question_answer', back_populates='students', lazy=True)
+
     def __repr__(self):
-        return f"<Student: {self .email}, {self.first_name} {self.last_name}>"
+        return f"<Student: {self.email}, {self.first_name} {self.last_name}>"
 
     def get_info(self):
+        skills = [skill.name for skill in self.skills]
         return {
             "id": self.id,
             "email": self.email,
@@ -125,7 +127,7 @@ class Internship(db.Model):
     __tablename__ = 't_internships'
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
 
-    company_id = db.Column(db.VARCHAR(255), db.ForeignKey('new_company.id'), nullable=False)
+    company_id = db.Column(db.VARCHAR(255), db.ForeignKey('t_companies.id'), nullable=False)
     publisher = db.Column(db.VARCHAR(255))
     type = db.Column(db.VARCHAR(255))
     title = db.Column(db.VARCHAR(255))
@@ -159,7 +161,8 @@ class Internship(db.Model):
     processes = db.relationship("Process", backref='internship', lazy=True)
     questions = db.relationship("InternQuestion", backref='internship', lazy=True)
     invitations_students = db.relationship("Student", secondary='r_invitation', back_populates='invitations', lazy=True)
-    #skills = db.relationship('Skill', secondary=job_skills, backref='internship', overlaps="internship")
+    # skills = db.relationship('Skill', secondary=job_skills, backref='internship', overlaps="internship")
+
     skills = db.relationship('Skill', secondary='r_job_skill', back_populates='internships', lazy=True)
 
     def __repr__(self):
@@ -197,7 +200,9 @@ class Internship(db.Model):
             "job_id": self.job_id
 
         }
-    def __init__(self, type, title, apply_link, is_remote, description, google_link, expiration_time, min_salary, max_salary, salary_currency, require_resume, require_coverLetter):
+
+    def __init__(self, type, title, apply_link, is_remote, description, google_link, expiration_time, min_salary,
+                 max_salary, salary_currency, require_resume, require_coverLetter):
         self.posted_time = str(datetime.now())
         self.type = type
         self.title = title
@@ -254,12 +259,13 @@ class City(db.Model):
 
     def __init__(self, name):
         self.name = name
-        
+
+
 class InternshipStatus(db.Model):
     __tablename__ = 't_intern_user_status'
     id = db.Column(db.Integer, primary_key=True)
-    #uid = db.Column(db.Integer, db.ForeignKey('t_user.uid'))
-    uid = db.Column(db.Integer, db.ForeignKey('t_student_copy1.id'))
+    # uid = db.Column(db.Integer, db.ForeignKey('t_user.uid'))
+    uid = db.Column(db.Integer, db.ForeignKey('t_students.id'))
     intern_id = db.Column(db.Integer, db.ForeignKey('t_internships.id'))
     is_seen = db.Column(db.VARCHAR(255))
     is_save = db.Column(db.VARCHAR(255))
@@ -268,8 +274,8 @@ class InternshipStatus(db.Model):
     status = db.Column(db.VARCHAR(255))
     shortlist = db.Column(db.Boolean)
     internship = db.relationship('Internship', back_populates='status')
-    stage = db.Column(db.Integer,db.ForeignKey('t_process.id'))
-    #user = db.relationship('User', back_populates='status')
+    stage = db.Column(db.Integer, db.ForeignKey('t_process.id'))
+    # user = db.relationship('User', back_populates='status')
 
 class File(db.Model):
     __tablename__ = 't_uploadfile'

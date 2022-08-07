@@ -36,7 +36,7 @@ class InternQuestion(db.Model):
 
 class InternAnswer(db.Model):
     __tablename__ = 'r_intern_question_answer'
-    student_id = db.Column(db.Integer, db.ForeignKey('t_student_copy1.id'), primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey('t_students.id'), primary_key=True)
     question_id = db.Column(db.Integer, db.ForeignKey('t_intern_question.id'), primary_key=True)
     answer = db.Column(db.VARCHAR(10000), nullable = False)
 
