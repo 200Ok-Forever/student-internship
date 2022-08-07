@@ -78,6 +78,7 @@ const CompanySignup = () => {
           company_size: values.size,
           founded_year: values.founded_year,
         };
+        console.log(signupValues);
         try {
           const res = await CompanySignupAPI(signupValues);
           if (res.status === true) {

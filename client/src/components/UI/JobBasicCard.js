@@ -8,6 +8,7 @@ import { useHistory } from "react-router-dom";
 const JobBasicCard = (props) => {
   const history = useHistory();
   const job = props.job;
+  console.log(job);
   return (
     <>
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -17,7 +18,7 @@ const JobBasicCard = (props) => {
           sx={{ cursor: "pointer", display: "flex", alignItems: "center" }}
           onClick={() => {
             if (props?.save) return;
-            window.open(`/job?id=${job.id}`, "_blank");
+            window.open(`/job?id=${job.job_id}`, "_blank");
           }}
         >
           {job.title}
@@ -34,7 +35,7 @@ const JobBasicCard = (props) => {
           variant="h8"
           fontWeight="700"
           sx={{ cursor: "pointer" }}
-          onClick={() => history.push(`/company?id=${job.id}`)}
+          onClick={() => history.push(`/company?id=${job.company_id}`)}
         >
           {job.com_name}
         </Typography>

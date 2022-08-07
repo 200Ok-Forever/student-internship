@@ -15,7 +15,7 @@ export const getRecommendations = async (id, token) =>
 
 export const postInternship = async (id, data, token) =>
   await postRequest(`/company/${id}/create-job`, data, {
-    headers: { Authoriztion: token },
+    headers: { Authoriztion: `Bearer ${token}` },
   });
 
 export const putInternship = async (id, data, token) =>
@@ -28,6 +28,15 @@ export const deleteInternship = async (id, token) =>
     headers: { Authoriztion: token },
   });
 
-export const getCompanyInfo = async (id) => {
+export const getCompanyInfo = async (id) => 
   await getRequest(`/company/${id}`);
+
+export const postEditCompanyInfo = async (id, data, token) => {
+  console.log(token);
+  return await postRequest(`/company/${id}`, data, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
 };
+
+export const companyGetJobInfo = async (id) => 
+  await getRequest(`company/${id}/jobs`)

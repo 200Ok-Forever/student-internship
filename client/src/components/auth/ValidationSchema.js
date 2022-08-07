@@ -81,7 +81,6 @@ export const studentEditValidationObject = {
 };
 
 export const companyEditValidationObject = {
-  username: yup.string("Please enter your username").required("username is required"),
   firstName: yup
     .string("Please enter your first name")
     .required("First name is required"),

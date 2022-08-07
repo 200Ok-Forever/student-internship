@@ -13,14 +13,16 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { UserContext } from "../../store/UserContext";
-import { CompanySignupAPI } from "../../api/auth-api";
+import { postEditCompanyInfo } from "../../api/company-api";
 import { useFormik } from "formik";
 import { companyEditValidationSchema } from "../auth/ValidationSchema";
 import { Modal, IconButton } from "@mui/material";
 import ErrorMessage from "../UI/ErrorMessage";
+import IndustrySelect from "../UI/IndustrySelect";
+import CountrySelect from "../UI/CountrySelect";
 
 const EditCompanyProfile = () => {
-  const { setUser } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   const [avatar, setAvatar] = useState("");
   const [errorModalState, setErrorModalState] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -33,58 +35,64 @@ const EditCompanyProfile = () => {
 
   const formik = useFormik({
     initialValues: {
-      username: "",
       firstName: "",
       lastName: "",
       company_name: "",
-      industry: "",
+      industry: [],
       linkedin: "",
       founded_year: "",
       size: "",
       company_url: "",
-      location: "",
+      address: "",
+      city: "",
+      postalCode: "",
+      country: "",
       description: "",
     },
     validationSchema: companyEditValidationSchema,
     onSubmit: (values) => {
       const edit = async (values) => {
-        const signupValues = {
+        const editValues = {
           first_name: values.firstName,
           last_name: values.lastName,
           company_name: values.company_name,
-          industry: values.industry,
+          industry: values.industry.map((i) => (i.name)),
           linkedin: values.linkedin,
           company_url: values.company_url,
-          location: values.location,
+          line1: values.address,
+          city: values.city,
+          country: values.country.name,
           description: values.description,
           avatar: "",
           company_logo: avatar,
           company_size: values.size,
           founded_year: values.founded_year,
         };
-        console.log(signupValues);
-        // try {
-        //   const res = await CompanySignupAPI(signupValues);
-        //   if (res.status === true) {
-        //     const userInfo = res.user;
-        //     const userInfoWithToken = { token: res.token, ...userInfo };
-        //     setUser(userInfoWithToken);
-        //     history.push("/");
-        //   } else if (
-        //     res.response.status === 404 ||
-        //     res.response.status === 403 ||
-        //     res.response.status === 400
-        //   ) {
-        //     console.log(res);
-        //     handleOpen(res.response.data.message);
-        //   } else {
-        //     console.log(res);
-        //     //handleOpen(res);
-        //   }
-        // } catch (err) {
-        //   console.log(err);
-        //   //handleOpen(err);
-        // }
+        console.log(editValues);
+        try {
+          console.log(editValues)
+          const res = await postEditCompanyInfo(user.uid, editValues, user.token);
+          if (res.status === true) {
+            console.log(res);
+            // const userInfo = res.user;
+            // const userInfoWithToken = { token: res.token, ...userInfo };
+            // setUser(userInfoWithToken);
+            history.push("/");
+          } else if (
+            res.response.status === 404 ||
+            res.response.status === 403 ||
+            res.response.status === 400
+          ) {
+            console.log(res);
+            handleOpen(res.response.data.message);
+          } else {
+            console.log(res);
+            //handleOpen(res);
+          }
+        } catch (err) {
+          console.log(err);
+          //handleOpen(err);
+        }
       };
       edit(values);
     },
@@ -180,20 +188,6 @@ const EditCompanyProfile = () => {
             <TextField
               required
               fullWidth
-              name="username"
-              label="Username"
-              id="username"
-              autoComplete="username"
-              value={formik.values.username}
-              onChange={formik.handleChange}
-              error={formik.touched.username && Boolean(formik.errors.username)}
-              helperText={formik.touched.username && formik.errors.username}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              required
-              fullWidth
               name="company_name"
               label="Company Name"
               id="company_name"
@@ -210,14 +204,12 @@ const EditCompanyProfile = () => {
             />
           </Grid>
           <Grid item xs={12}>
-            <TextField
-              fullWidth
-              name="industry"
+          <IndustrySelect
               label="Industry"
-              id="industry"
-              autoComplete="industry"
+              onChange={(event, value) => {
+                formik.setFieldValue("industry", value);
+              }}
               value={formik.values.industry}
-              onChange={formik.handleChange}
             />
           </Grid>
           <Grid item xs={12}>
@@ -279,11 +271,37 @@ const EditCompanyProfile = () => {
           <Grid item xs={12}>
             <TextField
               fullWidth
-              name="location"
-              label="Location"
-              id="location"
-              autoComplete="location"
-              value={formik.values.location}
+              name="address"
+              label="Street Address"
+              id="address"
+              value={formik.values.address}
+              onChange={formik.handleChange}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              name="city"
+              label="City"
+              id="city"
+              value={formik.values.city}
+              onChange={formik.handleChange}
+            />
+          </Grid>
+          <Grid item xs={12} sm={8}>
+            <CountrySelect
+              label="Country"
+              onChange={(event, value) => {
+                formik.setFieldValue("country", value);
+              }}
+              value={formik.values.country}
+            />
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <TextField
+              id="postalCode"
+              label="Postcode"
+              value={formik.values.postalCode}
               onChange={formik.handleChange}
             />
           </Grid>

@@ -224,7 +224,7 @@ class GetAllApplications(Resource):
         return {'applicant': result}, 200
 
 
-@company_ns.route("/<companyid>/create-job")
+@company_ns.route("/<companyid>")
 class CreateIntern(Resource):
     @company_ns.response(200, "Successfully")
     @company_ns.response(400, "Something wrong")
@@ -232,6 +232,7 @@ class CreateIntern(Resource):
     @jwt_required()
     def post(self, companyid):
         data = company_ns.payload
+        print(data)
         uid = get_jwt_identity()
 
         query = db.session.query(Company.Companies).filter(Company.Companies.id == companyid)

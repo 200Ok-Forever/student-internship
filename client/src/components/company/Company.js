@@ -20,6 +20,8 @@ import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import { getCompanyInfo } from "../../api/company-api";
 import { useHistory } from "react-router-dom";
 import { UserContext } from "../../store/UserContext";
+import { companyGetJobInfo } from "../../api/company-api";
+import { getJob } from "../../api/search-api";
 
 const data = {
   company_avatar: "https://img.icons8.com/officel/344/google-logo.png",
@@ -96,23 +98,21 @@ const Company = () => {
       const queryString = window.location.search;
       const urlParams = new URLSearchParams(queryString);
       const id = urlParams.get("id");
-      console.log(id);
       const res = await getCompanyInfo(id);
-      console.log(res);
-      //setInfo(res);
+      setInfo(res);
     };
     getData();
   }, []);
-
+  console.log(info)
   return (
     <>
       <div className={classes.head}>
         <Avatar
-          src={data.company_avatar}
+          src={info.company_avatar}
           sx={{ width: "70px", height: "70px", mt: "60px" }}
         />
         <Typography variant="h3" color={"secondary"} mt="60px">
-          {data.company_name}
+          {info.company_name}
         </Typography>
       </div>
       <div className={classes.nav}>
@@ -149,17 +149,20 @@ const Company = () => {
 
 const Overview = ({ info }) => {
   const history = useHistory();
+  console.log(info);
   const { user } = useContext(UserContext);
   return (
     <>
-      {user.role === 2 && <Button
-        variant="outlined"
-        onClick={() => {
-          history.push("/editcompanyprofile");
-        }}
-      >
-        Edit Profile
-      </Button>}
+      {user.role === 2 && (
+        <Button
+          variant="outlined"
+          onClick={() => {
+            history.push("/editcompanyprofile");
+          }}
+        >
+          Edit Profile
+        </Button>
+      )}
       <Paper
         elevation={4}
         sx={{
@@ -190,7 +193,7 @@ const Overview = ({ info }) => {
           </Typography>
           <Typography sx={{ wordBreak: "break-all" }}>
             <b>LinkedIn: </b>
-            <a href={info.linkedIn}>{info.linkedIn}</a>
+            <a href={info.linkedin}>{info.linkedin}</a>
           </Typography>
         </Box>
         <Button variant="outlined" startIcon={<MailOutlineIcon />} size="small">
@@ -211,7 +214,24 @@ const Jobs = () => {
   const [sortBy, setSortBy] = useState("");
 
   useEffect(() => {
-    setJobsList(jobs);
+    const getJobs = async () => {
+      const queryString = window.location.search;
+      const urlParams = new URLSearchParams(queryString);
+      const id = urlParams.get("id");
+      const res = await companyGetJobInfo(id);
+      console.log(res);
+      const jobs = res.jobs.map((i) => ({
+        ...i,
+        company_logo: res.company_logo,
+        company_name: res.company_name,
+        location: i.city,
+        job_id: i.id
+      }));
+      console.log(jobs);
+      setJobsList(jobs);
+    };
+
+    getJobs();
   }, []);
 
   const sortHandler = (e) => {
