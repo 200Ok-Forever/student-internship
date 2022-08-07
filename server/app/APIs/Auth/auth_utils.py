@@ -34,18 +34,16 @@ class AuthUtils:
                 print(user_info)
                 if user_info['role'] == 1:
                     student = Student.query.filter_by(email=email).first()
-                    first_name = student.first_name
-                    last_name = student.last_name
+                    user_info["first_name"] = student.first_name
+                    user_info["last_name"] = student.last_name
                 else:
                     company = Companies.query.filter_by(email=email).first()
-                    first_name = company.first_name
-                    last_name = company.last_name
+                    user_info["first_name"] = company.first_name
+                    user_info["last_name"] = company.last_name
                 access_token = create_access_token(identity=user_info['uid'])
                 resp = {"status": True,
                         "message": "Successfully logged in.",
                         "token": access_token,
-                        "first_name": first_name,
-                        "last_name": last_name,
                         "user_info": user_info
                         }
                 return resp, 200
@@ -105,12 +103,12 @@ class AuthUtils:
 
             user = User.query.filter_by(email=email).first()
             user_info = User.get_info(user)
+            user_info["first_name"] = data["first_name"]
+            user_info["last_name"] = data["last_name"]
             # Create access token
             access_token = create_access_token(identity=new_user.uid)
             resp = {"status": True,
                     "message": "Student successfully signup.",
-                    "first_name": data["first_name"],
-                    "last_name": data["last_name"],
                     "user": user_info,
                     "token": access_token
                     }
@@ -172,13 +170,13 @@ class AuthUtils:
 
             user = User.query.filter_by(email=email).first()
             user_info = User.get_info(user)
+            user_info["first_name"] = data["first_name"]
+            user_info["last_name"] = data["last_name"]
             # Create access token
             access_token = create_access_token(identity=new_user.uid)
             resp = {"status": True,
                     "message": "Company successfully signup.",
                     "user": user_info,
-                    "first_name": data["first_name"],
-                    "last_name": data["last_name"],
                     "token": access_token,
                     }
             return resp, 201
