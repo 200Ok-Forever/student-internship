@@ -1,9 +1,23 @@
-# from flask_restx import Namespace, fields
+from flask_restx import Namespace, fields
 
 
-# class ForumAPI:
-#     api = Namespace("forum", description="Forum related operations.")
+post = {
+    "Title": fields.String(required=True),
+    "Author": fields.String(required=True),
+    "Content": fields.String(required=True),
+    "createdAt": fields.String(required=True),
+    "Industry": fields.String(required=True)
+}
 
-#     forum_info = api.model('Forum info', {
-#         'id': fields.String,
-#     })
+comment = {
+    "userID": fields.Integer(required=True),
+    "Content": fields.String(required=True),
+    "createdAt": fields.String(required=True),
+    "replyID": fields.Integer
+}
+
+class ForumAPI:
+    forum_ns = Namespace("forum", description="Forum related operations.")
+    post_data = forum_ns.model("Create Post", post)
+    comment_data = forum_ns.model("Create Comment", comment)
+

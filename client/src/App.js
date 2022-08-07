@@ -41,13 +41,13 @@ import StudentProfile from "./components/student/StudentProfile";
 import { STUDENT_ROLE, RECRUITER_ROLE } from "./constants";
 
 const loadSession = () => {
-  const storedUser = localStorage.getItem("user")
+  const storedUser = localStorage.getItem("user");
   if (storedUser) {
     const user = JSON.parse(storedUser);
-    return user
+    return user;
   }
-  return {}
-}
+  return {};
+};
 
 function App() {
   const location = useLocation();
