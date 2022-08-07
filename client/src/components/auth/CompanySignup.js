@@ -70,7 +70,7 @@ const CompanySignup = () => {
           company_url: values.company_url,
           line1: values.address,
           city: values.city,
-          country: values.country.name,
+          country: values.country?.name ? values.country.name : "",
           postalCode: values.postalCode,
           description: values.description,
           avatar: "",

@@ -22,11 +22,13 @@ import IndustrySelect from "../UI/IndustrySelect";
 import CountrySelect from "../UI/CountrySelect";
 
 const EditCompanyProfile = () => {
-  const { user, setUser } = useContext(UserContext);
+  const { user } = useContext(UserContext);
   const [avatar, setAvatar] = useState("");
   const [errorModalState, setErrorModalState] = useState(false);
+  const [errorTitle, setErrorTitle] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const handleOpen = (msg) => {
+  const handleOpen = (title, msg) => {
+    setErrorTitle(title)
     setErrorMessage(msg);
     setErrorModalState(true);
   };
@@ -61,7 +63,7 @@ const EditCompanyProfile = () => {
           company_url: values.company_url,
           line1: values.address,
           city: values.city,
-          country: values.country.name,
+          country: values.country?.name ? values.country.name : "",
           description: values.description,
           avatar: "",
           company_logo: avatar,
@@ -72,11 +74,10 @@ const EditCompanyProfile = () => {
         try {
           console.log(editValues)
           const res = await postEditCompanyInfo(user.uid, editValues, user.token);
-          if (res.status === true) {
+          console.log(res.message);
+          if (res.message === 'Successfully') {
             console.log(res);
-            // const userInfo = res.user;
-            // const userInfoWithToken = { token: res.token, ...userInfo };
-            // setUser(userInfoWithToken);
+            handleOpen("Success", "Successfully edit the infomation!")
             history.push("/");
           } else if (
             res.response.status === 404 ||
@@ -84,14 +85,13 @@ const EditCompanyProfile = () => {
             res.response.status === 400
           ) {
             console.log(res);
-            handleOpen(res.response.data.message);
+            handleOpen("Error", res.response.data.message);
           } else {
             console.log(res);
             //handleOpen(res);
           }
         } catch (err) {
           console.log(err);
-          //handleOpen(err);
         }
       };
       edit(values);
@@ -150,7 +150,7 @@ const EditCompanyProfile = () => {
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
         >
-          <ErrorMessage errorMessage={errorMessage} />
+          <ErrorMessage errorTitle={errorTitle} errorMessage={errorMessage} />
         </Modal>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
@@ -290,7 +290,7 @@ const EditCompanyProfile = () => {
           </Grid>
           <Grid item xs={12} sm={8}>
             <CountrySelect
-              label="Country"
+              label="Country*"
               onChange={(event, value) => {
                 formik.setFieldValue("country", value);
               }}

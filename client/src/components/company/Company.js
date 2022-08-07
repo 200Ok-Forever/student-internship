@@ -189,7 +189,7 @@ const Overview = ({ info }) => {
           </Typography>
           <Typography>
             <b>Industry: </b>
-            {info.industry}
+            {info.industries?.map((i) => (i.name))}
           </Typography>
           <Typography sx={{ wordBreak: "break-all" }}>
             <b>LinkedIn: </b>
