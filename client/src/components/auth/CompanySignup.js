@@ -18,7 +18,7 @@ import { useFormik } from "formik";
 import { companySignupValidationSchema } from "./ValidationSchema";
 import { Modal, IconButton } from "@mui/material";
 import ErrorMessage from "../UI/ErrorMessage";
-import IndustrySelect from '../UI/IndustrySelect';
+import IndustrySelect from "../UI/IndustrySelect";
 import CountrySelect from "../UI/CountrySelect";
 
 const CompanySignup = () => {
@@ -63,7 +63,7 @@ const CompanySignup = () => {
           first_name: values.firstName,
           last_name: values.lastName,
           company_name: values.company_name,
-          industry: values.industry.map(i => parseInt(i.id)),
+          industry: values.industry.map((i) => parseInt(i.id)),
           linkedin: values.linkedin,
           company_url: values.company_url,
           line1: values.address,
@@ -142,7 +142,10 @@ const CompanySignup = () => {
       </Typography>
       <IconButton color="primary" aria-label="upload picture" component="label">
         <input hidden accept="image/*" type="file" onChange={onAvatarChange} />
-        <Avatar sx={{ m: 1, bgcolor: "primary.main" }} src={avatar} />
+        <Avatar
+          sx={{ m: 1, bgcolor: "primary.main", width: "80px", height: "80px" }}
+          src={avatar}
+        />
       </IconButton>
       <Box
         component="form"
@@ -278,12 +281,12 @@ const CompanySignup = () => {
             />
           </Grid>
           <Grid item xs={12}>
-            <IndustrySelect 
-              label="Industry" 
+            <IndustrySelect
+              label="Industry"
               onChange={(event, value) => {
                 formik.setFieldValue("industry", value);
               }}
-              value={formik.values.industry}            
+              value={formik.values.industry}
             />
           </Grid>
           <Grid item xs={12}>
@@ -378,12 +381,12 @@ const CompanySignup = () => {
             />
           </Grid>
           <Grid item xs={12} sm={8}>
-            <CountrySelect 
-              label="Country" 
+            <CountrySelect
+              label="Country"
               onChange={(event, value) => {
                 formik.setFieldValue("country", value);
               }}
-              value={formik.values.country}              
+              value={formik.values.country}
             />
           </Grid>
           <Grid item xs={12} sm={4}>
@@ -392,7 +395,7 @@ const CompanySignup = () => {
               label="Postcode"
               value={formik.values.postalCode}
               onChange={formik.handleChange}
-            />          
+            />
           </Grid>
           <Grid item xs={12}>
             <TextField

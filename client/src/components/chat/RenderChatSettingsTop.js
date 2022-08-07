@@ -3,7 +3,6 @@ import { Box } from "@mui/material";
 import React from "react";
 
 const RenderChatSettingsTop = ({ creds, chat }) => {
-  const chatWith = chat?.people[0]?.person;
   return (
     <>
       {chat && (
@@ -16,8 +15,8 @@ const RenderChatSettingsTop = ({ creds, chat }) => {
             justifyContent: "center",
           }}
         >
-          <Avatar src={chatWith?.avatar}></Avatar>
-          <Avatar src={chat?.people[1]?.person?.avatar}></Avatar>
+          <Avatar src={chat?.people[0]?.person?.last_name}></Avatar>
+          <Avatar src={chat?.people[1]?.person?.last_name}></Avatar>
         </Box>
       )}
     </>
