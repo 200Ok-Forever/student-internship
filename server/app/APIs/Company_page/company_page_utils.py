@@ -75,7 +75,7 @@ def search_jobs(args, id):
     if args['sort'] == 'newest':
         jobs = jobs.order_by(model.Internship.posted_time.desc())
     else:
-        jobs = jobs.order_by(model.Internship.expiration_datetime_utc.desc())
+        jobs = jobs.order_by(model.Internship.expiration_datetime.desc())
     
     # paging, 10 per page
     jobs = jobs.offset((args['current_page'] - 1) * 10).limit(10).all()
@@ -120,3 +120,9 @@ def create_job(data, intern_id):
     except:
         raise
     return intern
+
+def find_file(type, uid):
+    file = db.session.query(model.File).filter(model.File.uid == uid, model.File.file_type == type).first()
+    if file != None:
+        file = str(file.decode())
+    return file

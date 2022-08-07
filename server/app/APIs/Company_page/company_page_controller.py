@@ -6,7 +6,7 @@ from flask_jwt_extended import get_jwt_identity
 from flask_restx import Resource
 from pkg_resources import resource_listdir
 from .company_page_model import CompanyPageAPI
-from .company_page_utils import get_intern_process, check_editapplication_permison, search_jobs, create_job
+from .company_page_utils import get_intern_process, check_editapplication_permison, search_jobs, create_job, find_file
 from  ...Models import company as Company
 from  ...Models import model
 from  ...Models import internship as Internship
@@ -31,12 +31,12 @@ class GetCompany(Resource):
     @company_ns.response(200, "Successfully")
     @company_ns.response(400, "Something wrong")
     def get(self, id):
-        movie = db.session.query(Company.Companies).filter(Company.Companies.id == id).first()
-        if movie == None:
-            return {"message": "Invalid movie id"}, 400
+        company = db.session.query(Company.Companies).filter(Company.Companies.id == id).first()
+        if company == None:
+            return {"message": "Invalid company id"}, 400
 
-        data = convert_object_to_dict(movie)
-        industry = convert_model_to_dict(movie.industries)
+        data = convert_object_to_dict(company)
+        industry = convert_model_to_dict(company.industries)
         data['industries'] = industry
         return data, 200
 
@@ -45,7 +45,6 @@ class GetCompany(Resource):
     @jwt_required()
     @company_ns.expect(CompanyPageAPI.company_data, validate=True)
     def post(self, id):
-        id = int(id)
         data = company_ns.payload
         uid = get_jwt_identity()
         query = db.session.query(Company.Companies).filter(Company.Companies.id == id)
@@ -55,47 +54,53 @@ class GetCompany(Resource):
         if company== None:
             return {"message": "Invalid company id"}, 400
         # 2. check permission : is recuiter and belongs to this company
-        if company.user_id != uid:
+        if company.id != uid:
             return {"message": "No permission"}, 400
         
         # 3. update
-        try:
-            company.email = data['email']
-            company.name = data['company_name']
-            company.first_name = data['first_name']
-            company.last_name = data['last_name']
-            company.linkedin = data['linkedin']
-            company.company_url = data['company_url']
-            company.founded_year = data['founded_year']
-            company.company_size = data['company_size']
-            company.country = data['country']
-            company.city = data['city']
-            company.line1 = data['line1']
-            company.description = data['description']
-            company.company_logo = data['company_logo']
+        #try:
+        company.email = data['email']
+        company.name = data['company_name']
+        company.first_name = data['first_name']
+        company.last_name = data['last_name']
+        company.linkedin = data['linkedin']
+        company.company_url = data['company_url']
+        company.founded_year = data['founded_year']
+        company.company_size = data['company_size']
+        company.country = data['country']
+        company.city = data['city']
+        company.line1 = data['line1']
+        company.description = data['description']
+        company.company_logo = data['company_logo']
 
-            industry_list = company.industries
-            industry_name_list = [ind.name for ind in industry_list]
-            for ind in data['industry']:
-                if ind not in industry_name_list:
-                    curr_ind = db.session.query(Company.Industry).filter(Company.Industry.name == ind).first()
-                    # only add the relationship
-                    if curr_ind != None:
-                        company.industries.append(curr_ind)
-                    # add new industry
-                    elif curr_ind == None:
-                        new_ind = Internship.Industry(ind)
-                        company.industries.append(new_ind)
+        old_industry_list = company.industries
+        industry_name_list = [ind.name for ind in old_industry_list]
+        new_industry_list = [new for new in data['industry'] if new not in industry_name_list]
+        print(new_industry_list)
+        # update industry
+        for new in new_industry_list:
+            curr_ind = db.session.query(Company.Industry).filter(Company.Industry.name == new).first()
+            # only add the relationship
+            if curr_ind != None:
+                company.industries.append(curr_ind)
+            # add new industry
+            elif curr_ind == None:
+                new_ind = Company.Industry(new)
+                db.session.add(new_ind)
+                company.industries.append(new_ind)
+                    
 
-            #remove industry
-            delete_industry_list = industry_name_list - data['industry']
-            for ind in delete_industry_list:
-                curr_ind = db.session.query(Company.Industry).filter(Company.Industry.name == ind).first()
-                if curr_ind != None:
-                    company.industries.remove(curr_ind)
-            db.session.commit()
-        except:
-            return {"message": "Sth Error"}, 400
+        #remove industry
+        delete_industry_list = [old for old in industry_name_list if old not in data['industry']]
+        print(delete_industry_list)
+        for ind in delete_industry_list:
+            curr_ind = db.session.query(Company.Industry).filter(Company.Industry.name == ind).first()
+            if curr_ind != None:
+                company.industries.remove(curr_ind)
+        db.session.commit()
+
+        #except:
+        #    return {"message": "Sth Error"}, 400
 
         return {"message": "Successfully"}, 200
 
@@ -115,7 +120,7 @@ class GetCompany(Resource):
     """
 
 #--------------------------------INTERN OPERATOR-----------------------
-@company_ns.route("/jobs/<id>")
+@company_ns.route("/jobs/<jobid>")
 class JobsManager(Resource):
     @company_ns.response(200, "Successfully")
     @company_ns.response(400, "Something wrong")
@@ -130,7 +135,7 @@ class JobsManager(Resource):
             return {"message": "Invalid internship id"}, 400
         
         # 2. check permission
-        if job.company.user_id != uid:
+        if job.company.id != uid:
             return {"message": "No permission"}, 400
 
         # 3. delete
@@ -155,6 +160,7 @@ class CompanyJobs(Resource):
         args = parser.parse_args()
 
         uid = get_jwt_identity()
+        uid = 107
 
         jobs = search_jobs(args, id)
         if len(jobs) == 0:
@@ -165,14 +171,14 @@ class CompanyJobs(Resource):
         result['numAllResults'] = {"total_count": len(jobs)}
         for job in jobs:
             company_name = job.company.company_name
-            company_logo = job.company.logo
+            company_logo = job.company.company_logo
             data = convert_object_to_dict(job)
             # TODO: update database
-            data['closeDate'] = data['expiration_datetime_utc']
+            data['closeDate'] = data['expiration_datetime']
             data['city'] = job.citys.name
 
             # get identity, if has token, is recruiter
-            if uid != None:
+            if uid != None and job.company_id == uid:
                 process_list = get_intern_process(job)
                 data['processes'] = process_list
                 data['require_resume'] = job.require_resume
@@ -216,6 +222,9 @@ class GetAllApplications(Resource):
             data['status'] = appli.status
             data['avatar'] = stu.user.avatar
             data['applicationId'] = appli.id
+            data['shortlist'] = appli.shortlist
+            data['resume'] = find_file("resume", stu.id)
+            data['coverletter'] = find_file('coverletter', stu.id)
             data['questions'] = {}
             answers = db.session.query(Internship.InternAnswer, Internship.InternQuestion
             ).filter(Internship.InternAnswer.student_id == stu.id, Internship.InternQuestion.intern_id == jobid,

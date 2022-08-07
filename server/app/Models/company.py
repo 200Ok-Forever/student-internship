@@ -3,7 +3,6 @@ from torch import autocast_increment_nesting
 from wtforms import Form, IntegerField, StringField, PasswordField, validators
 from .. import bcrypt, db
 
-
 class Companies(db.Model):
     __tablename__ = "t_companies"
     id = db.Column(db.Integer, db.ForeignKey('t_user.uid'), primary_key=True, autoincrement=True, nullable=False,
@@ -50,9 +49,9 @@ class Companies(db.Model):
 
 class Industry(db.Model):
     __tablename__ = 't_industry'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False, unique=True)
+    id = db.Column(db.Integer, primary_key=True,autoincrement=True, nullable=False, unique=True)
     name = db.Column(db.VARCHAR(255), nullable=False, unique=True)
-    companies = db.relationship('Companies', secondary='r_industry_company', back_populates='industries', lazy=True)
+    companies =  db.relationship('Companies', secondary='r_industry_company', back_populates='industries', lazy=True)
 
     def __repr__(self):
         return '<Industry id:{} name:>'.format(self.id, self.name)
@@ -65,7 +64,6 @@ class Industry(db.Model):
             "id": self.id,
             "name": self.name
         }
-
 
 class CompanyIndustry(db.Model):
     __tablename__ = 'r_industry_company'
