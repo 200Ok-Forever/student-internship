@@ -26,7 +26,7 @@ class AuthUtils:
             if not user:
                 return {
                            "status": False,
-                           "message": "The username you have entered does not match any account.",
+                           "message": "The email you have entered does not match any account.",
                        }, 404
 
             elif user and user.verify_password(password):
@@ -84,6 +84,7 @@ class AuthUtils:
                 university=data["university"],
                 degree=data["degree"],
                 major=data["major"],
+                position=data["position"],
                 description=data["description"],
             )
             for skill_id in data["skills"]:
@@ -133,6 +134,7 @@ class AuthUtils:
             db.session.add(new_user)
             db.session.commit()
             user_id = User.query.with_entities(User.uid).filter_by(email=email).first()
+            print(data)
             new_company = Companies(
                 id=user_id[0],
                 email=email,
@@ -146,11 +148,12 @@ class AuthUtils:
                 country=data["country"],
                 city=data["city"],
                 line1=data["line1"],
+                postalCode=data["postalCode"],
                 description=data["description"],
                 company_logo=data["company_logo"]
             )
             for industry_id in data["industry"]:
-                industry = Skill.query.filter_by(id=industry_id).first()
+                industry = Industry.query.filter_by(id=industry_id).first()
                 new_company.industries.append(industry)
             db.session.add(new_company)
             db.session.commit()
@@ -174,7 +177,7 @@ class AuthUtils:
 
     @staticmethod
     @jwt.token_in_blocklist_loader
-    def check_if_token_is_revoked(jwt_payload: dict):
+    def check_if_token_is_revoked(jwt_header, jwt_payload: dict):
         jti = jwt_payload["jti"]
         token_in_redis = r.get(jti)
         print(jti, token_in_redis, token_in_redis is not None)
@@ -318,6 +321,11 @@ if you did not request a password reset, please ignore this email.
                 current_student.major = data['major']
                 current_student.position = data['position']
                 current_student.description = data['description']
+                current_student.skills = []
+                db.session.commit()
+                for skill_id in data["skills"]:
+                    skill = Skill.query.filter_by(id=skill_id).first()
+                    current_student.skills.append(skill)
                 db.session.commit()
                 return {
                            "status": True,
