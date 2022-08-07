@@ -1,10 +1,11 @@
 import { IconButton, Modal, TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { sendMessage } from "react-chat-engine";
 import InsertInvitationIcon from "@mui/icons-material/InsertInvitation";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { UserContext } from "../../store/UserContext";
 
 const style = {
   position: "absolute",
@@ -26,7 +27,6 @@ const RenderNewMessageForm = ({ creds, chatID }) => {
   const [text, setText] = useState("");
   const [open, setOpen] = useState(false);
   const [time, setTime] = useState(new Date());
-  const username = creds?.creds?.userName;
   const handleChange = (newTime) => {
     setTime(newTime);
   };
@@ -37,12 +37,12 @@ const RenderNewMessageForm = ({ creds, chatID }) => {
     sendMessage(creds, chatID, { text });
     setText("");
   };
+  const { user } = useContext(UserContext);
 
   const sendInvitation = () => {
-    const minutesSeconds = time.toLocaleTimeString();
-    const meeting_time =
-      time.toLocaleDateString() + " " + minutesSeconds.substr(0, 5);
-    const text = `MEETING BOT:😊Hi! ${username} invites you to join zoom meeting on ${meeting_time}`;
+    const text = `MEETING BOT:😊Hi! ${
+      user.username
+    } invites you to join zoom meeting on ${time.toISOString()}`;
     handleSubmit(text);
     handleClose();
   };
@@ -51,11 +51,14 @@ const RenderNewMessageForm = ({ creds, chatID }) => {
     <Box
       style={{
         position: "absolute",
-        bottom: "0px",
+        bottom: "-30px",
         display: "flex",
         alignItems: "center",
         flexWrap: "wrap",
         backgroundColor: "white",
+        width: "100vw",
+        maxWidth: "1250px",
+        zIndex: "2",
       }}
     >
       <TextField

@@ -2,6 +2,8 @@ import axios from "axios";
 import { API } from "./base";
 
 export const getUsers = () => API.get(`/chat/users`);
+export const createMeeting = (data) =>
+  API.post(`/chat/meeting/invitation`, data);
 
 export const CHAT_API = axios.create({ baseURL: "https://api.chatengine.io" });
 
