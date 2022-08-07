@@ -5,8 +5,8 @@ from flask_restx import Resource
 from .chat_model import ChatAPI
 from .chat_utils import ChatUtils
 from flask_jwt_extended import jwt_required
-from  ...Models.chat import Invitation
-from  ...Models.model import User, Internship, Student
+from ...Models.chat import Invitation
+from ...Models.model import User, Internship, Student
 from ...Models.company import Companies
 from flask_jwt_extended import get_jwt_identity
 from ... import db
@@ -31,7 +31,7 @@ class SendMeetingInvitation(Resource):
         return ChatUtils.send_zoom_meeting_invitation(data)
 
 
-@chat_api.route('/chat/users')
+@chat_api.route('/users')
 class GetUser(Resource):
     def get(self):
         return ChatUtils.getUser()
