@@ -14,11 +14,9 @@ export const LoginAPI = async (data) => {
 export const LogoutAPI = async (token) => {
   try {
     const url = `/auth/logout`;
-    const res = await deleteAxios(
-      url,
-      {},
-      { headers: { Authorization: token } }
-    );
+    const res = await deleteAxios(url, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
 
     return res.data;
   } catch (err) {
