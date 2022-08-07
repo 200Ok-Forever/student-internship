@@ -216,6 +216,7 @@ class GetAllApplications(Resource):
             data['status'] = appli.status
             data['avatar'] = stu.user.avatar
             data['applicationId'] = appli.id
+            data['shortlist'] = appli.shortlist
             data['questions'] = {}
             answers = db.session.query(Internship.InternAnswer, Internship.InternQuestion
             ).filter(Internship.InternAnswer.student_id == stu.id, Internship.InternQuestion.intern_id == jobid,
