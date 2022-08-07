@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { STUDENT_ROLE } from '../../constants';
+import { STUDENT_ROLE } from "../../constants";
 import moment from "moment";
 import {
   Card,
@@ -15,30 +15,45 @@ import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import VideoCameraFrontIcon from "@mui/icons-material/VideoCameraFront";
 import RemoveButton from "../UI/RemoveButton";
 import { UserContext } from "../../store/UserContext";
-import { getInternshipEvents, postInternshipUncalendar } from "../../api/internship-api";
+import {
+  getInternshipEvents,
+  postInternshipUncalendar,
+} from "../../api/internship-api";
+import { getMeetingList } from "../../api/chat-api";
 
 const Sidebar = () => {
-  const { user } = useContext(UserContext)
-  const [events, setEvents] = useState([])
+  const { user } = useContext(UserContext);
+  const [events, setEvents] = useState([]);
 
   useEffect(() => {
     const getEvents = async () => {
-      const res = await getInternshipEvents(user.token)
+      const res = await getInternshipEvents(user.token);
       setEvents(JSON.parse(res));
-    }
+    };
 
+    const getMeetings = async () => {
+      const res = await getMeetingList(user.token);
+      console.log(res.data.invitations);
+    };
+    getMeetings();
     getEvents();
-  }, [user.token])
+  }, [user.token]);
 
   const onRemove = async (data) => {
     const res = await postInternshipUncalendar(data, user.token);
     setEvents(JSON.parse(res));
-  }
+  };
 
   // events in the next fortnight
-  const upcomingEvents = () => events
-    .filter((e) => moment(e.start, "YYYY-MM-DD hh:mm:ss").isBetween(moment(), moment().add(14, "d")))
-    .sort((a, b) => a.start - b.start);
+  const upcomingEvents = () =>
+    events
+      .filter((e) =>
+        moment(e.start, "YYYY-MM-DD hh:mm:ss").isBetween(
+          moment(),
+          moment().add(14, "d")
+        )
+      )
+      .sort((a, b) => a.start - b.start);
 
   return (
     <Grid item xs={12} md={3} order={{ xs: 1, md: 2 }}>
@@ -48,16 +63,16 @@ const Sidebar = () => {
       <Link component={RouteLink} to="/calendar" color="primary">
         View Full Calendar
       </Link>
-      <Meetings 
-        events={upcomingEvents().filter((e) => e.type === "meeting")} 
+      <Meetings
+        events={upcomingEvents().filter((e) => e.type === "meeting")}
         onRemove={onRemove}
       />
-      {user.role === STUDENT_ROLE && 
+      {user.role === STUDENT_ROLE && (
         <Internships
           events={upcomingEvents().filter((e) => e.type === "internship")}
           onRemove={onRemove}
         />
-      }
+      )}
     </Grid>
   );
 };
@@ -90,11 +105,13 @@ const Internships = ({ events, onRemove }) => {
                   sx={{ mr: 2 }}
                   size="small"
                   startIcon={<RemoveRedEyeIcon />}
-                  onClick={() => history.push('/job?id='+e.internship_id)}
+                  onClick={() => history.push("/job?id=" + e.internship_id)}
                 >
                   view
                 </Button>
-                <RemoveButton onClick={() => onRemove({ internshipId: e.internship_id })} />
+                <RemoveButton
+                  onClick={() => onRemove({ internshipId: e.internship_id })}
+                />
               </Box>
             </CardContent>
           </Card>
