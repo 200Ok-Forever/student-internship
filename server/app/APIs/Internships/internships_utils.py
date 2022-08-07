@@ -98,6 +98,10 @@ def changeTypeFormat(type):
         return ""
 
 
+def get_user_info(uid):
+    user = db.session.query(User).filter(User.uid==uid).first()
+    return user.username, user.avatar
+
 def get_all_parent_comment(comments):
     all_parent_comment = []
 
@@ -108,6 +112,8 @@ def get_all_parent_comment(comments):
         all_parent_comment.append({
             'text': comment.content,
             'uid': comment.user_id,
+            'username': get_user_info(comment.user_id)[0],
+            'avatar': get_user_info(comment.user_id)[1],
             'cmtId': comment.id,
             'time': str(comment.date),
             'replied': children_comment_list
@@ -122,7 +128,10 @@ def get_children_comment(comments):
             'repliedId': comment.id,
             'text': comment.content,
             'time': str(comment.date),
-            'uid': comment.user_id}, )
+            'uid': comment.user_id,
+            'username': get_user_info(comment.user_id)[0],
+            'avatar': get_user_info(comment.user_id)[1],
+            }, )
 
     # print(all_children_comment)
     return all_children_comment
