@@ -50,7 +50,7 @@ class User(db.Model):
 
 class Student(db.Model):
     """Student table"""
-    __tablename__ = 't_student_copy1'
+    __tablename__ = 't_students'
     id = db.Column(db.Integer,  db.ForeignKey('t_user.uid'), autoincrement=True, primary_key=True, nullable=False, unique=True)
     email = db.Column(db.VARCHAR(320), nullable=False, unique=True)
     first_name = db.Column(db.VARCHAR(50), nullable=False)
@@ -125,7 +125,7 @@ class Internship(db.Model):
     __tablename__ = 't_internships'
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
 
-    company_id = db.Column(db.VARCHAR(255), db.ForeignKey('new_company.id'), nullable=False)
+    company_id = db.Column(db.Integer, db.ForeignKey('new_company.id'), nullable=False)
     publisher = db.Column(db.VARCHAR(255))
     type = db.Column(db.VARCHAR(255))
     title = db.Column(db.VARCHAR(255))
@@ -259,7 +259,7 @@ class InternshipStatus(db.Model):
     __tablename__ = 't_intern_user_status'
     id = db.Column(db.Integer, primary_key=True)
     #uid = db.Column(db.Integer, db.ForeignKey('t_user.uid'))
-    uid = db.Column(db.Integer, db.ForeignKey('t_student_copy1.id'))
+    uid = db.Column(db.Integer, db.ForeignKey('t_students.id'))
     intern_id = db.Column(db.Integer, db.ForeignKey('t_internships.id'))
     is_seen = db.Column(db.VARCHAR(255))
     is_save = db.Column(db.VARCHAR(255))
