@@ -340,6 +340,8 @@ const Comments = ({ list, jobId }) => {
           time: new Date(),
           replied: [],
           cmtId: JSON.parse(resp.data).comment_id,
+          avatar: newCmt.avatar,
+          username: newCmt.username,
         };
         setComments((prev) => [cmtInfo].concat(prev));
       }
@@ -366,6 +368,8 @@ const Comments = ({ list, jobId }) => {
             text: newReply.text,
             time: new Date(),
             uid: newReply.uid,
+            avatar: newReply.avatar,
+            username: newReply.username,
           };
           if (cmt) {
             const new_replies = [replyInfo].concat(cmt.replied);

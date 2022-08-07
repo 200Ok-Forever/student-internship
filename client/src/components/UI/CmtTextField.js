@@ -22,6 +22,8 @@ const CmtTextField = ({
     const new_info = {
       text: text,
       uid: user.uid,
+      avatar: user.avatar,
+      username: user.username,
     };
     if (isCmt) {
       sendHandler(new_info);
