@@ -148,12 +148,27 @@ def check_user_exist(uid):
         return True
     return False
 
+def get_question(id):
+    questions = db.session.query(InternQuestion).filter(InternQuestion.intern_id == id).all()
+    result = []
+    for q in questions:
+        result.append({'question_id':q.id, 'content':q.content,'intern_id':q.intern_id})
+    
+    return result
+
 class InternshipsUtils:
     @staticmethod
     def get_Internship(id, uid):
         is_save = "False"
         is_calendar = "False"
+        if uid:
+            exist = check_user_exist(uid)
 
+            if exist == False:
+                return {
+                        "message": "user not found",
+
+                    }, 400
 
         try:
             # print(id)
@@ -241,7 +256,8 @@ class InternshipsUtils:
                     "video_id": video_id_list,
                     "recruiting_process": [],
                     "is_save": is_save,
-                    "is_calendar": is_calendar
+                    "is_calendar": is_calendar,
+                    "questions": get_question(internship.id),
 
                 }
                 return internship_result, 200
@@ -262,13 +278,15 @@ class InternshipsUtils:
         paid = data.get("paid", None)
         remote = data.get("is_remote", None)
         uid = data.get("uid", None)
-        exist = check_user_exist(uid)
 
-        if exist == False:
-            return {
-                       "message": "user not found",
+        if uid != None:
+            exist = check_user_exist(uid)
 
-                   }, 400
+            if exist == False:
+                return {
+                        "message": "user not found",
+
+                    }, 400
         if paid:
             paid = paid.upper()
         if remote:
@@ -580,14 +598,14 @@ class InternshipsUtils:
                 calendar_result = {
                     "id": calendar.id,
                     'internship_id': calendar.internship_id,
-                    'start': calendar.start,
+                    'start':str(calendar.start),
                     'title': calendar.title,
                     'type': calendar.type,
                     'link': calendar.link,
                 }
                 calander_list.append(calendar_result)
 
-        return dumps(calander_list, default=str), 200
+        return {"calander_list":calander_list}, 200
 
     @staticmethod
     def addCalendar(arg, uid):

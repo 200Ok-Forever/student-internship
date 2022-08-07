@@ -36,6 +36,7 @@ class GetInternshipList(Resource):
         args1 = request.args
 
         try:
+            
             return InternshipsUtils.get_all_Internship(args1)
         except Exception as error:
             return {
@@ -44,7 +45,7 @@ class GetInternshipList(Resource):
 
 
 get_internship_parser=reqparse.RequestParser()
-get_internship_parser.add_argument('uid', location = 'args', help="pass uid if user log in")
+get_internship_parser.add_argument('Authorization', location='headers', help='Bearer [Token]', default='Bearer xxxxxxxxxxxxx')
 @internships_api.route('/internships/<int:id>')
 class GetInternship(Resource):
     get_internship = InternshipsAPI.internship_get
@@ -58,7 +59,7 @@ class GetInternship(Resource):
     def get(self, id):
         try:
             uid = get_jwt_identity()
-            # print(data)
+            print(uid)
             return InternshipsUtils.get_Internship(id, uid)
         except Exception as error:
             return {
