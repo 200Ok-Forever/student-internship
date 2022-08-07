@@ -33,6 +33,7 @@ class ForumUtils:
         pass
     def editPost(id,arg):
 
+
         Post.query.filter(Post.id == id).update({Post.content:arg['content']})
         try:
             db.session.commit()
@@ -41,3 +42,21 @@ class ForumUtils:
 
             return dumps({'msg': error}), 400
         pass
+
+def get_comments(comments, all_comms):
+    if comments == None or len(comments) == 0:
+        return []
+    result = []
+    for comm in comments:
+        next_level = [com for com in all_comms if com.parent_id == comm.id]
+        data = {"text": comm.content, 
+        "uid": comm.student_id,
+        "authName": comm.student.user.username,
+        "authId": comm.student.id,
+        "avatar": comm.student.user.avatar,
+        "time": comm.created_time, 
+        "content": comm.content,
+        "replied": get_comments(next_level, all_comms)} 
+        result.append(data)
+    result.sort(key=lambda x: x['time']) 
+    return result

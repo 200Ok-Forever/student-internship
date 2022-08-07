@@ -17,7 +17,7 @@ const ErrorMessage = (props) => {
       }}
     >
       <Typography id="modal-modal-title" variant="h6" component="h2">
-        Error
+        {props.title}
       </Typography>
       <Typography id="modal-modal-description" sx={{ mt: 2 }}>
         {props.errorMessage}
