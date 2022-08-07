@@ -150,7 +150,7 @@ class Internship(db.Model):
     job_experience_in_place_of_education = db.Column(db.VARCHAR(255))
     min_salary = db.Column(db.VARCHAR(255))
     max_salary = db.Column(db.VARCHAR(255))
-    salary_curreny = db.Column(db.VARCHAR(255))
+    salary_currency = db.Column(db.VARCHAR(255))
     salary_period_id = db.Column(db.VARCHAR(255))
     require_resume = db.Column(db.Boolean)
     require_coverLetter = db.Column(db.Boolean)
@@ -194,7 +194,7 @@ class Internship(db.Model):
             "job_experience_in_place_of_education": self.job_experience_in_place_of_education,
             "min_salary": self.min_salary,
             "max_salary": self.max_salary,
-            "salary_curreny": self.salary_curreny,
+            "salary_currency": self.salary_currency,
             "salary_period_id": self.salary_period_id,
             "city": self.city,
             "job_id": self.job_id
@@ -213,7 +213,7 @@ class Internship(db.Model):
         self.expiration_datetime = expiration_time
         self.min_salary = min_salary
         self.max_salary = max_salary
-        self.salary_curreny = salary_currency
+        self.salary_currency = salary_currency
         self.require_resume = require_resume
         self.require_coverLetter = require_coverLetter
     # more
@@ -282,7 +282,7 @@ class File(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.VARCHAR(255))
     uid = db.Column(db.Integer, db.ForeignKey('t_user.uid'))
-    data = db.Column(db.LargeBinary(length=(2 ** 32) - 1))
+    data = db.Column(db.String)
     file_type = db.Column(db.VARCHAR(255))
     upload_time = db.Column(db.TIMESTAMP)
 

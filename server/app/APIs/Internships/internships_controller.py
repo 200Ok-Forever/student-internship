@@ -80,6 +80,7 @@ class ApplyInternship(Resource):
         try:
 
             arg = request.get_json()
+            print(arg)
             return InternshipsUtils.apply(id, arg)
             pass
         except Exception as error:
