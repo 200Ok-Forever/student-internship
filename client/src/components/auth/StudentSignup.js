@@ -55,7 +55,7 @@ const StudentSignup = () => {
           university: values.university,
           degree: values.degree,
           major: values.major,
-          positions: values.positions,
+          position: values.positions,
           skills: values.skills.map(s => parseInt(s.id)),
           description: values.description,
           avatar: avatar,

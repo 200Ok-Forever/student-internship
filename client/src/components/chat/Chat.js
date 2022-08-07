@@ -9,8 +9,8 @@ import RenderNewMessageForm from "./RenderNewMessageForm";
 
 const Chat = () => {
   // TODO: change uername and usersecret
-  const student = "1";
-  // const company = "2";
+  const student = "test";
+
   return (
     <ChatEngine
       projectID="e7fb7381-46fd-413f-9422-766a54881ff6"

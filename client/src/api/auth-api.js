@@ -113,3 +113,25 @@ export const changeAvatarApi = async (data, token) => {
     return err;
   }
 };
+
+export const getSkils = async () => {
+  try {
+    const url = `/auth/skills`;
+    const res = await getAxios(url);
+
+    return res.data;
+  } catch (err) {
+    return err;
+  }
+};
+
+export const getIndustries = async () => {
+  try {
+    const url = `/auth/industries`;
+    const res = await getAxios(url);
+
+    return res.data;
+  } catch (err) {
+    return err;
+  }
+};
