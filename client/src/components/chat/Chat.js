@@ -11,7 +11,9 @@ import RenderNewMessageForm from "./RenderNewMessageForm";
 
 const Chat = () => {
   const { user } = useContext(UserContext);
+  // const currChatUser = user.uid.toString();
   const currChatUser = user.uid.toString();
+  // const currChatUser = "203";
 
   return (
     <ChatEngine

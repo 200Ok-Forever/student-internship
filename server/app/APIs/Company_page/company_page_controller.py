@@ -60,7 +60,7 @@ class GetCompany(Resource):
 
         # 3. update
         try:
-            company.email = data['email']
+            #company.email = data['email']
             company.name = data['company_name']
             company.first_name = data['first_name']
             company.last_name = data['last_name']
