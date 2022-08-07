@@ -92,7 +92,12 @@ const ApplyForm = ({ setIsSubmitted }) => {
       reader.onload = ev => {
         resolve(ev.target.result)
       }
-      reader.readAsDataURL(file)
+      try {
+        reader.readAsDataURL(file)
+      } catch (e) {
+        console.log(e);
+        resolve(null);
+      }
     })
  }
 
