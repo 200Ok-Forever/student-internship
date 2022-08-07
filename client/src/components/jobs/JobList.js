@@ -89,7 +89,7 @@ const JobList = () => {
           filter.jobType === "All" ? "" : filter.jobType
         }&is_remote=${filter.isRemote === "All" ? "" : filter.isRemote}&paid=${
           filter.isPaid === "All" ? "" : filter.isPaid
-        }&sort=${sortBy}${user.uid && `&uid=${user.uid}`}`
+        }&sort=${sortBy}${user.uid ? `&uid=${user.uid}` : ""}`
       );
       if (resp.status === 200) {
         if (resp.data.length === 0) {
