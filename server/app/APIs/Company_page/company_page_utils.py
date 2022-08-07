@@ -2,6 +2,7 @@ from signal import raise_signal
 from  ...Models import company as Company
 from  ...Models import model
 from  ...Models import internship as Internship
+from  ...Models import skill as Skill
 from ... import db
 from sqlalchemy import and_, null, or_
 
@@ -82,7 +83,7 @@ def search_jobs(args, id):
     
     return jobs
 
-def create_job(data, intern_id, companyid):
+def create_job(data, intern_id, companyid, old_skills):
     #try:
     intern = model.Internship( data['type'], data['title'],  data['apply_link'], data['is_remote'], \
     data['description'], data['google_link'], data['expiration_time'], data['min_salary'], \
@@ -91,6 +92,10 @@ def create_job(data, intern_id, companyid):
     db.session.add(intern)
     db.session.flush()
 
+    # update internid
+    if intern_id:
+        intern.id = intern_id
+        db.session.commit()
     # add question
     for que in data['application']['questions']:
         if intern_id:
@@ -110,6 +115,19 @@ def create_job(data, intern_id, companyid):
         order+=1
         db.session.add(new_pro)
         db.session.flush()
+    # add new skill
+    old_skills_name = [old.name for old in old_skills]
+    new_skills = [new for new in data['skills'] if new not in old_skills_name]    
+    print(old_skills)
+    for skill in new_skills:
+        curr_skill = db.session.query(Skill.Skill).filter(Skill.Skill.name == skill).first()
+        # create
+        if curr_skill == None:
+            curr_skill = Skill.Skill(skill)
+            db.session.add(curr_skill)
+        intern.skills.append(curr_skill)
+
+        
     # city
     city_name = data['city']
     print(city_name)
