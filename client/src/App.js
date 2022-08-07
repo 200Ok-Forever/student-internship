@@ -125,7 +125,7 @@ const NarrowContainerRoutes = () => {
       <Switch>
         <Route path="/forum" exact component={Forum} />
         {INDUSTRIES.map((industry) => (
-          <Route path={`/forum/${industry}`} component={IndustryForum} />
+          <Route path={`/forum/${industry}`} key={industry} component={IndustryForum} />
         ))}
         <Route path="/forum/me" component={UserPosts} />
         <Route path="/forum/posts" component={ForumPost} />

@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { useFormik } from "formik";
 import CurrencyTextField from "@unicef/material-ui-currency-textfield";
 import { useParams, Link as RouterLink } from "react-router-dom";
 import {
@@ -21,71 +22,74 @@ import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { CURRENCY_CODES } from "./constants";
 import SkillsSelect from "../UI/SkillsSelect";
+import { postInternshipValidationSchema } from './validation_schema';
+import { postInternship } from "../../api/company-api";
+import { UserContext } from "../../store/UserContext";
+import moment from "moment";
 
 const CreateInternship = () => {
   const { id } = useParams();
   const [loading, setLoading] = useState(id ? true : false);
-
-  const [title, setTitle] = useState("");
-  const [closeDate, setCloseDate] = useState(new Date());
-  const [location, setLocation] = useState("");
-  const [currency, setCurrency] = useState("USD");
   const [paid, setPaid] = useState(true);
-  const [minSalary, setMinSalary] = useState(0);
-  const [maxSalary, setMaxSalary] = useState(0);
-  const [remote, setRemote] = useState(false);
-  const [type, setType] = useState("full time");
-  const [skills, setSkills] = useState([]);
-  const [description, setDescription] = useState("");
-  const [steps, setSteps] = useState([""]);
-  const [questions, setQuestions] = useState([""]);
-  const [resume, setResume] = useState(true);
-  const [coverLetter, setCoverLetter] = useState(false);
+  const { user } = useContext(UserContext)
+
+  const formik = useFormik({
+    initialValues: {
+      title: "",
+      closed_date: moment(),
+      type: "full time",
+      apply_link: "",
+      is_remote: false,
+      city: "",
+      description: "",
+      google_link: "",
+      min_salary: 0,
+      max_salary: 0,
+      salary_currency: "USD",
+      steps: [""],
+      questions: [""],
+      cover_letter: false,
+      resume: true,
+    },
+    validationSchema: postInternshipValidationSchema,
+    onSubmit: async values => {
+      let data = {
+        apply_link: values.apply_link,
+        type: values.type,
+        title: values.title,
+        is_remote: values.is_remote.toString(),
+        description: values.description,
+        google_link: values.google_link,
+        expiration_time: values.closed_date.format("YYYY-MM-DD 23:59:00"),
+        min_salary: parseInt(values.min_salary),
+        max_salary: parseInt(values.max_salary),
+        salary_currency: values.salary_currency,
+        recruiting_process: values.steps,
+        application: {
+          resume: values.resume,
+          coverLetter: values.cover_letter,
+          questions: values.questions
+        },
+        city: values.city,
+        skills: values.skills.map(s => s.id.toString())
+      }
+      const res = await postInternship(user.uid, data, user.token)
+      console.log(res)
+    },
+  });
 
   useEffect(() => {
     if (id) {
-      // TODO get internship info
-      // TODO check this company owns the job
-      const job = {
-        title: "test",
-        closeDate: new Date(),
-        location: "Sydney",
-        currency: "AUD",
-        minSalary: "50000",
-        maxSalary: "60000",
-        remote: true,
-        type: "full time",
-        steps: ["Step 1", "Step 2"],
-        questions: ["How are you?"],
-        resume: true,
-        coverLetter: true,
-      };
-      setTitle(job.title);
-      setCloseDate(job.closeDate);
-      setLocation(job.location);
-      setCurrency(job.currency);
-      setMinSalary(job.minSalary);
-      setMaxSalary(job.maxSalary);
-      setRemote(job.remote);
-      setType(job.type);
-      setSteps(job.steps);
-      setQuestions(job.questions);
-      setResume(job.resume);
-      setCoverLetter(job.coverLetter);
-      setLoading(false);
+      /// TODO
     }
   }, [id]);
 
   useEffect(() => {
     if (!paid) {
-      setMinSalary(0);
-      setMaxSalary(0);
+      formik.setFieldValue("min_salary", 0);
+      formik.setFieldValue("max_salary", 0);
     }
-  }, [paid]);
-
-  if (loading) {
-    return;
-  }
+  }, [paid, formik]);
 
   return (
     <Box>
@@ -98,27 +102,38 @@ const CreateInternship = () => {
         </Typography>
         <TextField
           id="title"
+          name="title"
+          required
           label="Position Title"
           variant="outlined"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          value={formik.values.title}
+          onChange={formik.handleChange}
+          error={formik.touched.title && Boolean(formik.errors.title)}
+          helperText={formik.touched.title && formik.errors.title}
         />
         <Box sx={{ display: "flex", gap: 2 }}>
           <LocalizationProvider dateAdapter={AdapterMoment}>
             <DesktopDatePicker
               label="Application Close Date"
               inputFormat="DD/MM/yyyy"
-              value={closeDate}
-              onChange={setCloseDate}
+              value={formik.values.closed_date}
+              onChange={val => formik.setFieldValue("closed_date", val)}
+              required 
+              id="closed_date" 
+              name="closed_date"
               renderInput={(params) => <TextField {...params} />}
             />
           </LocalizationProvider>
           <TextField
-            id="location"
-            label="Location"
+            id="city"
+            name="city"
+            label="City"
+            required
             variant="outlined"
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
+            value={formik.values.city}
+            onChange={formik.handleChange}
+            error={formik.touched.city && Boolean(formik.errors.city)}
+            helperText={formik.touched.city && formik.errors.city}
           />
         </Box>
         <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
@@ -136,47 +151,66 @@ const CreateInternship = () => {
             <Select
               labelId="currency"
               disabled={!paid}
-              id="currency"
-              value={currency}
+              id="salary_currency"
+              name="salary_currency"
               label="Salary Currency"
-              onChange={(e) => setCurrency(e.target.value)}
+              value={formik.values.salary_currency}
+              onChange={formik.handleChange}              
             >
               {CURRENCY_CODES.map((c) => (
-                <MenuItem value={c}>{c}</MenuItem>
+                <MenuItem value={c} key={c}>{c}</MenuItem>
               ))}
             </Select>
           </FormControl>
           <CurrencyTextField
             label="Min Salary"
+            id="min_salary"
+            name="min_salary"
             variant="outlined"
-            value={minSalary}
             currencySymbol="$"
             minimumValue="0"
             outputFormat="string"
             decimalCharacter="."
             digitGroupSeparator=","
             disabled={!paid}
-            onChange={(event, value) => setMinSalary(value)}
+            value={formik.values.min_salary}
+            onChange={(e, v) => formik.setFieldValue("min_salary", v)} 
           />
           <CurrencyTextField
             label="Max Salary"
+            id="max_salary"
+            name="max_salary"
+            required
             variant="outlined"
-            value={maxSalary}
             currencySymbol="$"
             minimumValue="0"
             outputFormat="string"
             decimalCharacter="."
             digitGroupSeparator=","
             disabled={!paid}
-            onChange={(event, value) => setMaxSalary(value)}
+            value={formik.values.max_salary}
+            onChange={(e, v) => formik.setFieldValue("max_salary", v)} 
           />
+        </Box>
+        <Box>
+          <TextField
+            id="apply_link"
+            fullWidth
+            name="apply_link"
+            label="External Application Link"
+            variant="outlined"
+            value={formik.values.apply_link}
+            onChange={formik.handleChange}
+          />    
         </Box>
         <Box sx={{ display: "flex", gap: 3, alignItems: "center" }}>
           <FormControlLabel
             control={
               <Checkbox
-                checked={remote}
-                onChange={(e) => setRemote(e.target.checked)}
+                id="is_remote"
+                name="is_remote"
+                value={formik.values.is_remote}
+                onChange={(e) => formik.setFieldValue("is_remote", e.target.checked)} 
               />
             }
             label="Remote Role"
@@ -186,9 +220,11 @@ const CreateInternship = () => {
             <Select
               labelId="type"
               id="type"
-              value={type}
+              name="type"
               label="Job Type"
-              onChange={(e) => setType(e.target.value)}
+              value={formik.values.type}
+              onChange={formik.handleChange}
+              required
             >
               <MenuItem value="full time">Full Time</MenuItem>
               <MenuItem value="part time">Part Time</MenuItem>
@@ -197,30 +233,39 @@ const CreateInternship = () => {
         </Box>
         <Box>
           <SkillsSelect 
-            value={skills} 
-            onChange={(e, value) => setSkills(value)} 
-            label="Required Skills" 
+            label="Necessary Skills" 
+            onChange={(event, value) => {
+              formik.setFieldValue("skills", value);
+            }}
+            value={formik.values.skills}
           />
         </Box>
         <Box>
           <TextField
             id="description"
+            name="description"
             label="Role Description"
+            required
             placeholder="A description of the role"
             multiline
             rows={5}
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            value={formik.values.description}
+            onChange={formik.handleChange} 
             fullWidth
+            error={formik.touched.description && Boolean(formik.errors.description)}
+            helperText={formik.touched.description && formik.errors.description}
           />
         </Box>
         <Box>
           <Typography variant="h5" component="div" sx={{ mb: 1 }}>
             Recruitment Process
           </Typography>
+          {formik.errors.steps && formik.touched.steps && <div style={{ color: 'red' }}>{formik.errors.steps}</div>}
           <List
-            values={steps}
-            setValues={setSteps}
+            values={formik.values.steps}
+            setValues={(value) => {
+              formik.setFieldValue("steps", value);
+            }}
             placeholder="e.g. phone interview, technical interview etc"
           />
         </Box>
@@ -232,8 +277,10 @@ const CreateInternship = () => {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={resume}
-                  onChange={(e) => setResume(e.target.checked)}
+                  id="resume"
+                  name="resume"
+                  checked={formik.values.resume}
+                  onChange={(e) => formik.setFieldValue('resume', e.target.checked)}
                 />
               }
               label="Resume Required"
@@ -241,8 +288,10 @@ const CreateInternship = () => {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={coverLetter}
-                  onChange={(e) => setCoverLetter(e.target.value)}
+                  id="cover_letter"
+                  name="cover_letter"
+                  checked={formik.values.cover_letter}
+                  onChange={(e) => formik.setFieldValue("cover_letter", e.target.checked)}
                 />
               }
               label="Cover Letter Required"
@@ -251,15 +300,18 @@ const CreateInternship = () => {
           <Typography variant="h6" component="div" sx={{ mb: 1 }}>
             Questions
           </Typography>
+          {formik.errors.questions && formik.touched.questions && <div style={{ color: 'red' }}>{formik.errors.questions}</div>}
           <List
-            setValues={setQuestions}
-            values={questions}
-            placeholder="E.g. why are you interested in this role?"
+            values={formik.values.questions}
+            setValues={(value) => {
+              formik.setFieldValue("questions", value);
+            }}
+            placeholder="e.g. why do you want this role?"
           />
         </Box>
       </Box>
       <Box sx={{ display: "flex", alignItems: "center" }} mt={4}>
-        <Button color="primary" variant="contained" sx={{ px: 5, mr: 3 }}>
+        <Button onClick={formik.handleSubmit} color="primary" variant="contained" sx={{ px: 5, mr: 3 }}>
           Post
         </Button>
         <Link underline="none" component={RouterLink} to="/">
@@ -292,7 +344,7 @@ const List = ({ values, setValues, placeholder }) => {
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }} mt={3}>
       {values.map((v, i) => (
-        <Box sx={{ display: "flex", alignItems: "center" }}>
+        <Box sx={{ display: "flex", alignItems: "center" }} key={i}>
           <Typography variant="subtitle1" sx={{ width: "30px" }}>
             {i + 1}
           </Typography>
