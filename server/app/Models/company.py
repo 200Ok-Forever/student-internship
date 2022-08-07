@@ -4,37 +4,48 @@ from wtforms import Form, IntegerField, StringField, PasswordField, validators
 from .. import bcrypt, db
 
 class Companies(db.Model):
-    __tablename__ = "new_company"
-    id = db.Column(db.Integer, db.ForeignKey('t_user.id'), primary_key=True,autoincrement=True, nullable=False, unique=True)
+    __tablename__ = "t_companies"
+    id = db.Column(db.Integer, db.ForeignKey('t_user.uid'), primary_key=True, autoincrement=True, nullable=False,
+                   unique=True)
+    email = db.Column(db.VARCHAR(320), nullable=False, unique=True)
     company_name = db.Column(db.VARCHAR(255), nullable=False, unique=True)
     first_name = db.Column(db.VARCHAR(255), nullable=False, unique=True)
     last_name = db.Column(db.VARCHAR(255), nullable=False, unique=True)
     linkedin = db.Column(db.VARCHAR(255))
-    company_size = db.Column(db.Integer)
-    description = db.Column(db.VARCHAR(10000))
+    founded_year = db.Column(db.VARCHAR(255))
+    company_url = db.Column(db.VARCHAR(255))
+    company_size = db.Column(db.VARCHAR(255))
     country = db.Column(db.VARCHAR(255))
     city = db.Column(db.VARCHAR(255))
     line1 = db.Column(db.VARCHAR(255))
-    logo = db.Column(db.VARCHAR(255))
-    founded_year = db.Column(db.VARCHAR(255))
-    industries =  db.relationship('Industry', secondary='r_industry_company', back_populates='companies', lazy=True)
-
-
+    postalCode = db.Column(db.VARCHAR(255))
+    description = db.Column(db.VARCHAR(10000))
+    company_logo = db.Column(db.TEXT)
+    industries = db.relationship('Industry', secondary='r_industry_company', back_populates='companies', lazy=True)
+    internships = db.relationship('Internship', backref='company', lazy=True)
 
     def __repr__(self):
         return '<Company id:{} name:>'.format(self.id, self.company_name)
-  
-    def __init__(self, data):
-        self.company_name = data['company_name']
-        self.first_name = data['first_name']
-        self.last_name = data['last_name']
-        self.linkedin = data['linkedin']
-        self.company_size = data['company_size']
-        self.country = data['country']
-        self.city = data['city']
-        self.line1 = data['line1']
-        self.logo = data['logo']
-        self.founded_year = data['founded_year']
+
+    def get_info(self):
+        return {
+            "id": self.id,
+            "email": self.email,
+            "company_name": self.company_name,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "linkedin": self.linkedin,
+            "company_size": self.company_size,
+            "country": self.country,
+            "city": self.city,
+            "line1": self.line1,
+            "postalCode": self.postalCode,
+            "logo": self.company_logo,
+            "founded_year": self.founded_year,
+            "company_url": self.company_url,
+            "description": self.description,
+        }
+
 
 class Industry(db.Model):
     __tablename__ = 't_industry'
@@ -48,9 +59,15 @@ class Industry(db.Model):
     def __init__(self, name):
         self.name = name
 
+    def get_info(self):
+        return {
+            "id": self.id,
+            "name": self.name
+        }
+
 class CompanyIndustry(db.Model):
     __tablename__ = 'r_industry_company'
-    company_id = db.Column(db.Integer, db.ForeignKey('new_company.id'), nullable=False, primary_key=True)
+    company_id = db.Column(db.Integer, db.ForeignKey('t_companies.id'), nullable=False, primary_key=True)
     industry_id = db.Column(db.Integer, db.ForeignKey('t_industry.id'), nullable=False, primary_key=True)
 
     def __repr__(self):

@@ -7,12 +7,14 @@ from json import dumps
 from requests import session
 from sqlalchemy import null
 from torch import is_same_size
-from ...Models.model import Calendar, Internship, City, Company, Comment, User, InternshipStatus, Student, File, \
-    StudentInterveiwQuestion
+from ...Models.model import Calendar, Internship, City, Comment, User, Student, File, InternshipStatus
+from ...Models.company import Companies
+from ...Models.internship import InternQuestion, InternAnswer
 from ...Models.skill import StudentSkills, Skill
 from flask_restx import Resource, reqparse
 from ...extension import db
 from string import digits
+
 import datetime
 from sqlalchemy.sql.functions import coalesce
 from sqlalchemy import nullslast
@@ -32,8 +34,8 @@ def get_location(data):
 
 
 def get_company_info(data):
-    id = Company.id
-    company = Company.query.filter_by(id=data).first()
+    id = Companies.id
+    company = Companies.query.filter_by(id=data).first()
 
     print(company)
     name = company.company_name
@@ -396,7 +398,7 @@ class InternshipsUtils:
                 User.uid == current_user_id).first()
 
             # store question and answer
-            new_interview_question = StudentInterveiwQuestion(student_id=student.id, question_id=question_id,
+            new_interview_question = InternQuestion(student_id=student.id, question_id=question_id,
                                                               answer=answer)
             db.session.add(new_interview_question)
             if resume:
