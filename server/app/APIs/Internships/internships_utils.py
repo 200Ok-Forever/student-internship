@@ -254,7 +254,7 @@ class InternshipsUtils:
                     "companyName": get_company_info(internship.company_id)[0],
                     'company_logo': get_company_info(internship.company_id)[1],
                     "video_id": video_id_list,
-                    "recruiting_process": [],
+                    "recruiting_process": ["Phone Interview", "Technical Interview"],
                     "is_save": is_save,
                     "is_calendar": is_calendar,
                     "questions": get_question(internship.id),
