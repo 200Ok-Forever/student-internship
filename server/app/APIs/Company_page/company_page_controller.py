@@ -6,7 +6,7 @@ from flask_jwt_extended import get_jwt_identity
 from flask_restx import Resource
 from pkg_resources import resource_listdir
 from .company_page_model import CompanyPageAPI
-from .company_page_utils import get_intern_process, check_editapplication_permison, search_jobs, create_job, find_file
+from .company_page_utils import get_intern_process, check_editapplication_permison, search_jobs, create_job, find_file, format_jobs
 from ...Models import company as Company
 from ...Models import model
 from ...Models import internship as Internship
@@ -14,7 +14,7 @@ from ...Models import skill as Skill
 from ...Helpers.other_util import convert_object_to_dict, convert_model_to_dict
 from ... import db
 from flask_jwt_extended import jwt_required
-from flask import request
+from flask import request, redirect
 from flask_restx import Resource, reqparse
 from fuzzywuzzy import process
 from sqlalchemy import or_
@@ -149,7 +149,9 @@ class JobsManager(Resource):
 
         db.session.delete(job)
         db.session.commit()
-        return {"message": "Successfully"}, 200
+
+        jobs = db.session.query(model.Internship).filter(model.Internship.company_id == uid).all()
+        return format_jobs(jobs, uid), 200
 
 
 @company_ns.route("/<id>/jobs")
@@ -171,35 +173,7 @@ class CompanyJobs(Resource):
         if len(jobs) == 0:
             return {"jobs": [], 'company_name': None, 'company_logo': None, 'numAllResults': 0}
 
-        # format result
-        result = {"jobs": []}
-        result['numAllResults'] = {"total_count": len(jobs)}
-        for job in jobs:
-            company_name = job.company.company_name
-            company_logo = job.company.company_logo
-            data = convert_object_to_dict(job)
-            data['closeDate'] = data['expiration_datetime_utc']
-
-            # get the city
-            if job.citys is None:
-                data['city'] = None
-            else:
-                data['city'] = job.citys.name
-
-            # get identity, if has token, is recruiter
-            if uid != None and job.company_id == uid:
-                process_list = get_intern_process(job)
-                data['questions'] = [que.content for que in job.questions]
-                data['processes'] = process_list
-                data['require_resume'] = job.require_resume
-                data['require_coverLetter'] = job.require_coverLetter
-                data['nApplications'] = len(job.status)
-            result['jobs'].append(data)
-
-        result['company_name'] = company_name
-        result['company_logo'] = company_logo
-
-        return result, 200
+        return    format_jobs(jobs, uid), 200
 
 
 @company_ns.route("/<jobid>/applicant")

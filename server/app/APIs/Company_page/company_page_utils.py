@@ -1,4 +1,6 @@
 from signal import raise_signal
+
+from ...Helpers.other_util import convert_object_to_dict
 from  ...Models import company as Company
 from  ...Models import model
 from  ...Models import internship as Internship
@@ -150,3 +152,33 @@ def find_file(type, uid):
     if file != None:
         file = str(file.decode())
     return file
+
+def format_jobs(jobs, uid):
+    # format result
+    result = {"jobs": []}
+    result['numAllResults'] = {"total_count": len(jobs)}
+    for job in jobs:
+        company_name = job.company.company_name
+        company_logo = job.company.company_logo
+        data = convert_object_to_dict(job)
+        data['closeDate'] = data['expiration_datetime_utc']
+
+        # get the city
+        if job.citys is None:
+            data['city'] = None
+        else:
+            data['city'] = job.citys.name
+
+        # get identity, if has token, is recruiter
+        if uid != None and job.company_id == uid:
+            process_list = get_intern_process(job)
+            data['questions'] = [que.content for que in job.questions]
+            data['processes'] = process_list
+            data['require_resume'] = job.require_resume
+            data['require_coverLetter'] = job.require_coverLetter
+            data['nApplications'] = len(job.status)
+        result['jobs'].append(data)
+
+    result['company_name'] = company_name
+    result['company_logo'] = company_logo
+    return result
