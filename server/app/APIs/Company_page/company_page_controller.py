@@ -193,6 +193,7 @@ class CompanyJobs(Resource):
                 data['processes'] = process_list
                 data['require_resume'] = job.require_resume
                 data['require_coverLetter'] = job.require_coverLetter
+                data['nApplications'] = len(job.status)
             result['jobs'].append(data)
 
         result['company_name'] = company_name

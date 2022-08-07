@@ -151,7 +151,7 @@ class Internship(db.Model):
     job_experience_in_place_of_education = db.Column(db.VARCHAR(255))
     min_salary = db.Column(db.VARCHAR(255))
     max_salary = db.Column(db.VARCHAR(255))
-    salary_curreny = db.Column(db.VARCHAR(255))
+    salary_currency = db.Column(db.VARCHAR(255))
     salary_period_id = db.Column(db.VARCHAR(255))
     require_resume = db.Column(db.Boolean)
     require_coverLetter = db.Column(db.Boolean)

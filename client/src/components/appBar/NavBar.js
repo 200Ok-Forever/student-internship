@@ -25,7 +25,6 @@ const NavBar = () => {
   if (user.token) {
     open = Boolean(anchorEl);
   }
-  console.log("🚀 ~ open", open);
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -44,6 +43,7 @@ const NavBar = () => {
   };
 
   const LogoutHandler = () => {
+    setAnchorEl(false);
     const logout = async () => {
       try {
         const res = await LogoutAPI(user.token);
@@ -129,54 +129,49 @@ const NavBar = () => {
                 >
                   <Avatar src={avatar} />
                 </IconButton>
-                <Menu
-                  id="basic-menu"
-                  anchorEl={anchorEl}
-                  open={open}
-                  onClose={handleClose}
-                  MenuListProps={{
-                    "aria-labelledby": "basic-button",
-                  }}
-                >
-                  <MenuItem
-                    onClick={handleClose}
-                    component={RouterLink}
-                    to={user.role === 1 ? "/profile" : "/company"}
-                    
-                  >
-                    Profile
-                  </MenuItem>
-                  <MenuItem
-                    onClick={handleClose}
-                    component={RouterLink}
-                    to="/saved"
-                  >
-                    Saved Internships
-                  </MenuItem>
-                  <MenuItem
-                    onClick={handleClose}
-                    component={RouterLink}
-                    to="/history"
-                  >
-                    History
-                  </MenuItem>
-                  <MenuItem
-                    onClick={handleClose}
-                    component={RouterLink}
-                    to="/forum/me"
-                  >
-                    My Forum Posts
-                  </MenuItem>
-                  <MenuItem
-                    onClick={LogoutHandler}
-                    component={RouterLink}
-                    to="/"
-                  >
-                    Logout
-                  </MenuItem>
-                </Menu>
               </>
             )}
+            <Menu
+              id="basic-menu"
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleClose}
+              MenuListProps={{
+                "aria-labelledby": "basic-button",
+              }}
+            >
+              <MenuItem
+                onClick={handleClose}
+                component={RouterLink}
+                to="/profile"
+              >
+                Profile
+              </MenuItem>
+              <MenuItem
+                onClick={handleClose}
+                component={RouterLink}
+                to="/saved"
+              >
+                Saved Internships
+              </MenuItem>
+              <MenuItem
+                onClick={handleClose}
+                component={RouterLink}
+                to="/history"
+              >
+                History
+              </MenuItem>
+              <MenuItem
+                onClick={handleClose}
+                component={RouterLink}
+                to="/forum/me"
+              >
+                My Forum Posts
+              </MenuItem>
+              <MenuItem onClick={LogoutHandler} component={RouterLink} to="/">
+                Logout
+              </MenuItem>
+            </Menu>
           </Box>
         </Toolbar>
       </AppBar>

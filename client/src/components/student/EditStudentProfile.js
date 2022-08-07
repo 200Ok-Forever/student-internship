@@ -13,6 +13,7 @@ import { UserContext } from "../../store/UserContext";
 import ErrorMessage from "../UI/ErrorMessage";
 import { changeAvatarApi, editStudentProfileAPI } from "../../api/auth-api";
 import { useHistory } from "react-router-dom";
+import SkillsSelect from "../UI/SkillsSelect";
 
 const EditStudentProfile = () => {
   const history = useHistory();
@@ -22,7 +23,9 @@ const EditStudentProfile = () => {
   // Handle the error modal
   const [errorModalState, setErrorModalState] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const handleOpen = (msg) => {
+  const [errorTitle, setErrorTitle] = useState("");
+  const handleOpen = (title, msg) => {
+    setErrorTitle(title)
     setErrorMessage(msg);
     setErrorModalState(true);
   };
@@ -56,21 +59,13 @@ const EditStudentProfile = () => {
 
   const formik = useFormik({
     initialValues: {
-      // firstName: info.firstName,
-      // lastName: info.lastName,
-      // university: info.university,
-      // degree: info.degree,
-      // major: info.major,
-      // positions: info.position,
-      // skills: info.skills,
-      // description: info.description,
       firstName: "",
       lastName: "",
       university: "",
       degree: "",
       major: "",
       positions: "",
-      skills: "",
+      skills: [],
       description: "",
     },
     validationSchema: studentEditValidationSchema,
@@ -83,15 +78,15 @@ const EditStudentProfile = () => {
           degree: values.degree,
           major: values.major,
           position: values.positions,
-          skills: values.skills,
+          skills: values.skills.map((item) => (item.id)),
           description: values.description,
         };
-        console.log(editValues, user.token);
+        console.log(editValues);
         try {
           const res = await editStudentProfileAPI(editValues, user.token);
           if (res.status === true) {
             console.log("User infomation changed!");
-            handleOpen("User infomation changed!");
+            handleOpen("Success", "User infomation changed!");
           } else if (
             res.response.status === 404 ||
             res.response.status === 403 ||
@@ -99,7 +94,7 @@ const EditStudentProfile = () => {
             res.response.status === 401
           ) {
             console.log(res);
-            handleOpen(res.response.data.msg);
+            handleOpen("Error", res.response.data.msg);
           } else {
             console.log(res);
             //handleOpen(res);
@@ -107,7 +102,7 @@ const EditStudentProfile = () => {
           console.log(editValues);
         } catch (err) {
           console.log(err);
-          handleOpen(err);
+          //handleOpen(err);
         }
       };
 
@@ -141,7 +136,7 @@ const EditStudentProfile = () => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <ErrorMessage errorMessage={errorMessage} />
+        <ErrorMessage title={errorTitle} errorMessage={errorMessage} />
       </Modal>
       <Typography
         component="h1"
@@ -247,14 +242,12 @@ const EditStudentProfile = () => {
             />
           </Grid>
           <Grid item xs={12}>
-            <TextField
-              fullWidth
-              name="skills"
+            <SkillsSelect
               label="Skills"
-              id="skills"
-              autoComplete="skills"
+              onChange={(event, value) => {
+                formik.setFieldValue("skills", value);
+              }}
               value={formik.values.skills}
-              onChange={formik.handleChange}
             />
           </Grid>
           <Grid item xs={12}>

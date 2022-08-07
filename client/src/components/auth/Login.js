@@ -83,7 +83,7 @@ const Login = () => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <ErrorMessage errorMessage={errorMessage} />
+        <ErrorMessage errorTitle={"Error"} errorMessage={errorMessage} />
       </Modal>
       <Typography
         component="h1"
