@@ -64,9 +64,7 @@ class Student(db.Model):
     applications = db.relationship('InternshipStatus', backref="student", lazy=True)
     invitations = db.relationship("Internship", secondary='r_invitation', back_populates='invitations_students', lazy=True)
 
-    #skills = db.relationship('Skill', secondary='r_student_skill', back_populates='students', lazy=True)
     questions = db.relationship("InternQuestion", secondary='r_intern_question_answer', back_populates='students', lazy=True)
-    # student_skills = db.relationship('Skill', secondary='r_student_skill', back_populates='students', lazy=True)
     def __repr__(self):
         return f"<Student: {self .email}, {self.first_name} {self.last_name}>"
 
@@ -80,7 +78,7 @@ class Student(db.Model):
             "degree": self.degree,
             "major": self.major,
             "position": self.position,
-            "skills": self.skills,
+            "skills": [skill.name for skill in self.skills],
             "description": self.description
         }
 
