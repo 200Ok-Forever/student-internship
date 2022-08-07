@@ -6,15 +6,9 @@ import Toolbar from "@mui/material/Toolbar";
 import Button from "@mui/material/Button";
 import { useHistory, Link as RouterLink } from "react-router-dom";
 import classes from "./NavBar.module.scss";
-import Menu from "./Menu";
+import SideMenu from "./Menu";
 import MenuIcon from "@mui/icons-material/Menu";
-import {
-  Menu as MUIMenu,
-  MenuItem,
-  Drawer,
-  IconButton,
-  Avatar,
-} from "@mui/material";
+import { Menu, MenuItem, Drawer, IconButton, Avatar } from "@mui/material";
 import Logo from "../../asset/logo.svg";
 import ChatIcon from "@mui/icons-material/Chat";
 import { UserContext } from "../../store/UserContext";
@@ -26,13 +20,15 @@ const NavBar = () => {
 
   const { user, setUser } = useContext(UserContext);
   const [avatar, setAvatar] = useState("");
-
-  const [anchorEl, setAnchorEl] = React.useState(null);
-
+  const [anchorEl, setAnchorEl] = useState(null);
+  let open;
+  if (user.token) {
+    open = Boolean(anchorEl);
+  }
+  console.log("🚀 ~ open", open);
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
-
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -91,7 +87,7 @@ const NavBar = () => {
               onClick={() => setOpenDrawer(true)}
             />
             <Drawer anchor="left" open={openDrawer} onClose={toggleDrawer()}>
-              <Menu className={classes.drawer} isDrawer={true} />
+              <SideMenu className={classes.drawer} isDrawer={true} />
             </Drawer>
             {/* logo */}
             <img
@@ -101,7 +97,7 @@ const NavBar = () => {
               onClick={() => history.push("/")}
             />
             {/* laptop */}
-            <Menu className={classes.menu} isDrawer={false} />
+            <SideMenu className={classes.menu} isDrawer={false} />
           </div>
           <Box>
             {!user.token ? (
@@ -133,20 +129,14 @@ const NavBar = () => {
                 >
                   <Avatar src={avatar} />
                 </IconButton>
-                <MUIMenu
-                  id="user-menu-appbar"
+                <Menu
+                  id="basic-menu"
                   anchorEl={anchorEl}
-                  anchorOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  open={Boolean(anchorEl)}
+                  open={open}
                   onClose={handleClose}
+                  MenuListProps={{
+                    "aria-labelledby": "basic-button",
+                  }}
                 >
                   <MenuItem
                     onClick={handleClose}
@@ -183,7 +173,7 @@ const NavBar = () => {
                   >
                     Logout
                   </MenuItem>
-                </MUIMenu>
+                </Menu>
               </>
             )}
           </Box>
