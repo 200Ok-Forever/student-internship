@@ -124,3 +124,14 @@ export const getSkils = async () => {
     return err;
   }
 };
+
+export const getIndustries = async () => {
+  try {
+    const url = `/auth/industries`;
+    const res = await getAxios(url);
+
+    return res.data;
+  } catch (err) {
+    return err;
+  }
+};
