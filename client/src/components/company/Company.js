@@ -212,29 +212,32 @@ const Jobs = () => {
   const [jobsList, setJobsList] = useState([]);
   const [sortBy, setSortBy] = useState("");
 
-  useEffect(() => {
-    const getJobs = async () => {
-      const queryString = window.location.search;
-      const urlParams = new URLSearchParams(queryString);
-      const id = urlParams.get("id");
-      const res = await companyGetJobInfo(id);
-      console.log(res);
-      const jobs = res.jobs.map((i) => ({
-        ...i,
-        company_logo: res.company_logo,
-        company_name: res.company_name,
-        location: i.city,
-        job_id: i.id,
-      }));
-      console.log(jobs);
-      setJobsList(jobs);
-    };
+  const getJobs = async () => {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const id = urlParams.get("id");
+    const res = await companyGetJobInfo(id,"","","");
+    console.log(res);
+    const jobs = res.jobs.map((i) => ({
+      ...i,
+      company_logo: res.company_logo,
+      company_name: res.company_name,
+      location: i.city,
+      job_id: i.id,
+    }));
+    console.log(jobs);
+    setJobsList(jobs);
+  };
 
+  useEffect(() => {
     getJobs();
   }, []);
 
+  // const searchHandler = (e) => {
+    
+  // }
+
   const sortHandler = (e) => {
-    // api
     setSortBy(e.target.value);
   };
 
