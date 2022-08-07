@@ -96,11 +96,12 @@ const Company = () => {
       const queryString = window.location.search;
       const urlParams = new URLSearchParams(queryString);
       const id = urlParams.get("id");
+      console.log(id);
       const res = await getCompanyInfo(id);
       console.log(res);
+      //setInfo(res);
     };
     getData();
-    setInfo(data);
   }, []);
 
   return (
