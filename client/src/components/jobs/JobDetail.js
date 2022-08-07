@@ -219,7 +219,16 @@ const BasicInfo = ({ info }) => {
         >
           {isCalendar ? "Remove from Calendar" : "Add to Calendar"}
         </Button>
-        <Button variant="outlined" startIcon={<MailOutlineIcon />} size="small">
+
+        <Button
+          variant="outlined"
+          startIcon={<MailOutlineIcon />}
+          size="small"
+          onClick={() => {
+            window.open(`/chat`, "_blank");
+            localStorage.setItem("chat", info.companyId.toString());
+          }}
+        >
           Chat
         </Button>
       </Box>

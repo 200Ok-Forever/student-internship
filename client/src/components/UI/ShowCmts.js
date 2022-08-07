@@ -45,7 +45,6 @@ const ShowCmts = ({ list, sendCmt, sendReply }) => {
 };
 
 const Item = ({ cmt, isLast, sendReply }) => {
-  console.log("🚀 ~ cmt", cmt);
   const [openReply, setOpenReply] = useState(false);
   const replies = cmt.replied;
   const { user } = useContext(UserContext);
