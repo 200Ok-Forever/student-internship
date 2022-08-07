@@ -1,10 +1,5 @@
-import { useContext, useEffect } from "react";
-import {
-  ChatEngine,
-  ChatEngineContext,
-  getLatestChats,
-  getOrCreateChat,
-} from "react-chat-engine";
+import { useContext } from "react";
+import { ChatEngine } from "react-chat-engine";
 import { UserContext } from "../../store/UserContext";
 import "./chat.scss";
 import ChatCard from "./ChatCard";
