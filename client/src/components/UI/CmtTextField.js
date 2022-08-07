@@ -1,8 +1,10 @@
 import { Button, TextField } from "@mui/material";
 import { Box } from "@mui/system";
-import { FormControlLabel, Checkbox } from '@mui/material';
-import React, { useState } from "react";
+import { FormControlLabel, Checkbox } from "@mui/material";
+import React, { useContext, useState } from "react";
 import SendIcon from "@mui/icons-material/Send";
+import { useLocation } from "react-router-dom";
+import { UserContext } from "../../store/UserContext";
 
 // isCmt => true -- comment, false -- reply
 const CmtTextField = ({
@@ -13,12 +15,15 @@ const CmtTextField = ({
   placeholder,
 }) => {
   const [text, setText] = useState("");
+  const location = useLocation();
+  const { user } = useContext(UserContext);
 
   const sendInfo = () => {
     const new_info = {
       text: text,
-      // TODO
-      uid: 102,
+      uid: user.uid,
+      avatar: user.avatar,
+      username: user.username,
     };
     if (isCmt) {
       sendHandler(new_info);
@@ -46,8 +51,12 @@ const CmtTextField = ({
         onChange={(e) => setText(e.target.value)}
         fullWidth
       />
-      <Box sx={{ alignSelf: 'flex-end', display: 'flex', alignItems: 'center' }}>
-        <FormControlLabel control={<Checkbox />} label="Post Anonymously" />
+      <Box
+        sx={{ alignSelf: "flex-end", display: "flex", alignItems: "center" }}
+      >
+        {location.pathname !== "/job" && (
+          <FormControlLabel control={<Checkbox />} label="Post Anonymously" />
+        )}
         <Button
           variant="contained"
           endIcon={<SendIcon />}

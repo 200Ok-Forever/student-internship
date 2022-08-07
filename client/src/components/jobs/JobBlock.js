@@ -16,9 +16,11 @@ const paper = {
 };
 
 const JobBlock = ({ job, children }) => {
-  console.log("🚀 ~ job", job);
   const date = new Date().toJSON().slice(0, 10);
-  const status = date === job.posted_time ? "NEW" : "";
+  const status =
+    job.is_seen === "False" && date === job.posted_time
+      ? "NEW"
+      : job.is_seen === "True" && "SEEN";
   let salary_str;
   let salary_curr =
     job.salary_currency !== "AUD"
@@ -49,7 +51,7 @@ const JobBlock = ({ job, children }) => {
             <Typography
               variant="h7"
               fontWeight="700"
-              color={job.status === "NEW" ? "primary" : "rgb(122, 119, 119)"}
+              color={status === "NEW" ? "primary" : "rgb(122, 119, 119)"}
             >
               {status}
             </Typography>
@@ -58,7 +60,7 @@ const JobBlock = ({ job, children }) => {
         </Box>
       </JobBasicCard>
       <Box sx={{ display: "flex", columnGap: "14px" }}>
-        {(job.min_salary !== 0 || job.max_salary !== 0) && (
+        {(job.min_salary || job.max_salary) && (
           <Label text={salary_str}>
             <img src={salary} alt="salary" width="25px" height="25px" />
           </Label>

@@ -35,6 +35,7 @@ import { UserContext } from "../../store/UserContext";
 
 const JobDetail = () => {
   const [info, setInfo] = useState([]);
+  console.log("🚀 ~ info", info);
   const { search } = useLocation();
   const query = queryString.parse(search);
   const id = query.id;
@@ -218,7 +219,16 @@ const BasicInfo = ({ info }) => {
         >
           {isCalendar ? "Remove from Calendar" : "Add to Calendar"}
         </Button>
-        <Button variant="outlined" startIcon={<MailOutlineIcon />} size="small">
+
+        <Button
+          variant="outlined"
+          startIcon={<MailOutlineIcon />}
+          size="small"
+          onClick={() => {
+            window.open(`/chat`, "_blank");
+            localStorage.setItem("chat", info.companyId.toString());
+          }}
+        >
           Chat
         </Button>
       </Box>
@@ -239,7 +249,7 @@ const BasicInfo = ({ info }) => {
             />
           </Label>
         )}
-        {(info.min_salary !== 0 || info.max_salary !== 0) && (
+        {(info.min_salary || info.max_salary) && (
           <Label text={salary_str}>
             <img src={salary} alt="salary" width="25px" height="25px" />
           </Label>
@@ -276,14 +286,20 @@ const BasicInfo = ({ info }) => {
             mb="30px"
           />
           <Box>
-            {processes.map((process, i) => (
-              <Process
-                text={process}
-                key={`process_${i}`}
-                num={i + 1}
-                isLastOne={i + 1 === processes.length}
-              />
-            ))}
+            {info?.recruiting_process.length !== 0 ? (
+              info?.recruiting_process.map((process, i) => (
+                <Process
+                  text={process}
+                  key={`process_${i}`}
+                  num={i + 1}
+                  isLastOne={i + 1 === processes.length}
+                />
+              ))
+            ) : (
+              <Typography>
+                <i>Not Provided</i>
+              </Typography>
+            )}
           </Box>
         </Grid>
       </Grid>
@@ -312,6 +328,7 @@ const RelatedCourses = ({ ids }) => {
 
 const Comments = ({ list, jobId }) => {
   const [comments, setComments] = useState(list);
+  const { user } = useContext(UserContext);
 
   useEffect(() => {
     setComments(list);
@@ -319,7 +336,12 @@ const Comments = ({ list, jobId }) => {
 
   const sendCmt = async (newCmt) => {
     try {
-      const resp = await postComment(jobId, newCmt.uid, newCmt.text);
+      const resp = await postComment(
+        jobId,
+        newCmt.uid,
+        newCmt.text,
+        user.token
+      );
       if (resp.status === 200) {
         const cmtInfo = {
           text: newCmt.text,
@@ -327,6 +349,8 @@ const Comments = ({ list, jobId }) => {
           time: new Date(),
           replied: [],
           cmtId: JSON.parse(resp.data).comment_id,
+          avatar: newCmt.avatar,
+          username: newCmt.username,
         };
         setComments((prev) => [cmtInfo].concat(prev));
       }
@@ -341,7 +365,8 @@ const Comments = ({ list, jobId }) => {
         jobId,
         newReply.uid,
         newReply.text,
-        cmtId
+        cmtId,
+        user.token
       );
       if (resp.status === 200) {
         setComments((prev) => {
@@ -352,6 +377,8 @@ const Comments = ({ list, jobId }) => {
             text: newReply.text,
             time: new Date(),
             uid: newReply.uid,
+            avatar: newReply.avatar,
+            username: newReply.username,
           };
           if (cmt) {
             const new_replies = [replyInfo].concat(cmt.replied);
