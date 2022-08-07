@@ -39,8 +39,9 @@ intern_info = {
     "max_salary": fields.Integer(required=True),
     "salary_currency": fields.String(required=True),
     "recruiting_process": fields.List(fields.String(), required=True),
+    "skills": fields.List(fields.String, required=True),
     "application": Form(required=True),
-    "city": fields.String(required=True),
+    "city": fields.String(required=True)
 }
 
 
