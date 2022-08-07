@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useFormik } from "formik";
 import CurrencyTextField from "@unicef/material-ui-currency-textfield";
-import { useParams, Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useHistory, useLocation } from "react-router-dom";
 import {
   Link,
   IconButton,
@@ -23,33 +23,39 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { CURRENCY_CODES } from "./constants";
 import SkillsSelect from "../UI/SkillsSelect";
 import { postInternshipValidationSchema } from './validation_schema';
-import { postInternship } from "../../api/company-api";
+import { postInternship, putInternship } from "../../api/company-api";
 import { UserContext } from "../../store/UserContext";
 import moment from "moment";
 
 const CreateInternship = () => {
-  const { id } = useParams();
-  const [loading, setLoading] = useState(id ? true : false);
-  const [paid, setPaid] = useState(true);
+  const location = useLocation();
+  const job = location.state?.job;
+  const history = useHistory();
+  const [paid, setPaid] = useState(!job || job.max_salary > 0);
   const { user } = useContext(UserContext)
+
+  if (location.path === "/job/edit" && !job) {
+    history.push("/")
+  };
 
   const formik = useFormik({
     initialValues: {
-      title: "",
-      closed_date: moment(),
-      type: "full time",
-      apply_link: "",
-      is_remote: false,
-      city: "",
-      description: "",
+      title: job?.title || "",
+      closed_date: (job && moment(job.closeDate, "YYYY-MM-DD hh:mm:ss")) || moment(),
+      type: job?.type || "full time",
+      apply_link: job?.apply_link || "",
+      is_remote: job?.is_remote === "true" || false,
+      city: job?.city || "",
+      description: job?.description ||"",
       google_link: "",
-      min_salary: 0,
-      max_salary: 0,
-      salary_currency: "USD",
-      steps: [""],
-      questions: [""],
-      cover_letter: false,
-      resume: true,
+      min_salary: job?.min_salary || 0,
+      max_salary: job?.max_salary || 0,
+      salary_currency: job?.salary_currency || "USD",
+      steps: job?.processes || [""],
+      questions: job?.questions || [""],
+      cover_letter: job?.require_coverLetter || false,
+      resume: job?.require_resume || true,
+      skills: job?.skills || []
     },
     validationSchema: postInternshipValidationSchema,
     onSubmit: async values => {
@@ -71,30 +77,30 @@ const CreateInternship = () => {
           questions: values.questions
         },
         city: values.city,
-        skills: values.skills.map(s => s.id.toString())
+        skills: values.skills.map(s => s.name)
       }
-      const res = await postInternship(user.uid, data, user.token)
-      console.log(res)
+      const res = job ?
+        await putInternship(job.id, data, user.token)
+      : await postInternship(user.uid, data, user.token)
+      
+      if (res.message === "Successfuly") {
+        history.push("/");
+      }
     },
   });
-
-  useEffect(() => {
-    if (id) {
-      /// TODO
-    }
-  }, [id]);
 
   useEffect(() => {
     if (!paid) {
       formik.setFieldValue("min_salary", 0);
       formik.setFieldValue("max_salary", 0);
     }
-  }, [paid, formik]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [paid]);
 
   return (
     <Box>
       <Typography variant="h4" component="div" sx={{ mb: 1 }}>
-        {id ? "Edit" : "Post"} an Internship
+        {job ? "Edit" : "Post"} an Internship
       </Typography>
       <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }} mt={4}>
         <Typography variant="h5" component="div">
@@ -233,6 +239,7 @@ const CreateInternship = () => {
         </Box>
         <Box>
           <SkillsSelect 
+            defaultValue={formik.values.skills}
             label="Necessary Skills" 
             onChange={(event, value) => {
               formik.setFieldValue("skills", value);

@@ -143,7 +143,7 @@ const NarrowContainerRoutes = () => {
         />
         <PrivateRoute
           role={RECRUITER_ROLE}
-          path="/job/:id/edit"
+          path="/job/edit"
           exact
           component={CreateInternship}
         />

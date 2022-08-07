@@ -1,11 +1,11 @@
 import { deleteRequest, getRequest, postRequest, putRequest } from './base';
 
 export const getPostedInternships = async (id, token) => (
-  await getRequest(`/company/${id}/jobs`, { headers: { 'Authoriztion': token }})
+  await getRequest(`/company/${id}/jobs`, { headers: { 'Authorization': `Bearer ${token}` }})
 )
 
 export const getApplicants = async (id, token) => (
-  await getRequest(`/company/${id}/applicant`, { headers: { 'Authoriztion': token }})
+  await getRequest(`/company/${id}/applicant`, { headers: { 'Authorization': token }})
 )
 
 export const getRecommendations = async (id, token) => (
