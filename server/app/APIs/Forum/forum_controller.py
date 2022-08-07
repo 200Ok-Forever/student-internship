@@ -143,7 +143,9 @@ class CreateComment(Resource):
                 return {"message": "Parent comment id invalid"}, 400
 
         new_comm = PostComment(data['userID'], postid, data['replyID'],data['createdAt'], data['Content'])
-        
+        db.session.add(new_comm)
+        db.session.commit()
+        return {"message": "Successfully"},200
 
 patch_parser = reqparse.RequestParser()
 # patch_parser.add_argument('content', location = 'body',help='edit content')
