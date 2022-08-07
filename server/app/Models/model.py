@@ -138,7 +138,7 @@ class Internship(db.Model):
     latitude = db.Column(db.VARCHAR(255))
     longitute = db.Column(db.VARCHAR(255))
     google_link = db.Column(db.VARCHAR(255))
-    expiration_datetime = db.Column('expiration_datetime_utc', db.VARCHAR(255), nullable=True)
+    expiration_datetime_utc = db.Column(db.VARCHAR(255), nullable=True)
     expiration_timestamp = db.Column(db.VARCHAR(255), nullable=True)
     no_experience_required = db.Column(db.VARCHAR(255))
     reuiqred_expersience_in_month = db.Column(db.VARCHAR(255), nullable=True)

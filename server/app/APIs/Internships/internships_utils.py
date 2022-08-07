@@ -431,7 +431,6 @@ class InternshipsUtils:
                             'closed_time': changeDateFormat(internship.expiration_datetime_utc), \
                             'min_salary': internship.min_salary, 'max_salary': internship.max_salary,
                             'description': internship.description, "salary_currency": internship.salary_curreny, \
- \
                             'location': get_location(internship.city), 'company_id': internship.company_id, \
                             'company_name': get_company_info(internship.company_id)[0],
                             'company_logo': get_company_info(internship.company_id)[1]
@@ -492,7 +491,6 @@ class InternshipsUtils:
                                 'closed_time': changeDateFormat(internship.expiration_datetime_utc), \
                                 'min_salary': internship.min_salary, 'max_salary': internship.max_salary,
                                 'description': internship.description, "salary_currency": internship.salary_curreny, \
- \
                                 'location': get_location(internship.city), 'company_id': internship.company_id, \
                                 'company_name': get_company_info(internship.company_id)[0],
                                 'company_logo': get_company_info(internship.company_id)[1]

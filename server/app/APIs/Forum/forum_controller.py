@@ -69,3 +69,13 @@ class GetPost(Resource):
 
         return result, 200
         
+
+@forum_api.route("/forum/posts/<int:id>")
+class DeletePost(Resource):
+    def delete(self,id):
+        return ForumUtils.deletepost(id)
+
+    @forum_api.expect()
+    def patch(self,id):
+        args = request.get_json()
+        return ForumUtils.editPost(id)
