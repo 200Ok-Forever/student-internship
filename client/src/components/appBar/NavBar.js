@@ -54,7 +54,7 @@ const NavBar = () => {
         if (res.status === true) {
           // If success, clear userInfo
           setUser({});
-          window.localStorage.clear()
+          window.localStorage.clear();
           history.push("/");
         } else if (
           res.response.status === 404 ||
@@ -86,9 +86,9 @@ const NavBar = () => {
       }
     };
     update();
-  }, [user.token, setUser, user]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user.token]);
 
-  console.log(user);
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="fixed" sx={{ height: "80px" }} color="secondary">
