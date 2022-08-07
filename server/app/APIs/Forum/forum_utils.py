@@ -10,7 +10,7 @@ from json import dumps
 from requests import session
 from sqlalchemy import null
 from torch import is_same_size
-from ...Models.model import Post, Calendar, StudentSkills,Internship, City, Company, Comment, User, Skill,InternshipStatus,Student, File
+from ...Models.model import  Calendar, Internship, City, Company, Comment, User, InternshipStatus,Student, File
 from ...Models.company import Companies
 from ...Models.forum import Post
 from flask_restx import Resource, reqparse
@@ -23,7 +23,7 @@ from flask_jwt_extended import create_access_token, get_jwt, jwt_required, creat
 
 class ForumUtils:
     def deletepost(id):
-        # obj = Post.query.filter_by(Post.id=id).one()
+        obj = db.session.query(Post).filter(Post.id==id).one()
         try:
 
             db.delete(obj)
@@ -35,5 +35,11 @@ class ForumUtils:
         pass
     def editPost(id,arg):
 
-        # Post.query.filter(Post.id = id).update(Post.content:arg['content'])
+        Post.query.filter(Post.id == id).update({Post.content:arg['content']})
+        try:
+            db.session.commit()
+            return dumps({'message': 'delete sucessfully'}), 200
+        except Exception as error:
+
+            return dumps({'msg': error}), 400
         pass
