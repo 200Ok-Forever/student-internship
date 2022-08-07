@@ -6,7 +6,7 @@ import JobBasicCard from "../UI/JobBasicCard";
 import getSymbolFromCurrency from "currency-symbol-map";
 
 const paper = {
-  width: "auto",
+  width: "1200px",
   maxWidth: "1200px",
   height: "265px",
   p: "20px",
@@ -42,7 +42,8 @@ const JobBlock = ({ job, children }) => {
           com_name: job.company_name,
           city: job.location,
           avatar: job.company_logo,
-          id: job.job_id,
+          job_id: job.job_id,
+          company_id: job.company_id
         }}
       >
         <Box>
@@ -64,7 +65,7 @@ const JobBlock = ({ job, children }) => {
             <img src={salary} alt="salary" width="25px" height="25px" />
           </Label>
         )}
-        {job.job_type && <Label text={job.job_type}></Label>}
+        {job.type && <Label text={job.type}></Label>}
         {job.is_remote === "TRUE" ? (
           <Label text={"Remote"} />
         ) : (

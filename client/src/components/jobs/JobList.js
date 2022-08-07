@@ -127,7 +127,7 @@ const JobList = () => {
     setCurrPage(1);
     setClickSearch((prev) => !prev);
   };
-
+  console.log(jobs)
   return (
     <Box
       sx={{
