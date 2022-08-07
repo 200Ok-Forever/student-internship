@@ -139,7 +139,7 @@ class Internship(db.Model):
     latitude = db.Column(db.VARCHAR(255))
     longitute = db.Column(db.VARCHAR(255))
     google_link = db.Column(db.VARCHAR(255))
-    expiration_datetime = db.Column('expiration_datetime_utc', db.VARCHAR(255), nullable=True)
+    expiration_datetime_utc = db.Column(db.VARCHAR(255), nullable=True)
     expiration_timestamp = db.Column(db.VARCHAR(255), nullable=True)
     no_experience_required = db.Column(db.VARCHAR(255))
     reuiqred_expersience_in_month = db.Column(db.VARCHAR(255), nullable=True)
@@ -195,7 +195,7 @@ class Internship(db.Model):
             "job_experience_in_place_of_education": self.job_experience_in_place_of_education,
             "min_salary": self.min_salary,
             "max_salary": self.max_salary,
-            "salary_curreny": self.salary_curreny,
+            "salary_currency": self.salary_currency,
             "salary_period_id": self.salary_period_id,
             "city": self.city,
             "job_id": self.job_id
@@ -285,7 +285,7 @@ class File(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.VARCHAR(255))
     uid = db.Column(db.Integer, db.ForeignKey('t_user.uid'))
-    data = db.Column(db.LargeBinary(length=(2 ** 32) - 1))
+    data = db.Column(db.String)
     file_type = db.Column(db.VARCHAR(255))
     upload_time = db.Column(db.TIMESTAMP)
 

@@ -1,6 +1,13 @@
 from flask_restx import Namespace, fields
 
 
+class QandA(fields.Raw):
+  def format(self, value):
+    return {  
+      
+        'question_id': fields.Integer,
+        'answer':fields.String
+      }
 class InternshipsAPI:
     api = Namespace("Internship", description="Internship related operations.")
 
@@ -31,8 +38,7 @@ class InternshipsAPI:
             # "internship_id": fields.Integer(required=True),
             "resume": fields.String,
             "coverletter":fields.String,
-            "question": fields.String,
-            "answer":fields.String
+            "interview_question": fields.List(QandA()), 
         }
     )
 
@@ -46,3 +52,5 @@ class InternshipsAPI:
 
         }
     )
+
+

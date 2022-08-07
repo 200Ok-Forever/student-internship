@@ -18,7 +18,7 @@ from flask_jwt_extended import get_jwt_identity
 from sqlalchemy import func
 from ...Helpers.other_util import convert_object_to_dict, convert_model_to_dict
 from ...Models import forum
-
+from .forum_utils import ForumUtils
 forum_api = ForumAPI.forum_ns
 
 forum_parser = reqparse.RequestParser()
@@ -143,6 +143,15 @@ class CreateComment(Resource):
 
         new_comm = PostComment(data['userID'], postid, data['replyID'],data['createdAt'], data['Content'])
         
-        db.session.add(new_comm)
-        db.session.commit()
-        return {"message": "Successfully"}, 200
+
+
+@forum_api.route("/forum/posts/<int:id>")
+class DeletePost(Resource):
+    def delete(self,id):
+        return ForumUtils.deletepost(id)
+
+    @forum_api.expect()
+    def patch(self,id):
+        args = request.get_json()
+        return ForumUtils.editPost(id,args)
+
