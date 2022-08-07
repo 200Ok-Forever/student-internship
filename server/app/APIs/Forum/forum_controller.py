@@ -95,11 +95,10 @@ class GetPost(Resource):
 class CreatePost(Resource):
     @forum_api.response(200, "Successfully")
     @forum_api.response(400, "Something wrong")
-    #@jwt_required()
+    @jwt_required()
     @forum_api.expect(ForumAPI.post_data, validate=True)
     def post(self):
-        #uid = get_jwt_identity()
-        uid = 332
+        uid = get_jwt_identity()
         data = forum_api.payload
 
         if data['Industry'].lower() not in forum_list:
@@ -110,8 +109,8 @@ class CreatePost(Resource):
 
         fourm_id = forum_list.index(data['Industry'].lower())
 
-        #if user == None or user.id != uid:
-        #    return {"message": "Invalid user name"}, 400
+        if user == None or user.id != uid:
+            return {"message": "Invalid user name"}, 400
 
         new_post = Post(data["Title"], data['Content'], data['createdAt'], fourm_id, uid)
         db.session.add(new_post)
@@ -123,14 +122,14 @@ class CreatePost(Resource):
 class CreateComment(Resource):
     @forum_api.response(200, "Successfully")
     @forum_api.response(400, "Something wrong")
-    #@jwt_required()
+    @jwt_required()
     @forum_api.expect(ForumAPI.comment_data, validate=True)
     def post(self, postid):
-        #uid = get_jwt_identity()
+        uid = get_jwt_identity()
         data = forum_api.payload
 
-        #if uid != data['userID']:
-        #    return {"message": "Invalid user name"}, 400
+        if uid != data['userID']:
+            return {"message": "Invalid user name"}, 400
 
         # check post
         post = db.session.query(Post).filter(Post.id == postid).first()
