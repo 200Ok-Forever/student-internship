@@ -1,5 +1,6 @@
 import { deleteRequest, getRequest, postRequest, putRequest } from "./base";
 
+<<<<<<< HEAD
 export const getPostedInternships = async (id, token) =>
   await getRequest(`/company/${id}/jobs`, { headers: { Authoriztion: token } });
 

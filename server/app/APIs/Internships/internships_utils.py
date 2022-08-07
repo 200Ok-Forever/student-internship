@@ -682,8 +682,7 @@ class InternshipsUtils:
                                     'posted_time': changeDateFormat(internship.posted_time),
                                     'closed_time': changeDateFormat(internship.expiration_datetime_utc), \
                                     'min_salary': internship.min_salary, 'max_salary': internship.max_salary,
-                                    'description': internship.description, "salary_currency": internship.salary_curreny, \
- \
+                                    'description': internship.description, "salary_currency": internship.salary_currency, \
                                     'location': get_location(internship.city), 'company_id': internship.company_id, \
                                     'company_name': get_company_info(internship.company_id)[0],
                                     'company_logo': get_company_info(internship.company_id)[1]

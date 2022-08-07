@@ -23,7 +23,8 @@ from difflib import SequenceMatcher
 from sqlalchemy import func
 
 company_ns = CompanyPageAPI.company_ns
-
+authParser = company_ns.parser()
+authParser.add_argument('Authorization', location='headers', help='Bearer [Token]', default='Bearer xxxxxxxxxxxxx')
 
 # --------------------------------COMPANY OPERATOR-----------------------
 @company_ns.route("/<id>")
@@ -44,7 +45,7 @@ class GetCompany(Resource):
     @company_ns.response(200, "Successfully")
     @company_ns.response(400, "Something wrong")
     @jwt_required()
-    @company_ns.expect(CompanyPageAPI.company_data, validate=True)
+    @company_ns.expect(authParser, CompanyPageAPI.company_data, validate=True)
     def post(self, id):
         data = company_ns.payload
         uid = get_jwt_identity()

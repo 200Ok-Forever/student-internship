@@ -177,6 +177,7 @@ def format_jobs(jobs, uid, company_logo, company_name):
             data['require_resume'] = job.require_resume
             data['require_coverLetter'] = job.require_coverLetter
             data['nApplications'] = len(job.status)
+            data['skills'] = [{ 'name': skill.name, 'id': skill.id} for skill in job.skills]
         result['jobs'].append(data)
 
     result['company_name'] = company_name
