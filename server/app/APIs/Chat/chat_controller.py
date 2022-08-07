@@ -6,7 +6,8 @@ from .chat_model import ChatAPI
 from .chat_utils import ChatUtils
 from flask_jwt_extended import jwt_required
 from  ...Models.chat import Invitation
-from  ...Models.model import Company, User, Internship, Student
+from  ...Models.model import User, Internship, Student
+from ...Models.company import Companies
 from flask_jwt_extended import get_jwt_identity
 from ... import db
 from ...Helpers.other_util import convert_object_to_dict, convert_model_to_dict
