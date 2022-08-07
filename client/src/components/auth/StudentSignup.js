@@ -14,7 +14,7 @@ import { StudentSignupAPI } from "../../api/auth-api";
 import { UserContext } from "../../store/UserContext";
 import ErrorMessage from "../UI/ErrorMessage";
 import { IconButton } from "@mui/material";
-import SkillsSelect from '../UI/SkillsSelect';
+import SkillsSelect from "../UI/SkillsSelect";
 
 const StudentSignup = () => {
   const { setUser } = useContext(UserContext);
@@ -56,7 +56,7 @@ const StudentSignup = () => {
           degree: values.degree,
           major: values.major,
           position: values.positions,
-          skills: values.skills.map(s => parseInt(s.id)),
+          skills: values.skills.map((s) => parseInt(s.id)),
           description: values.description,
           avatar: avatar,
         };
@@ -135,7 +135,15 @@ const StudentSignup = () => {
       </Typography>
       <IconButton color="primary" aria-label="upload picture" component="label">
         <input hidden accept="image/*" type="file" onChange={onAvatarChange} />
-        <Avatar sx={{ m: 1, bgcolor: "primary.main" }} src={avatar} />
+        <Avatar
+          sx={{
+            m: 1,
+            bgcolor: "primary.main",
+            width: "80px",
+            height: "80px",
+          }}
+          src={avatar}
+        />
       </IconButton>
       <Box
         component="form"
@@ -291,8 +299,8 @@ const StudentSignup = () => {
             />
           </Grid>
           <Grid item xs={12}>
-            <SkillsSelect 
-              label="Skills" 
+            <SkillsSelect
+              label="Skills"
               onChange={(event, value) => {
                 formik.setFieldValue("skills", value);
               }}
