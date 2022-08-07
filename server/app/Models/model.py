@@ -65,6 +65,8 @@ class Student(db.Model):
                                   lazy=True)
     questions = db.relationship("InternQuestion", secondary='r_intern_question_answer', back_populates='students',
                                 lazy=True)
+    posts = db.relationship('Post', backref="student", lazy=True)
+    post_comments = db.relationship('PostComment', backref="student", lazy=True)
 
     def __repr__(self):
         return f"<Student: {self.email}, {self.first_name} {self.last_name}>"

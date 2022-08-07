@@ -51,8 +51,14 @@ class GetAllPosts(Resource):
         # 10 items per page
         index = args['pageNumber'] - 1
         posts = query.offset(index * 10).limit(10).all()
-        print(posts)
-
+        result = []
+        for fourm, post, count in posts:
+            data = convert_object_to_dict(post)
+            data['nComments'] = count
+            data['authName'] = post.student.user.username
+            data['authId'] = post.student.id
+            result.append(data)
+        return {"result": result}, 200
 
 @forum_api.route("/posts/<id>")
 class GetPost(Resource):
@@ -64,8 +70,36 @@ class GetPost(Resource):
         if post is None:
             return 400
 
-        result = {'post': convert_object_to_dict(post)}
-        comments = post.comments
-        result['comments'] = convert_model_to_dict(comments)
+        data = convert_object_to_dict(post)
+        data['nComments'] = len(post.comments)
+        data['authName'] = post.student.user.username
+        data['avatar'] = post.student.user.avatar
+        data['authId'] = post.student.id
+        result = {'post': data}
+        comments = [comm for comm in post.comments if comm.parent_id == None]
+        comments = get_comments(comments, post.comments)
+        result['comments'] = comments
+
 
         return result, 200
+
+def get_comments(comments, all_comms):
+    if comments == None or len(comments) == 0:
+        return []
+    result = []
+    for comm in comments:
+        next_level = [com for com in all_comms if com.parent_id == comm.id]
+        data = {"text": comm.content, 
+        "uid": comm.student_id,
+        "authName": comm.student.user.username,
+        "authId": comm.student.id,
+        "avatar": comm.student.user.avatar,
+        "time": comm.created_time, 
+        "content": comm.content,
+        "replied": get_comments(next_level, all_comms)} 
+        result.append(data)
+    result.sort(key=lambda x: x['time']) 
+    return result
+    
+    
+
