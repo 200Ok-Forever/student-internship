@@ -3,7 +3,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import { SKILLS } from '../../constants';
 
-const SkillsSelect = ({ label, skills, setSkills }) => {
+const SkillsSelect = ({ label, value, onChange }) => {
   return (
     <Autocomplete
       multiple
@@ -12,12 +12,12 @@ const SkillsSelect = ({ label, skills, setSkills }) => {
       disableCloseOnSelect
       getOptionLabel={(option) => option.name}
       defaultValue={[]}
-      value={skills}
-      onChange={(e, value) => setSkills(value)}
+      onChange={onChange}
       renderInput={(params) => (
         <TextField
           {...params}
           variant="outlined"
+          value={value}
           label={label}
         />
       )}
