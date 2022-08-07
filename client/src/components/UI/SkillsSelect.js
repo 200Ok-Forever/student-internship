@@ -1,14 +1,24 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-import { SKILLS } from '../../constants';
+import { getSkils } from '../../api/auth-api';
 
 const SkillsSelect = ({ label, value, onChange }) => {
+  const [skills, setSkills] = useState([])
+
+  useEffect(() => {
+    const init = async () => {
+      const res = await getSkils();
+      setSkills(res.skills);
+    }
+    init();
+  }, [])
+
   return (
     <Autocomplete
       multiple
       id="skills"
-      options={SKILLS}
+      options={skills}
       disableCloseOnSelect
       getOptionLabel={(option) => option.name}
       defaultValue={[]}
