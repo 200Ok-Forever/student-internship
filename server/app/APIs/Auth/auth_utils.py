@@ -38,6 +38,7 @@ class AuthUtils:
                     user_info["last_name"] = student.last_name
                 else:
                     company = Companies.query.filter_by(email=email).first()
+                    user_info["company_id"] = company.id
                     user_info["first_name"] = company.first_name
                     user_info["last_name"] = company.last_name
                 access_token = create_access_token(identity=user_info['uid'])
