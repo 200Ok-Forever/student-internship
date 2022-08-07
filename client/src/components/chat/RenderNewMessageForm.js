@@ -51,11 +51,14 @@ const RenderNewMessageForm = ({ creds, chatID }) => {
     <Box
       style={{
         position: "absolute",
-        bottom: "0px",
+        bottom: "-30px",
         display: "flex",
         alignItems: "center",
         flexWrap: "wrap",
         backgroundColor: "white",
+        width: "100vw",
+        maxWidth: "1250px",
+        zIndex: "2",
       }}
     >
       <TextField
