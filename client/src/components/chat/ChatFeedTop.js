@@ -14,7 +14,7 @@ const ChatFeedTop = ({ chat }) => {
         variant="h6"
         mt="10px"
       >
-        {chat?.people[0]?.person?.username === user.uid
+        {chat?.people[0]?.person?.username === user.uid.toString()
           ? chat?.people[1]?.person?.first_name
           : chat?.people[0]?.person?.first_name}
       </Typography>
