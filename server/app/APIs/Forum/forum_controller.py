@@ -78,4 +78,4 @@ class DeletePost(Resource):
     @forum_api.expect()
     def patch(self,id):
         args = request.get_json()
-        return ForumUtils.editPost(id)
+        return ForumUtils.editPost(id,args)

@@ -10,8 +10,6 @@ from json import dumps
 from requests import session
 from sqlalchemy import null
 from torch import is_same_size
-from ...Models.model import  Calendar, Internship, City, Company, Comment, User, InternshipStatus,Student, File
-from ...Models.company import Companies
 from ...Models.forum import Post
 from flask_restx import Resource, reqparse
 from ...extension import db
