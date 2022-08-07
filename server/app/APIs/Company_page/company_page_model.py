@@ -1,7 +1,7 @@
 from flask_restx import Namespace, fields
 
 company_info = {
-    "email": fields.String(required=True),
+    #"email": fields.String(required=True),
     "company_name": fields.String(required=True),
     "first_name": fields.String(required=True),
     "last_name": fields.String(required=True),
