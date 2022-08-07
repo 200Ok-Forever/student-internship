@@ -2,19 +2,22 @@ import axios from "axios";
 
 export const API = axios.create({ baseURL: "http://localhost:5004" });
 
-API.interceptors.response.use((response) => {
-  return response;
-}, (error) => {
-  if (error.response.status === 422) {
-    window.localStorage.clear()
-    window.location.href = '/login'
+API.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    if (error.response.status === 422) {
+      window.localStorage.clear();
+      window.location.href = "/login";
+    }
+    return error;
   }
-});
+);
 
 export const getAxios = (path, configs) =>
   new Promise((resolve, reject) => {
-    API
-      .get(path, configs)
+    API.get(path, configs)
       .then((res) => {
         resolve(res);
       })
@@ -25,8 +28,7 @@ export const getAxios = (path, configs) =>
 
 export const postAxios = (path, data = {}, configs) =>
   new Promise((resolve, reject) => {
-    API
-      .post(path, { ...data }, configs)
+    API.post(path, { ...data }, configs)
       .then((res) => {
         resolve(res);
       })
@@ -37,8 +39,7 @@ export const postAxios = (path, data = {}, configs) =>
 
 export const deleteAxios = (path, data = {}) =>
   new Promise((resolve, reject) => {
-    API
-      .delete(path, { ...data })
+    API.delete(path, { ...data })
       .then((res) => {
         resolve(res);
       })

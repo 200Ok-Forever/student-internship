@@ -29,7 +29,7 @@ const RenderChatForm = ({ creds }) => {
       >
         <TextField
           id="chat-name"
-          label="Username"
+          label="User ID"
           variant="outlined"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
