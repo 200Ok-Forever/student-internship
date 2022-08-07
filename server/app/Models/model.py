@@ -65,6 +65,8 @@ class Student(db.Model):
                                   lazy=True)
     questions = db.relationship("InternQuestion", secondary='r_intern_question_answer', back_populates='students',
                                 lazy=True)
+    posts = db.relationship('Post', backref="student", lazy=True)
+    post_comments = db.relationship('PostComment', backref="student", lazy=True)
 
     def __repr__(self):
         return f"<Student: {self.email}, {self.first_name} {self.last_name}>"
@@ -137,7 +139,7 @@ class Internship(db.Model):
     latitude = db.Column(db.VARCHAR(255))
     longitute = db.Column(db.VARCHAR(255))
     google_link = db.Column(db.VARCHAR(255))
-    expiration_datetime = db.Column('expiration_datetime_utc', db.VARCHAR(255), nullable=True)
+    expiration_datetime_utc = db.Column(db.VARCHAR(255), nullable=True)
     expiration_timestamp = db.Column(db.VARCHAR(255), nullable=True)
     no_experience_required = db.Column(db.VARCHAR(255))
     reuiqred_expersience_in_month = db.Column(db.VARCHAR(255), nullable=True)
@@ -149,7 +151,7 @@ class Internship(db.Model):
     job_experience_in_place_of_education = db.Column(db.VARCHAR(255))
     min_salary = db.Column(db.VARCHAR(255))
     max_salary = db.Column(db.VARCHAR(255))
-    salary_curreny = db.Column(db.VARCHAR(255))
+    salary_currency = db.Column(db.VARCHAR(255))
     salary_period_id = db.Column(db.VARCHAR(255))
     require_resume = db.Column(db.Boolean)
     require_coverLetter = db.Column(db.Boolean)
@@ -193,7 +195,7 @@ class Internship(db.Model):
             "job_experience_in_place_of_education": self.job_experience_in_place_of_education,
             "min_salary": self.min_salary,
             "max_salary": self.max_salary,
-            "salary_curreny": self.salary_curreny,
+            "salary_currency": self.salary_currency,
             "salary_period_id": self.salary_period_id,
             "city": self.city,
             "job_id": self.job_id
@@ -209,10 +211,10 @@ class Internship(db.Model):
         self.is_remote = is_remote
         self.description = description
         self.google_link = google_link
-        self.expiration_datetime = expiration_time
+        self.expiration_datetime_utc = expiration_time
         self.min_salary = min_salary
         self.max_salary = max_salary
-        self.salary_curreny = salary_currency
+        self.salary_currency = salary_currency
         self.require_resume = require_resume
         self.require_coverLetter = require_coverLetter
     # more
@@ -283,7 +285,7 @@ class File(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.VARCHAR(255))
     uid = db.Column(db.Integer, db.ForeignKey('t_user.uid'))
-    data = db.Column(db.LargeBinary(length=(2 ** 32) - 1))
+    data = db.Column(db.String)
     file_type = db.Column(db.VARCHAR(255))
     upload_time = db.Column(db.TIMESTAMP)
 

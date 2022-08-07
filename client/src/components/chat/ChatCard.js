@@ -2,8 +2,10 @@ import { Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useContext } from "react";
 import { ChatEngineContext } from "react-chat-engine";
+import { UserContext } from "../../store/UserContext";
 
-const ChatCard = ({ chat, index }) => {
+const ChatCard = ({ chat }) => {
+  const { user } = useContext(UserContext);
   const { activeChat, setActiveChat } = useContext(ChatEngineContext);
 
   return (
@@ -21,9 +23,15 @@ const ChatCard = ({ chat, index }) => {
       {chat?.people && (
         <>
           <Typography fontWeight="700">
-            {chat?.people[1]?.person?.first_name}
+            {chat?.people[0]?.person?.username === user.uid.toString()
+              ? chat?.people[1]?.person?.first_name
+              : chat?.people[0]?.person?.first_name}
           </Typography>
-          <Typography sx={{ mt: "10px" }} variant="subtitle2" color="#9d9d9d">
+          <Typography
+            sx={{ mt: "10px", overflow: "hidden", height: "20px" }}
+            variant="subtitle2"
+            color="#9d9d9d"
+          >
             {chat?.last_message.text}
           </Typography>
         </>

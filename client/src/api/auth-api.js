@@ -1,24 +1,11 @@
 import { postAxios, deleteAxios, getAxios } from "./base";
 
-export const LoginAPI = async (data) => {
-  try {
-    const url = `/auth/login`;
-    const res = await postAxios(url, data);
-
-    return res.data;
-  } catch (err) {
-    return err;
-  }
-};
-
 export const LogoutAPI = async (token) => {
   try {
     const url = `/auth/logout`;
-    const res = await deleteAxios(
-      url,
-      {},
-      { headers: { Authorization: token } }
-    );
+    const res = await deleteAxios(url, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
 
     return res.data;
   } catch (err) {

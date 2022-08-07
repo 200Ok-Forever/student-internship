@@ -1,17 +1,24 @@
+from ast import In
 from datetime import date, timedelta
+import datetime
 from xml.etree.ElementTree import Comment
 from flask import request, jsonify
 from flask_restx import Resource
+from ...Models.company import Companies, Industry
+from ...Models.model import User
 from .forum_model import ForumAPI
-from .forum_utils import ForumUtils
+from .forum_utils import get_comments
 from flask_jwt_extended import jwt_required
 from flask_restx import Resource, reqparse
 from ... import db
-from ...Models.forum import Post, PostComment, Forum
+from ...Models.forum import Post, PostComment, Forum, forum_list
 from sqlalchemy import and_, null, or_
+from flask_jwt_extended import jwt_required
+from flask_jwt_extended import get_jwt_identity
 from sqlalchemy import func
 from ...Helpers.other_util import convert_object_to_dict, convert_model_to_dict
-
+from ...Models import forum
+from .forum_utils import ForumUtils
 forum_api = ForumAPI.forum_ns
 
 forum_parser = reqparse.RequestParser()
@@ -51,8 +58,14 @@ class GetAllPosts(Resource):
         # 10 items per page
         index = args['pageNumber'] - 1
         posts = query.offset(index * 10).limit(10).all()
-        print(posts)
-
+        result = []
+        for fourm, post, count in posts:
+            data = convert_object_to_dict(post)
+            data['nComments'] = count
+            data['authName'] = post.student.user.username
+            data['authId'] = post.student.id
+            result.append(data)
+        return {"result": result}, 200
 
 @forum_api.route("/posts/<id>")
 class GetPost(Resource):
@@ -64,8 +77,81 @@ class GetPost(Resource):
         if post is None:
             return 400
 
-        result = {'post': convert_object_to_dict(post)}
-        comments = post.comments
-        result['comments'] = convert_model_to_dict(comments)
+        data = convert_object_to_dict(post)
+        data['nComments'] = len(post.comments)
+        data['authName'] = post.student.user.username
+        data['avatar'] = post.student.user.avatar
+        data['authId'] = post.student.id
+        result = {'post': data}
+        comments = [comm for comm in post.comments if comm.parent_id == None]
+        comments = get_comments(comments, post.comments)
+        result['comments'] = comments
+
 
         return result, 200
+
+
+@forum_api.route('/posts')
+class CreatePost(Resource):
+    @forum_api.response(200, "Successfully")
+    @forum_api.response(400, "Something wrong")
+    @jwt_required()
+    @forum_api.expect(ForumAPI.post_data, validate=True)
+    def post(self):
+        uid = get_jwt_identity()
+        data = forum_api.payload
+
+        if data['Industry'].lower() not in forum_list:
+            return {"message": "Invalid forum name"}, 400
+
+        
+        user = db.session.query(User).filter(User.username == data['Author']).first()
+
+        fourm_id = forum_list.index(data['Industry'].lower())
+
+        if user == None or user.id != uid:
+            return {"message": "Invalid user name"}, 400
+
+        new_post = Post(data["Title"], data['Content'], data['createdAt'], fourm_id, uid)
+        db.session.add(new_post)
+        db.session.commit()
+
+        return {"message": "Successfully"}, 200
+
+@forum_api.route('/posts/<postid>/comment')
+class CreateComment(Resource):
+    @forum_api.response(200, "Successfully")
+    @forum_api.response(400, "Something wrong")
+    @jwt_required()
+    @forum_api.expect(ForumAPI.comment_data, validate=True)
+    def post(self, postid):
+        uid = get_jwt_identity()
+        data = forum_api.payload
+
+        if uid != data['userID']:
+            return {"message": "Invalid user name"}, 400
+
+        # check post
+        post = db.session.query(Post).filter(Post.id == postid).first()
+        if post is None:
+            return {"message": "Post id invalid"}, 400
+        # check comment
+        if data['replyID'] is not None:
+            comment = db.session.query(PostComment).filter(PostComment.id == data['replyID']).first()
+            if comment is None:
+                return {"message": "Parent comment id invalid"}, 400
+
+        new_comm = PostComment(data['userID'], postid, data['replyID'],data['createdAt'], data['Content'])
+        
+
+
+@forum_api.route("/forum/posts/<int:id>")
+class DeletePost(Resource):
+    def delete(self,id):
+        return ForumUtils.deletepost(id)
+
+    @forum_api.expect()
+    def patch(self,id):
+        args = request.get_json()
+        return ForumUtils.editPost(id,args)
+

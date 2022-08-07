@@ -18,8 +18,9 @@ import { useFormik } from "formik";
 import { companySignupValidationSchema } from "./ValidationSchema";
 import { Modal, IconButton } from "@mui/material";
 import ErrorMessage from "../UI/ErrorMessage";
-import IndustrySelect from '../UI/IndustrySelect';
+import IndustrySelect from "../UI/IndustrySelect";
 import CountrySelect from "../UI/CountrySelect";
+import { newUserOnChat } from "../../api/chat-api";
 
 const CompanySignup = () => {
   const { setUser } = useContext(UserContext);
@@ -32,13 +33,13 @@ const CompanySignup = () => {
   };
   const handleClose = () => setErrorModalState(false);
   const history = useHistory();
+  const [loading, setLoading] = useState(false);
 
   const formik = useFormik({
     initialValues: {
       email: "",
       password: "",
       confirmPassword: "",
-      username: "",
       firstName: "",
       lastName: "",
       company_name: "",
@@ -56,14 +57,15 @@ const CompanySignup = () => {
     validationSchema: companySignupValidationSchema,
     onSubmit: (values) => {
       const signup = async (values) => {
+        setLoading(true);
         const signupValues = {
           email: values.email,
-          username: values.username,
+          username: values.company_name,
           password: values.password,
           first_name: values.firstName,
           last_name: values.lastName,
           company_name: values.company_name,
-          industry: values.industry.map(i => parseInt(i.id)),
+          industry: values.industry.map((i) => parseInt(i.id)),
           linkedin: values.linkedin,
           company_url: values.company_url,
           line1: values.address,
@@ -81,7 +83,19 @@ const CompanySignup = () => {
           if (res.status === true) {
             const userInfo = res.user;
             const userInfoWithToken = { token: res.token, ...userInfo };
+            window.localStorage.setItem(
+              "user",
+              JSON.stringify(userInfoWithToken)
+            );
             setUser(userInfoWithToken);
+            const newUser = {
+              username: userInfo.uid.toString(),
+              secret: userInfo.uid.toString(),
+              first_name: userInfo.username,
+              last_name: userInfo.avatar,
+            };
+            await newUserOnChat(newUser);
+            setLoading(false);
             history.push("/");
           } else if (
             res.response.status === 404 ||
@@ -96,6 +110,7 @@ const CompanySignup = () => {
           }
         } catch (err) {
           console.log(err);
+          setLoading(false);
           //handleOpen(err);
         }
       };
@@ -142,7 +157,10 @@ const CompanySignup = () => {
       </Typography>
       <IconButton color="primary" aria-label="upload picture" component="label">
         <input hidden accept="image/*" type="file" onChange={onAvatarChange} />
-        <Avatar sx={{ m: 1, bgcolor: "primary.main" }} src={avatar} />
+        <Avatar
+          sx={{ m: 1, bgcolor: "primary.main", width: "80px", height: "80px" }}
+          src={avatar}
+        />
       </IconButton>
       <Box
         component="form"
@@ -156,7 +174,7 @@ const CompanySignup = () => {
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
         >
-          <ErrorMessage errorMessage={errorMessage} />
+          <ErrorMessage errorTitle={"Error"} errorMessage={errorMessage} />
         </Modal>
         <Grid container spacing={2}>
           <Grid item xs={12}>
@@ -248,20 +266,6 @@ const CompanySignup = () => {
             <TextField
               required
               fullWidth
-              name="username"
-              label="Username"
-              id="username"
-              autoComplete="username"
-              value={formik.values.username}
-              onChange={formik.handleChange}
-              error={formik.touched.username && Boolean(formik.errors.username)}
-              helperText={formik.touched.username && formik.errors.username}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              required
-              fullWidth
               name="company_name"
               label="Company Name"
               id="company_name"
@@ -278,12 +282,12 @@ const CompanySignup = () => {
             />
           </Grid>
           <Grid item xs={12}>
-            <IndustrySelect 
-              label="Industry" 
+            <IndustrySelect
+              label="Industry"
               onChange={(event, value) => {
                 formik.setFieldValue("industry", value);
               }}
-              value={formik.values.industry}            
+              value={formik.values.industry}
             />
           </Grid>
           <Grid item xs={12}>
@@ -378,12 +382,12 @@ const CompanySignup = () => {
             />
           </Grid>
           <Grid item xs={12} sm={8}>
-            <CountrySelect 
-              label="Country" 
+            <CountrySelect
+              label="Country"
               onChange={(event, value) => {
                 formik.setFieldValue("country", value);
               }}
-              value={formik.values.country}              
+              value={formik.values.country}
             />
           </Grid>
           <Grid item xs={12} sm={4}>
@@ -392,7 +396,7 @@ const CompanySignup = () => {
               label="Postcode"
               value={formik.values.postalCode}
               onChange={formik.handleChange}
-            />          
+            />
           </Grid>
           <Grid item xs={12}>
             <TextField
@@ -411,6 +415,7 @@ const CompanySignup = () => {
           fullWidth
           variant="contained"
           sx={{ mt: 3, mb: 2 }}
+          disabled={loading}
         >
           Sign Up
         </Button>

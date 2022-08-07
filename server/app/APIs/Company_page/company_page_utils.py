@@ -1,7 +1,10 @@
 from signal import raise_signal
+
+from ...Helpers.other_util import convert_object_to_dict
 from  ...Models import company as Company
 from  ...Models import model
 from  ...Models import internship as Internship
+from  ...Models import skill as Skill
 from ... import db
 from sqlalchemy import and_, null, or_
 
@@ -82,7 +85,7 @@ def search_jobs(args, id):
     
     return jobs
 
-def create_job(data, intern_id, companyid):
+def create_job(data, intern_id, companyid, old_skills):
     #try:
     intern = model.Internship( data['type'], data['title'],  data['apply_link'], data['is_remote'], \
     data['description'], data['google_link'], data['expiration_time'], data['min_salary'], \
@@ -91,6 +94,10 @@ def create_job(data, intern_id, companyid):
     db.session.add(intern)
     db.session.flush()
 
+    # update internid
+    if intern_id:
+        intern.id = intern_id
+        db.session.commit()
     # add question
     for que in data['application']['questions']:
         if intern_id:
@@ -110,6 +117,19 @@ def create_job(data, intern_id, companyid):
         order+=1
         db.session.add(new_pro)
         db.session.flush()
+    # add new skill
+    old_skills_name = [old.name for old in old_skills]
+    new_skills = [new for new in data['skills'] if new not in old_skills_name]    
+    print(old_skills)
+    for skill in new_skills:
+        curr_skill = db.session.query(Skill.Skill).filter(Skill.Skill.name == skill).first()
+        # create
+        if curr_skill == None:
+            curr_skill = Skill.Skill(skill)
+            db.session.add(curr_skill)
+        intern.skills.append(curr_skill)
+
+        
     # city
     city_name = data['city']
     print(city_name)
@@ -132,3 +152,34 @@ def find_file(type, uid):
     if file != None:
         file = str(file.decode())
     return file
+
+def format_jobs(jobs, uid, company_logo, company_name):
+    # format result
+    result = {"jobs": []}
+    result['numAllResults'] = {"total_count": len(jobs)}
+    for job in jobs:
+        company_name = job.company.company_name
+        company_logo = job.company.company_logo
+        data = convert_object_to_dict(job)
+        data['closeDate'] = data['expiration_datetime_utc']
+
+        # get the city
+        if job.citys is None:
+            data['city'] = None
+        else:
+            data['city'] = job.citys.name
+
+        # get identity, if has token, is recruiter
+        if uid != None and job.company_id == uid:
+            process_list = get_intern_process(job)
+            data['questions'] = [que.content for que in job.questions]
+            data['processes'] = process_list
+            data['require_resume'] = job.require_resume
+            data['require_coverLetter'] = job.require_coverLetter
+            data['nApplications'] = len(job.status)
+            data['skills'] = [{ 'name': skill.name, 'id': skill.id} for skill in job.skills]
+        result['jobs'].append(data)
+
+    result['company_name'] = company_name
+    result['company_logo'] = company_logo
+    return result

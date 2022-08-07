@@ -6,7 +6,7 @@ from flask_jwt_extended import get_jwt_identity
 from flask_restx import Resource
 from pkg_resources import resource_listdir
 from .company_page_model import CompanyPageAPI
-from .company_page_utils import get_intern_process, check_editapplication_permison, search_jobs, create_job, find_file
+from .company_page_utils import get_intern_process, check_editapplication_permison, search_jobs, create_job, find_file, format_jobs
 from ...Models import company as Company
 from ...Models import model
 from ...Models import internship as Internship
@@ -14,7 +14,7 @@ from ...Models import skill as Skill
 from ...Helpers.other_util import convert_object_to_dict, convert_model_to_dict
 from ... import db
 from flask_jwt_extended import jwt_required
-from flask import request
+from flask import request, redirect
 from flask_restx import Resource, reqparse
 from fuzzywuzzy import process
 from sqlalchemy import or_
@@ -60,7 +60,7 @@ class GetCompany(Resource):
 
         # 3. update
         try:
-            company.email = data['email']
+            #company.email = data['email']
             company.name = data['company_name']
             company.first_name = data['first_name']
             company.last_name = data['last_name']
@@ -139,10 +139,22 @@ class JobsManager(Resource):
         if job.company.id != uid:
             return {"message": "No permission"}, 400
 
+        company_name = job.company.company_name
+        company_logo = job.company.company_logo
+
         # 3. delete
+        # delete process:
+        for pro in job.processes:
+            db.session.delete(pro)
+        # delete question
+        for que in job.questions:
+            db.session.delete(que)
+
         db.session.delete(job)
         db.session.commit()
-        return {"message": "Successfully"}, 200
+
+        jobs = db.session.query(model.Internship).filter(model.Internship.company_id == uid).all()
+        return format_jobs(jobs, uid, company_logo, company_name), 200
 
 
 @company_ns.route("/<id>/jobs")
@@ -160,39 +172,11 @@ class CompanyJobs(Resource):
         args = parser.parse_args()
 
         uid = get_jwt_identity()
-
         jobs = search_jobs(args, id)
         if len(jobs) == 0:
             return {"jobs": [], 'company_name': None, 'company_logo': None, 'numAllResults': 0}
 
-        # format result
-        result = {"jobs": []}
-        result['numAllResults'] = {"total_count": len(jobs)}
-        for job in jobs:
-            company_name = job.company.company_name
-            company_logo = job.company.company_logo
-            data = convert_object_to_dict(job)
-            data['closeDate'] = data['expiration_datetime']
-
-            # get the city
-            if job.citys is None:
-                data['city'] = None
-            else:
-                data['city'] = job.citys.name
-
-            # get identity, if has token, is recruiter
-            if uid != None and job.company_id == uid:
-                process_list = get_intern_process(job)
-                data['questions'] = [que.content for que in job.questions]
-                data['processes'] = process_list
-                data['require_resume'] = job.require_resume
-                data['require_coverLetter'] = job.require_coverLetter
-            result['jobs'].append(data)
-
-        result['company_name'] = company_name
-        result['company_logo'] = company_logo
-
-        return result, 200
+        return    format_jobs(jobs, uid, None, None), 200
 
 
 @company_ns.route("/<jobid>/applicant")
@@ -202,7 +186,6 @@ class GetAllApplications(Resource):
     @jwt_required()
     def get(self, jobid):
         uid = get_jwt_identity()
-        jobid = int(jobid)
 
         # 1. check internship id
         query = db.session.query(model.Internship).filter(model.Internship.id == jobid)
@@ -245,14 +228,12 @@ class CreateIntern(Resource):
     @company_ns.response(200, "Successfully")
     @company_ns.response(400, "Something wrong")
     @company_ns.expect(CompanyPageAPI.intern_data, validate=True)
-    #@jwt_required()
+    @jwt_required()
     def post(self, companyid):
-        now = datetime.now()
         data = company_ns.payload
-        #uid = get_jwt_identity()
-        uid = 2
+        uid = get_jwt_identity()
 
-        query = db.session.query(model.Company).filter(model.Company.id == companyid)
+        query = db.session.query(Company.Companies).filter(Company.Companies.id == companyid)
 
         # 1. check company id
         company = query.first()
@@ -263,12 +244,12 @@ class CreateIntern(Resource):
             return {"message": "No permission"}, 400
 
         # 3. create
-        try:
-            new_intern = create_job(data, None, companyid)  
-            print(new_intern.id)
-        except:
-           db.session.rollback()
-           return {"message": "Something wrong"}, 400
+         #try:
+        new_intern = create_job(data, None, companyid, [])  
+        print(new_intern.id)
+        #except:
+        #   db.session.rollback()
+        #   return {"message": "Something wrong"}, 400
         return {"message": "Successfuly"}, 200
 
 
@@ -294,27 +275,35 @@ class CreateIntern(Resource):
             return {"message": "No permission"}, 400
 
         intern_id = job.id
-        #try:
+        try:
             # 3. delete
-        posted_time = job.posted_time
-        company_id = job.company_id
-        for que in job.questions:
-            db.session.delete(que)
-        for pro in job.processes:
-            db.session.delete(pro)
-        db.session.delete(job)
-        db.session.flush()
 
-        intern = create_job(data, intern_id, company_id)
+            old_skills = job.skills
+            # remove old skill
+            delete_skills = [old for old in old_skills if old.name not in data['skills']]
+            for skill in delete_skills:
+                skill.internships.remove(job)
+                print(skill)
+            posted_time = job.posted_time
+            company_id = job.company_id
+            for que in job.questions:
+                db.session.delete(que)
+            for pro in job.processes:
+                db.session.delete(pro)
 
-        intern.id = intern_id
-        intern.posted_time = posted_time
-        intern.company_id = company_id
+            db.session.delete(job)
+            db.session.flush()
 
-        db.session.commit()
-        #except:
-        #    db.session.rollback()
-        #    return {"message": "Something wrong"}, 400
+            intern = create_job(data, intern_id, company_id, old_skills)
+
+            intern.id = intern_id
+            intern.posted_time = posted_time
+            intern.company_id = company_id
+
+            db.session.commit()
+        except:
+            db.session.rollback()
+            return {"message": "Something wrong"}, 400
         return {"message": "Successfuly"}, 200
 
 

@@ -1,7 +1,7 @@
 from flask_restx import Namespace, fields
 
 company_info = {
-    "email": fields.String(required=True),
+    #"email": fields.String(required=True),
     "company_name": fields.String(required=True),
     "first_name": fields.String(required=True),
     "last_name": fields.String(required=True),
@@ -39,8 +39,9 @@ intern_info = {
     "max_salary": fields.Integer(required=True),
     "salary_currency": fields.String(required=True),
     "recruiting_process": fields.List(fields.String(), required=True),
+    "skills": fields.List(fields.String, required=True),
     "application": Form(required=True),
-    "city": fields.String(required=True),
+    "city": fields.String(required=True)
 }
 
 
