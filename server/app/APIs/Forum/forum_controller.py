@@ -1,16 +1,23 @@
+from ast import In
 from datetime import date, timedelta
+import datetime
 from xml.etree.ElementTree import Comment
 from flask import request, jsonify
 from flask_restx import Resource
+from ...Models.company import Companies, Industry
+from ...Models.model import User
 from .forum_model import ForumAPI
-from .forum_utils import ForumUtils
+from .forum_utils import get_comments
 from flask_jwt_extended import jwt_required
 from flask_restx import Resource, reqparse
 from ... import db
-from ...Models.forum import Post, PostComment, Forum
+from ...Models.forum import Post, PostComment, Forum, forum_list
 from sqlalchemy import and_, null, or_
+from flask_jwt_extended import jwt_required
+from flask_jwt_extended import get_jwt_identity
 from sqlalchemy import func
 from ...Helpers.other_util import convert_object_to_dict, convert_model_to_dict
+from ...Models import forum
 
 forum_api = ForumAPI.forum_ns
 
@@ -83,23 +90,60 @@ class GetPost(Resource):
 
         return result, 200
 
-def get_comments(comments, all_comms):
-    if comments == None or len(comments) == 0:
-        return []
-    result = []
-    for comm in comments:
-        next_level = [com for com in all_comms if com.parent_id == comm.id]
-        data = {"text": comm.content, 
-        "uid": comm.student_id,
-        "authName": comm.student.user.username,
-        "authId": comm.student.id,
-        "avatar": comm.student.user.avatar,
-        "time": comm.created_time, 
-        "content": comm.content,
-        "replied": get_comments(next_level, all_comms)} 
-        result.append(data)
-    result.sort(key=lambda x: x['time']) 
-    return result
-    
-    
 
+@forum_api.route('/posts')
+class CreatePost(Resource):
+    @forum_api.response(200, "Successfully")
+    @forum_api.response(400, "Something wrong")
+    #@jwt_required()
+    @forum_api.expect(ForumAPI.post_data, validate=True)
+    def post(self):
+        #uid = get_jwt_identity()
+        uid = 332
+        data = forum_api.payload
+
+        if data['Industry'].lower() not in forum_list:
+            return {"message": "Invalid forum name"}, 400
+
+        
+        user = db.session.query(User).filter(User.username == data['Author']).first()
+
+        fourm_id = forum_list.index(data['Industry'].lower())
+
+        #if user == None or user.id != uid:
+        #    return {"message": "Invalid user name"}, 400
+
+        new_post = Post(data["Title"], data['Content'], data['createdAt'], fourm_id, uid)
+        db.session.add(new_post)
+        db.session.commit()
+
+        return {"message": "Successfully"}, 200
+
+@forum_api.route('/posts/<postid>/comment')
+class CreateComment(Resource):
+    @forum_api.response(200, "Successfully")
+    @forum_api.response(400, "Something wrong")
+    #@jwt_required()
+    @forum_api.expect(ForumAPI.comment_data, validate=True)
+    def post(self, postid):
+        #uid = get_jwt_identity()
+        data = forum_api.payload
+
+        #if uid != data['userID']:
+        #    return {"message": "Invalid user name"}, 400
+
+        # check post
+        post = db.session.query(Post).filter(Post.id == postid).first()
+        if post is None:
+            return {"message": "Post id invalid"}, 400
+        # check comment
+        if data['replyID'] is not None:
+            comment = db.session.query(PostComment).filter(PostComment.id == data['replyID']).first()
+            if comment is None:
+                return {"message": "Parent comment id invalid"}, 400
+
+        new_comm = PostComment(data['userID'], postid, data['replyID'],data['createdAt'], data['Content'])
+        
+        db.session.add(new_comm)
+        db.session.commit()
+        return {"message": "Successfully"}, 200
