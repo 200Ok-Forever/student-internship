@@ -7,7 +7,8 @@ from json import dumps
 from requests import session
 from sqlalchemy import null
 from torch import is_same_size
-from ...Models.model import Calendar,Internship, City, Company, Comment, User, Student, File, InternshipStatus
+from ...Models.model import Calendar, Internship, City, Comment, User, Student, File, InternshipStatus
+from ...Models.company import Companies
 from ...Models.internship import InternQuestion, InternAnswer
 from ...Models.skill import StudentSkills, Skill
 from flask_restx import Resource, reqparse
@@ -33,8 +34,8 @@ def get_location(data):
 
 
 def get_company_info(data):
-    id = Company.id
-    company = Company.query.filter_by(id=data).first()
+    id = Companies.id
+    company = Companies.query.filter_by(id=data).first()
 
     print(company)
     name = company.company_name

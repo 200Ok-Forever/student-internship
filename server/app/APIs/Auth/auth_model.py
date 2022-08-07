@@ -80,7 +80,7 @@ class AuthAPI:
             "degree": fields.String(required=True),
             "major": fields.String,
             "position": fields.String,
-            "skills": fields.String,
+            "skills": fields.List(fields.Integer),
             "description": fields.String,
             "avatar": fields.String
         },
@@ -95,7 +95,7 @@ class AuthAPI:
             "company_name": fields.String(required=True),
             "first_name": fields.String(required=True),
             "last_name": fields.String(required=True),
-            "industry": fields.String,
+            "industry": fields.List(fields.Integer),
             "linkedin": fields.String,
             "company_url": fields.String,
             "founded_year": fields.String(required=True),
