@@ -211,7 +211,7 @@ class Internship(db.Model):
         self.is_remote = is_remote
         self.description = description
         self.google_link = google_link
-        self.expiration_datetime = expiration_time
+        self.expiration_datetime_utc = expiration_time
         self.min_salary = min_salary
         self.max_salary = max_salary
         self.salary_currency = salary_currency

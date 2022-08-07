@@ -178,7 +178,7 @@ class CompanyJobs(Resource):
             company_name = job.company.company_name
             company_logo = job.company.company_logo
             data = convert_object_to_dict(job)
-            data['closeDate'] = data['expiration_datetime']
+            data['closeDate'] = data['expiration_datetime_utc']
 
             # get the city
             if job.citys is None:
