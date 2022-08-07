@@ -1,3 +1,4 @@
+from typing_extensions import Required
 from flask_restx import Namespace, fields
 
 
@@ -16,8 +17,14 @@ comment = {
     "replyID": fields.Integer
 }
 
+
+
 class ForumAPI:
+    
     forum_ns = Namespace("forum", description="Forum related operations.")
     post_data = forum_ns.model("Create Post", post)
     comment_data = forum_ns.model("Create Comment", comment)
 
+    edit = forum_ns.model ("edit",{
+        "content":fields.String(required = True)
+    })

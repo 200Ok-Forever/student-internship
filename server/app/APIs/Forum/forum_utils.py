@@ -1,5 +1,3 @@
-# from server.app.APIs.Forum.forum_controller import DeletePost
-
 
 from plistlib import UID
 from sys import intern
@@ -21,27 +19,31 @@ from flask_jwt_extended import create_access_token, get_jwt, jwt_required, creat
 
 class ForumUtils:
     def deletepost(id):
-        obj = db.session.query(Post).filter(Post.id==id).one()
+       
         try:
 
-            db.delete(obj)
+            obj = db.session.query(Post).filter(Post.id==id).first()
+            db.session.delete(obj)
             db.session.commit()
-            return dumps({'message': 'delete sucessfully'}), 200
+            return {'message': 'delete sucessfully'}, 200
         except Exception as error:
 
-            return dumps({'msg': error}), 400
+            return {'msg': error}, 400
         pass
-    def editPost(id,arg):
 
+    def editPost(id,args):
 
-        Post.query.filter(Post.id == id).update({Post.content:arg['content']})
+        
         try:
+            print(args['content'])
+            post = db.session.query(Post).filter(Post.id == id).update({Post.content:args['content']})
+           
             db.session.commit()
-            return dumps({'message': 'delete sucessfully'}), 200
+            return {'message': 'update sucessfully'}, 200
         except Exception as error:
-
+            print(error)
             return dumps({'msg': error}), 400
-        pass
+        
 
 def get_comments(comments, all_comms):
     if comments == None or len(comments) == 0:

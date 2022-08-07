@@ -1,6 +1,7 @@
 from ast import In
 from datetime import date, timedelta
 import datetime
+import resource
 from xml.etree.ElementTree import Comment
 from flask import request, jsonify
 from flask_restx import Resource
@@ -144,14 +145,25 @@ class CreateComment(Resource):
         new_comm = PostComment(data['userID'], postid, data['replyID'],data['createdAt'], data['Content'])
         
 
-
+patch_parser = reqparse.RequestParser()
+# patch_parser.add_argument('content', location = 'body',help='edit content')
+patch_parser.add_argument('Authorization', location='headers', help='Bearer [Token]', default='Bearer xxxxxxxxxxx')
 @forum_api.route("/forum/posts/<int:id>")
-class DeletePost(Resource):
+class EditAndDeletePost(Resource):
+    # @jwt_required()
     def delete(self,id):
+        # uid = get_jwt_identity()
         return ForumUtils.deletepost(id)
 
-    @forum_api.expect()
+    @jwt_required()
+    @forum_api.expect(ForumAPI.edit, patch_parser)
     def patch(self,id):
-        args = request.get_json()
-        return ForumUtils.editPost(id,args)
+        content = request.get_json()
+        print(content)
+        # uid = get_jwt_identity()
+        # return "hahahaha"
+        return ForumUtils.editPost(id,content)
+
+   
+   
 
