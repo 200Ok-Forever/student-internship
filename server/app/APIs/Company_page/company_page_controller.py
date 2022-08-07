@@ -6,7 +6,7 @@ from flask_jwt_extended import get_jwt_identity
 from flask_restx import Resource
 from pkg_resources import resource_listdir
 from .company_page_model import CompanyPageAPI
-from .company_page_utils import get_intern_process, check_editapplication_permison, search_jobs, create_job
+from .company_page_utils import get_intern_process, check_editapplication_permison, search_jobs, create_job, find_file
 from  ...Models import company as Company
 from  ...Models import model
 from  ...Models import internship as Internship
@@ -217,6 +217,8 @@ class GetAllApplications(Resource):
             data['avatar'] = stu.user.avatar
             data['applicationId'] = appli.id
             data['shortlist'] = appli.shortlist
+            data['resume'] = find_file("resume", stu.id)
+            data['coverletter'] = find_file('coverletter', stu.id)
             data['questions'] = {}
             answers = db.session.query(Internship.InternAnswer, Internship.InternQuestion
             ).filter(Internship.InternAnswer.student_id == stu.id, Internship.InternQuestion.intern_id == jobid,
