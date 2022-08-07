@@ -153,7 +153,7 @@ def find_file(type, uid):
         file = str(file.decode())
     return file
 
-def format_jobs(jobs, uid):
+def format_jobs(jobs, uid, company_logo, company_name):
     # format result
     result = {"jobs": []}
     result['numAllResults'] = {"total_count": len(jobs)}

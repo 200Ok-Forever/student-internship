@@ -139,6 +139,9 @@ class JobsManager(Resource):
         if job.company.id != uid:
             return {"message": "No permission"}, 400
 
+        company_name = job.company.company_name
+        company_logo = job.company.company_logo
+
         # 3. delete
         # delete process:
         for pro in job.processes:
@@ -151,7 +154,7 @@ class JobsManager(Resource):
         db.session.commit()
 
         jobs = db.session.query(model.Internship).filter(model.Internship.company_id == uid).all()
-        return format_jobs(jobs, uid), 200
+        return format_jobs(jobs, uid, company_logo, company_name), 200
 
 
 @company_ns.route("/<id>/jobs")
@@ -173,7 +176,7 @@ class CompanyJobs(Resource):
         if len(jobs) == 0:
             return {"jobs": [], 'company_name': None, 'company_logo': None, 'numAllResults': 0}
 
-        return    format_jobs(jobs, uid), 200
+        return    format_jobs(jobs, uid, None, None), 200
 
 
 @company_ns.route("/<jobid>/applicant")
