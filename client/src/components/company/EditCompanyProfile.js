@@ -15,7 +15,7 @@ import Select from "@mui/material/Select";
 import { UserContext } from "../../store/UserContext";
 import { CompanySignupAPI } from "../../api/auth-api";
 import { useFormik } from "formik";
-import { companySignupValidationSchema } from "../auth/ValidationSchema";
+import { companyEditValidationSchema } from "../auth/ValidationSchema";
 import { Modal, IconButton } from "@mui/material";
 import ErrorMessage from "../UI/ErrorMessage";
 
@@ -45,7 +45,7 @@ const EditCompanyProfile = () => {
       location: "",
       description: "",
     },
-    validationSchema: companySignupValidationSchema,
+    validationSchema: companyEditValidationSchema,
     onSubmit: (values) => {
       const edit = async (values) => {
         const signupValues = {
@@ -62,30 +62,30 @@ const EditCompanyProfile = () => {
           company_size: values.size,
           founded_year: values.founded_year,
         };
-        try {
-          const res = await CompanySignupAPI(signupValues);
-          if (res.status === true) {
-            const userInfo = res.user;
-            const userInfoWithToken = { token: res.token, ...userInfo };
-            setUser(userInfoWithToken);
-            history.push("/");
-          } else if (
-            res.response.status === 404 ||
-            res.response.status === 403 ||
-            res.response.status === 400
-          ) {
-            console.log(res);
-            handleOpen(res.response.data.message);
-          } else {
-            console.log(res);
-            //handleOpen(res);
-          }
-        } catch (err) {
-          console.log(err);
-          //handleOpen(err);
-        }
+        console.log(signupValues);
+        // try {
+        //   const res = await CompanySignupAPI(signupValues);
+        //   if (res.status === true) {
+        //     const userInfo = res.user;
+        //     const userInfoWithToken = { token: res.token, ...userInfo };
+        //     setUser(userInfoWithToken);
+        //     history.push("/");
+        //   } else if (
+        //     res.response.status === 404 ||
+        //     res.response.status === 403 ||
+        //     res.response.status === 400
+        //   ) {
+        //     console.log(res);
+        //     handleOpen(res.response.data.message);
+        //   } else {
+        //     console.log(res);
+        //     //handleOpen(res);
+        //   }
+        // } catch (err) {
+        //   console.log(err);
+        //   //handleOpen(err);
+        // }
       };
-
       edit(values);
     },
   });

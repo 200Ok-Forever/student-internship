@@ -11,13 +11,15 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import classes from "./company.module.scss";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import WorkIcon from "@mui/icons-material/Work";
 import JobBlock from "../jobs/JobBlock";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import { getCompanyInfo } from "../../api/company-api";
+import { useHistory } from "react-router-dom";
+import { UserContext } from "../../store/UserContext";
 
 const data = {
   company_avatar: "https://img.icons8.com/officel/344/google-logo.png",
@@ -93,11 +95,11 @@ const Company = () => {
     const getData = async () => {
       const queryString = window.location.search;
       const urlParams = new URLSearchParams(queryString);
-      const id = urlParams.get('id')
+      const id = urlParams.get("id");
       const res = await getCompanyInfo(id);
       console.log(res);
-    }
-    getData()
+    };
+    getData();
     setInfo(data);
   }, []);
 
@@ -145,8 +147,18 @@ const Company = () => {
 };
 
 const Overview = ({ info }) => {
+  const history = useHistory();
+  const { user } = useContext(UserContext);
   return (
     <>
+      {user.role === 2 && <Button
+        variant="outlined"
+        onClick={() => {
+          history.push("/editcompanyprofile");
+        }}
+      >
+        Edit Profile
+      </Button>}
       <Paper
         elevation={4}
         sx={{
