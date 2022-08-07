@@ -6,10 +6,13 @@ import { Box } from "@mui/system";
 import { Button, Grid, Input, TextField, Typography } from "@mui/material";
 import TitleWithIcon from "../UI/TitleWithIcon";
 import QuizIcon from "@mui/icons-material/Quiz";
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
 import apply from "../../asset/apply.png";
+import { getInternship, postNewApply } from "../../api/internship-api";
+import { UserContext } from "../../store/UserContext";
+import _ from "lodash";
 
-const questions = [
+const question = [
   "Lorem ipsum dolorf sit amet, consectetur adipiscing elit?",
   "Lorem ipsum dolorf sit amet, consectetur adipiscing elit?",
 ];
@@ -25,9 +28,6 @@ const ApplyIntern = () => {
   const info = queryString.parse(search);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const company = info.company;
-  const submitHandler = () => {
-    setIsSubmitted(true);
-  };
 
   return (
     <>
@@ -52,13 +52,13 @@ const ApplyIntern = () => {
           </Button>
         </Box>
       ) : (
-        <ApplyForm onSubmit={submitHandler} />
+        <ApplyForm setIsSubmitted={setIsSubmitted} />
       )}
     </>
   );
 };
 
-const ApplyForm = ({ onSubmit }) => {
+const ApplyForm = ({ setIsSubmitted }) => {
   const { search, state } = useLocation();
   const info = queryString.parse(search);
   // const job_id = info.id;
@@ -67,9 +67,54 @@ const ApplyForm = ({ onSubmit }) => {
   const avatar = state?.state.avatar || "";
   const [resume, setResume] = useState(null);
   const [coverLetter, setCoverLetter] = useState(null);
+  const [questions, setQuestions] = useState(null);
+
+  const { user } = useContext(UserContext);
+
+  const answers = [];
+  console.log(answers);
 
   console.log(resume);
   console.log(coverLetter);
+
+  useEffect(() => {
+    const getInternshipInfo = async () => {
+      const res = await getInternship(info.id, user.token);
+      console.log(res);
+      setQuestions(res.questions.map((i) => i.content));
+    };
+    getInternshipInfo();
+  }, []);
+
+  const submitHandler = async () => {
+    const QApairs = Object.assign.apply(
+      {},
+      questions.map((v, i) => ({ [v]: answers[i] }))
+    );
+    console.log(resume)
+    const resumeReader = new FileReader();
+    const cvReader = new FileReader();
+    resumeReader.onload = () => {
+      const base64String = resumeReader.result;
+      setResume(base64String);
+    };
+    cvReader.onload = () => {
+      const base64String = cvReader.result;
+      setCoverLetter(base64String);
+    };
+    resumeReader.readAsDataURL(resume);
+    cvReader.readAsDataURL(coverLetter);
+    await postNewApply(info.id, {
+      resume: resume,
+      coverLetter: coverLetter,
+      interviewQuestion: QApairs,
+    });
+    //setIsSubmitted(true);
+  };
+
+  const answerChangeHandler = (i) => (e) => {
+    answers[i] = e.target.value;
+  };
 
   return (
     <Box
@@ -119,13 +164,15 @@ const ApplyForm = ({ onSubmit }) => {
           text="Questions"
           mt="100px"
         />
-        {questions.map((q, i) => (
+        {questions?.map((q, i) => (
           <Box key={`q_${i}`} mb="40px" sx={{ width: "100%" }}>
             <Typography variant="h7">{q}</Typography>
             <TextField
               multiline
               rows={4}
               fullWidth
+              value={answers[i]}
+              onChange={answerChangeHandler(i)}
               defaultValue=""
               sx={{ mt: "20px" }}
             />
@@ -135,7 +182,7 @@ const ApplyForm = ({ onSubmit }) => {
           variant="contained"
           fullWidth
           sx={{ my: "100px" }}
-          onClick={onSubmit}
+          onClick={submitHandler}
         >
           Submit
         </Button>
@@ -167,7 +214,7 @@ const UploadFile = ({ name, setFile }) => {
           variant="contained"
           component="span"
           sx={{ width: "28vw" }}
-          onChange={(e) => setFile(e.target.value)}
+          onChange={(e) => setFile(e.target.files[0])}
         >
           Upload
         </Button>

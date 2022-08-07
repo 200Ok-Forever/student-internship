@@ -1,97 +1,83 @@
-import { getRequest, postRequest } from './base';
+import { getRequest, postRequest } from "./base";
 
-export const getInternshipRecommendations = async (type, token) => (
-  await getRequest(
-    `/Internship/internships/recommend?type=${type}`,
-    {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    }
-  )
-)
+export const getInternship = async (id, token) =>
+  await getRequest(`/Internship/internships/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
-export const getInternshipHistory = async (token) => (
-  await getRequest(
-    `/Internship/internships/history`,
-    {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    }
-  )
-)
+export const getInternshipRecommendations = async (type, token) =>
+  await getRequest(`/Internship/internships/recommend?type=${type}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
-export const getSavedInternships = async (token) => (
-  await getRequest(
-    `/Internship/internships/save`,
-    {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    }
-  )
-)
+export const getInternshipHistory = async (token) =>
+  await getRequest(`/Internship/internships/history`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
-export const getInternshipEvents = async (token) => (
-  await getRequest(
-    `/Internship/events`,
-    {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    }
-  )
-)
+export const getSavedInternships = async (token) =>
+  await getRequest(`/Internship/internships/save`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
-export const postInternshipCalendar = async (data, token) => (
+export const getInternshipEvents = async (token) =>
+  await getRequest(`/Internship/events`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+export const postInternshipCalendar = async (data, token) =>
+  await postRequest("/Internship/internships/calendar", data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+export const postInternshipUncalendar = async (data, token) =>
+  await postRequest("/Internship/internships/uncalendar", data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+export const postInternshipSave = async (id, token) =>
   await postRequest(
-    '/Internship/internships/calendar',
-    data,
+    "/Internship/internships/save",
+    {
+      internship_id: id,
+    },
     {
       headers: {
-        'Authorization': `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     }
-  )
-)
+  );
 
-export const postInternshipUncalendar = async (data, token) => (
+export const postInternshipUnsave = async (id, token) =>
   await postRequest(
-    '/Internship/internships/uncalendar',
-    data,
+    "/Internship/internships/unsave",
+    {
+      internship_id: id,
+    },
     {
       headers: {
-        'Authorization': `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     }
-  )
-)
+  );
 
-export const postInternshipSave = async (id, token) => (
-  await postRequest(
-    '/Internship/internships/save',
-    {
-      internship_id: id
-    }, 
-    {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    }
-  )
-)
-
-export const postInternshipUnsave = async (id, token) => (
-  await postRequest(
-    '/Internship/internships/unsave',
-    {
-      internship_id: id
-    }, 
-    {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    }
-  )
-)
+export const postNewApply = async (id, data, token) =>
+  await postRequest(`Internship/internships/${id}/apply`, data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
