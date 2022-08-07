@@ -86,29 +86,30 @@ const ApplyForm = ({ setIsSubmitted }) => {
     getInternshipInfo();
   }, []);
 
+  function getBase64(file) {
+    var reader = new FileReader();
+    return new Promise(resolve => {
+      reader.onload = ev => {
+        resolve(ev.target.result)
+      }
+      reader.readAsDataURL(file)
+    })
+ }
+
   const submitHandler = async () => {
-    const QApairs = Object.assign.apply(
-      {},
-      questions.map((v, i) => ({ [v]: answers[i] }))
-    );
-    console.log(resume)
-    const resumeReader = new FileReader();
-    const cvReader = new FileReader();
-    resumeReader.onload = () => {
-      const base64String = resumeReader.result;
-      setResume(base64String);
-    };
-    cvReader.onload = () => {
-      const base64String = cvReader.result;
-      setCoverLetter(base64String);
-    };
-    resumeReader.readAsDataURL(resume);
-    cvReader.readAsDataURL(coverLetter);
-    await postNewApply(info.id, {
-      resume: resume,
-      coverLetter: coverLetter,
-      interviewQuestion: QApairs,
-    });
+    // const QApairs = Object.assign.apply(
+    //   {},
+    //   questions.map((v, i) => ({ [v]: answers[i] }))
+    // );
+
+    const resumeBase64 = await getBase64(resume);
+    const coverBase64 = await getBase64(coverLetter);
+
+    // await postNewApply(info.id, {
+    //   resume: resumeBase64,
+    //   coverLetter: coverBase64,
+    //   interviewQuestion: QApairs,
+    // });
     //setIsSubmitted(true);
   };
 
@@ -206,15 +207,19 @@ const UploadFile = ({ name, setFile }) => {
         <Input
           accept="image/*"
           id={name}
-          multiple
           type="file"
           sx={{ display: "none" }}
+          onChange={(e) => {
+            const input = document.getElementById(name)
+            if (input.files) {
+              setFile(input.files[0])
+            }
+          }}        
         />
         <Button
           variant="contained"
           component="span"
           sx={{ width: "28vw" }}
-          onChange={(e) => setFile(e.target.files[0])}
         >
           Upload
         </Button>
