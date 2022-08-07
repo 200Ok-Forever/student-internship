@@ -10,7 +10,13 @@ const JobBasicCard = (props) => {
   const job = props.job;
   return (
     <>
-      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
         <Typography
           variant="h6"
           fontWeight="700"

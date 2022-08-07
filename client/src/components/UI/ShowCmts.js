@@ -1,9 +1,10 @@
 import { Box, Button, Divider, Typography } from "@mui/material";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import AvatarName from "./AvatarName";
 import CmtTextField from "./CmtTextField";
 import ChatIcon from "@mui/icons-material/Chat";
 import TitleWithIcon from "./TitleWithIcon";
+import { UserContext } from "../../store/UserContext";
 
 // Can be used for any comments area
 // list => comments list {cmdId, text, avatar, username, reply: [{text, avatar, username}]}
@@ -16,6 +17,7 @@ const box = {
 };
 
 const ShowCmts = ({ list, sendCmt, sendReply }) => {
+  const { user } = useContext(UserContext);
   return (
     <Box sx={box}>
       <TitleWithIcon
@@ -23,11 +25,13 @@ const ShowCmts = ({ list, sendCmt, sendReply }) => {
         text={`Comments (${list?.length})`}
         mt="50px"
       />
-      <CmtTextField
-        sendHandler={sendCmt}
-        isCmt={true}
-        placeholder="Any question or thought for this internship?"
-      />
+      {user.token && (
+        <CmtTextField
+          sendHandler={sendCmt}
+          isCmt={true}
+          placeholder="Any question or thought for this internship?"
+        />
+      )}
       {list?.map((comment, i) => (
         <Item
           key={`intern_cmt_${i}`}
@@ -43,24 +47,27 @@ const ShowCmts = ({ list, sendCmt, sendReply }) => {
 const Item = ({ cmt, isLast, sendReply }) => {
   const [openReply, setOpenReply] = useState(false);
   const replies = cmt.replied;
+  const { user } = useContext(UserContext);
 
   return (
     <Box sx={{ ...box }}>
       <AvatarName
         avatar={cmt?.avatar}
-        name={cmt.username || "fake name"}
+        name={cmt.username}
         createdAt={cmt.time}
       />
       <Typography variant="body1" ml="60px">
         {cmt.text}
       </Typography>
       <Box sx={{ width: "95%", mx: "50px" }}>
-        <Button
-          onClick={() => setOpenReply((prev) => !prev)}
-          sx={{ mb: "20px" }}
-        >
-          {openReply ? "Close" : "Reply"}
-        </Button>
+        {user.token && (
+          <Button
+            onClick={() => setOpenReply((prev) => !prev)}
+            sx={{ mb: "20px" }}
+          >
+            {openReply ? "Close" : "Reply"}
+          </Button>
+        )}
         {openReply && (
           <CmtTextField
             sendHandler={sendReply}
@@ -75,7 +82,7 @@ const Item = ({ cmt, isLast, sendReply }) => {
             <Box key={`reply_${i}`} sx={box}>
               <AvatarName
                 avatar={reply?.avatar}
-                name={reply?.username || "Fake name"}
+                name={reply?.username}
                 createdAt={reply.time}
               />
               <Typography
