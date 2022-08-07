@@ -65,6 +65,7 @@ const Profile = () => {
   useEffect(() => {
     const loadInfo = async () => {
       const res = await getLongUserInfo(user.uid);
+      res.skills = res.skills.toString();
       setInfo(res);
     };
     loadInfo();

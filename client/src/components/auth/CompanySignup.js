@@ -159,7 +159,7 @@ const CompanySignup = () => {
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
         >
-          <ErrorMessage errorMessage={errorMessage} />
+          <ErrorMessage errorTitle={"Error"} errorMessage={errorMessage} />
         </Modal>
         <Grid container spacing={2}>
           <Grid item xs={12}>
