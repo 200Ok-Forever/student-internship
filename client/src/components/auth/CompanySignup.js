@@ -18,6 +18,8 @@ import { useFormik } from "formik";
 import { companySignupValidationSchema } from "./ValidationSchema";
 import { Modal, IconButton } from "@mui/material";
 import ErrorMessage from "../UI/ErrorMessage";
+import IndustrySelect from '../UI/IndustrySelect';
+import CountrySelect from "../UI/CountrySelect";
 
 const CompanySignup = () => {
   const { setUser } = useContext(UserContext);
@@ -40,12 +42,15 @@ const CompanySignup = () => {
       firstName: "",
       lastName: "",
       company_name: "",
-      industry: "",
+      industry: [],
       linkedin: "",
       founded_year: "",
       size: "",
       company_url: "",
-      location: "",
+      address: "",
+      city: "",
+      postalCode: "",
+      country: "",
       description: "",
     },
     validationSchema: companySignupValidationSchema,
@@ -58,10 +63,13 @@ const CompanySignup = () => {
           first_name: values.firstName,
           last_name: values.lastName,
           company_name: values.company_name,
-          industry: values.industry,
+          industry: values.industry.map(i => parseInt(i.id)),
           linkedin: values.linkedin,
           company_url: values.company_url,
-          location: values.location,
+          line1: values.address,
+          city: values.city,
+          country: values.country.name,
+          postalCode: values.postalCode,
           description: values.description,
           avatar: avatar,
           company_logo: "",
@@ -270,14 +278,12 @@ const CompanySignup = () => {
             />
           </Grid>
           <Grid item xs={12}>
-            <TextField
-              fullWidth
-              name="industry"
-              label="Industry"
-              id="industry"
-              autoComplete="industry"
-              value={formik.values.industry}
-              onChange={formik.handleChange}
+            <IndustrySelect 
+              label="Industry" 
+              onChange={(event, value) => {
+                formik.setFieldValue("industry", value);
+              }}
+              value={formik.values.industry}            
             />
           </Grid>
           <Grid item xs={12}>
@@ -354,13 +360,39 @@ const CompanySignup = () => {
           <Grid item xs={12}>
             <TextField
               fullWidth
-              name="location"
-              label="Location"
-              id="location"
-              autoComplete="location"
-              value={formik.values.location}
+              name="address"
+              label="Street Address"
+              id="address"
+              value={formik.values.address}
               onChange={formik.handleChange}
             />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              name="city"
+              label="City"
+              id="city"
+              value={formik.values.city}
+              onChange={formik.handleChange}
+            />
+          </Grid>
+          <Grid item xs={12} sm={8}>
+            <CountrySelect 
+              label="Country" 
+              onChange={(event, value) => {
+                formik.setFieldValue("country", value);
+              }}
+              value={formik.values.country}              
+            />
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <TextField
+              id="postalCode"
+              label="Postcode"
+              value={formik.values.postalCode}
+              onChange={formik.handleChange}
+            />          
           </Grid>
           <Grid item xs={12}>
             <TextField

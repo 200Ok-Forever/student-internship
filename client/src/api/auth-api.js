@@ -1,10 +1,8 @@
 import { postAxios, deleteAxios, getAxios } from "./base";
 
-const baseURL = "http://localhost:5004";
-
 export const LoginAPI = async (data) => {
   try {
-    const url = `${baseURL}/auth/login`;
+    const url = `/auth/login`;
     const res = await postAxios(url, data);
 
     return res.data;
@@ -15,7 +13,7 @@ export const LoginAPI = async (data) => {
 
 export const LogoutAPI = async (token) => {
   try {
-    const url = `${baseURL}/auth/logout`;
+    const url = `/auth/logout`;
     const res = await deleteAxios(
       url,
       {},
@@ -29,7 +27,7 @@ export const LogoutAPI = async (token) => {
 };
 
 export const StudentSignupAPI = async (data) => {
-  const url = `${baseURL}/auth/signup/student`;
+  const url = `/auth/signup/student`;
   try {
     const res = await postAxios(url, data);
     return res.data;
@@ -39,7 +37,7 @@ export const StudentSignupAPI = async (data) => {
 };
 
 export const CompanySignupAPI = async (data) => {
-  const url = `${baseURL}/auth/signup/company`;
+  const url = `/auth/signup/company`;
   try {
     const res = await postAxios(url, data);
     return res.data;
@@ -49,7 +47,7 @@ export const CompanySignupAPI = async (data) => {
 };
 
 export const sendResetEmailAPI = async (data) => {
-  const url = `${baseURL}/auth/password_reset/send`;
+  const url = `/auth/password_reset/send`;
   try {
     const res = await postAxios(url, data);
     return res.data;
@@ -59,7 +57,7 @@ export const sendResetEmailAPI = async (data) => {
 };
 
 export const resetPasswordAPI = async (data) => {
-  const url = `${baseURL}/auth/password_reset/reset`;
+  const url = `/auth/password_reset/reset`;
   try {
     const res = await postAxios(url, data);
     return res.data;
@@ -70,7 +68,7 @@ export const resetPasswordAPI = async (data) => {
 
 export const getShortUserInfo = async (uid) => {
   try {
-    const url = `${baseURL}/auth/userInfoShort/${uid}`;
+    const url = `/auth/userInfoShort/${uid}`;
     const res = await getAxios(url, {});
 
     return res.data;
@@ -81,7 +79,7 @@ export const getShortUserInfo = async (uid) => {
 
 export const getLongUserInfo = async (uid) => {
   try {
-    const url = `${baseURL}/auth/userInfoLong/${uid}`;
+    const url = `/auth/userInfoLong/${uid}`;
     const res = await getAxios(url, {});
 
     return res.data;
@@ -92,7 +90,7 @@ export const getLongUserInfo = async (uid) => {
 
 export const editStudentProfileAPI = async (data, token) => {
   try {
-    const url = `${baseURL}/auth/userInfoLong`;
+    const url = `/auth/userInfoLong`;
     const res = await postAxios(url, data, {
       headers: { Authorization: `Bearer ${token}` },
     });
@@ -105,10 +103,32 @@ export const editStudentProfileAPI = async (data, token) => {
 
 export const changeAvatarApi = async (data, token) => {
   try {
-    const url = `${baseURL}/auth/userInfoShort`;
+    const url = `/auth/userInfoShort`;
     const res = await postAxios(url, data, {
       headers: { Authorization: `Bearer ${token}` },
     });
+
+    return res.data;
+  } catch (err) {
+    return err;
+  }
+};
+
+export const getSkils = async () => {
+  try {
+    const url = `/auth/skills`;
+    const res = await getAxios(url);
+
+    return res.data;
+  } catch (err) {
+    return err;
+  }
+};
+
+export const getIndustries = async () => {
+  try {
+    const url = `/auth/industries`;
+    const res = await getAxios(url);
 
     return res.data;
   } catch (err) {

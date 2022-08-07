@@ -7,9 +7,9 @@ from flask_restx import Resource
 from pkg_resources import resource_listdir
 from .company_page_model import CompanyPageAPI
 from .company_page_utils import get_intern_process, check_editapplication_permison, search_jobs, create_job, find_file
-from  ...Models import company as Company
-from  ...Models import model
-from  ...Models import internship as Internship
+from ...Models import company as Company
+from ...Models import model
+from ...Models import internship as Internship
 from ...Models import skill as Skill
 from ...Helpers.other_util import convert_object_to_dict, convert_model_to_dict
 from ... import db
@@ -24,7 +24,8 @@ from sqlalchemy import func
 
 company_ns = CompanyPageAPI.company_ns
 
-#--------------------------------COMPANY OPERATOR-----------------------
+
+# --------------------------------COMPANY OPERATOR-----------------------
 @company_ns.route("/<id>")
 class GetCompany(Resource):
 
@@ -48,15 +49,15 @@ class GetCompany(Resource):
         data = company_ns.payload
         uid = get_jwt_identity()
         query = db.session.query(Company.Companies).filter(Company.Companies.id == id)
-        
+
         # 1. check company id
         company = query.first()
-        if company== None:
+        if company == None:
             return {"message": "Invalid company id"}, 400
         # 2. check permission : is recuiter and belongs to this company
         if company.id != uid:
             return {"message": "No permission"}, 400
-        
+
         # 3. update
         try:
             company.email = data['email']
@@ -104,7 +105,6 @@ class GetCompany(Resource):
 
         return {"message": "Successfully"}, 200
 
-
     """
     @company_ns.response(200, "Successfully")
     @company_ns.response(400, "Something wrong")
@@ -119,7 +119,8 @@ class GetCompany(Resource):
         return {"message": "Successfully"}, 200
     """
 
-#--------------------------------INTERN OPERATOR-----------------------
+
+# --------------------------------INTERN OPERATOR-----------------------
 @company_ns.route("/jobs/<jobid>")
 class JobsManager(Resource):
     @company_ns.response(200, "Successfully")
@@ -133,7 +134,7 @@ class JobsManager(Resource):
         job = query.first()
         if job == None:
             return {"message": "Invalid internship id"}, 400
-        
+
         # 2. check permission
         if job.company.id != uid:
             return {"message": "No permission"}, 400
@@ -163,7 +164,7 @@ class CompanyJobs(Resource):
         jobs = search_jobs(args, id)
         if len(jobs) == 0:
             return {"jobs": [], 'company_name': None, 'company_logo': None, 'numAllResults': 0}
-            
+
         # format result
         result = {"jobs": []}
         result['numAllResults'] = {"total_count": len(jobs)}
@@ -190,7 +191,6 @@ class CompanyJobs(Resource):
 
         result['company_name'] = company_name
         result['company_logo'] = company_logo
-        
 
         return result, 200
 
@@ -219,7 +219,7 @@ class GetAllApplications(Resource):
         print(job.status)
         result = []
         for appli in job.status:
-            stu =appli.student
+            stu = appli.student
             if not stu: continue
             data = convert_object_to_dict(stu)
             data['status'] = appli.status
@@ -230,9 +230,10 @@ class GetAllApplications(Resource):
             data['coverletter'] = find_file('coverletter', stu.id)
             data['questions'] = {}
             answers = db.session.query(Internship.InternAnswer, Internship.InternQuestion
-            ).filter(Internship.InternAnswer.student_id == stu.id, Internship.InternQuestion.intern_id == jobid,
-            Internship.InternQuestion.id == Internship.InternAnswer.question_id
-            ).all()
+                                       ).filter(Internship.InternAnswer.student_id == stu.id,
+                                                Internship.InternQuestion.intern_id == jobid,
+                                                Internship.InternQuestion.id == Internship.InternAnswer.question_id
+                                                ).all()
             for que, ans in answers:
                 data['questions'][que.content] = ans.answer
             result.append(data)
@@ -252,22 +253,22 @@ class CreateIntern(Resource):
         uid = 2
 
         query = db.session.query(model.Company).filter(model.Company.id == companyid)
-        
+
         # 1. check company id
         company = query.first()
-        if company== None:
+        if company == None:
             return {"message": "Invalid company id"}, 400
         # 2. check permission : is recuiter and belongs to this company
         if company.id != uid:
             return {"message": "No permission"}, 400
 
         # 3. create
-        #try:
-        new_intern = create_job(data, None, companyid)  
-        print(new_intern.id)
-       # except:
-        #   db.session.rollback()
-        #   return {"message": "Something wrong"}, 400
+        try:
+            new_intern = create_job(data, None, companyid)  
+            print(new_intern.id)
+        except:
+           db.session.rollback()
+           return {"message": "Something wrong"}, 400
         return {"message": "Successfuly"}, 200
 
 
@@ -283,10 +284,10 @@ class CreateIntern(Resource):
         uid = get_jwt_identity()
 
         query = db.session.query(model.Internship).filter(model.Internship.id == jobid)
-        
+
         # 1. check company id
         job = query.first()
-        if job== None:
+        if job == None:
             return {"message": "Invalid internship id"}, 400
         # 2. check permission : is recuiter and belongs to this company
         if job.company.id != uid:
@@ -316,7 +317,8 @@ class CreateIntern(Resource):
         #    return {"message": "Something wrong"}, 400
         return {"message": "Successfuly"}, 200
 
-#--------------------------------RECOMMENDATION-----------------------
+
+# --------------------------------RECOMMENDATION-----------------------
 @company_ns.route("/<jobid>/recommendation")
 class Recomendation(Resource):
     @company_ns.response(200, "Successfully")
@@ -326,10 +328,10 @@ class Recomendation(Resource):
         jobid = int(jobid)
         uid = get_jwt_identity()
         query = db.session.query(model.Internship).filter(model.Internship.id == jobid)
-        
+
         # 1. check company id
         job = query.first()
-        if job== None:
+        if job == None:
             return {"message": "Invalid internship id"}, 400
         # 2. check permission : is recuiter and belongs to this company
         if job.company.id != uid:
@@ -360,7 +362,8 @@ class Recomendation(Resource):
 
         return {"reault": result}, 200
 
-#--------------------------------MANAGE THE APPLICATION-----------------------
+
+# --------------------------------MANAGE THE APPLICATION-----------------------
 @company_ns.route("/<jobid>/<appliedid>/shortlist")
 class AddShortList(Resource):
     @company_ns.response(200, "Successfully")
@@ -370,7 +373,7 @@ class AddShortList(Resource):
         uid = get_jwt_identity()
 
         valid, data = check_editapplication_permison(jobid, appliedid, uid)
-        
+
         if not valid:
             return data, 400
 
@@ -389,7 +392,7 @@ class AddShortList(Resource):
         uid = get_jwt_identity()
 
         valid, data = check_editapplication_permison(jobid, appliedid, uid)
-        
+
         if not valid:
             return data, 400
 
@@ -397,7 +400,8 @@ class AddShortList(Resource):
         data.shortlist = False
         db.session.commit()
         return {"message": "Succussfully"}, 200
-    
+
+
 @company_ns.route("/<jobid>/<appliedid>/forward")
 class ForwardProcess(Resource):
     @company_ns.response(200, "Successfully")
@@ -406,7 +410,7 @@ class ForwardProcess(Resource):
     def post(self, jobid, appliedid):
         uid = get_jwt_identity()
         valid, data = check_editapplication_permison(jobid, appliedid, uid)
-        
+
         if not valid:
             return data, 400
 
@@ -433,6 +437,7 @@ class ForwardProcess(Resource):
         db.session.commit()
         return 200
 
+
 @company_ns.route("/<jobid>/<appliedid>/reject")
 class Accept(Resource):
     @company_ns.response(200, "Successfully")
@@ -444,10 +449,10 @@ class Accept(Resource):
         
         if not valid:
             return data, 400
-        
+
         #  check the applicant status
         if data.is_applied != 'True':
-            return {"message":"Not applied yet"}, 400
+            return {"message": "Not applied yet"}, 400
 
         # update data
         data.status = 'reject'

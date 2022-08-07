@@ -196,7 +196,11 @@ const CreateInternship = () => {
           </FormControl>
         </Box>
         <Box>
-          <SkillsSelect skills={skills} setSkills={setSkills} label="Required Skills" />
+          <SkillsSelect 
+            value={skills} 
+            onChange={(e, value) => setSkills(value)} 
+            label="Required Skills" 
+          />
         </Box>
         <Box>
           <TextField

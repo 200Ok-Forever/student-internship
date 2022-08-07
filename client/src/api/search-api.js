@@ -1,6 +1,4 @@
-import axios from "axios";
-
-const API = axios.create({ baseURL: "http://localhost:5004" });
+import { API } from './base';
 
 export const getJobsListData = (params) =>
   API.get(`/Internship/internships${params}`);

@@ -72,9 +72,9 @@ const NavBar = () => {
     };
     logout();
     setUser({});
-    window.localStorage.clear();
-    history.push("/");
-  };
+    window.localStorage.clear()
+    history.push("/")
+  }
 
   useEffect(() => {
     const update = async () => {
@@ -89,7 +89,6 @@ const NavBar = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user.token]);
 
-  console.log(user);
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="fixed" sx={{ height: "80px" }} color="secondary">
