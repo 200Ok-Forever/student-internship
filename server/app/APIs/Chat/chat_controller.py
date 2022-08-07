@@ -41,10 +41,9 @@ class GetUser(Resource):
 class GetMeetings(Resource):
     @chat_api.response(200, "Successfully")
     @chat_api.response(400, "Something wrong")
-    # @jwt_required()
+    @jwt_required()
     def get(self):
-        # uid = get_jwt_identity()
-        uid = 162
+        uid = get_jwt_identity()
 
         # check user's role
         user = db.session.query(User).filter(User.uid == uid).first()

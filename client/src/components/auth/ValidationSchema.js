@@ -43,9 +43,6 @@ const studentSignupValidationObject = {
   lastName: yup
     .string("Please enter your last name")
     .required("Last name is required"),
-  username: yup
-    .string("Please enter your last name")
-    .required("Last name is required"),
   university: yup
     .string("Please enter your university")
     .required("University is required"),
@@ -63,9 +60,6 @@ const companySignupValidationObject = {
     .string("Please enter your first name")
     .required("First name is required"),
   lastName: yup
-    .string("Please enter your last name")
-    .required("Last name is required"),
-  username: yup
     .string("Please enter your last name")
     .required("Last name is required"),
   company_name: yup
