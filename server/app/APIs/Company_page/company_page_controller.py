@@ -245,12 +245,12 @@ class CreateIntern(Resource):
             return {"message": "No permission"}, 400
 
         # 3. create
-         #try:
-        new_intern = create_job(data, None, companyid, [])  
-        print(new_intern.id)
-        #except:
-        #   db.session.rollback()
-        #   return {"message": "Something wrong"}, 400
+        try:
+            new_intern = create_job(data, None, companyid, [])  
+            print(new_intern.id)
+        except:
+           db.session.rollback()
+           return {"message": "Something wrong"}, 400
         return {"message": "Successfuly"}, 200
 
 
