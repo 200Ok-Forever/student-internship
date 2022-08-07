@@ -30,8 +30,6 @@ const StudentSignup = () => {
 
   const [avatar, setAvatar] = useState("");
 
-  const [skills, setSkills] = useState([]);
-
   const formik = useFormik({
     initialValues: {
       email: "",
