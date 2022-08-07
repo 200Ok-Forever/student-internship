@@ -9,7 +9,6 @@ from .. import bcrypt, db
 from sqlalchemy.dialects.mysql import DECIMAL, TINYINT
 
 
-
 class User(db.Model):
     """User(student&company) table"""
     __tablename__ = 't_user'
@@ -51,7 +50,8 @@ class User(db.Model):
 class Student(db.Model):
     """Student table"""
     __tablename__ = 't_student_copy1'
-    id = db.Column(db.Integer,  db.ForeignKey('t_user.uid'), autoincrement=True, primary_key=True, nullable=False, unique=True)
+    id = db.Column(db.Integer, db.ForeignKey('t_user.uid'), autoincrement=True, primary_key=True, nullable=False,
+                   unique=True)
     email = db.Column(db.VARCHAR(320), nullable=False, unique=True)
     first_name = db.Column(db.VARCHAR(50), nullable=False)
     last_name = db.Column(db.VARCHAR(50), nullable=False)
@@ -68,7 +68,7 @@ class Student(db.Model):
     questions = db.relationship("InternQuestion", secondary='r_intern_question_answer', back_populates='students', lazy=True)
     # student_skills = db.relationship('Skill', secondary='r_student_skill', back_populates='students', lazy=True)
     def __repr__(self):
-        return f"<Student: {self .email}, {self.first_name} {self.last_name}>"
+        return f"<Student: {self.email}, {self.first_name} {self.last_name}>"
 
     def get_info(self):
         return {
@@ -199,7 +199,9 @@ class Internship(db.Model):
             "job_id": self.job_id
 
         }
-    def __init__(self, type, title, apply_link, is_remote, description, google_link, expiration_time, min_salary, max_salary, salary_currency, require_resume, require_coverLetter):
+
+    def __init__(self, type, title, apply_link, is_remote, description, google_link, expiration_time, min_salary,
+                 max_salary, salary_currency, require_resume, require_coverLetter):
         self.posted_time = str(datetime.now())
         self.type = type
         self.title = title
@@ -256,11 +258,12 @@ class City(db.Model):
 
     def __init__(self, name):
         self.name = name
-        
+
+
 class InternshipStatus(db.Model):
     __tablename__ = 't_intern_user_status'
     id = db.Column(db.Integer, primary_key=True)
-    #uid = db.Column(db.Integer, db.ForeignKey('t_user.uid'))
+    # uid = db.Column(db.Integer, db.ForeignKey('t_user.uid'))
     uid = db.Column(db.Integer, db.ForeignKey('t_student_copy1.id'))
     intern_id = db.Column(db.Integer, db.ForeignKey('t_internships.id'))
     is_seen = db.Column(db.VARCHAR(255))
@@ -270,8 +273,8 @@ class InternshipStatus(db.Model):
     status = db.Column(db.VARCHAR(255))
     shortlist = db.Column(db.Boolean)
     internship = db.relationship('Internship', back_populates='status')
-    stage = db.Column(db.Integer,db.ForeignKey('t_process.id'))
-    #user = db.relationship('User', back_populates='status')
+    stage = db.Column(db.Integer, db.ForeignKey('t_process.id'))
+    # user = db.relationship('User', back_populates='status')
 
 class File(db.Model):
     __tablename__ = 't_uploadfile'
