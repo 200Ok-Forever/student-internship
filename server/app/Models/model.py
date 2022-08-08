@@ -61,7 +61,7 @@ class Student(db.Model):
     description = db.Column(db.VARCHAR(200))
     skills = db.relationship('Skill', secondary='r_student_skill', back_populates='students', lazy=True)
     applications = db.relationship('InternshipStatus', backref="student", lazy=True)
-    invitations = db.relationship("Internship", secondary='r_invitation', back_populates='invitations_students',
+    invitations = db.relationship("Companies", secondary='r_invitation', back_populates='invitations_students',
                                   lazy=True)
     questions = db.relationship("InternQuestion", secondary='r_intern_question_answer', back_populates='students',
                                 lazy=True)
@@ -124,7 +124,7 @@ class Internship(db.Model):
     status = db.relationship('InternshipStatus', back_populates='internship')
     processes = db.relationship("Process", backref='internship', lazy=True)
     questions = db.relationship("InternQuestion", backref='internship', lazy=True)
-    invitations_students = db.relationship("Student", secondary='r_invitation', back_populates='invitations', lazy=True)
+    
     # skills = db.relationship('Skill', secondary=job_skills, backref='internship', overlaps="internship")
 
     skills = db.relationship('Skill', secondary='r_job_skill', back_populates='internships', lazy=True)
@@ -240,7 +240,16 @@ class InternshipStatus(db.Model):
     shortlist = db.Column(db.Boolean)
     internship = db.relationship('Internship', back_populates='status')
     stage = db.Column(db.Integer, db.ForeignKey('t_process.id'))
+    applied_time = db.Column(db.VARCHAR(255))
+
     # user = db.relationship('User', back_populates='status')
+    def __init__(self, uid, intern_id, is_applied, applied_time, stage):
+        self.uid = uid
+        self.intern_od = intern_id
+        self.is_applied = is_applied
+        self.applied_time = applied_time
+        self.stage = stage
+        self.status = "pending"
 
 
 class File(db.Model):

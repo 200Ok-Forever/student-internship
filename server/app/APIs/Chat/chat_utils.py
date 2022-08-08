@@ -10,9 +10,9 @@ class ChatUtils:
     def send_zoom_meeting_invitation(data):
         """ Send Zoom meeting invitation link """
 
-        uid = data['otherUserId']
+        otherid = data['otherUserId']
         time = data['time']
-        user = User.query.filter_by(uid=uid).first()
+        user = User.query.filter_by(uid=otherid).first()
         if user is not None:
             username = user.username
             header = {
@@ -36,9 +36,9 @@ class ChatUtils:
             }
             response = requests.post("https://api.zoom.us/v2/users/me/meetings", json=body, headers=header)
             # response = requests.get("https://api.zoom.us/v2/meetings/me", headers=header, verify=True)
-            return response.json(), 200
+            return response.json(), 200, user
         else:
-            return {"message": "User not found!"}, 404
+            return {"message": "User not found!"}, 404, None
 
     @staticmethod
     def getUser():
