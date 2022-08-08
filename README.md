@@ -8,8 +8,7 @@
 3. Open your command line, type `git clone` then paste the url, then press enter.
 4. On your command line, `cd student-internship` directory, then `cd client`
 5. If you haven't install npm, follow this guide to [install npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
-6. On your command line, `npm install`, (This may take serveral minutes, please be patient)
-7. After installing all packages, you may see `9 vulnerabilities (3 moderate, 6 high)` and `To address all issues (including breaking changes), run: npm audit fix --force`, ignoreit
+6. On your command line, `npm install --force`, (This may take serveral minutes, please be patient)
 8. On your command line, `npm start` to start the browser (this may take another few minutes)
 9. During your waiting time, start another command line, then cd into `/student-internship/server`
 10. if you haven't install pip, install pip
@@ -77,7 +76,7 @@ In this project, we used teams and discord to communicate. Also, multiple meetin
 We collaborately created text version of API documentation and Swagger UI, which make the apis more easy to understand and eases the
 communication between the front end team and the back end team. We used Jira Board to conduct product management as well.  
 <img width="955" alt="image" src="https://user-images.githubusercontent.com/62100969/183334736-b6d88580-ed64-4924-8218-ceb03af417a6.png">  
-Jira Board
+Jira Board  
 <img width="727" alt="image" src="https://user-images.githubusercontent.com/62100969/183337251-2b12856a-676d-4346-addd-fa5e966be0f5.png">  
 Jira Card Detail Info  
 <img width="825" alt="image" src="https://user-images.githubusercontent.com/62100969/183334990-7e549e85-604e-4572-be04-270a527b3e6e.png">  
