@@ -57,15 +57,15 @@ const nComments = (comments) => (
 // ];
 
 const IndustryForum = () => {
+  
+  const [posts, setPosts] = useState([]);
   const [params, setParams] = useState({
     industry: useLocation().pathname.split("/")[2],
-    sort: '',
+    sort: "newest",
     searchTerm: '',
     userId: '',
     pageNumber: 1,
   });
-  const [sortBy, setSortBy] = useState("newest");
-  const [posts, setPosts] = useState([]);
   
   useEffect(() => {
     const getData = async () => {
@@ -80,7 +80,7 @@ const IndustryForum = () => {
   
   return (
     <Box>
-      <Header setSortBy={setSortBy} sortBy={sortBy}/>
+      <Header setParams={setParams} params={params}/>
       <Box>
         {posts.map((post, idx) => (
           <PostCard key={idx} post={post}/>
@@ -90,7 +90,7 @@ const IndustryForum = () => {
   );
 };
 
-const Header = ({setSortBy, sortBy}) => {
+const Header = ({setParams, params}) => {
   const location = useLocation();
   const industry = location.pathname.split("/")[2];
   const title = industry.charAt(0).toUpperCase() + industry.slice(1);
@@ -113,9 +113,9 @@ const Header = ({setSortBy, sortBy}) => {
           <Select
             labelId="sort"
             id="sort-select"
-            value={sortBy}
+            value={params.sort}
             label="Sort By"
-            onChange={(e) => setSortBy(e.target.value)}
+            onChange={(e) => setParams({...params, sort: e.target.value})}
           >
             <MenuItem value="newest">Newest</MenuItem>
             <MenuItem value="hot">Hot</MenuItem>

@@ -27,6 +27,8 @@ forum_parser.add_argument('industry', type=str, location='args')
 forum_parser.add_argument('userId', type=int, location='args')
 forum_parser.add_argument('searchTerm', type=str, location='args')
 forum_parser.add_argument('sort', choices=['newest', 'hottest', 'popular'], type=str, location='args')
+auth_parser = reqparse.RequestParser()
+auth_parser.add_argument('Authorization', location='headers', help='Bearer [Token]', default='Bearer xxxxxxxxxxx')
 
 
 @forum_api.route("/posts/<id>")
@@ -59,7 +61,7 @@ class AllPost(Resource):
     @forum_api.expect(forum_parser)
     def get(self):
         args = forum_parser.parse_args()
-        if args['industry'] is not None:
+        if args['industry']:
             ind_id = forum_list.index(args['industry'].lower())
             query = db.session.query(Post,
                                      func.count(PostComment.id)).outerjoin(PostComment,
@@ -75,7 +77,7 @@ class AllPost(Resource):
 
             if args['sort'] is not None and args['sort'] == 'newest':
                 query = query.order_by(Post.created_time.desc())
-            elif args['sort'] is not None and args['sort'] == 'hottest':
+            elif args['sort'] is not None and args['sort'] == 'hot':
                 yesterday = date.today() - timedelta(days=1)
                 query = query.filter(Post.created_time == yesterday).order_by(func.count(PostComment.id).desc())
             elif args['sort'] is not None and args['sort'] == 'popular':
@@ -98,7 +100,7 @@ class AllPost(Resource):
             }, 400
 
     @jwt_required()
-    @forum_api.expect(ForumAPI.post_data, validate=True)
+    @forum_api.expect(ForumAPI.post_data, auth_parser, validate=True)
     def post(self):
         uid = get_jwt_identity()
         data = forum_api.payload
@@ -110,7 +112,7 @@ class AllPost(Resource):
 
         fourm_id = forum_list.index(data['industry'].lower())
 
-        if user == None or user.id != uid:
+        if user == None or user.uid != uid:
             return {"message": "Invalid user name"}, 400
 
         new_post = Post(data["Title"], data['Content'], data['createdAt'], fourm_id, uid)
@@ -149,11 +151,6 @@ class CreateComment(Resource):
         return {"message": "Successfully"}, 200
 
 
-patch_parser = reqparse.RequestParser()
-# patch_parser.add_argument('content', location = 'body',help='edit content')
-patch_parser.add_argument('Authorization', location='headers', help='Bearer [Token]', default='Bearer xxxxxxxxxxx')
-
-
 @forum_api.route("/forum/posts/<int:id>")
 class EditAndDeletePost(Resource):
     # @jwt_required()
@@ -162,7 +159,7 @@ class EditAndDeletePost(Resource):
         return ForumUtils.deletepost(id)
 
     @jwt_required()
-    @forum_api.expect(ForumAPI.edit, patch_parser)
+    @forum_api.expect(ForumAPI.edit, auth_parser)
     def patch(self, id):
         content = request.get_json()
         print(content)
