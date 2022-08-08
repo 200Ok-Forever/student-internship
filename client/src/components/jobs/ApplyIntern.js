@@ -116,8 +116,8 @@ const ApplyForm = ({ setIsSubmitted }) => {
   const submitHandler = async () => {
     const QApairs = questions.map((q, i) => ({
       question_id: q.question_id,
-      answer: answers[i]
-    }))
+      answer: answers[i],
+    }));
 
     if (resume === null && coverLetter === null) {
       handleOpen("Please Submit a resume and/or cover letter");
@@ -174,7 +174,7 @@ const ApplyForm = ({ setIsSubmitted }) => {
       >
         <UploadFile name="Resume" setFile={setResume} />
         <Typography variant="subtitle2" sx={{ color: "#c1c1c1" }}>
-          No resume? Click <a href="/">here</a> !
+          No resume? Click <a href="/resume-creator">here</a> !
         </Typography>
         {resume && (
           <Typography color="primary">Resume Successfully Uploaded</Typography>
@@ -187,11 +187,13 @@ const ApplyForm = ({ setIsSubmitted }) => {
           </Typography>
         )}
         <Grid container spacing={0} mt="auto"></Grid>
-        <TitleWithIcon
-          icon={<QuizIcon color="primary" />}
-          text="Questions"
-          mt="100px"
-        />
+        {questions && questions.length !== 0 && (
+          <TitleWithIcon
+            icon={<QuizIcon color="primary" />}
+            text="Questions"
+            mt="100px"
+          />
+        )}
         {questions?.map((q, i) => (
           <Box key={`q_${i}`} mb="40px" sx={{ width: "100%" }}>
             <Typography variant="h7">{q.content}</Typography>

@@ -24,18 +24,19 @@ class SendMeetingInvitation(Resource):
         200: "success",
         404: "User not found!",
     })
-    @chat_api.expect(zoom_link, auth_parser)
+
+    @chat_api.expect(auth_parser, zoom_link)
     @jwt_required()
     def post(self):
         """ Send Zoom meeting invitation link """
         uid = get_jwt_identity()
         # Grab the json data
         data = request.get_json()
-        info, status, user= ChatUtils.send_zoom_meeting_invitation(data)
+        info, status, user = ChatUtils.send_zoom_meeting_invitation(data)
 
         if status != 200:
             return info, status
-        
+
         if user.role == 2:
             company_id = data['otherUserId']
             student_id = uid
@@ -44,7 +45,7 @@ class SendMeetingInvitation(Resource):
             student_id = data['otherUserId']
 
         try:
-                
+
             invi = Invitation(student_id, company_id, data['time'], info['start_url'], None)
             db.session.add(invi)
             db.session.commit()
@@ -82,7 +83,7 @@ class GetMeetings(Resource):
         if not user:
             return {"message": "Invalid user"},400
         query = db.session.query(Companies, Invitation, Student).filter(Companies.id == Invitation.company_id,
-                                                                         Student.id == Invitation.student_id)
+                                                                        Student.id == Invitation.student_id)
         # company
         if user.role == 2:
             query = query.filter(Invitation.company_id == uid)
