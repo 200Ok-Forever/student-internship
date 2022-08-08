@@ -38,7 +38,7 @@ const RenderMessageBubble = ({ message }) => {
       time: msg.split(" ").pop(),
     };
     try {
-      const rep = await createMeeting(data);
+      const rep = await createMeeting(data, user.token);
       if (rep.status === 200) {
         sendMessage(creds, activeChat, {
           text:
