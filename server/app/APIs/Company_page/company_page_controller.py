@@ -19,6 +19,13 @@ company_ns = CompanyPageAPI.company_ns
 authParser = company_ns.parser()
 authParser.add_argument('Authorization', location='headers', help='Bearer [Token]', default='Bearer xxxxxxxxxxxxx')
 
+def get_location(data):
+    city = model.City.query.filter_by(id=data).first()
+    if city:
+        return city.name
+    else:
+        return ""
+
 # --------------------------------COMPANY OPERATOR-----------------------
 @company_ns.route("/<id>")
 class GetCompany(Resource):
@@ -179,6 +186,13 @@ class GetAllApplications(Resource):
     @company_ns.response(400, "Something wrong")
     @jwt_required()
     def get(self, jobid):
+        def get_location(data):
+            city = model.City.query.filter_by(id=data).first()
+            if city:
+                return city.name
+            else:
+                return ""
+
         uid = get_jwt_identity()
 
         # 1. check internship id
@@ -214,7 +228,7 @@ class GetAllApplications(Resource):
             for que, ans in answers:
                 data['questions'][que.content] = ans.answer
             result.append(data)
-        return {'applicant': result}, 200
+        return {'applicants': result, "intern_title": job.title, "city": get_location(job.city) }, 200
 
 
 @company_ns.route("/<companyid>/create-job")
@@ -348,7 +362,7 @@ class Recomendation(Resource):
             skills = [skill[1].name for skill in stu_skills]
             info['match'] = skills
             result.append(info)
-        return {"result": result, "intern_title": job.title}, 200
+        return {"result": result, "intern_title": job.title, "city": get_location(job.city) }, 200
 
 
 # --------------------------------MANAGE THE APPLICATION-----------------------
