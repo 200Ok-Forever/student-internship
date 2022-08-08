@@ -27,11 +27,11 @@ const PostCard = ({ post }) => {
           </Box>
           <Box sx={{ mb: 1 }}>
             <Typography variant='subtitle1' color="primary" component="span">
-              {post.author}
+              {post.authName}
             </Typography>
             {" "}
             <Typography variant="subtitle1" component='span' sx={{ mb: 1 }}>
-              {moment(post.createdAt).fromNow()}
+              {moment(post.created_time).fromNow()}
             </Typography> 
           </Box>
           <Box className={classes.postContent}>
