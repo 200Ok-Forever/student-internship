@@ -4,9 +4,7 @@ import { Redirect, useLocation } from "react-router-dom";
 import { Box, Typography } from "@mui/material";
 import ShowCmts from "../UI/ShowCmts";
 import EditAndDelete from "../UI/EditAndDelete";
-import { getPost } from "../../api/forum-api";
 import axios from "axios";
-// import {getPosts} from "../../api/forum-api";
 
 const ForumPost = () => {
   const location = useLocation();

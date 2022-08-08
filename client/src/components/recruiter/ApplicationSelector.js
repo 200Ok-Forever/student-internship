@@ -20,8 +20,7 @@ import {
   Typography,
 } from "@mui/material";
 import classes from "./Recruiter.module.scss";
-import { toTitleCase } from '../../helpers';
-import { SettingsApplications } from "@mui/icons-material";
+import { toTitleCase } from "../../helpers";
 
 const Selector = ({ applications, steps, setSelectedApp, selectedApp }) => {
   const [status, setStatus] = useState("all");
@@ -38,26 +37,28 @@ const Selector = ({ applications, steps, setSelectedApp, selectedApp }) => {
     let filtered;
     if (status === "all") {
       filtered = applications;
-    } else if (status === 'accepted' || status === 'rejected') {
-      filtered = applications.filter(app => app.status === status)
+    } else if (status === "accepted" || status === "rejected") {
+      filtered = applications.filter((app) => app.status === status);
     } else {
-      filtered =
-        applications.filter((app) => app.stage === status)
+      filtered = applications.filter((app) => app.stage === status);
     }
     if (shortlist) {
-      filtered = filtered.filter(app => app.shortlist)
+      filtered = filtered.filter((app) => app.shortlist);
     }
     setFilteredApplications(filtered);
     if (filtered.length > 0) {
-      setSelectedApp(0)
+      setSelectedApp(0);
     } else {
       setSelectedApp(null);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, shortlist]);
 
   return (
     <Box>
-      <Typography variant="h5">{applications.length} Total Applicants</Typography>
+      <Typography variant="h5">
+        {applications.length} Total Applicants
+      </Typography>
       <FormControl fullWidth sx={{ my: 2 }}>
         <InputLabel id="sort">Stage</InputLabel>
         <Select
@@ -99,9 +100,7 @@ const Selector = ({ applications, steps, setSelectedApp, selectedApp }) => {
 const ApplicationCard = ({ app, setSelectedApp, selectedApp, i }) => (
   <ListItem
     sx={{ p: 0, m: 0 }}
-    className={
-      selectedApp === i && classes.selected
-    }
+    className={selectedApp === i && classes.selected}
   >
     <ListItemButton sx={{ p: 5 }} onClick={() => setSelectedApp(i)}>
       <Box sx={{ display: "flex", alignItems: "center", gap: 5 }}>
@@ -113,7 +112,7 @@ const ApplicationCard = ({ app, setSelectedApp, selectedApp, i }) => (
           <Typography variant="subtitle1" mb={1}>
             {moment(app.applicationTime, "YYYY-MM-DD hh:mm:ss").fromNow()}
           </Typography>
-          <Status status={app.status} stage={app.stage}/>
+          <Status status={app.status} stage={app.stage} />
           {app.shortlist && <ShortList />}
         </Box>
       </Box>
@@ -143,7 +142,7 @@ export const Status = ({ status, stage }) => {
         <AccessTimeIcon />
       )}
       <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
-        {toTitleCase(status === 'pending' ? stage : status)}
+        {toTitleCase(status === "pending" ? stage : status)}
       </Typography>
     </Box>
   );
