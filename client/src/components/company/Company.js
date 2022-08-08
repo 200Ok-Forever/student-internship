@@ -25,7 +25,6 @@ const Company = () => {
     };
     getData();
   }, []);
-  console.log(info);
   return (
     <>
       <div className={classes.head}>
@@ -71,7 +70,6 @@ const Company = () => {
 
 const Overview = ({ info }) => {
   const history = useHistory();
-  console.log(info);
   const { user } = useContext(UserContext);
   return (
     <>
@@ -145,7 +143,6 @@ const Jobs = () => {
     const urlParams = new URLSearchParams(queryString);
     const id = urlParams.get("id");
     const res = await companyGetJobInfo(id, "", "", "");
-    console.log(res);
     const jobs = res.jobs.map((i) => ({
       ...i,
       company_logo: res.company_logo,
@@ -153,7 +150,6 @@ const Jobs = () => {
       location: i.city,
       job_id: i.id,
     }));
-    console.log(jobs);
     setJobsList(jobs);
   };
 

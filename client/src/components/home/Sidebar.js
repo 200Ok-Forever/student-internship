@@ -25,7 +25,6 @@ const Sidebar = () => {
   const { user } = useContext(UserContext);
   const [events, setEvents] = useState([]);
   const [meetings, setMeetings] = useState([]);
-  console.log("🚀 ~ meetings", meetings);
 
   useEffect(() => {
     const getEvents = async () => {

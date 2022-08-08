@@ -40,7 +40,6 @@ const EditStudentProfile = () => {
 
   // get user's original info
   const [info, setInfo] = useState({});
-  console.log("🚀 ~ info", info);
   useEffect(() => {
     const loadInfo = async () => {
       const res = await getLongUserInfo(user.uid);

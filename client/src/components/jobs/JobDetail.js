@@ -35,7 +35,6 @@ import { UserContext } from "../../store/UserContext";
 
 const JobDetail = () => {
   const [info, setInfo] = useState([]);
-  console.log("🚀 ~ info", info);
   const { search } = useLocation();
   const query = queryString.parse(search);
   const id = query.id;
