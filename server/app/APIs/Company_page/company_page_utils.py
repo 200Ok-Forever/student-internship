@@ -46,7 +46,7 @@ def check_editapplication_permison(jobid, appliedid, uid):
 
     # check permission
     if int(job.company_id) != int(uid):
-       return False, {"message": "No permision"}
+        return False, {"message": "No permision"}
     
 
     # check the application id
@@ -150,8 +150,8 @@ def create_job(data, intern_id, companyid, old_skills):
 def find_file(type, uid):
     file = db.session.query(model.File).filter(model.File.uid == uid, model.File.file_type == type).first()
     if file != None:
-        file = str(file.decode())
-    return file
+        return { 'data': file.data, 'name': file.filename }
+    return None
 
 def format_jobs(jobs, uid, company_logo, company_name):
     # format result

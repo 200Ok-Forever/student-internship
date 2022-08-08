@@ -28,13 +28,25 @@ class SendMeetingInvitation(Resource):
         """ Send Zoom meeting invitation link """
         # Grab the json data
         data = request.get_json()
-        info, status= ChatUtils.send_zoom_meeting_invitation(data)
+        info, status, user= ChatUtils.send_zoom_meeting_invitation(data)
         if status != 200:
             return info, status
+        
+        if user.role == 2:
+            company_id = data['otherUserId']
+            student_id = uid
+        else:
+            company_id = uid
+            student_id = data['otherUserId']
 
-        invi = Invitation(data['user_id'], data['internship_id'], data['time'], info['start_url'], None)
-        db.session.add(invi)
-        db.session.commit()
+        try:
+                
+            invi = Invitation(student_id, company_id, data['time'], info['start_url'], None)
+            db.session.add(invi)
+            db.session.commit()
+        except:
+            db.session.rollback()
+            return {"message": "already has invitaion"}, 200
         return info, status
 
 
@@ -51,34 +63,30 @@ class GetMeetings(Resource):
     @jwt_required()
     def get(self):
         uid = get_jwt_identity()
-        uid = 185
-
         # check user's role
         user = db.session.query(User).filter(User.uid == uid).first()
         print(user.role)
         if not user:
             return 400
-        query = db.session.query(Internship, Invitation, Student).filter(Internship.id == Invitation.internship_id,
+        query = db.session.query(Companies, Invitation, Student).filter(Companies.id == Invitation.company_id,
                                                                          Student.id == Invitation.student_id)
         # company
         if user.role == 2:
-            query = query.filter(Invitation.internship_id == uid)
+            query = query.filter(Invitation.company_id == uid)
         else:
             query = query.filter(Student.id == uid)
 
         data = query.all()
 
         result = []
-        for intern, invi, stu in data:
+        for company, invi, stu in data:
             if user.role == 2:
                 data = convert_object_to_dict(invi)
                 data["first_name"] = stu.first_name
                 data['last_name'] = stu.last_name
-                data["user_id"] = stu.id
             else:
                 data = convert_object_to_dict(invi)
-                data["name"] = intern.company.company_name
-                data['user_id'] = intern.company.id
+                data["name"] = company.company_name
 
             result.append(data)
 
