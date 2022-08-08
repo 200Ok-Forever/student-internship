@@ -1,5 +1,4 @@
 from sys import intern
-from turtle import st
 from .. import  db
 
 class Invitation(db.Model):
