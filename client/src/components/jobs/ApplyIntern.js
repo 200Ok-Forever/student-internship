@@ -3,7 +3,14 @@ import queryString from "query-string";
 import { useHistory, useLocation } from "react-router-dom";
 import FormHead from "../UI/FormHead";
 import { Box } from "@mui/system";
-import { Button, Grid, Input, TextField, Typography } from "@mui/material";
+import {
+  Button,
+  Grid,
+  Input,
+  TextField,
+  Typography,
+  Modal,
+} from "@mui/material";
 import TitleWithIcon from "../UI/TitleWithIcon";
 import QuizIcon from "@mui/icons-material/Quiz";
 import { useState, useContext, useEffect } from "react";
@@ -11,11 +18,8 @@ import apply from "../../asset/apply.png";
 import { getInternship, postNewApply } from "../../api/internship-api";
 import { UserContext } from "../../store/UserContext";
 import _ from "lodash";
+import ErrorMessage from "../UI/ErrorMessage";
 
-const question = [
-  "Lorem ipsum dolorf sit amet, consectetur adipiscing elit?",
-  "Lorem ipsum dolorf sit amet, consectetur adipiscing elit?",
-];
 const center = {
   display: "flex",
   alignItems: "center",
@@ -60,14 +64,23 @@ const ApplyIntern = () => {
 
 const ApplyForm = ({ setIsSubmitted }) => {
   const { search, state } = useLocation();
+
   const info = queryString.parse(search);
-  // const job_id = info.id;
   const job_name = "Apply " + info.name.replace(/-/g, " ");
   const company = info.company;
   const avatar = state?.state.avatar || "";
   const [resume, setResume] = useState(null);
   const [coverLetter, setCoverLetter] = useState(null);
   const [questions, setQuestions] = useState(null);
+
+  // Error prompt
+  const [errorModalState, setErrorModalState] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const handleOpen = (msg) => {
+    setErrorMessage(msg);
+    setErrorModalState(true);
+  };
+  const handleClose = () => setErrorModalState(false);
 
   const { user } = useContext(UserContext);
 
@@ -88,34 +101,47 @@ const ApplyForm = ({ setIsSubmitted }) => {
 
   function getBase64(file) {
     var reader = new FileReader();
-    return new Promise(resolve => {
-      reader.onload = ev => {
-        resolve(ev.target.result)
-      }
+    return new Promise((resolve) => {
+      reader.onload = (ev) => {
+        resolve(ev.target.result);
+      };
       try {
-        reader.readAsDataURL(file)
+        reader.readAsDataURL(file);
       } catch (e) {
         console.log(e);
         resolve(null);
       }
-    })
- }
+    });
+  }
 
   const submitHandler = async () => {
-    // const QApairs = Object.assign.apply(
-    //   {},
-    //   questions.map((v, i) => ({ [v]: answers[i] }))
-    // );
+    const QApairs = Object.assign.apply(
+      {},
+      questions.map((v, i) => ({ [v]: answers[i] }))
+    );
 
-    const resumeBase64 = await getBase64(resume);
-    const coverBase64 = await getBase64(coverLetter);
-
-    // await postNewApply(info.id, {
-    //   resume: resumeBase64,
-    //   coverLetter: coverBase64,
-    //   interviewQuestion: QApairs,
-    // });
-    //setIsSubmitted(true);
+    if (resume === null && coverLetter === null) {
+      handleOpen("Please Submit a resume and/or cover letter");
+    } else {
+      const resumeBase64 = await getBase64(resume);
+      const coverBase64 = await getBase64(coverLetter);
+      const res = await postNewApply(
+        info.id,
+        {
+          resume: resumeBase64,
+          coverLetter: coverBase64,
+          interviewQuestion: QApairs,
+        },
+        user.token
+      );
+      const resObject = JSON.parse(res)
+      if (resObject.msg === "sucessfully") {
+        setIsSubmitted(true);
+      } else {
+        console.log(resObject);
+        handleOpen(resObject);
+      }
+    }
   };
 
   const answerChangeHandler = (i) => (e) => {
@@ -129,6 +155,14 @@ const ApplyForm = ({ setIsSubmitted }) => {
         flexDirection: "column",
       }}
     >
+      <Modal
+        open={errorModalState}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <ErrorMessage errorTitle={"Error"} errorMessage={errorMessage} />
+      </Modal>
       <FormHead title={job_name} company_name={company} avatar={avatar} />
       <Box
         sx={{
@@ -143,27 +177,11 @@ const ApplyForm = ({ setIsSubmitted }) => {
         <Typography variant="subtitle2" sx={{ color: "#c1c1c1" }}>
           No resume? Click <a href="/">here</a> !
         </Typography>
+        {resume && <Typography color="primary">Resume Successfully Uploaded</Typography>}
         <UploadFile name="Cover Letter" setFile={setCoverLetter} />
-        <Grid container spacing={5} mt="50px">
-          <Grid item md={6} xs={12}>
-            <TextField
-              id="First Name"
-              label="First Name"
-              variant="outlined"
-              fullWidth
-            />
-          </Grid>
-          <Grid item md={6} xs={12}>
-            <TextField
-              id="Last Name"
-              label="Last Name"
-              variant="outlined"
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField id="Email" label="Email" variant="outlined" fullWidth />
-          </Grid>
+        <Typography></Typography>
+        {coverLetter && <Typography color="primary">Cover letter Successfully Uploaded</Typography>}
+        <Grid container spacing={0} mt="auto">
         </Grid>
         <TitleWithIcon
           icon={<QuizIcon color="primary" />}
@@ -215,17 +233,13 @@ const UploadFile = ({ name, setFile }) => {
           type="file"
           sx={{ display: "none" }}
           onChange={(e) => {
-            const input = document.getElementById(name)
+            const input = document.getElementById(name);
             if (input.files) {
-              setFile(input.files[0])
+              setFile(input.files[0]);
             }
-          }}        
+          }}
         />
-        <Button
-          variant="contained"
-          component="span"
-          sx={{ width: "28vw" }}
-        >
+        <Button variant="contained" component="span" sx={{ width: "28vw" }}>
           Upload
         </Button>
       </label>
