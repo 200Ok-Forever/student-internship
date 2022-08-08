@@ -1,5 +1,6 @@
 from email.mime import application
 from operator import mod, pos
+from pickletools import uint1
 from re import L, S
 from flask import request, jsonify
 from flask_jwt_extended import get_jwt_identity
@@ -14,13 +15,15 @@ from ...Models import skill as Skill
 from ...Helpers.other_util import convert_object_to_dict, convert_model_to_dict
 from ... import db
 from flask_jwt_extended import jwt_required
+from sqlalchemy.sql import exists
 from flask import request, redirect
 from flask_restx import Resource, reqparse
 from fuzzywuzzy import process
-from sqlalchemy import or_
+from sqlalchemy import or_, and_
 from datetime import datetime
 from difflib import SequenceMatcher
 from sqlalchemy import func
+from sqlalchemy.orm import aliased
 
 company_ns = CompanyPageAPI.company_ns
 authParser = company_ns.parser()
@@ -229,10 +232,12 @@ class CreateIntern(Resource):
     @company_ns.response(200, "Successfully")
     @company_ns.response(400, "Something wrong")
     @company_ns.expect(CompanyPageAPI.intern_data, validate=True)
-    @jwt_required()
+    #@jwt_required()
     def post(self, companyid):
         data = company_ns.payload
-        uid = get_jwt_identity()
+        print(data)
+        #uid = get_jwt_identity()
+        uid = 371
 
         query = db.session.query(Company.Companies).filter(Company.Companies.id == companyid)
 
@@ -325,32 +330,35 @@ class Recomendation(Resource):
             return {"message": "Invalid internship id"}, 400
         # 2. check permission : is recuiter and belongs to this company
         if job.company.id != uid:
-            return {"message": "No permission"}, 400
+           return {"message": "No permission"}, 400
 
         # 3. recomendation
         job_skills = job.skills
         skills_id = [skill.id for skill in job_skills]
-
-        query = db.session.query(model.Student, Skill.Skill, Skill.StudentSkills, model.InternshipStatus
+        InSta = aliased(model.InternshipStatus)
+        query = db.session.query(model.Student, Skill.Skill, Skill.StudentSkills
         # join the stuudent , skill, studentskill
-        ).filter(model.Student.id == Skill.StudentSkills.student_id, Skill.Skill.id == Skill.StudentSkills.skill_id,
+        ).filter(model.Student.id == Skill.StudentSkills.student_id, Skill.Skill.id == Skill.StudentSkills.skill_id
+        ).filter(
         # get the pending applicant
-        model.InternshipStatus.intern_id == jobid, model.InternshipStatus.uid == model.Student.id, model.InternshipStatus.is_applied == 'True', model.InternshipStatus.status == 'pending',
+        or_(~ exists().where(model.InternshipStatus.uid==model.Student.id, model.InternshipStatus.intern_id==jobid),and_(InSta.intern_id == jobid, InSta.uid == model.Student.id, InSta.is_applied == 'False'))
+        ).filter(Skill.Skill.id.in_(skills_id))
         # get the skill that the job needs
-        Skill.Skill.id.in_(skills_id))
-        top6 = query.group_by(model.Student.id).order_by(func.count(model.Student.id).desc()).limit(6).all()
+        
+
+        top6 = query.group_by(model.Student.id).order_by(func.count(model.Student.id).desc()).limit(6)
         stu_skills = query.order_by(model.Student.id).all()
         result = []
         for data in top6:
             student = data[0]
             info = convert_object_to_dict(student)
+            info['avatar'] = student.user.avatar
             stu_skills = query.filter(model.Student.id == student.id).all()
 
             skills = [skill[1].name for skill in stu_skills]
             info['match'] = skills
             result.append(info)
-
-        return {"reault": result}, 200
+        return {"result": result, "intern_title": job.title}, 200
 
 
 # --------------------------------MANAGE THE APPLICATION-----------------------
