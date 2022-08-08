@@ -1,4 +1,5 @@
 from email.policy import default
+from urllib import response
 from flask import request, jsonify
 from flask_restx import Resource, reqparse
 from .internships_model import InternshipsAPI
@@ -58,8 +59,11 @@ class GetInternship(Resource):
 
     @internships_api.doc("Get internship", responses={
         200: "success",
-        404: "Internship not found!/API KEY PROBELMS",
-        400: "user not found",
+        404: "This internship does not exist",
+        404: "user not found",
+        400 :"API KEY PROBELMS"
+
+
     })
     @internships_api.doc(body=get_internship_parser)
     @jwt_required(optional=True)
@@ -83,12 +87,15 @@ applyParser.add_argument('Authorization', location='headers', help='Bearer [Toke
 class ApplyInternship(Resource):
     internship_apply = InternshipsAPI.internship_apply
 
-    @internships_api.doc("Apply internship", responses={
-        200: "success",
-        400: "user not found/Error",
+
+    @jwt_required()
+    @internships_api.doc("apply internship", response= {
+        400:"you have applied this internship",
+       400: "user not found",
+       200: "sucesfully"
     })
-    #@jwt_required()
-    @internships_api.expect(internship_apply)#, applyParser)
+    @internships_api.expect(internship_apply, applyParser)
+
     def post(self, id):
         """ Apply internship """
         try:
@@ -108,12 +115,14 @@ class CommentInternship(Resource):
     internship_comment = InternshipsAPI.internship_comment
 
     @jwt_required()
-    @internships_api.expect(commentParser, internship_comment, validate=True)
-    @internships_api.doc("Post a comment under the internship", responses={
-        200: "success",
-        404: "Internship not found!",
+    @internships_api.doc("internship comment", response = {
+        400: "internship not found",
         400: "user not found",
+
+                   
     })
+    @internships_api.expect(commentParser, internship_comment, validate=True)
+ 
     def post(self, id):
         """ Post a comment under the internship """
         try:
@@ -134,10 +143,12 @@ class AppliedForInternship(Resource):
 
     @jwt_required()
     @internships_api.expect(appliedfor_parser)
+
     @internships_api.doc("Get all the applications of the user", responses={
         200: "success",
         404: "Internship not found!",
         400: "user not found",
+
     })
     def get(self):
         """ Get all the applications of the user """
@@ -158,21 +169,25 @@ savePostParser.add_argument('internship_id')
 class SaveInternship(Resource):
     @jwt_required()
     @internships_api.expect(saveParser, validate=True)
-    @internships_api.doc("Get the saved internships", responses={
-        200: "success",
-        404: "Internship not found!",
+
+    @internships_api.doc("get internship save list", response={
+        400:"user not found",
+        400:"internship not found",
+        200:"save sucessfullt"
+
     })
     def get(self):
         """ Get the saved internships """
         uid = get_jwt_identity()
         return InternshipsUtils.getSaveList(uid)
 
-    @internships_api.doc("Save the internship", responses={
-        200: "success",
-        404: "Internship not found!",
-    })
+
     @jwt_required()
     @internships_api.expect(saveParser, savePostParser)
+    @internships_api.doc("save  internship list", response={
+        200:"save sucessfully",
+        404: "Internship not found"
+    })
     def post(self):
         """ Save the internship """
         arg = request.get_json()
@@ -183,6 +198,7 @@ class SaveInternship(Resource):
 @internships_api.route('/internships/unsave')
 class UnsaveInternship(Resource):
     @jwt_required()
+ 
     @internships_api.expect(saveParser, validate=True)
     @internships_api.doc("Unsave the internship", responses={
         200: "success",
@@ -201,7 +217,7 @@ class GetViewedInternships(Resource):
     @internships_api.expect(saveParser, validate=True)
     @internships_api.doc("Get the internships that viewed before", responses={
         200: "success",
-        404: "Internship not found!",
+        400: "Internship not found",
     })
     def get(self):
         """ Get the internships that viewed before """
@@ -261,9 +277,11 @@ recommendParser.add_argument('type', help='recommend/new/closing')
 
 @internships_api.route('/internships/recommend')
 class Recommend(Resource):
+
     @internships_api.doc("Get the recommendation of internships", responses={
         200: "success",
         400: "no related student",
+
     })
     @internships_api.expect(recommendParser, validate=True)
     @jwt_required()

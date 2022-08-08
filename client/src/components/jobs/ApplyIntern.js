@@ -84,10 +84,6 @@ const ApplyForm = ({ setIsSubmitted }) => {
   const { user } = useContext(UserContext);
 
   const answers = [];
-  console.log(answers);
-
-  console.log(resume);
-  console.log(coverLetter);
 
   useEffect(() => {
     const getInternshipInfo = async () => {
