@@ -195,14 +195,14 @@ class InternshipsUtils:
                         InternshipStatus.uid == uid).first()
 
                     if update is not None:
-                        print("is not none")
+                        
                         db.session.query(InternshipStatus).filter(InternshipStatus.intern_id == id).filter(
                         InternshipStatus.uid == uid).update(
                         {InternshipStatus.seen_time: datetime.datetime.now()})
                         db.session.commit()
 
                     else:
-                        print("okkkkk")
+                        
                         try:
                             seen_internship = InternshipStatus()
                             seen_internship.uid = uid
@@ -256,7 +256,7 @@ class InternshipsUtils:
                 except:
                     video_id_list = []
 
-                if video_id_list == 404:
+                if video_id_list == 404 or video_id_list == []:
                     return {'msg': "API KEY PROBELMS"}, 404
 
                 internship_result = {
@@ -331,7 +331,7 @@ class InternshipsUtils:
         if job_type is not None:
             map.append(Internship.type.ilike(f'%{job_type}%'))
 
-        # print(map)
+       
 
         if location is not None:
             location = data['location']
@@ -421,7 +421,7 @@ class InternshipsUtils:
             except Exception as error:
                 return dumps({'msg': error}), 400
 
-        return dumps({'msg': 'no related internship'})
+       
 
     @staticmethod
     def appliedfor(uid, arg):
@@ -506,10 +506,9 @@ class InternshipsUtils:
             InternshipStatus.applied_time: str(datetime.datetime.now()),
             InternshipStatus.stage: stage, InternshipStatus.status: "pending"})
 
-        print("this is apply")
+       
         print(apply)
-        # if apply == 0:
-        #     return {'msg': 'you have applied this internship'},400
+       
         # if apply == None:
         #     apply= InternshipStatus(current_user_id, id, "True", str(datetime.datetime.now()), stage)
         #     db.session.add(apply)
@@ -550,7 +549,7 @@ class InternshipsUtils:
             return dumps({"msg": "sucessfully"}), 200
 
         except Exception as error:
-            print("______")
+
             print(error)
             return dumps({"msg": error}), 400
        
@@ -707,11 +706,11 @@ class InternshipsUtils:
                    }, 400
 
         if student:
-            print("zzzzzzzz")
+      
             student_id = student.id
-            print(student_id)
+          
             skills = db.session.query(StudentSkills).filter(StudentSkills.student_id == student_id).all()
-            print(skills)
+           
             internship_list = []
             for skill in skills:
                 if type == 'recommend':
@@ -727,8 +726,7 @@ class InternshipsUtils:
                     internships = db.session.query(Internship).join(Internship.skills).filter(
                         Skill.id == skill.skill_id).order_by((Internship.posted_time.desc())).all()
                 internship_list.append(internships)
-        print("______________")
-        print(internship_list)
+     
         result = []
         for internships in internship_list:
             for internship in internships:
