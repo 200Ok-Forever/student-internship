@@ -96,7 +96,7 @@ const ApplyForm = ({ setIsSubmitted }) => {
       setQuestions(res.questions.map((i) => i.content));
     };
     getInternshipInfo();
-  }, []);
+  }, [info.id, user.token]);
 
   function getBase64(file) {
     var reader = new FileReader();
