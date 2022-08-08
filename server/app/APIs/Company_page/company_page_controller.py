@@ -318,11 +318,10 @@ class CreateIntern(Resource):
 class Recomendation(Resource):
     @company_ns.response(200, "Successfully")
     @company_ns.response(400, "Something wrong")
-    #@jwt_required()
+    @jwt_required()
     def get(self, jobid):
         jobid = int(jobid)
-        #uid = get_jwt_identity()
-        uid = 11786
+        uid = get_jwt_identity()
         query = db.session.query(model.Internship).filter(model.Internship.id == jobid)
 
         # 1. check company id
@@ -330,8 +329,8 @@ class Recomendation(Resource):
         if job == None:
             return {"message": "Invalid internship id"}, 400
         # 2. check permission : is recuiter and belongs to this company
-        #if job.company.id != uid:
-        #    return {"message": "No permission"}, 400
+        if job.company.id != uid:
+           return {"message": "No permission"}, 400
 
         # 3. recomendation
         job_skills = job.skills
@@ -342,7 +341,7 @@ class Recomendation(Resource):
         ).filter(model.Student.id == Skill.StudentSkills.student_id, Skill.Skill.id == Skill.StudentSkills.skill_id
         ).filter(
         # get the pending applicant
-        or_(~ exists().where(model.InternshipStatus.uid==model.Student.id),and_(InSta.intern_id == jobid, InSta.uid == model.Student.id, InSta.is_applied == 'False'))
+        or_(~ exists().where(model.InternshipStatus.uid==model.Student.id, model.InternshipStatus.intern_id==jobid),and_(InSta.intern_id == jobid, InSta.uid == model.Student.id, InSta.is_applied == 'False'))
         ).filter(Skill.Skill.id.in_(skills_id))
         # get the skill that the job needs
         
@@ -359,7 +358,7 @@ class Recomendation(Resource):
             skills = [skill[1].name for skill in stu_skills]
             info['match'] = skills
             result.append(info)
-        return {"reault": result, "intern_title": job.title}, 200
+        return {"result": result, "intern_title": job.title}, 200
 
 
 # --------------------------------MANAGE THE APPLICATION-----------------------
