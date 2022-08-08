@@ -22,22 +22,24 @@ forum_api = ForumAPI.forum_ns
 
 forum_parser = reqparse.RequestParser()
 forum_parser.add_argument('pageNumber', type=int, location='args', default=1)
+forum_parser.add_argument('Industry', type=str, location='args', default=1)
 forum_parser.add_argument('userId', type=int, location='args')
 forum_parser.add_argument('searchTerm', type=str, location='args')
 forum_parser.add_argument('strategy', choices=['newest', 'hottest', 'popular'], type=str, location='args')
 
 
-@forum_api.route("/<int:id>/posts")
+@forum_api.route("/posts")
 class GetAllPosts(Resource):
     @forum_api.response(200, "Successfully")
     @forum_api.response(400, "Something wrong")
     @forum_api.expect(forum_parser)
     def get(self, id):
         args = forum_parser.parse_args()
-        query = db.session.query(Forum, Post,
+        ind_id = forum_list.index(data['Industry'].lower())
+        query = db.session.query(Post,
                                  func.count(PostComment.id)).outerjoin(PostComment,
                                                                        PostComment.post_id == Post.id).filter(
-            Forum.id == id, Post.forum_id == Forum.id).group_by(PostComment.post_id)
+            Post.forum_id == ind_id).group_by(PostComment.post_id)
         # need to get the users posts
         if args['userId'] is not None:
             query = query.filter(Post.student_id == int(args['userId']))
