@@ -31,15 +31,21 @@ auth_parser = reqparse.RequestParser()
 auth_parser.add_argument('Authorization', location='headers', help='Bearer [Token]', default='Bearer xxxxxxxxxxx')
 
 
-@forum_api.route("/posts/<id>")
+@forum_api.route("/posts/<postid>")
 class GetPost(Resource):
-    @forum_api.response(200, "Successfully")
-    @forum_api.response(400, "Something wrong")
-    def get(self, id):
+    @forum_api.doc(
+        "Get the content of the given post",
+        responses={
+            200: "Successfuly",
+            400: "Invalid post id",
+        }
+    )
+    def get(self, postid):
+        """ Get the content of the given post """
         post = db.session.query(Post).outerjoin(PostComment, PostComment.post_id == Post.id).filter(
-            Post.id == id).first()
+            Post.id == postid).first()
         if post is None:
-            return 400
+            return {"message": "Invalid post id"}, 400
 
         data = convert_object_to_dict(post)
         data['nComments'] = len(post.comments)
@@ -56,10 +62,16 @@ class GetPost(Resource):
 
 @forum_api.route('/posts')
 class AllPost(Resource):
-    @forum_api.response(200, "Successfully")
-    @forum_api.response(400, "Something wrong")
+    @forum_api.doc(
+        "Get all the post of the given forum with filter",
+        responses={
+            200: "Successfuly",
+            400: "Please provide an industry",
+        }
+    )
     @forum_api.expect(forum_parser)
     def get(self):
+        """ Get all the post of the given forum with filter """
         args = forum_parser.parse_args()
         if args['industry']:
             ind_id = forum_list.index(args['industry'].lower())
