@@ -65,9 +65,8 @@ class GetMeetings(Resource):
         uid = get_jwt_identity()
         # check user's role
         user = db.session.query(User).filter(User.uid == uid).first()
-        print(user.role)
         if not user:
-            return 400
+            return {"message": "Something wrong"},400
         query = db.session.query(Companies, Invitation, Student).filter(Companies.id == Invitation.company_id,
                                                                          Student.id == Invitation.student_id)
         # company
