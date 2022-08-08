@@ -26,7 +26,7 @@ forum_parser.add_argument('pageNumber', type=int, location='args', default=1)
 forum_parser.add_argument('industry', type=str, location='args')
 forum_parser.add_argument('userId', type=int, location='args')
 forum_parser.add_argument('searchTerm', type=str, location='args')
-forum_parser.add_argument('sort', choices=['newest', 'hottest', 'popular'], type=str, location='args')
+forum_parser.add_argument('sort', choices=['newest', 'hot', 'popular'], type=str, location='args')
 auth_parser = reqparse.RequestParser()
 auth_parser.add_argument('Authorization', location='headers', help='Bearer [Token]', default='Bearer xxxxxxxxxxx')
 
