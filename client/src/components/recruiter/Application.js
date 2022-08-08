@@ -141,7 +141,7 @@ const Documents = ({ application }) => {
             Resume
           </Typography>
           {application.resume?.data ? (
-            <Link download={`${application.first_name}_${application.last_name}_resume`} href={application.resume.data}>Download)</Link>
+            <Link download={`${application.first_name}_${application.last_name}_resume`} href={application.resume.data}>Download</Link>
           ) : (
             <Typography variant="body1">Not Submitted</Typography>
           )}
@@ -151,7 +151,7 @@ const Documents = ({ application }) => {
             Cover Letter
           </Typography>
           {application.coverletter?.data ? (
-            <Link download={`${application.first_name}_${application.last_name}_cover_letter`} href={application.coverletter.data}>Download)</Link>
+            <Link download={`${application.first_name}_${application.last_name}_cover_letter`} href={application.coverletter.data}>Download</Link>
           ) : (
             <Typography variant="body1">Not Submitted</Typography>
           )}
@@ -164,7 +164,7 @@ const Documents = ({ application }) => {
 const Questions = ({ questions }) => {
   return (
     <Box mt={4}>
-      <Typography variant="h5">Application Questions</Typography>
+      <Typography variant="h5">Application Answers</Typography>
       <Box sx={{ display: "flex", flexDirection: "column", gap: 3, mt: 3 }}>
         {Object.entries(questions).map(questionPair => (
           <Box>
