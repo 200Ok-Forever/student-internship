@@ -82,7 +82,6 @@ class ApplyInternship(Resource):
             arg = request.get_json()
             print(arg)
             return InternshipsUtils.apply(id, arg)
-            pass
         except Exception as error:
             pass
 
@@ -196,7 +195,7 @@ class Events(Resource):
 
 recommendParser = internships_api.parser()
 recommendParser.add_argument('Authorization', location='headers', help='Bearer [Token]', default='Bearer xxxxxxxxxxxxx')
-recommendParser.add_argument('type', help='recommend/new/closingsoon')
+recommendParser.add_argument('type', help='recommend/new/closing')
 
 
 @internships_api.route('/internships/recommend')

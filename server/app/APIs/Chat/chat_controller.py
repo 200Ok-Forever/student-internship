@@ -1,5 +1,5 @@
 from flask import request, jsonify, current_app
-from flask_restx import Resource
+from flask_restx import Resource, reqparse
 from .chat_model import ChatAPI
 from .chat_utils import ChatUtils
 from flask_jwt_extended import jwt_required
@@ -12,6 +12,9 @@ from ...Helpers.other_util import convert_object_to_dict, convert_model_to_dict
 
 chat_api = ChatAPI.api
 
+auth_parser = reqparse.RequestParser()
+auth_parser.add_argument('Authorization', location='headers', help='Bearer [Token]', default='Bearer xxxxxxxxxxx')
+
 
 @chat_api.route("/meeting/invitation")
 class SendMeetingInvitation(Resource):
@@ -21,7 +24,7 @@ class SendMeetingInvitation(Resource):
         200: "success",
         404: "User not found!",
     })
-    @chat_api.expect(zoom_link)
+    @chat_api.expect(zoom_link, auth_parser)
     @jwt_required()
     def post(self):
         uid = get_jwt_identity()
@@ -29,18 +32,25 @@ class SendMeetingInvitation(Resource):
         # Grab the json data
         data = request.get_json()
         info, status, user= ChatUtils.send_zoom_meeting_invitation(data)
+
         if status != 200:
             return info, status
         
         if user.role == 2:
-            internship_id = data['otherUserId']
+            company_id = data['otherUserId']
             student_id = uid
         else:
-            internship_id = uid
+            company_id = uid
             student_id = data['otherUserId']
-        invi = Invitation(student_id, internship_id, data['time'], info['start_url'], None)
-        db.session.add(invi)
-        db.session.commit()
+
+        try:
+                
+            invi = Invitation(student_id, company_id, data['time'], info['start_url'], None)
+            db.session.add(invi)
+            db.session.commit()
+        except:
+            db.session.rollback()
+            return {"message": "already has invitaion"}, 200
         return info, status
 
 
@@ -59,9 +69,8 @@ class GetMeetings(Resource):
         uid = get_jwt_identity()
         # check user's role
         user = db.session.query(User).filter(User.uid == uid).first()
-        print(user.role)
         if not user:
-            return 400
+            return {"message": "Something wrong"},400
         query = db.session.query(Companies, Invitation, Student).filter(Companies.id == Invitation.company_id,
                                                                          Student.id == Invitation.student_id)
         # company

@@ -24,7 +24,8 @@ class Companies(db.Model):
     company_logo = db.Column(db.TEXT)
     industries = db.relationship('Industry', secondary='r_industry_company', back_populates='companies', lazy=True)
     internships = db.relationship('Internship', backref='company', lazy=True)
-
+    invitations_students = db.relationship("Student", secondary='r_invitation', back_populates='invitations', lazy=True)
+    
     def __repr__(self):
         return '<Company id:{} name:>'.format(self.id, self.company_name)
 
