@@ -51,8 +51,6 @@ const ApplicationHeader = ({ application, i, setLoading, setApplications, applic
     const res = await postShortlistApplication(id, application.applicationId, user.token)
     let newApps = [...applications];
     newApps[i] = res;
-    console.log("ON")
-    console.log(i)
     setApplications(newApps)
     setSelectedApp(i)
     setLoading(false);
