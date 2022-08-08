@@ -358,7 +358,7 @@ class Recomendation(Resource):
             skills = [skill[1].name for skill in stu_skills]
             info['match'] = skills
             result.append(info)
-        return {"reault": result, "intern_title": job.title}, 200
+        return {"result": result, "intern_title": job.title}, 200
 
 
 # --------------------------------MANAGE THE APPLICATION-----------------------
