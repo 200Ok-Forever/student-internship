@@ -1,5 +1,16 @@
 from .. import  db
 
+forum_list = [
+    '',
+  'general',
+  'arts',
+  'business',
+  'engineering',
+  'finance',
+  'law',
+  'medicine',
+  'science']
+  
 class Fourm(db.Model):
   __tablename__ = 't_forum'
   id = db.Column('id', db.Integer, autoincrement=True, primary_key=True)

@@ -7,7 +7,7 @@ from .forum_utils import ForumUtils
 from flask_jwt_extended import jwt_required
 from flask_restx import Resource, reqparse
 from ... import db
-from  ...Models.forum import Post, PostComment, Fourm
+from  ...Models.forum import Post, PostComment, Fourm, forum_list
 from sqlalchemy import and_, null, or_
 from sqlalchemy import func
 from ...Helpers.other_util import convert_object_to_dict, convert_model_to_dict
@@ -57,15 +57,22 @@ class GetPost(Resource):
     @forum_api.response(200, "Successfully")
     @forum_api.response(400, "Something wrong")
     def get(self, id):
+
         post = db.session.query(Post).outerjoin(PostComment, PostComment.post_id == Post.id).filter(Post.id == id).first()
         if post == None:
-            return 400
-        
+            return {"message": "Invalid post id"}, 400
+        forum_id = post.forum_id
         result = {}
-        result['post'] = convert_object_to_dict(post)
+        if forum_id <= 0 or forum_id >= len(forum_list):
+            return {"message": "invalid forum id"},400
 
+        result['industry'] = forum_list[forum_id]
+
+    
+        result['post'] = convert_object_to_dict(post)
         comments = post.comments
         result['comments'] = convert_model_to_dict(comments)
+            
 
         return result, 200
         
