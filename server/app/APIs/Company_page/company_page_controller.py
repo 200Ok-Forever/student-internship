@@ -214,7 +214,7 @@ class GetAllApplications(Resource):
             400: "Invalid internship id/No permissio",
         }
     )
-    #@jwt_required()
+    @jwt_required()
     def get(self, jobid):
         """ Get all applications of this internship """
         def get_location(data):
@@ -224,8 +224,7 @@ class GetAllApplications(Resource):
             else:
                 return ""
 
-        #uid = get_jwt_identity()
-        uid = 186
+        uid = get_jwt_identity()
 
         # 1. check internship id
         query = db.session.query(model.Internship).filter(model.Internship.id == jobid)
