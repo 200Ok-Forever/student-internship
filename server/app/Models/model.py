@@ -240,6 +240,8 @@ class InternshipStatus(db.Model):
     shortlist = db.Column(db.Boolean)
     internship = db.relationship('Internship', back_populates='status')
     stage = db.Column(db.Integer, db.ForeignKey('t_process.id'))
+    applied_time = db.Column(db.VARCHAR(255))
+
     # user = db.relationship('User', back_populates='status')
 
 
