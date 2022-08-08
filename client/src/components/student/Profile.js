@@ -84,15 +84,17 @@ const Profile = () => {
         </Typography>
       </Box>
       <Box sx={{ width: "50vw" }}>
-        <Button
-          variant="outlined"
-          sx={{ alignSelf: "flex-start" }}
-          onClick={() => {
-            history.push("/editstudentprofile");
-          }}
-        >
-          Edit Profile
-        </Button>
+        {user.role === 1 && (
+          <Button
+            variant="outlined"
+            sx={{ alignSelf: "flex-start" }}
+            onClick={() => {
+              history.push("/editstudentprofile");
+            }}
+          >
+            Edit Profile
+          </Button>
+        )}
       </Box>
       <ProfileInfo data={info} />
       {/* <TitleWithIcon

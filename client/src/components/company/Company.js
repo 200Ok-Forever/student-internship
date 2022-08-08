@@ -1,10 +1,4 @@
-import {
-  Avatar,
-  Box,
-  Button,
-  Paper,
-  Typography,
-} from "@mui/material";
+import { Avatar, Box, Button, Paper, Typography } from "@mui/material";
 import React, { useEffect, useState, useContext } from "react";
 import classes from "./company.module.scss";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
@@ -210,7 +204,7 @@ const Jobs = () => {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const id = urlParams.get("id");
-    const res = await companyGetJobInfo(id,"","","");
+    const res = await companyGetJobInfo(id, "", "", "");
     console.log(res);
     const jobs = res.jobs.map((i) => ({
       ...i,

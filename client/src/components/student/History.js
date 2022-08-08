@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Box, Typography } from "@mui/material";
-import CircularProgress from '@mui/material/CircularProgress';
+import CircularProgress from "@mui/material/CircularProgress";
 import JobBlock from "../jobs/JobBlock";
 import { UserContext } from "../../store/UserContext";
 import { getInternshipHistory } from "../../api/internship-api";
@@ -27,13 +27,15 @@ const History = () => {
         History
       </Typography>
       <Box sx={boxStyling}>
-        {loading ?
-          <CircularProgress sx={{ alignSelf: 'center' }} />
-        : internships.length === 0 ? 
+        {loading ? (
+          <CircularProgress sx={{ alignSelf: "center" }} />
+        ) : internships.length === 0 ? (
           <Typography>You have not viewed any internships yet</Typography>
-        : internships.map((internship, i) => (
-          <JobBlock job={internship} key={i} />
-        ))}
+        ) : (
+          internships.map((internship, i) => (
+            <JobBlock job={internship} key={i} />
+          ))
+        )}
       </Box>
     </Box>
   );

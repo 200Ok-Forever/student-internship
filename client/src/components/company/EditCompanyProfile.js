@@ -29,7 +29,7 @@ const EditCompanyProfile = () => {
   const [errorTitle, setErrorTitle] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const handleOpen = (title, msg) => {
-    setErrorTitle(title)
+    setErrorTitle(title);
     setErrorMessage(msg);
     setErrorModalState(true);
   };
@@ -57,7 +57,7 @@ const EditCompanyProfile = () => {
       linkedin: info?.linkedin,
       address: info?.line1,
       city: info?.city,
-      postalCode: info?.postalCode
+      postalCode: info?.postalCode,
     });
   }, [info]);
 
@@ -84,7 +84,9 @@ const EditCompanyProfile = () => {
           first_name: values.firstName,
           last_name: values.lastName,
           company_name: values.company_name,
-          industry: values.industry?.map((i) => (i.name)) ? values.industry?.map((i) => (i.name)) : [],
+          industry: values.industry?.map((i) => i.name)
+            ? values.industry?.map((i) => i.name)
+            : [],
           linkedin: values.linkedin,
           company_url: values.company_url,
           line1: values.address,
@@ -97,12 +99,16 @@ const EditCompanyProfile = () => {
         };
         console.log(editValues);
         try {
-          console.log(editValues)
-          const res = await postEditCompanyInfo(user.uid, editValues, user.token);
+          console.log(editValues);
+          const res = await postEditCompanyInfo(
+            user.uid,
+            editValues,
+            user.token
+          );
           console.log(res);
-          if (res.message === 'Successfully') {
+          if (res.message === "Successfully") {
             console.log(res);
-            handleOpen("Success", "Successfully edit the infomation!")
+            handleOpen("Success", "Successfully edit the infomation!");
             history.push("/");
           } else if (
             res.response.status === 404 ||
@@ -229,7 +235,7 @@ const EditCompanyProfile = () => {
             />
           </Grid>
           <Grid item xs={12}>
-          <IndustrySelect
+            <IndustrySelect
               label="Industry"
               onChange={(event, value) => {
                 formik.setFieldValue("industry", value);
