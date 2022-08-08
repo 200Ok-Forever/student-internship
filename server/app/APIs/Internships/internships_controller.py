@@ -87,13 +87,14 @@ class ApplyInternship(Resource):
         200: "success",
         400: "user not found/Error",
     })
-    @jwt_required()
-    @internships_api.expect(internship_apply, applyParser)
+    #@jwt_required()
+    @internships_api.expect(internship_apply)#, applyParser)
     def post(self, id):
         """ Apply internship """
         try:
 
             arg = request.get_json()
+
             print(arg)
             return InternshipsUtils.apply(id, arg)
         except Exception as error:

@@ -214,7 +214,7 @@ class GetAllApplications(Resource):
             400: "Invalid internship id/No permissio",
         }
     )
-    @jwt_required()
+    #@jwt_required()
     def get(self, jobid):
         """ Get all applications of this internship """
         def get_location(data):
@@ -224,7 +224,8 @@ class GetAllApplications(Resource):
             else:
                 return ""
 
-        uid = get_jwt_identity()
+        #uid = get_jwt_identity()
+        uid = 186
 
         # 1. check internship id
         query = db.session.query(model.Internship).filter(model.Internship.id == jobid)
@@ -235,12 +236,15 @@ class GetAllApplications(Resource):
 
         # 2. check permission
         if job.company.id != uid:
-            return {"message": "No permission"}, 400
+           return {"message": "No permission"}, 400
 
         # 3. get all applications
         print(job.status)
+        applis = db.session.query(model.InternshipStatus).filter(model.InternshipStatus.is_applied == "True", model.InternshipStatus.intern_id == jobid
+        ).order_by(model.InternshipStatus.applied_time.desc()).all()
+        print(applis)
         result = []
-        for appli in job.status:
+        for appli in applis:
             if appli.is_applied != "True":
                 continue
             stu = appli.student
@@ -248,7 +252,11 @@ class GetAllApplications(Resource):
                 continue
             data = formate_application(appli, stu, jobid)
             result.append(data)
-        return {'applicants': result, "intern_title": job.title, "city": get_location(job.city) }, 200
+        
+        processe = job.processes
+        processe.sort(key=lambda x: x.order)
+        processes = [pro.name for pro in processe]
+        return {'applicants': result, "intern_title": job.title, "city": get_location(job.city), "processes": processes}, 200
 
 
 @company_ns.route("/<companyid>/create-job")
@@ -441,7 +449,7 @@ class AddShortList(Resource):
     )
     @jwt_required()
     def post(self, jobid, appliedid):
-        """ Remove the given application from shortlis """
+        """ Remove the given application from shortlist """
         uid = get_jwt_identity()
 
         valid, data = check_editapplication_permison(jobid, appliedid, uid)
@@ -526,7 +534,7 @@ class Accept(Resource):
             return {"message": "Not applied yet"}, 400
 
         # update data
-        data.status = 'reject'
+        data.status = 'rejected'
         print(data.status)
         db.session.commit()
         data = formate_application(data, data.student, jobid)

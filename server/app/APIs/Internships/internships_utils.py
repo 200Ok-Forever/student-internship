@@ -467,7 +467,6 @@ class InternshipsUtils:
         coverletter = arg.get('coverletter', None)
 
         interview_question = arg.get('interview_question', None)
-        
         try:
             internship = Internship.query.filter(Internship.id == id).first()
             print(internship)
@@ -480,8 +479,8 @@ class InternshipsUtils:
 
         # update is_applied status
        
-        print(current_user_id)
-        curr_stage = db.query(Process).filter(Process.intern_id == id, Process.order == 1).first()
+        curr_stage = db.session.query(Process).filter(Process.intern_id == id, Process.order == 1).first()
+
         stage = None
         if curr_stage:
             stage = curr_stage.id
