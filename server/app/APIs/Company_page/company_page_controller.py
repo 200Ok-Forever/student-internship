@@ -1,13 +1,7 @@
-from email.mime import application
-from operator import mod, pos
-from pickletools import uint1
-from re import L, S
-from flask import request, jsonify
 from flask_jwt_extended import get_jwt_identity
 from flask_restx import Resource
-from pkg_resources import resource_listdir
 from .company_page_model import CompanyPageAPI
-from .company_page_utils import get_intern_process, check_editapplication_permison, search_jobs, create_job, find_file, format_jobs
+from .company_page_utils import check_editapplication_permison, search_jobs, create_job, find_file, format_jobs
 from ...Models import company as Company
 from ...Models import model
 from ...Models import internship as Internship
@@ -16,18 +10,21 @@ from ...Helpers.other_util import convert_object_to_dict, convert_model_to_dict
 from ... import db
 from flask_jwt_extended import jwt_required
 from sqlalchemy.sql import exists
-from flask import request, redirect
 from flask_restx import Resource, reqparse
-from fuzzywuzzy import process
 from sqlalchemy import or_, and_
-from datetime import datetime
-from difflib import SequenceMatcher
 from sqlalchemy import func
 from sqlalchemy.orm import aliased
 
 company_ns = CompanyPageAPI.company_ns
 authParser = company_ns.parser()
 authParser.add_argument('Authorization', location='headers', help='Bearer [Token]', default='Bearer xxxxxxxxxxxxx')
+
+def get_location(data):
+    city = model.City.query.filter_by(id=data).first()
+    if city:
+        return city.name
+    else:
+        return ""
 
 # --------------------------------COMPANY OPERATOR-----------------------
 @company_ns.route("/<id>")
@@ -189,6 +186,13 @@ class GetAllApplications(Resource):
     @company_ns.response(400, "Something wrong")
     @jwt_required()
     def get(self, jobid):
+        def get_location(data):
+            city = model.City.query.filter_by(id=data).first()
+            if city:
+                return city.name
+            else:
+                return ""
+
         uid = get_jwt_identity()
 
         # 1. check internship id
@@ -212,6 +216,7 @@ class GetAllApplications(Resource):
             data['status'] = appli.status
             data['avatar'] = stu.user.avatar
             data['applicationId'] = appli.id
+            data['applicationTime'] = appli.applied_time
             data['shortlist'] = appli.shortlist
             data['resume'] = find_file("resume", stu.id)
             data['coverletter'] = find_file('coverletter', stu.id)
@@ -221,10 +226,11 @@ class GetAllApplications(Resource):
                                                 Internship.InternQuestion.intern_id == jobid,
                                                 Internship.InternQuestion.id == Internship.InternAnswer.question_id
                                                 ).all()
-            for que, ans in answers:
+            
+            for ans, que in answers:
                 data['questions'][que.content] = ans.answer
             result.append(data)
-        return {'applicant': result}, 200
+        return {'applicants': result, "intern_title": job.title, "city": get_location(job.city) }, 200
 
 
 @company_ns.route("/<companyid>/create-job")
@@ -358,7 +364,7 @@ class Recomendation(Resource):
             skills = [skill[1].name for skill in stu_skills]
             info['match'] = skills
             result.append(info)
-        return {"result": result, "intern_title": job.title}, 200
+        return {"result": result, "intern_title": job.title, "city": get_location(job.city) }, 200
 
 
 # --------------------------------MANAGE THE APPLICATION-----------------------

@@ -1,5 +1,3 @@
-import imp
-from typing import ItemsView
 from flask import request, jsonify, current_app
 from flask_restx import Resource
 from .chat_model import ChatAPI
@@ -30,11 +28,17 @@ class SendMeetingInvitation(Resource):
         """ Send Zoom meeting invitation link """
         # Grab the json data
         data = request.get_json()
-        info, status= ChatUtils.send_zoom_meeting_invitation(data)
+        info, status, user= ChatUtils.send_zoom_meeting_invitation(data)
         if status != 200:
             return info, status
-
-        invi = Invitation(data['user_id'], data['internship_id'], data['time'], info['start_url'], None)
+        
+        if user.role == 2:
+            internship_id = data['otherUserId']
+            student_id = uid
+        else:
+            internship_id = uid
+            student_id = data['otherUserId']
+        invi = Invitation(student_id, internship_id, data['time'], info['start_url'], None)
         db.session.add(invi)
         db.session.commit()
         return info, status
@@ -53,18 +57,17 @@ class GetMeetings(Resource):
     @jwt_required()
     def get(self):
         uid = get_jwt_identity()
-        uid = 185
 
         # check user's role
         user = db.session.query(User).filter(User.uid == uid).first()
         print(user.role)
         if not user:
             return 400
-        query = db.session.query(Internship, Invitation, Student).filter(Internship.id == Invitation.internship_id,
+        query = db.session.query(Internship, Invitation, Student).filter(Internship.id == Invitation.company_id,
                                                                          Student.id == Invitation.student_id)
         # company
         if user.role == 2:
-            query = query.filter(Invitation.internship_id == uid)
+            query = query.filter(Invitation.company_id == uid)
         else:
             query = query.filter(Student.id == uid)
 
