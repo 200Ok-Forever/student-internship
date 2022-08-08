@@ -243,13 +243,16 @@ class InternshipStatus(db.Model):
     applied_time = db.Column(db.VARCHAR(255))
 
     # user = db.relationship('User', back_populates='status')
-    def __init__(self, uid, intern_id, is_applied, applied_time, stage):
+    def __init__(self, uid, intern_id, is_applied, applied_time, stage, is_seen, seen_time):
         self.uid = uid
         self.intern_od = intern_id
         self.is_applied = is_applied
         self.applied_time = applied_time
         self.stage = stage
         self.status = "pending"
+        self.is_seen = is_seen
+        self.seen_time = seen_time
+        
 
 
 class File(db.Model):

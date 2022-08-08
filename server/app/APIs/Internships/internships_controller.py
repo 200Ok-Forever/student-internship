@@ -195,7 +195,7 @@ class Events(Resource):
 
 recommendParser = internships_api.parser()
 recommendParser.add_argument('Authorization', location='headers', help='Bearer [Token]', default='Bearer xxxxxxxxxxxxx')
-recommendParser.add_argument('type', help='recommend/new/closingsoon')
+recommendParser.add_argument('type', help='recommend/new/closing')
 
 
 @internships_api.route('/internships/recommend')
