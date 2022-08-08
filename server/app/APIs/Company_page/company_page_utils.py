@@ -46,7 +46,7 @@ def check_editapplication_permison(jobid, appliedid, uid):
 
     # check permission
     if int(job.company_id) != int(uid):
-       return False, {"message": "No permision"}
+        return False, {"message": "No permision"}
     
 
     # check the application id

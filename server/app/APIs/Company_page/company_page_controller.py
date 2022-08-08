@@ -429,24 +429,26 @@ class ForwardProcess(Resource):
         data.shortlist = False
 
         # forward
-        curr_process = data.stage
+        curr_process = data.process
 
-        processes = db.session.query(Internship.Process).filter(Internship.Process.intern_id == jobid).all()
+        processes = db.session.query(Internship.Process).filter(Internship.Process.intern_id == jobid).order_by(Internship.Process.order.asc()).all()
         if processes == None:
-            return {"message": "Successfully"}, 400
+            return {"message": "Successfully"}, 200
 
         # none, set to first order 
         if not curr_process:
-            data.stage = processes[0].id
+            data.process = processes[0]
         else:
             # forward
-            curr_order = processes.index(curr_process)
             # check is the last one
-            if curr_order != len(processes) - 1:
-                data.stage = processes[curr_order]
-        
+            curr_order = processes.index(curr_process)
+            if curr_order < len(processes) - 1:
+                data.process = processes[curr_order + 1]
+            elif curr_order == len(processes) - 1:
+                data.status = "accepted"
+
         db.session.commit()
-        return {"message": "Successfully"}, 400
+        return {"message": "Successfully"},  200
 
 
 @company_ns.route("/<jobid>/<appliedid>/reject")
