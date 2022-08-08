@@ -22,7 +22,7 @@ forum_api = ForumAPI.forum_ns
 
 forum_parser = reqparse.RequestParser()
 forum_parser.add_argument('pageNumber', type=int, location='args', default=1)
-forum_parser.add_argument('Industry', type=str, location='args', default=1)
+forum_parser.add_argument('Industry', type=str, location='args')
 forum_parser.add_argument('userId', type=int, location='args')
 forum_parser.add_argument('searchTerm', type=str, location='args')
 forum_parser.add_argument('strategy', choices=['newest', 'hottest', 'popular'], type=str, location='args')
@@ -33,9 +33,9 @@ class GetAllPosts(Resource):
     @forum_api.response(200, "Successfully")
     @forum_api.response(400, "Something wrong")
     @forum_api.expect(forum_parser)
-    def get(self, id):
+    def get(self):
         args = forum_parser.parse_args()
-        ind_id = forum_list.index(data['Industry'].lower())
+        ind_id = forum_list.index(args['Industry'].lower())
         query = db.session.query(Post,
                                  func.count(PostComment.id)).outerjoin(PostComment,
                                                                        PostComment.post_id == Post.id).filter(
@@ -60,7 +60,7 @@ class GetAllPosts(Resource):
         index = args['pageNumber'] - 1
         posts = query.offset(index * 10).limit(10).all()
         result = []
-        for fourm, post, count in posts:
+        for post, count in posts:
             data = convert_object_to_dict(post)
             data['nComments'] = count
             data['authName'] = post.student.user.username
