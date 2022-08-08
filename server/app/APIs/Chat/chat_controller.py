@@ -63,11 +63,11 @@ class GetMeetings(Resource):
         print(user.role)
         if not user:
             return 400
-        query = db.session.query(Internship, Invitation, Student).filter(Internship.id == Invitation.internship_id,
+        query = db.session.query(Internship, Invitation, Student).filter(Internship.id == Invitation.company_id,
                                                                          Student.id == Invitation.student_id)
         # company
         if user.role == 2:
-            query = query.filter(Invitation.internship_id == uid)
+            query = query.filter(Invitation.company_id == uid)
         else:
             query = query.filter(Student.id == uid)
 
