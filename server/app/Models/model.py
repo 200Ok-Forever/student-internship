@@ -87,43 +87,6 @@ class Student(db.Model):
         }
 
 
-# class Company(db.Model):
-#     __tablename__ = 't_company'
-#     id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
-#     email = db.Column(db.VARCHAR(320), nullable=False, unique=True)
-#     company_name = db.Column(db.VARCHAR(255), nullable=False, unique=True)
-#     first_name = db.Column(db.VARCHAR(255), nullable=False)
-#     last_name = db.Column(db.VARCHAR(255), nullable=False)
-#     industry = db.Column(db.VARCHAR(255))
-#     linkedin = db.Column(db.VARCHAR(255))
-#     founded_year = db.Column(db.VARCHAR(4), nullable=False)
-#     company_url = db.Column(db.VARCHAR(255))
-#     company_size = db.Column(db.VARCHAR(10), nullable=False)
-#     location = db.Column(db.VARCHAR(255))
-#     description = db.Column(db.VARCHAR(200))
-#     company_logo = db.Column(db.TEXT)
-#
-#     def __repr__(self):
-#         return f"<Recruiter: {self.email}, {self.first_name} {self.last_name}>"
-#
-#     def get_info(self):
-#         return {
-#             "id": self.uid,
-#             "email": self.email,
-#             "company_name": self.company_name,
-#             "first_name": self.first_name,
-#             "last_name": self.last_name,
-#             "industry": self.industry,
-#             "linkedin": self.linkedin,
-#             "founded_year": self.founded_year,
-#
-#             "company_size": self.company_size,
-#             "location": self.location,
-#             "description": self.description,
-#             "company_logo": self.company_logo
-#         }
-
-
 class Internship(db.Model):
     """Internship table"""
     __tablename__ = 't_internships'
