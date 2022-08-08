@@ -93,7 +93,7 @@ const ApplyForm = ({ setIsSubmitted }) => {
     const getInternshipInfo = async () => {
       const res = await getInternship(info.id, user.token);
       console.log(res);
-      setQuestions(res.questions.map((i) => i.content));
+      setQuestions(res.questions);
     };
     getInternshipInfo();
   }, [info.id, user.token]);
@@ -114,10 +114,10 @@ const ApplyForm = ({ setIsSubmitted }) => {
   }
 
   const submitHandler = async () => {
-    const QApairs = Object.assign.apply(
-      {},
-      questions.map((v, i) => ({ [v]: answers[i] }))
-    );
+    const QApairs = questions.map((q, i) => ({
+      question_id: q.question_id,
+      answer: answers[i]
+    }))
 
     if (resume === null && coverLetter === null) {
       handleOpen("Please Submit a resume and/or cover letter");
@@ -128,8 +128,8 @@ const ApplyForm = ({ setIsSubmitted }) => {
         info.id,
         {
           resume: resumeBase64,
-          coverLetter: coverBase64,
-          interviewQuestion: QApairs,
+          coverletter: coverBase64,
+          interview_question: QApairs,
         },
         user.token
       );
@@ -194,7 +194,7 @@ const ApplyForm = ({ setIsSubmitted }) => {
         />
         {questions?.map((q, i) => (
           <Box key={`q_${i}`} mb="40px" sx={{ width: "100%" }}>
-            <Typography variant="h7">{q}</Typography>
+            <Typography variant="h7">{q.content}</Typography>
             <TextField
               multiline
               rows={4}
