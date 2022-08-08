@@ -194,17 +194,28 @@ class InternshipsUtils:
                     # update the interhsip status as is_seen
                     update = db.session.query(InternshipStatus).filter(InternshipStatus.intern_id == id).filter(
                         InternshipStatus.uid == uid).first()
+
                     if update is not None:
+                        print("is not none")
                         db.session.query(InternshipStatus).filter(InternshipStatus.intern_id == id).filter(
                         InternshipStatus.uid == uid).update(
-                        {InternshipStatus.is_seen: "True", InternshipStatus.seen_time: datetime.datetime.now()})
+                        {InternshipStatus.seen_time: datetime.datetime.now()})
                         db.session.commit()
 
                     else:
-                        seen_internship = InternshipStatus(uid=uid, intern_id=id, is_seen="True",
-                                                           seen_time=datetime.datetime.now())
-                        db.session.add(seen_internship)
-                        db.session.commit()
+                        print("okkkkk")
+                        try:
+                            seen_internship = InternshipStatus()
+                            seen_internship.uid = uid
+                            seen_internship.intern_id = id
+                            seen_internship.is_seen = "True"
+                            seen_internship.seen_time = datetime.datetime.now()
+                            
+                            db.session.add(seen_internship)
+                            db.session.commit()
+                        except Exception as errors:
+                            print(errors)
+
 
                     # check if it is saved
                     status = db.session.query(InternshipStatus).filter(InternshipStatus.intern_id == id) \
