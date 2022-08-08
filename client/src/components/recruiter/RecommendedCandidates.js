@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   Avatar,
   Box,
@@ -9,72 +9,54 @@ import {
   Typography,
 } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
-
-const students = [
-  {
-    id: 1,
-    name: "James Smith",
-    avatar:
-      "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-    university: "UNSW",
-    degree: "Bachelor's in Computer Science",
-    matchingSkills: [
-      "Interested in Fintech",
-      "Java",
-      "CI/CD",
-      "Google Cloud Platform",
-    ],
-  },
-  {
-    id: 1,
-    name: "Jane Zheng",
-    avatar:
-      "https://image.shutterstock.com/image-photo/profile-picture-smiling-millennial-asian-260nw-1836020740.jpg",
-    university: "UTS",
-    degree: "Bachelor's in Game Development",
-    matchingSkills: [
-      "Penultimate Year",
-      "ReactJS",
-      "HTML/CSS",
-      "Communication",
-    ],
-  },
-  {
-    id: 1,
-    name: "Patrick Yo",
-    avatar:
-      "https://t4.ftcdn.net/jpg/03/64/21/11/360_F_364211147_1qgLVxv1Tcq0Ohz3FawUfrtONzz8nq3e.jpg",
-    university: "ACU",
-    degree: "Bachelor's in Computer Science",
-    matchingSkills: ["Python", "Java", "GoLang"],
-  },
-  {
-    id: 1,
-    name: "Talya Avan",
-    avatar:
-      "https://t4.ftcdn.net/jpg/04/44/53/99/360_F_444539901_2GSnvmTX14LELJ6edPudUsarbcytOEgj.jpg    ",
-    university: "UNSW",
-    degree: "Bachelor's in Computer Engineering",
-    matchingSkills: ["1 Year Experience", "Python", "ReactJS"],
-  },
-];
+import { UserContext } from "../../store/UserContext";
+import { getRecommendations } from "../../api/company-api";
+import { useParams } from "react-router-dom";
+import CircularProgress from '@mui/material/CircularProgress';
 
 const RecommendedCandidates = () => {
+  const { id } = useParams();
+  const [students, setStudents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [title, setTitle] = useState({});
+  const { user } = useContext(UserContext);
+
+  useEffect(() => {
+    const getStudents = async () => {
+      const res = await getRecommendations(id, user.token)
+      setLoading(false);
+      setStudents(res.result);
+      setTitle({ title: res.intern_title, city: res.city });
+    }
+    getStudents();
+  }, [id, user.token])
+
   return (
     <Box>
       <Typography variant="h4" component="div">
         Recommended Candidates
       </Typography>
-      <Typography variant="h6" component="div" mt={2} mb={5}>
-        Software Engineering Intern (Sydney)
-      </Typography>
-      <Grid container spacing={10}>
-        {students.map((student) => (
-          <Grid item xs={12} sm={6} md={4} xl={3}>
-            <StudentCard student={student} key={student.id} />
-          </Grid>
-        ))}
-      </Grid>
+      {title?.title && 
+        <Typography variant="h6" component="div" mt={2} mb={5}>
+          {title?.title} {title?.city && `(${title.city})`}
+        </Typography>
+      }
+      <Box sx={{ display: 'flex', flexDirection: 'column'}}>
+        {loading ?
+          <CircularProgress sx={{ alignSelf: 'center' }} />
+        : students.length === 0 ?
+          <Typography>There are no students that match your internship requirements</Typography>
+        : <>
+            <Grid container spacing={10}>
+              {students.map((student) => (
+                <Grid item xs={12} sm={6} md={4} xl={3}>
+                  <StudentCard student={student} key={student.id} />
+                </Grid>
+              ))}
+            </Grid>
+          </>
+        }
+      </Box>
     </Box>
   );
 };
@@ -93,12 +75,12 @@ const StudentCard = ({ student }) => {
       >
         <Avatar src={student.avatar} sx={{ width: "10rem", height: "10rem" }} />
         <Box>
-          <Typography variant="h5">{student.name}</Typography>
+          <Typography variant="h5">{student.first_name} {student.last_name}</Typography>
           <Typography variant="subtitle1">{student.university}</Typography>
-          <Typography variant="subtitle1">{student.degree}</Typography>
+          <Typography variant="subtitle1">{student.degree} {student.major && `(${student.major})`}</Typography>
         </Box>
         <Box>
-          {student.matchingSkills.map((skill) => (
+          {student.match.map((skill) => (
             <Box
               sx={{
                 display: "flex",
@@ -120,7 +102,15 @@ const StudentCard = ({ student }) => {
           <Button color="primary" variant="outlined">
             View Profile
           </Button>
-          <Button color="primary" variant="outlined" sx={{ ml: 2 }}>
+          <Button 
+            color="primary" 
+            variant="outlined" 
+            sx={{ ml: 2 }}
+            onClick={() => {
+              window.open(`/chat`, "_blank");
+              localStorage.setItem("chat", student.id.toString());
+            }}
+          >
             Message
           </Button>
         </Box>
