@@ -38,5 +38,5 @@ export const postEditCompanyInfo = async (id, data, token) => {
   });
 };
 
-export const companyGetJobInfo = async (id, searchTerm, sort, location) => 
-  await getRequest(`company/${id}/jobs?searchTerm=${searchTerm}&location=${location}&sort=${sort}`)
+export const companyGetJobInfo = async (id) => 
+  await getRequest(`company/${id}/jobs`)

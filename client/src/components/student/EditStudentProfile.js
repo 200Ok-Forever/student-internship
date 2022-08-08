@@ -51,14 +51,14 @@ const EditStudentProfile = () => {
 
   useEffect(() => {
     formik.setValues({
-      firstName: info.first_name,
-      lastName: info.last_name,
-      university: info.university,
-      degree: info.degree,
-      major: info.major,
-      positions: info.position,
-      skills: info.skills,
-      description: info.description,
+      firstName: info?.first_name,
+      lastName: info?.last_name,
+      university: info?.university,
+      degree: info?.degree,
+      major: info?.major,
+      positions: info?.position,
+      skills: info?.skills,
+      description: info?.description,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [info]);

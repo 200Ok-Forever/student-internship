@@ -5,7 +5,7 @@ import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { Paper } from "@mui/material";
 import InputLabel from "@mui/material/InputLabel";
@@ -20,6 +20,7 @@ import { Modal, IconButton } from "@mui/material";
 import ErrorMessage from "../UI/ErrorMessage";
 import IndustrySelect from "../UI/IndustrySelect";
 import CountrySelect from "../UI/CountrySelect";
+import { getCompanyInfo } from "../../api/company-api";
 
 const EditCompanyProfile = () => {
   const { user } = useContext(UserContext);
@@ -34,6 +35,31 @@ const EditCompanyProfile = () => {
   };
   const handleClose = () => setErrorModalState(false);
   const history = useHistory();
+
+  const [info, setInfo] = useState(null);
+  useEffect(() => {
+    const loadInfo = async () => {
+      const res = await getCompanyInfo(user.uid);
+      console.log(res);
+      setAvatar(res.company_logo);
+      setInfo(res);
+    };
+    loadInfo();
+  }, [user.uid]);
+  useEffect(() => {
+    formik.setValues({
+      firstName: info?.first_name,
+      lastName: info?.last_name,
+      company_name: info?.company_name,
+      company_url: info?.company_url,
+      description: info?.description,
+      founded_year: info?.founded_year,
+      linkedin: info?.linkedin,
+      address: info?.line1,
+      city: info?.city,
+      postalCode: info?.postalCode
+    });
+  }, [info]);
 
   const formik = useFormik({
     initialValues: {
@@ -58,23 +84,22 @@ const EditCompanyProfile = () => {
           first_name: values.firstName,
           last_name: values.lastName,
           company_name: values.company_name,
-          industry: values.industry.map((i) => (i.name)),
+          industry: values.industry?.map((i) => (i.name)) ? values.industry?.map((i) => (i.name)) : [],
           linkedin: values.linkedin,
           company_url: values.company_url,
           line1: values.address,
           city: values.city,
           country: values.country?.name ? values.country.name : "",
           description: values.description,
-          avatar: "",
           company_logo: avatar,
-          company_size: values.size,
+          company_size: values?.size ? values.size : "",
           founded_year: values.founded_year,
         };
         console.log(editValues);
         try {
           console.log(editValues)
           const res = await postEditCompanyInfo(user.uid, editValues, user.token);
-          console.log(res.message);
+          console.log(res);
           if (res.message === 'Successfully') {
             console.log(res);
             handleOpen("Success", "Successfully edit the infomation!")
@@ -290,7 +315,7 @@ const EditCompanyProfile = () => {
           </Grid>
           <Grid item xs={12} sm={8}>
             <CountrySelect
-              label="Country*"
+              label="Country"
               onChange={(event, value) => {
                 formik.setFieldValue("country", value);
               }}

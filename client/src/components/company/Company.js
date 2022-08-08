@@ -2,13 +2,7 @@ import {
   Avatar,
   Box,
   Button,
-  FormControl,
-  Grid,
-  InputLabel,
-  MenuItem,
   Paper,
-  Select,
-  TextField,
   Typography,
 } from "@mui/material";
 import React, { useEffect, useState, useContext } from "react";
@@ -233,17 +227,13 @@ const Jobs = () => {
     getJobs();
   }, []);
 
-  // const searchHandler = (e) => {
-    
-  // }
-
   const sortHandler = (e) => {
     setSortBy(e.target.value);
   };
 
   return (
     <>
-      <Grid
+      {/* <Grid
         container
         spacing={3}
         sx={{ width: "75%", display: "flex", alignItems: "center", mb: "80px" }}
@@ -299,7 +289,7 @@ const Jobs = () => {
             <MenuItem value="Closing Soon">Closing Soon</MenuItem>
           </Select>
         </FormControl>
-      </Box>
+      </Box> */}
       {jobsList?.map((job, i) => (
         <JobBlock job={job} key={`job_${i}`} />
       ))}
