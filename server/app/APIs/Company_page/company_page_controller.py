@@ -210,8 +210,11 @@ class GetAllApplications(Resource):
         print(job.status)
         result = []
         for appli in job.status:
+            if appli.is_applied != "True":
+                continue
             stu = appli.student
-            if not stu: continue
+            if not stu: 
+                continue
             data = convert_object_to_dict(stu)
             data['stage'] = None
             if appli.process != None:
