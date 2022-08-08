@@ -195,10 +195,10 @@ const Overview = ({ info }) => {
 };
 
 const Jobs = () => {
-  const [keyword, setKeyword] = useState("");
-  const [location, setLocation] = useState("");
+  // const [keyword, setKeyword] = useState("");
+  // const [location, setLocation] = useState("");
   const [jobsList, setJobsList] = useState([]);
-  const [sortBy, setSortBy] = useState("");
+  // const [sortBy, setSortBy] = useState("");
 
   const getJobs = async () => {
     const queryString = window.location.search;
@@ -221,9 +221,9 @@ const Jobs = () => {
     getJobs();
   }, []);
 
-  const sortHandler = (e) => {
-    setSortBy(e.target.value);
-  };
+  // const sortHandler = (e) => {
+  //   setSortBy(e.target.value);
+  // };
 
   return (
     <>
