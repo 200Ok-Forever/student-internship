@@ -49,7 +49,7 @@ const PostedInternships = () => {
         : internships.length === 0 ?
           <Typography>You have not posted any internships yet</Typography>
         : internships.map((i) => (
-          <InternshipCard job={i} key={i.job_id} setInternships={setInternships}>
+          <InternshipCard job={i} key={i.job_id} setInternships={setInternships} setLoading={setLoading} >
             <RemoveButton />
           </InternshipCard>
         ))}
@@ -58,7 +58,7 @@ const PostedInternships = () => {
   );
 };
 
-const InternshipCard = ({ job, setInternships }) => {
+const InternshipCard = ({ job, setInternships, setLoading }) => {
   const paper = {
     width: "auto",
     p: "20px",
@@ -70,7 +70,7 @@ const InternshipCard = ({ job, setInternships }) => {
   return (
     <Box>
       <Paper elevation={3} sx={paper}>
-        <CardHeader job={job} setInternships={setInternships} />
+        <CardHeader job={job} setInternships={setInternships} setLoading={setLoading} />
         <Box
           sx={{
             display: "flex",
@@ -90,12 +90,14 @@ const InternshipCard = ({ job, setInternships }) => {
   );
 };
 
-const CardHeader = ({ job, setInternships }) => {
+const CardHeader = ({ job, setInternships, setLoading }) => {
   const history = useHistory();
   const { user } = useContext(UserContext);
 
   const onDelete = async () => {
+    setLoading(true)
     const res = await deleteInternship(job.id, user.token);
+    setLoading(false)
     setInternships(res.jobs);
   }
 
@@ -149,14 +151,14 @@ const Labels = ({ job }) => {
       <Box>
         <Button
           component={RouterLink}
-          to={`/applications?id=${job.id}`}
+          to={`job/${job.id}/applications`}
           variant="outlined"
         >
           View Applications
         </Button>
         <Button
           component={RouterLink}
-          to={`job/${job.id}/recommended-candidates`}
+          to={`job/${job.id}/recommended-students`}
           variant="outlined"
           sx={{ ml: 2 }}
         >

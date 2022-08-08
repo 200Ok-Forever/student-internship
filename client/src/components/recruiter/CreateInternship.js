@@ -32,6 +32,7 @@ const CreateInternship = () => {
   const job = location.state?.job;
   const history = useHistory();
   const [paid, setPaid] = useState(!job || job.max_salary > 0);
+  const [loading, setLoading] = useState(false);
   const { user } = useContext(UserContext)
 
   if (location.path === "/job/edit" && !job) {
@@ -79,10 +80,11 @@ const CreateInternship = () => {
         city: values.city,
         skills: values.skills.map(s => s.name)
       }
+      setLoading(true);
       const res = job ?
         await putInternship(job.id, data, user.token)
       : await postInternship(user.uid, data, user.token)
-      
+      setLoading(false);
       if (res.message === "Successfuly") {
         history.push("/");
       }
@@ -318,7 +320,7 @@ const CreateInternship = () => {
         </Box>
       </Box>
       <Box sx={{ display: "flex", alignItems: "center" }} mt={4}>
-        <Button onClick={formik.handleSubmit} color="primary" variant="contained" sx={{ px: 5, mr: 3 }}>
+        <Button disabled={loading} onClick={formik.handleSubmit} color="primary" variant="contained" sx={{ px: 5, mr: 3 }}>
           Post
         </Button>
         <Link underline="none" component={RouterLink} to="/">

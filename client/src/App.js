@@ -102,13 +102,13 @@ function App() {
             />
             <PrivateRoute
               role={RECRUITER_ROLE}
-              path="/applications"
+              path="/job/:id/applications"
               exact
               component={Applications}
             />
             <Route path="/profile" exact component={Profile} />
             <PrivateRoute
-              path="/job/:id/recommended-candidates"
+              path="/job/:id/recommended-students"
               role={RECRUITER_ROLE}
               exact
               component={RecommendedCandidates}

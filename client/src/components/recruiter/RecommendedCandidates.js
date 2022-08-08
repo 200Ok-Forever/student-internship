@@ -23,10 +23,14 @@ const RecommendedCandidates = () => {
 
   useEffect(() => {
     const getStudents = async () => {
-      const res = await getRecommendations(id, user.token)
-      setLoading(false);
-      setStudents(res.result);
-      setTitle({ title: res.intern_title, city: res.city });
+      try {
+        const res = await getRecommendations(id, user.token)
+        setLoading(false);
+        setStudents(res.result);
+        setTitle({ title: res.intern_title, city: res.city });
+      } catch (er) {
+        window.location.href = '/'
+      }
     }
     getStudents();
   }, [id, user.token])
@@ -37,7 +41,7 @@ const RecommendedCandidates = () => {
         Recommended Students
       </Typography>
       {title?.title && 
-        <Typography variant="h6" component="div" mt={2} mb={5}>
+        <Typography variant="h5" component="div" mt={2} mb={5}>
           {title?.title} {title?.city && `(${title.city})`}
         </Typography>
       }
