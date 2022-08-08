@@ -205,8 +205,12 @@ class InternshipsUtils:
                     else:
                         print("okkkkk")
                         try:
-                            seen_internship = InternshipStatus(uid=uid, intern_id=id, is_seen="True",
-                                                            seen_time=datetime.datetime.now())
+                            seen_internship = InternshipStatus()
+                            seen_internship.uid = uid
+                            seen_internship.intern_id = id
+                            seen_internship.is_seen = "True"
+                            seen_internship.seen_time = datetime.datetime.now()
+                            
                             db.session.add(seen_internship)
                             db.session.commit()
                         except Exception as errors:
