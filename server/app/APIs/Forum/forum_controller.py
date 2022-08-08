@@ -10,7 +10,7 @@ from .forum_utils import get_comments
 from flask_jwt_extended import jwt_required
 from flask_restx import Resource, reqparse
 from ... import db
-from  ...Models.forum import Post, PostComment, forum_list
+from ...Models.forum import Post, PostComment, forum_list
 from sqlalchemy import and_, null, or_
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import get_jwt_identity
@@ -37,21 +37,20 @@ class GetPost(Resource):
     @forum_api.response(400, "Something wrong")
     def get(self, id):
 
-        post = db.session.query(Post).outerjoin(PostComment, PostComment.post_id == Post.id).filter(Post.id == id).first()
+        post = db.session.query(Post).outerjoin(PostComment, PostComment.post_id == Post.id).filter(
+            Post.id == id).first()
         if post == None:
             return {"message": "Invalid post id"}, 400
         forum_id = post.forum_id
         result = {}
         if forum_id <= 0 or forum_id >= len(forum_list):
-            return {"message": "invalid forum id"},400
+            return {"message": "invalid forum id"}, 400
 
         result['industry'] = forum_list[forum_id]
 
-    
         result['post'] = convert_object_to_dict(post)
         comments = post.comments
         result['comments'] = convert_model_to_dict(comments)
-            
 
         return result, 200
 
@@ -98,8 +97,8 @@ class AllPost(Resource):
             return {"result": result}, 200
         else:
             return {
-                "message": "Please provide an industry"
-            }, 400
+                       "message": "Please provide an industry"
+                   }, 400
 
     @jwt_required()
     @forum_api.expect(ForumAPI.post_data, auth_parser, validate=True)
@@ -107,12 +106,12 @@ class AllPost(Resource):
         uid = get_jwt_identity()
         data = forum_api.payload
 
-        if data['industry'].lower() not in forum_list:
+        if data['Industry'].lower() not in forum_list:
             return {"message": "Invalid forum name"}, 400
 
         user = db.session.query(User).filter(User.username == data['Author']).first()
 
-        fourm_id = forum_list.index(data['industry'].lower())
+        fourm_id = forum_list.index(data['Industry'].lower())
 
         if user == None or user.uid != uid:
             return {"message": "Invalid user name"}, 400
@@ -153,11 +152,11 @@ class CreateComment(Resource):
         return {"message": "Successfully"}, 200
 
 
-@forum_api.route("/forum/posts/<int:id>")
+@forum_api.route("/posts/<int:id>")
 class EditAndDeletePost(Resource):
-    # @jwt_required()
+    @jwt_required()
+    @forum_api.expect(auth_parser)
     def delete(self, id):
-        # uid = get_jwt_identity()
         return ForumUtils.deletepost(id)
 
     @jwt_required()
@@ -165,6 +164,4 @@ class EditAndDeletePost(Resource):
     def patch(self, id):
         content = request.get_json()
         print(content)
-        # uid = get_jwt_identity()
-        # return "hahahaha"
         return ForumUtils.editPost(id, content)
