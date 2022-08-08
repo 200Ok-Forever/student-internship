@@ -346,6 +346,7 @@ class Recomendation(Resource):
         for data in top6:
             student = data[0]
             info = convert_object_to_dict(student)
+            info['avatar'] = student.user.avatar
             stu_skills = query.filter(model.Student.id == student.id).all()
 
             skills = [skill[1].name for skill in stu_skills]
