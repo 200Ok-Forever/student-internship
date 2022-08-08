@@ -8,8 +8,7 @@
 3. Open your command line, type `git clone` then paste the url, then press enter.
 4. On your command line, `cd student-internship` directory, then `cd client`
 5. If you haven't install npm, follow this guide to [install npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
-6. On your command line, `npm install`, (This may take serveral minutes, please be patient)
-7. After installing all packages, you may see `9 vulnerabilities (3 moderate, 6 high)` and `To address all issues (including breaking changes), run: npm audit fix --force`, ignoreit
+6. On your command line, `npm install --force`, (This may take serveral minutes, please be patient)
 8. On your command line, `npm start` to start the browser (this may take another few minutes)
 9. During your waiting time, start another command line, then cd into `/student-internship/server`
 10. if you haven't install pip, install pip
