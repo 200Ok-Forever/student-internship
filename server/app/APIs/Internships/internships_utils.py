@@ -426,7 +426,12 @@ class InternshipsUtils:
         if is_applied:
             info = []
             for applied in is_applied:
-                info.append(Internship.get_info(applied))
+                internship_info = Internship.get_info(applied)
+                status = InternshipStatus.query.filter(InternshipStatus.intern_id == applied.id).filter(InternshipStatus.uid==uid).first().status
+                internship_info['status'] = status
+                info.append(internship_info)
+                
+            
             result = {
                 "is_applied": info
             }
