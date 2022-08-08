@@ -216,6 +216,7 @@ class GetAllApplications(Resource):
             data['status'] = appli.status
             data['avatar'] = stu.user.avatar
             data['applicationId'] = appli.id
+            data['applicationTime'] = appli.applied_time
             data['shortlist'] = appli.shortlist
             data['resume'] = find_file("resume", stu.id)
             data['coverletter'] = find_file('coverletter', stu.id)
