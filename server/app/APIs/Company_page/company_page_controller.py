@@ -166,7 +166,7 @@ class CompanyJobs(Resource):
 
     @company_ns.response(200, "Successfully")
     @company_ns.response(400, "Something wrong")
-    #@jwt_required(optional=True)
+    @jwt_required(optional=True)
     def get(self, id):
         parser = reqparse.RequestParser()
         parser.add_argument('searchTerm', type=str, location='args')
@@ -175,8 +175,7 @@ class CompanyJobs(Resource):
         parser.add_argument('location', type=str, location='args')
         args = parser.parse_args()
 
-        #uid = get_jwt_identity()
-        uid = 185
+        uid = get_jwt_identity()
         jobs = search_jobs(args, id)
         if len(jobs) == 0:
             return {"jobs": [], 'company_name': None, 'company_logo': None, 'numAllResults': 0}
