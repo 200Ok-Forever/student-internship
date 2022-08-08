@@ -34,7 +34,7 @@ class SendMeetingInvitation(Resource):
         if status != 200:
             return info, status
 
-        invi = Invitation(data['user_id'], data['internship_id'], data['time'], info['join_url'], None)
+        invi = Invitation(data['user_id'], data['internship_id'], data['time'], info['start_url'], None)
         db.session.add(invi)
         db.session.commit()
         return info, status
