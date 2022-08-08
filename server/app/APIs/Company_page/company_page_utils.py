@@ -6,7 +6,7 @@ from  ...Models import model
 from  ...Models import internship as Internship
 from  ...Models import skill as Skill
 from ... import db
-from sqlalchemy import and_, null, or_
+from sqlalchemy import or_
 
 def get_intern_process(job):
     process = [-1 for i in range(0, len(job.processes))]

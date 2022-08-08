@@ -1,6 +1,5 @@
 from ast import In
 from datetime import date, timedelta
-import datetime
 from xml.etree.ElementTree import Comment
 from flask import request, jsonify
 from flask_restx import Resource

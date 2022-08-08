@@ -1,5 +1,3 @@
-import imp
-from typing import ItemsView
 from flask import request, jsonify, current_app
 from flask_restx import Resource
 from .chat_model import ChatAPI

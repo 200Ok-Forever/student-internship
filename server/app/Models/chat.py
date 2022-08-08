@@ -1,4 +1,3 @@
-from sys import intern
 from .. import  db
 
 class Invitation(db.Model):
