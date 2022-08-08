@@ -51,7 +51,6 @@ export const deleteAxios = (path, data = {}) =>
 export const getRequest = async (path, config) => {
   try {
     const res = await API.get(path, config);
-    console.log(res)
     return res.data;
   } catch (err) {
     console.log(err);

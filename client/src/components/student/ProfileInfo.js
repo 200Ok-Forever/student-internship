@@ -13,14 +13,19 @@ const ProfileInfo = (props) => {
           alignItems: "left",
           justifyContent: "center",
           padding: "36px",
-          width: "500px",
+          width: "50vw",
           height: "fit-content",
           gap: "25px",
           mx: "auto",
           mb: "35px",
         }}
       >
-        <Typography variant="h5" fontWeight="bold" fontFamily="inherit">
+        <Typography
+          variant="h5"
+          fontWeight="bold"
+          fontFamily="inherit"
+          color="primary"
+        >
           Education
         </Typography>
         <Typography variant="h6" fontWeight="bold" fontFamily="inherit">
@@ -41,7 +46,7 @@ const ProfileInfo = (props) => {
           alignItems: "left",
           justifyContent: "center",
           padding: "36px",
-          width: "500px",
+          width: "50vw",
           height: "fit-content",
           gap: "25px",
           mx: "auto",

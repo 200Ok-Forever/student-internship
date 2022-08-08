@@ -45,18 +45,6 @@ const data = [
   },
 ];
 
-// const infoData = {
-//   first_name: "Leon",
-//   last_name: "Wu",
-//   university: "UNSW",
-//   degree: "Bachelor of Computer Science",
-//   positions: "Software Engineer, IT consultant",
-//   major: "AI",
-//   skills: "Java,C",
-//   description:
-//     "Hello! asdkljfaskldjfaskldjfaskldjfa klsdfjaskldfjaskldjfalskdfjasklfklasdjfklasf",
-// };
-
 const Profile = () => {
   const { user } = useContext(UserContext);
 
@@ -83,19 +71,29 @@ const Profile = () => {
         gap: "35px",
       }}
     >
-      <Avatar sx={{ m: 1, bgcolor: "primary.main" }} />
-      <Typography variant="h4" fontWeight="bold" fontFamily="inherit">
-        {info.first_name} {info.last_name}
-      </Typography>
-      <Button
-        variant="outlined"
-        sx={{ ml: "440px" }}
-        onClick={() => {
-          history.push("/editstudentprofile");
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
-        Edit Profile
-      </Button>
+        <Avatar sx={{ m: 1, width: "60px", height: "60px" }} />
+        <Typography variant="h4" fontWeight="bold" fontFamily="inherit">
+          {info.first_name} {info.last_name}
+        </Typography>
+      </Box>
+      <Box sx={{ width: "50vw" }}>
+        <Button
+          variant="outlined"
+          sx={{ alignSelf: "flex-start" }}
+          onClick={() => {
+            history.push("/editstudentprofile");
+          }}
+        >
+          Edit Profile
+        </Button>
+      </Box>
       <ProfileInfo data={info} />
       <TitleWithIcon
         sx={{}}
@@ -129,7 +127,7 @@ const AppliedJob = ({ job }) => {
   return (
     <Paper
       sx={{
-        width: "550px",
+        width: "50vw",
         p: "20px 20px",
       }}
     >

@@ -1,5 +1,3 @@
-import imp
-from typing import ItemsView
 from flask import request, jsonify, current_app
 from flask_restx import Resource
 from .chat_model import ChatAPI
@@ -24,11 +22,26 @@ class SendMeetingInvitation(Resource):
         404: "User not found!",
     })
     @chat_api.expect(zoom_link)
+    @jwt_required()
     def post(self):
+        uid = get_jwt_identity()
         """ Send Zoom meeting invitation link """
         # Grab the json data
         data = request.get_json()
-        return ChatUtils.send_zoom_meeting_invitation(data)
+        info, status, user= ChatUtils.send_zoom_meeting_invitation(data)
+        if status != 200:
+            return info, status
+        
+        if user.role == 2:
+            internship_id = data['otherUserId']
+            student_id = uid
+        else:
+            internship_id = uid
+            student_id = data['otherUserId']
+        invi = Invitation(student_id, internship_id, data['time'], info['start_url'], None)
+        db.session.add(invi)
+        db.session.commit()
+        return info, status
 
 
 @chat_api.route('/users')
@@ -47,14 +60,14 @@ class GetMeetings(Resource):
 
         # check user's role
         user = db.session.query(User).filter(User.uid == uid).first()
-        print(user)
+        print(user.role)
         if not user:
             return 400
         query = db.session.query(Internship, Invitation, Student).filter(Internship.id == Invitation.internship_id,
                                                                          Student.id == Invitation.student_id)
         # company
         if user.role == 2:
-            query = query.filter(Internship.company_id == uid)
+            query = query.filter(Invitation.internship_id == uid)
         else:
             query = query.filter(Student.id == uid)
 

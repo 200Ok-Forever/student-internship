@@ -1,13 +1,7 @@
-from email.mime import application
-from operator import mod, pos
-from pickletools import uint1
-from re import L, S
-from flask import request, jsonify
 from flask_jwt_extended import get_jwt_identity
 from flask_restx import Resource
-from pkg_resources import resource_listdir
 from .company_page_model import CompanyPageAPI
-from .company_page_utils import get_intern_process, check_editapplication_permison, search_jobs, create_job, find_file, format_jobs
+from .company_page_utils import check_editapplication_permison, search_jobs, create_job, find_file, format_jobs
 from ...Models import company as Company
 from ...Models import model
 from ...Models import internship as Internship
@@ -16,12 +10,8 @@ from ...Helpers.other_util import convert_object_to_dict, convert_model_to_dict
 from ... import db
 from flask_jwt_extended import jwt_required
 from sqlalchemy.sql import exists
-from flask import request, redirect
 from flask_restx import Resource, reqparse
-from fuzzywuzzy import process
 from sqlalchemy import or_, and_
-from datetime import datetime
-from difflib import SequenceMatcher
 from sqlalchemy import func
 from sqlalchemy.orm import aliased
 
