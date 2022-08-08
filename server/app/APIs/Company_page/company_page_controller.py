@@ -3,7 +3,7 @@ from multiprocessing.dummy import Process
 from flask_jwt_extended import get_jwt_identity
 from flask_restx import Resource
 from .company_page_model import CompanyPageAPI
-from .company_page_utils import check_editapplication_permison, search_jobs, create_job, find_file, format_jobs
+from .company_page_utils import check_editapplication_permison, search_jobs, create_job, find_file, format_jobs, formate_application
 from ...Models import company as Company
 from ...Models import model
 from ...Models import internship as Internship
@@ -217,26 +217,7 @@ class GetAllApplications(Resource):
             stu = appli.student
             if not stu: 
                 continue
-            data = convert_object_to_dict(stu)
-            data['stage'] = None
-            if appli.process != None:
-                data['stage'] = appli.process.name
-            data['status'] = appli.status
-            data['avatar'] = stu.user.avatar
-            data['applicationId'] = appli.id
-            data['applicationTime'] = appli.applied_time
-            data['shortlist'] = appli.shortlist
-            data['resume'] = find_file("resume", stu.id)
-            data['coverletter'] = find_file('coverletter', stu.id)
-            data['questions'] = {}
-            answers = db.session.query(Internship.InternAnswer, Internship.InternQuestion
-                                       ).filter(Internship.InternAnswer.student_id == stu.id,
-                                                Internship.InternQuestion.intern_id == jobid,
-                                                Internship.InternQuestion.id == Internship.InternAnswer.question_id
-                                                ).all()
-            
-            for ans, que in answers:
-                data['questions'][que.content] = ans.answer
+            data = formate_application(appli, stu)
             result.append(data)
         return {'applicants': result, "intern_title": job.title, "city": get_location(job.city) }, 200
 
@@ -391,7 +372,9 @@ class AddShortList(Resource):
         # set the shortlist to true
         data.shortlist = True
         db.session.commit()
-        return {"message": "Succussfully"}, 200
+        data = formate_application(data, data.student)
+        return data, 200
+
 
 
 @company_ns.route("/<jobid>/<appliedid>/unshortlist")
@@ -410,7 +393,9 @@ class AddShortList(Resource):
         # set the shortlist to true
         data.shortlist = False
         db.session.commit()
-        return {"message": "Succussfully"}, 200
+        data = formate_application(data, data.student)
+        return data, 200
+
 
 
 @company_ns.route("/<jobid>/<appliedid>/forward")
@@ -448,7 +433,9 @@ class ForwardProcess(Resource):
                 data.status = "accepted"
 
         db.session.commit()
-        return {"message": "Successfully"},  200
+        data = formate_application(data, data.student)
+        return data, 200
+
 
 
 @company_ns.route("/<jobid>/<appliedid>/reject")
@@ -471,4 +458,5 @@ class Accept(Resource):
         data.status = 'reject'
         print(data.status)
         db.session.commit()
-        return {"message": "Successfully"}, 200
+        data = formate_application(data, data.student)
+        return data, 200

@@ -183,3 +183,25 @@ def format_jobs(jobs, uid, company_logo, company_name):
     result['company_name'] = company_name
     result['company_logo'] = company_logo
     return result
+
+def formate_application(appli, stu):
+    data = convert_object_to_dict(stu)
+    data['stage'] = None
+    if appli.process != None:
+        data['stage'] = appli.process.name
+    data['status'] = appli.status
+    data['avatar'] = stu.user.avatar
+    data['applicationId'] = appli.id
+    data['applicationTime'] = appli.applied_time
+    data['shortlist'] = appli.shortlist
+    data['resume'] = find_file("resume", stu.id)
+    data['coverletter'] = find_file('coverletter', stu.id)
+    data['questions'] = {}
+    answers = db.session.query(Internship.InternAnswer, Internship.InternQuestion
+                                ).filter(Internship.InternAnswer.student_id == stu.id,
+                                        Internship.InternQuestion.intern_id == jobid,
+                                        Internship.InternQuestion.id == Internship.InternAnswer.question_id
+                                        ).all()
+    for ans, que in answers:
+        data['questions'][que.content] = ans.answer
+    return data
