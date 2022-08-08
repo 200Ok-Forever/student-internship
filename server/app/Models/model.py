@@ -251,6 +251,11 @@ class InternshipStatus(db.Model):
         self.stage = stage
         self.status = "pending"
 
+    def __init__(self):
+        pass
+        
+        
+
 
 class File(db.Model):
     __tablename__ = 't_uploadfile'
