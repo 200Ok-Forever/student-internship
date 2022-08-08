@@ -30,15 +30,21 @@ forum_parser.add_argument('sort', choices=['newest', 'hottest', 'popular'], type
 auth_parser = reqparse.RequestParser()
 auth_parser.add_argument('Authorization', location='headers', help='Bearer [Token]', default='Bearer xxxxxxxxxxx')
 
-@forum_api.route("/posts/<id>")
+@forum_api.route("/posts/<postid>")
 class GetPost(Resource):
-    @forum_api.response(200, "Successfully")
-    @forum_api.response(400, "Something wrong")
-    def get(self, id):
+    @forum_api.doc(
+        "Get the content of the given post",
+        responses={
+            200: "Successfuly",
+            400: "Invalid post id",
+        }
+    )
+    def get(self, postid):
+        """ Get the content of the given post """
         post = db.session.query(Post).outerjoin(PostComment, PostComment.post_id == Post.id).filter(
-            Post.id == id).first()
+            Post.id == postid).first()
         if post is None:
-            return 400
+            return {"message": "Invalid post id"}, 400
 
         data = convert_object_to_dict(post)
         data['nComments'] = len(post.comments)
@@ -55,10 +61,16 @@ class GetPost(Resource):
 
 @forum_api.route('/posts')
 class AllPost(Resource):
-    @forum_api.response(200, "Successfully")
-    @forum_api.response(400, "Something wrong")
+    @forum_api.doc(
+        "Get all the post of the given forum with filter",
+        responses={
+            200: "Successfuly",
+            400: "Please provide an industry",
+        }
+    )
     @forum_api.expect(forum_parser)
     def get(self):
+        """ Get all the post of the given forum with filter """
         args = forum_parser.parse_args()
         if args['industry']:
             ind_id = forum_list.index(args['industry'].lower())
@@ -98,9 +110,17 @@ class AllPost(Resource):
                 "message": "Please provide an industry"
             }, 400
 
+    @forum_api.doc(
+        " Post a new post",
+        responses={
+            200: "Successfuly",
+            400: "Invalid forum name/Invalid user name",
+        }
+    )
     @jwt_required()
     @forum_api.expect(ForumAPI.post_data, auth_parser, validate=True)
     def post(self):
+        """ Post a new post """
         uid = get_jwt_identity()
         data = forum_api.payload
 
@@ -123,16 +143,22 @@ class AllPost(Resource):
 
 @forum_api.route('/posts/<postid>/comment')
 class CreateComment(Resource):
-    @forum_api.response(200, "Successfully")
-    @forum_api.response(400, "Something wrong")
+    @forum_api.doc(
+        " Comment to the given post",
+        responses={
+            200: "Successfuly",
+            400: "Invalid user id/Post id invalid/Parent comment id invalid",
+        }
+    )
     @jwt_required()
     @forum_api.expect(ForumAPI.comment_data, validate=True)
     def post(self, postid):
+        """ Comment to the given post """
         uid = get_jwt_identity()
         data = forum_api.payload
 
         if uid != data['userID']:
-            return {"message": "Invalid user name"}, 400
+            return {"message": "Invalid user id"}, 400
 
         # check post
         post = db.session.query(Post).filter(Post.id == postid).first()
@@ -152,16 +178,31 @@ class CreateComment(Resource):
 
 @forum_api.route("/forum/posts/<int:id>")
 class EditAndDeletePost(Resource):
-    # @jwt_required()
+    @forum_api.doc(
+        " Delete the given post",
+        responses={
+            200: "Delete Successfuly",
+            400: "Error",
+        }
+    )
+    @jwt_required()
     def delete(self, id):
-        # uid = get_jwt_identity()
+        """ Delete the given post """
+        #uid = get_jwt_identity()
         return ForumUtils.deletepost(id)
 
     @jwt_required()
     @forum_api.expect(ForumAPI.edit, auth_parser)
+    @forum_api.doc(
+        " Edit the given post",
+        responses={
+            200: "Edit Successfuly",
+            400: "Error",
+        }
+    )
     def patch(self, id):
         content = request.get_json()
         print(content)
-        # uid = get_jwt_identity()
+        #uid = get_jwt_identity()
         # return "hahahaha"
         return ForumUtils.editPost(id, content)
