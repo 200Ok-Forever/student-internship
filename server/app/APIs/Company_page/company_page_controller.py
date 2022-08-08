@@ -331,11 +331,9 @@ class Recomendation(Resource):
         job_skills = job.skills
         skills_id = [skill.id for skill in job_skills]
 
-        query = db.session.query(model.Student, Skill.Skill, Skill.StudentSkills, model.InternshipStatus
+        query = db.session.query(model.Student, Skill.Skill, Skill.StudentSkills
         # join the stuudent , skill, studentskill
         ).filter(model.Student.id == Skill.StudentSkills.student_id, Skill.Skill.id == Skill.StudentSkills.skill_id,
-        # get the pending applicant
-        model.InternshipStatus.intern_id == jobid, model.InternshipStatus.uid == model.Student.id, model.InternshipStatus.is_applied == 'True', model.InternshipStatus.status == 'pending',
         # get the skill that the job needs
         Skill.Skill.id.in_(skills_id))
         top6 = query.group_by(model.Student.id).order_by(func.count(model.Student.id).desc()).limit(6).all()
