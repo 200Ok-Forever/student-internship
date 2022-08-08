@@ -250,6 +250,7 @@ class InternshipStatus(db.Model):
         self.applied_time = applied_time
         self.stage = stage
         self.status = "pending"
+        
 
     def __init__(self):
         pass
