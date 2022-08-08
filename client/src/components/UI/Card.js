@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useLocation } from "react-router-dom";
 import MUICard from "@mui/material/Card";
 import CardActionArea from "@mui/material/CardActionArea";
 import CardContent from "@mui/material/CardContent";
@@ -18,13 +18,14 @@ export default function Card({
 }) {
   const theme = useTheme();
   const smallScreen = useMediaQuery(theme.breakpoints.down("md"));
+  const location = useLocation();
 
   return (
     <MUICard
       sx={{
         width: width || (smallScreen ? "14rem" : "350px"),
         margin: "2em 1.5em",
-        height: "490px",
+        height: location.pathname !== "/forum" ? "490px" : "auto",
         pb: "11px",
       }}
     >
