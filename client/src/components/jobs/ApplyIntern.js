@@ -134,7 +134,7 @@ const ApplyForm = ({ setIsSubmitted }) => {
         },
         user.token
       );
-      const resObject = JSON.parse(res)
+      const resObject = JSON.parse(res);
       if (resObject.msg === "sucessfully") {
         setIsSubmitted(true);
       } else {
@@ -177,12 +177,17 @@ const ApplyForm = ({ setIsSubmitted }) => {
         <Typography variant="subtitle2" sx={{ color: "#c1c1c1" }}>
           No resume? Click <a href="/">here</a> !
         </Typography>
-        {resume && <Typography color="primary">Resume Successfully Uploaded</Typography>}
+        {resume && (
+          <Typography color="primary">Resume Successfully Uploaded</Typography>
+        )}
         <UploadFile name="Cover Letter" setFile={setCoverLetter} />
         <Typography></Typography>
-        {coverLetter && <Typography color="primary">Cover letter Successfully Uploaded</Typography>}
-        <Grid container spacing={0} mt="auto">
-        </Grid>
+        {coverLetter && (
+          <Typography color="primary">
+            Cover letter Successfully Uploaded
+          </Typography>
+        )}
+        <Grid container spacing={0} mt="auto"></Grid>
         <TitleWithIcon
           icon={<QuizIcon color="primary" />}
           text="Questions"
