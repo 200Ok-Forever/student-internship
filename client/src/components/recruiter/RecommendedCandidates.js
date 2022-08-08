@@ -34,7 +34,7 @@ const RecommendedCandidates = () => {
   return (
     <Box>
       <Typography variant="h4" component="div">
-        Recommended Candidates
+        Recommended Students
       </Typography>
       {title?.title && 
         <Typography variant="h6" component="div" mt={2} mb={5}>
