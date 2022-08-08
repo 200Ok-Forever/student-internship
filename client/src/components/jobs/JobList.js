@@ -34,7 +34,6 @@ const JobList = () => {
   const { search } = useLocation();
   const info = queryString.parse(search);
   const [jobs, setJobs] = useState([]);
-  console.log("🚀 ~ jobs", jobs);
   const [sortBy, setSortBy] = useState("Default");
   const [currPage, setCurrPage] = useState(1);
   const [load, setLoad] = useState("Loading...");
@@ -127,7 +126,7 @@ const JobList = () => {
     setCurrPage(1);
     setClickSearch((prev) => !prev);
   };
-  console.log(jobs)
+  console.log(jobs);
   return (
     <Box
       sx={{
