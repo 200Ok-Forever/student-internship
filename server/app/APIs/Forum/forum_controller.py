@@ -133,7 +133,7 @@ class AllPost(Resource):
         db.session.add(new_post)
         db.session.commit()
 
-        return {"message": "Successfully"}, 200
+        return {"postid": new_post.id}, 200
 
 
 @forum_api.route('/posts/<postid>/comment')
