@@ -1,16 +1,4 @@
-import {
-  Avatar,
-  Box,
-  Button,
-  FormControl,
-  Grid,
-  InputLabel,
-  MenuItem,
-  Paper,
-  Select,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Avatar, Box, Button, Paper, Typography } from "@mui/material";
 import React, { useEffect, useState, useContext } from "react";
 import classes from "./company.module.scss";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
@@ -207,40 +195,39 @@ const Overview = ({ info }) => {
 };
 
 const Jobs = () => {
-  const [keyword, setKeyword] = useState("");
-  const [location, setLocation] = useState("");
+  // const [keyword, setKeyword] = useState("");
+  // const [location, setLocation] = useState("");
   const [jobsList, setJobsList] = useState([]);
-  const [sortBy, setSortBy] = useState("");
+  // const [sortBy, setSortBy] = useState("");
+
+  const getJobs = async () => {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const id = urlParams.get("id");
+    const res = await companyGetJobInfo(id, "", "", "");
+    console.log(res);
+    const jobs = res.jobs.map((i) => ({
+      ...i,
+      company_logo: res.company_logo,
+      company_name: res.company_name,
+      location: i.city,
+      job_id: i.id,
+    }));
+    console.log(jobs);
+    setJobsList(jobs);
+  };
 
   useEffect(() => {
-    const getJobs = async () => {
-      const queryString = window.location.search;
-      const urlParams = new URLSearchParams(queryString);
-      const id = urlParams.get("id");
-      const res = await companyGetJobInfo(id);
-      console.log(res);
-      const jobs = res.jobs.map((i) => ({
-        ...i,
-        company_logo: res.company_logo,
-        company_name: res.company_name,
-        location: i.city,
-        job_id: i.id,
-      }));
-      console.log(jobs);
-      setJobsList(jobs);
-    };
-
     getJobs();
   }, []);
 
-  const sortHandler = (e) => {
-    // api
-    setSortBy(e.target.value);
-  };
+  // const sortHandler = (e) => {
+  //   setSortBy(e.target.value);
+  // };
 
   return (
     <>
-      <Grid
+      {/* <Grid
         container
         spacing={3}
         sx={{ width: "75%", display: "flex", alignItems: "center", mb: "80px" }}
@@ -296,7 +283,7 @@ const Jobs = () => {
             <MenuItem value="Closing Soon">Closing Soon</MenuItem>
           </Select>
         </FormControl>
-      </Box>
+      </Box> */}
       {jobsList?.map((job, i) => (
         <JobBlock job={job} key={`job_${i}`} />
       ))}

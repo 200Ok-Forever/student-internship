@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { postPost } from "../../api/auth-api";
+// import { postPost } from "../../api/auth-api";
 
 import {
   FormControlLabel,
@@ -34,7 +34,7 @@ const CreatePost = (props) => {
     if (id) {
       // TODO get post
       // const response = postPost(id);
-      console.log()
+      console.log();
       const post = {
         title: "test",
         industry: "Arts",
