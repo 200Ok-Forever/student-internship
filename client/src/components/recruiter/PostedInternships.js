@@ -149,14 +149,14 @@ const Labels = ({ job }) => {
       <Box>
         <Button
           component={RouterLink}
-          to={`/applications?id=${job.job_id}`}
+          to={`/applications?id=${job.id}`}
           variant="outlined"
         >
           View Applications
         </Button>
         <Button
           component={RouterLink}
-          to={`/recommended-candidates?id=${job.job_id}`}
+          to={`job/${job.id}/recommended-candidates`}
           variant="outlined"
           sx={{ ml: 2 }}
         >
