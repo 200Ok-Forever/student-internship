@@ -5,19 +5,19 @@ export const getPosts = async (params) => {
 }
 
 export const getPost = async (id) => {
-  await getRequest(`/forum/posts/${id}`)
+  return await getRequest(`/forum/posts/${id}`)
 }
 
 export const postPost = async (data, token) => {
-  await postRequest('/forum/posts', data, {headers: {"Authorization": token}})
+  return await postRequest('/forum/posts', data, {headers: {"Authorization": token}})
 }
 
 export const patchPost = async (id, data, token) => {
-  await patchRequest(`/forum/posts/${id}`, data, {headers: {"Authorization": token}})
+  return await patchRequest(`/forum/posts/${id}`, data, {headers: {"Authorization": token}})
 }
 
 export const deletePost = async (id, token) => {
-  await deleteRequest(`/forum/posts/${id}`, {headers: {"Authorization": token}})
+  return await deleteRequest(`/forum/posts/${id}`, {headers: {"Authorization": token}})
 }
 
 export const postComment = async (id, data, token) => {

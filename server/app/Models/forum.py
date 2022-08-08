@@ -1,25 +1,25 @@
 from .. import db
 
-
 forum_list = [
     '',
-  'general',
-  'arts',
-  'business',
-  'engineering',
-  'finance',
-  'law',
-  'medicine',
-  'science']
+    'general',
+    'arts',
+    'business',
+    'engineering',
+    'finance',
+    'law',
+    'medicine',
+    'science']
+
 
 class Forum(db.Model):
     __tablename__ = 't_forum'
     id = db.Column(db.Integer, db.ForeignKey('t_industry.id'), nullable=False, primary_key=True)
     name = db.Column('name', db.String(255), nullable=False)
-    #image = db.Column('image', db.TEXT, nullable=False)
+    # image = db.Column('image', db.TEXT, nullable=False)
     posts = db.relationship('Post', backref='forum', lazy=True)
     industry = db.relationship('Industry', backref='forum', lazy=True)
-    
+
     def __repr__(self):
         return f"<Forum: id: {self.id}, name: {self.name}>"
 
@@ -61,7 +61,6 @@ class PostComment(db.Model):
     content = db.Column('content', db.String(10000), nullable=False)
     order = db.Column('order', db.Integer, nullable=False)
     comments = db.relationship('PostComment', remote_side=[id])
-
 
     def __repr__(self):
         return f"<Forum: id: {self.id}, user id: {self.student_id}>"

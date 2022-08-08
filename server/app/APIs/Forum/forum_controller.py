@@ -10,7 +10,7 @@ from .forum_utils import get_comments
 from flask_jwt_extended import jwt_required
 from flask_restx import Resource, reqparse
 from ... import db
-from ...Models.forum import Post, PostComment, Forum, forum_list
+from ...Models.forum import Post, PostComment, forum_list
 from sqlalchemy import and_, null, or_
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import get_jwt_identity
@@ -26,35 +26,30 @@ forum_parser.add_argument('pageNumber', type=int, location='args', default=1)
 forum_parser.add_argument('industry', type=str, location='args')
 forum_parser.add_argument('userId', type=int, location='args')
 forum_parser.add_argument('searchTerm', type=str, location='args')
-forum_parser.add_argument('sort', choices=['newest', 'hottest', 'popular'], type=str, location='args')
+forum_parser.add_argument('sort', choices=['newest', 'hot', 'popular'], type=str, location='args')
 auth_parser = reqparse.RequestParser()
 auth_parser.add_argument('Authorization', location='headers', help='Bearer [Token]', default='Bearer xxxxxxxxxxx')
 
 @forum_api.route("/posts/<postid>")
 class GetPost(Resource):
-    @forum_api.doc(
-        "Get the content of the given post",
-        responses={
-            200: "Successfuly",
-            400: "Invalid post id",
-        }
-    )
-    def get(self, postid):
-        """ Get the content of the given post """
-        post = db.session.query(Post).outerjoin(PostComment, PostComment.post_id == Post.id).filter(
-            Post.id == postid).first()
-        if post is None:
-            return {"message": "Invalid post id"}, 400
+    @forum_api.response(200, "Successfully")
+    @forum_api.response(400, "Something wrong")
+    def get(self, id):
 
-        data = convert_object_to_dict(post)
-        data['nComments'] = len(post.comments)
-        data['authName'] = post.student.user.username
-        data['avatar'] = post.student.user.avatar
-        data['authId'] = post.student.id
-        result = {'post': data}
-        comments = [comm for comm in post.comments if comm.parent_id == None]
-        comments = get_comments(comments, post.comments)
-        result['comments'] = comments
+        post = db.session.query(Post).outerjoin(PostComment, PostComment.post_id == Post.id).filter(
+            Post.id == id).first()
+        if post == None:
+            return {"message": "Invalid post id"}, 400
+        forum_id = post.forum_id
+        result = {}
+        if forum_id <= 0 or forum_id >= len(forum_list):
+            return {"message": "invalid forum id"}, 400
+
+        result['industry'] = forum_list[forum_id]
+
+        result['post'] = convert_object_to_dict(post)
+        comments = post.comments
+        result['comments'] = convert_model_to_dict(comments)
 
         return result, 200
 
@@ -107,8 +102,8 @@ class AllPost(Resource):
             return {"result": result}, 200
         else:
             return {
-                "message": "Please provide an industry"
-            }, 400
+                       "message": "Please provide an industry"
+                   }, 400
 
     @forum_api.doc(
         " Post a new post",
@@ -124,12 +119,12 @@ class AllPost(Resource):
         uid = get_jwt_identity()
         data = forum_api.payload
 
-        if data['industry'].lower() not in forum_list:
+        if data['Industry'].lower() not in forum_list:
             return {"message": "Invalid forum name"}, 400
 
         user = db.session.query(User).filter(User.username == data['Author']).first()
 
-        fourm_id = forum_list.index(data['industry'].lower())
+        fourm_id = forum_list.index(data['Industry'].lower())
 
         if user == None or user.uid != uid:
             return {"message": "Invalid user name"}, 400
@@ -176,20 +171,15 @@ class CreateComment(Resource):
         return {"message": "Successfully"}, 200
 
 
-@forum_api.route("/forum/posts/<int:postid>")
+
+@forum_api.route("/posts/<int:id>")
 class EditAndDeletePost(Resource):
-    @forum_api.doc(
-        " Delete the given post",
-        responses={
-            200: "Delete Successfuly",
-            400: "Error",
-        }
-    )
     @jwt_required()
-    def delete(self, postid):
-        """ Delete the given post """
-        #uid = get_jwt_identity()
-        return ForumUtils.deletepost(postid)
+    @forum_api.expect(auth_parser)
+    def delete(self, id):
+        return ForumUtils.deletepost(id)
+
+
 
     @jwt_required()
     @forum_api.expect(ForumAPI.edit, auth_parser)
@@ -204,6 +194,5 @@ class EditAndDeletePost(Resource):
         """ Edit the given post """
         content = request.get_json()
         print(content)
-        #uid = get_jwt_identity()
-        # return "hahahaha"
-        return ForumUtils.editPost(postid, content)
+        return ForumUtils.editPost(id, content)
+
