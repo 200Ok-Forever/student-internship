@@ -1,7 +1,5 @@
 from ast import In
 from datetime import date, timedelta
-import datetime
-import resource
 from xml.etree.ElementTree import Comment
 from flask import request, jsonify
 from flask_restx import Resource
@@ -20,53 +18,16 @@ from sqlalchemy import func
 from ...Helpers.other_util import convert_object_to_dict, convert_model_to_dict
 from ...Models import forum
 from .forum_utils import ForumUtils
+
 forum_api = ForumAPI.forum_ns
 
 forum_parser = reqparse.RequestParser()
 forum_parser.add_argument('pageNumber', type=int, location='args', default=1)
+forum_parser.add_argument('industry', type=str, location='args')
 forum_parser.add_argument('userId', type=int, location='args')
 forum_parser.add_argument('searchTerm', type=str, location='args')
-forum_parser.add_argument('strategy', choices=['newest', 'hottest', 'popular'], type=str, location='args')
+forum_parser.add_argument('sort', choices=['newest', 'hottest', 'popular'], type=str, location='args')
 
-
-@forum_api.route("/<int:id>/posts")
-class GetAllPosts(Resource):
-    @forum_api.response(200, "Successfully")
-    @forum_api.response(400, "Something wrong")
-    @forum_api.expect(forum_parser)
-    def get(self, id):
-        args = forum_parser.parse_args()
-        query = db.session.query(Forum, Post,
-                                 func.count(PostComment.id)).outerjoin(PostComment,
-                                                                       PostComment.post_id == Post.id).filter(
-            Forum.id == id, Post.forum_id == Forum.id).group_by(PostComment.post_id)
-        # need to get the users posts
-        if args['userId'] is not None:
-            query = query.filter(Post.student_id == int(args['userId']))
-
-        if args['searchTerm'] is not None:
-            key = args['searchTerm']
-            query = query.filter(Post.content.ilike(f'%{key}%'), or_(Post.title.ilike(f'%{key}%')))
-
-        if args['strategy'] is not None and args['strategy'] == 'newest':
-            query = query.order(Post.created_time.desc())
-        elif args['strategy'] is not None and args['strategy'] == 'hottest':
-            yesterday = date.today() - timedelta(days=1)
-            query = query.filter(Post.created_time == yesterday).order(func.count(PostComment.id).desc())
-        elif args['strategy'] is not None and args['strategy'] == 'popular':
-            query = query.order(func.count(PostComment.id).desc())
-
-        # 10 items per page
-        index = args['pageNumber'] - 1
-        posts = query.offset(index * 10).limit(10).all()
-        result = []
-        for fourm, post, count in posts:
-            data = convert_object_to_dict(post)
-            data['nComments'] = count
-            data['authName'] = post.student.user.username
-            data['authId'] = post.student.id
-            result.append(data)
-        return {"result": result}, 200
 
 @forum_api.route("/posts/<id>")
 class GetPost(Resource):
@@ -88,27 +49,66 @@ class GetPost(Resource):
         comments = get_comments(comments, post.comments)
         result['comments'] = comments
 
-
         return result, 200
 
 
 @forum_api.route('/posts')
-class CreatePost(Resource):
+class AllPost(Resource):
     @forum_api.response(200, "Successfully")
     @forum_api.response(400, "Something wrong")
+    @forum_api.expect(forum_parser)
+    def get(self):
+        args = forum_parser.parse_args()
+        if args['industry'] is not None:
+            ind_id = forum_list.index(args['industry'].lower())
+            query = db.session.query(Post,
+                                     func.count(PostComment.id)).outerjoin(PostComment,
+                                                                           PostComment.post_id == Post.id).filter(
+                Post.forum_id == ind_id).group_by(PostComment.post_id)
+            # need to get the users posts
+            if args['userId'] is not None:
+                query = query.filter(Post.student_id == int(args['userId']))
+
+            if args['searchTerm'] is not None:
+                key = args['searchTerm']
+                query = query.filter(or_(Post.title.ilike(f'%{key}%'), Post.content.ilike(f'%{key}%')))
+
+            if args['sort'] is not None and args['sort'] == 'newest':
+                query = query.order_by(Post.created_time.desc())
+            elif args['sort'] is not None and args['sort'] == 'hottest':
+                yesterday = date.today() - timedelta(days=1)
+                query = query.filter(Post.created_time == yesterday).order_by(func.count(PostComment.id).desc())
+            elif args['sort'] is not None and args['sort'] == 'popular':
+                query = query.order_by(func.count(PostComment.id).desc())
+
+            # 10 items per page
+            index = args['pageNumber'] - 1
+            posts = query.offset(index * 10).limit(10).all()
+            result = []
+            for post, count in posts:
+                data = convert_object_to_dict(post)
+                data['nComments'] = count
+                data['authName'] = post.student.user.username
+                data['authId'] = post.student.id
+                result.append(data)
+            return {"result": result}, 200
+        else:
+            return {
+                "message": "Please provide an industry"
+            }, 400
+
     @jwt_required()
     @forum_api.expect(ForumAPI.post_data, validate=True)
     def post(self):
         uid = get_jwt_identity()
         data = forum_api.payload
 
-        if data['Industry'].lower() not in forum_list:
+        if data['industry'].lower() not in forum_list:
             return {"message": "Invalid forum name"}, 400
 
-        
         user = db.session.query(User).filter(User.username == data['Author']).first()
 
-        fourm_id = forum_list.index(data['Industry'].lower())
+        fourm_id = forum_list.index(data['industry'].lower())
 
         if user == None or user.id != uid:
             return {"message": "Invalid user name"}, 400
@@ -118,6 +118,7 @@ class CreatePost(Resource):
         db.session.commit()
 
         return {"message": "Successfully"}, 200
+
 
 @forum_api.route('/posts/<postid>/comment')
 class CreateComment(Resource):
@@ -142,30 +143,29 @@ class CreateComment(Resource):
             if comment is None:
                 return {"message": "Parent comment id invalid"}, 400
 
-        new_comm = PostComment(data['userID'], postid, data['replyID'],data['createdAt'], data['Content'])
+        new_comm = PostComment(data['userID'], postid, data['replyID'], data['createdAt'], data['Content'])
         db.session.add(new_comm)
         db.session.commit()
-        return {"message": "Successfully"},200
+        return {"message": "Successfully"}, 200
+
 
 patch_parser = reqparse.RequestParser()
 # patch_parser.add_argument('content', location = 'body',help='edit content')
 patch_parser.add_argument('Authorization', location='headers', help='Bearer [Token]', default='Bearer xxxxxxxxxxx')
+
+
 @forum_api.route("/forum/posts/<int:id>")
 class EditAndDeletePost(Resource):
     # @jwt_required()
-    def delete(self,id):
+    def delete(self, id):
         # uid = get_jwt_identity()
         return ForumUtils.deletepost(id)
 
     @jwt_required()
     @forum_api.expect(ForumAPI.edit, patch_parser)
-    def patch(self,id):
+    def patch(self, id):
         content = request.get_json()
         print(content)
         # uid = get_jwt_identity()
         # return "hahahaha"
-        return ForumUtils.editPost(id,content)
-
-   
-   
-
+        return ForumUtils.editPost(id, content)

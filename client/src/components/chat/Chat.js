@@ -9,7 +9,8 @@ import RenderChatSettingsTop from "./RenderChatSettingsTop";
 import RenderMessageBubble from "./RenderMessageBubble";
 import RenderNewMessageForm from "./RenderNewMessageForm";
 
-const Chat = () => {
+const Chat = (props) => {
+  console.log("🚀 ~ props", props.location?.query?.uid);
   const { user } = useContext(UserContext);
   const currChatUser = user.uid.toString();
 
@@ -19,7 +20,12 @@ const Chat = () => {
       userName={currChatUser}
       userSecret={currChatUser}
       height="100vh"
-      renderNewChatForm={(creds) => <RenderChatForm creds={creds} />}
+      renderNewChatForm={(creds) => (
+        <RenderChatForm
+          creds={creds}
+          chatWith={props.location.query?.uid.toString()}
+        />
+      )}
       onNewMessage={() =>
         new Audio(
           "https://chat-engine-assets.s3.amazonaws.com/click.mp3"

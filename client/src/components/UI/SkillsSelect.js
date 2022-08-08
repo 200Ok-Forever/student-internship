@@ -3,7 +3,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import { getSkils } from '../../api/auth-api';
 
-const SkillsSelect = ({ label, value, onChange }) => {
+const SkillsSelect = ({ label, value, onChange, defaultValue = [] }) => {
   const [skills, setSkills] = useState([])
 
   useEffect(() => {
@@ -21,7 +21,7 @@ const SkillsSelect = ({ label, value, onChange }) => {
       options={skills}
       disableCloseOnSelect
       getOptionLabel={(option) => option.name}
-      defaultValue={[]}
+      defaultValue={defaultValue}
       onChange={onChange}
       renderInput={(params) => (
         <TextField

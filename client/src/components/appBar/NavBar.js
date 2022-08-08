@@ -143,7 +143,7 @@ const NavBar = () => {
               <MenuItem
                 onClick={handleClose}
                 component={RouterLink}
-                to="/profile"
+                to={user.role === 1 ? "/profile" : `/company?id=${user.uid}`}
               >
                 Profile
               </MenuItem>

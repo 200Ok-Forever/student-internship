@@ -36,6 +36,7 @@ import { UserContext } from "./store/UserContext";
 import UserPosts from "./components/forum/UserPosts";
 import CreateInternship from "./components/recruiter/CreateInternship";
 import EditStudentProfile from "./components/student/EditStudentProfile";
+import EditCompanyProfile from "./components/company/EditCompanyProfile";
 import StudentProfile from "./components/student/StudentProfile";
 import { STUDENT_ROLE, RECRUITER_ROLE } from "./constants";
 
@@ -90,6 +91,11 @@ function App() {
               component={EditStudentProfile}
             />
             <Route
+              path="/editcompanyprofile"
+              exact
+              component={EditCompanyProfile}
+            />
+            <Route
               path="/studentprofile/:id"
               exact
               component={StudentProfile}
@@ -102,7 +108,7 @@ function App() {
             />
             <Route path="/profile" exact component={Profile} />
             <PrivateRoute
-              path="/recommended-candidates"
+              path="/job/:id/recommended-candidates"
               role={RECRUITER_ROLE}
               exact
               component={RecommendedCandidates}
@@ -125,7 +131,7 @@ const NarrowContainerRoutes = () => {
       <Switch>
         <Route path="/forum" exact component={Forum} />
         {INDUSTRIES.map((industry) => (
-          <Route path={`/forum/${industry}`} component={IndustryForum} />
+          <Route path={`/forum/${industry}`} key={industry} component={IndustryForum} />
         ))}
         <Route path="/forum/me" component={UserPosts} />
         <Route path="/forum/posts" component={ForumPost} />
@@ -143,7 +149,7 @@ const NarrowContainerRoutes = () => {
         />
         <PrivateRoute
           role={RECRUITER_ROLE}
-          path="/job/:id/edit"
+          path="/job/edit"
           exact
           component={CreateInternship}
         />

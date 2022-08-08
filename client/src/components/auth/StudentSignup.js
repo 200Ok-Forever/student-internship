@@ -293,7 +293,7 @@ const StudentSignup = () => {
             <TextField
               fullWidth
               name="positions"
-              label="What positions you are searching?"
+              label="What positions you are searching? (Separated by comma)"
               id="positions"
               autoComplete="positions"
               value={formik.values.positions}

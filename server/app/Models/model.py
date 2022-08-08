@@ -61,7 +61,7 @@ class Student(db.Model):
     description = db.Column(db.VARCHAR(200))
     skills = db.relationship('Skill', secondary='r_student_skill', back_populates='students', lazy=True)
     applications = db.relationship('InternshipStatus', backref="student", lazy=True)
-    invitations = db.relationship("Internship", secondary='r_invitation', back_populates='invitations_students',
+    invitations = db.relationship("Companies", secondary='r_invitation', back_populates='invitations_students',
                                   lazy=True)
     questions = db.relationship("InternQuestion", secondary='r_intern_question_answer', back_populates='students',
                                 lazy=True)
@@ -85,43 +85,6 @@ class Student(db.Model):
             "skills": skills,
             "description": self.description
         }
-
-
-# class Company(db.Model):
-#     __tablename__ = 't_company'
-#     id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
-#     email = db.Column(db.VARCHAR(320), nullable=False, unique=True)
-#     company_name = db.Column(db.VARCHAR(255), nullable=False, unique=True)
-#     first_name = db.Column(db.VARCHAR(255), nullable=False)
-#     last_name = db.Column(db.VARCHAR(255), nullable=False)
-#     industry = db.Column(db.VARCHAR(255))
-#     linkedin = db.Column(db.VARCHAR(255))
-#     founded_year = db.Column(db.VARCHAR(4), nullable=False)
-#     company_url = db.Column(db.VARCHAR(255))
-#     company_size = db.Column(db.VARCHAR(10), nullable=False)
-#     location = db.Column(db.VARCHAR(255))
-#     description = db.Column(db.VARCHAR(200))
-#     company_logo = db.Column(db.TEXT)
-#
-#     def __repr__(self):
-#         return f"<Recruiter: {self.email}, {self.first_name} {self.last_name}>"
-#
-#     def get_info(self):
-#         return {
-#             "id": self.uid,
-#             "email": self.email,
-#             "company_name": self.company_name,
-#             "first_name": self.first_name,
-#             "last_name": self.last_name,
-#             "industry": self.industry,
-#             "linkedin": self.linkedin,
-#             "founded_year": self.founded_year,
-#
-#             "company_size": self.company_size,
-#             "location": self.location,
-#             "description": self.description,
-#             "company_logo": self.company_logo
-#         }
 
 
 class Internship(db.Model):
@@ -161,7 +124,7 @@ class Internship(db.Model):
     status = db.relationship('InternshipStatus', back_populates='internship')
     processes = db.relationship("Process", backref='internship', lazy=True)
     questions = db.relationship("InternQuestion", backref='internship', lazy=True)
-    invitations_students = db.relationship("Student", secondary='r_invitation', back_populates='invitations', lazy=True)
+    
     # skills = db.relationship('Skill', secondary=job_skills, backref='internship', overlaps="internship")
 
     skills = db.relationship('Skill', secondary='r_job_skill', back_populates='internships', lazy=True)
@@ -211,7 +174,7 @@ class Internship(db.Model):
         self.is_remote = is_remote
         self.description = description
         self.google_link = google_link
-        self.expiration_datetime = expiration_time
+        self.expiration_datetime_utc = expiration_time
         self.min_salary = min_salary
         self.max_salary = max_salary
         self.salary_currency = salary_currency
@@ -277,7 +240,16 @@ class InternshipStatus(db.Model):
     shortlist = db.Column(db.Boolean)
     internship = db.relationship('Internship', back_populates='status')
     stage = db.Column(db.Integer, db.ForeignKey('t_process.id'))
+    applied_time = db.Column(db.VARCHAR(255))
+
     # user = db.relationship('User', back_populates='status')
+    def __init__(self, uid, intern_id, is_applied, applied_time, stage):
+        self.uid = uid
+        self.intern_od = intern_id
+        self.is_applied = is_applied
+        self.applied_time = applied_time
+        self.stage = stage
+        self.status = "pending"
 
 
 class File(db.Model):

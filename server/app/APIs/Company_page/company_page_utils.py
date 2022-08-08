@@ -1,10 +1,12 @@
 from signal import raise_signal
+
+from ...Helpers.other_util import convert_object_to_dict
 from  ...Models import company as Company
 from  ...Models import model
 from  ...Models import internship as Internship
 from  ...Models import skill as Skill
 from ... import db
-from sqlalchemy import and_, null, or_
+from sqlalchemy import or_
 
 def get_intern_process(job):
     process = [-1 for i in range(0, len(job.processes))]
@@ -44,7 +46,7 @@ def check_editapplication_permison(jobid, appliedid, uid):
 
     # check permission
     if int(job.company_id) != int(uid):
-       return False, {"message": "No permision"}
+        return False, {"message": "No permision"}
     
 
     # check the application id
@@ -76,7 +78,7 @@ def search_jobs(args, id):
     if args['sort'] == 'newest':
         jobs = jobs.order_by(model.Internship.posted_time.desc())
     else:
-        jobs = jobs.order_by(model.Internship.expiration_datetime.desc())
+        jobs = jobs.order_by(model.Internship.expiration_datetime_utc.asc())
     
     # paging, 10 per page
     jobs = jobs.offset((args['current_page'] - 1) * 10).limit(10).all()
@@ -148,5 +150,36 @@ def create_job(data, intern_id, companyid, old_skills):
 def find_file(type, uid):
     file = db.session.query(model.File).filter(model.File.uid == uid, model.File.file_type == type).first()
     if file != None:
-        file = str(file.decode())
-    return file
+        return { 'data': file.data, 'name': file.filename }
+    return None
+
+def format_jobs(jobs, uid, company_logo, company_name):
+    # format result
+    result = {"jobs": []}
+    result['numAllResults'] = {"total_count": len(jobs)}
+    for job in jobs:
+        company_name = job.company.company_name
+        company_logo = job.company.company_logo
+        data = convert_object_to_dict(job)
+        data['closeDate'] = data['expiration_datetime_utc']
+
+        # get the city
+        if job.citys is None:
+            data['city'] = None
+        else:
+            data['city'] = job.citys.name
+
+        # get identity, if has token, is recruiter
+        if uid != None and job.company_id == uid:
+            process_list = get_intern_process(job)
+            data['questions'] = [que.content for que in job.questions]
+            data['processes'] = process_list
+            data['require_resume'] = job.require_resume
+            data['require_coverLetter'] = job.require_coverLetter
+            data['nApplications'] = len(job.status)
+            data['skills'] = [{ 'name': skill.name, 'id': skill.id} for skill in job.skills]
+        result['jobs'].append(data)
+
+    result['company_name'] = company_name
+    result['company_logo'] = company_logo
+    return result

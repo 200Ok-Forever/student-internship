@@ -2,6 +2,8 @@ import { Avatar, Paper, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useContext } from "react";
 import { ChatEngineContext, sendMessage } from "react-chat-engine";
+import { createMeeting } from "../../api/chat-api";
+import { UserContext } from "../../store/UserContext";
 
 const paper = {
   maxWidth: "500px",
@@ -22,25 +24,40 @@ const RenderMessageBubble = ({ message }) => {
   const rejectMsg = message.text.replace("REJECT BOT:", "");
   const isLink = message.text.includes("LINK BOT");
   const LinkMsg = message.text.replace("LINK BOT:", "");
+  const { user } = useContext(UserContext);
 
-  const acceptHandler = async () => {
+  const acceptHandler = async (msg, otherId) => {
+    console.log("🚀 ~ otherId", otherId);
     // TODO connect api
     sendMessage(creds, activeChat, {
-      text: `ACCEPT BOT:${creds.userName} accepted the invitation`,
+      text: `ACCEPT BOT:${user.username} accepted the invitation`,
     });
-    sendMessage(creds, activeChat, {
-      text:
-        "LINK BOT:👉 Join Zoom Meeting on time\n" +
-        "https://us04web.zoom.us/j/76094689808?pwd=564gThRd6w4Vaug703-AyBDXe7cx3X.1\n" +
-        "Meeting ID: 760 9468 9808\n" +
-        "Passcode: TvmG9Y",
-    });
+
+    const data = {
+      otherUserId: otherId,
+      time: msg.split(" ").pop(),
+    };
+    try {
+      const rep = await createMeeting(data);
+      if (rep.status === 200) {
+        sendMessage(creds, activeChat, {
+          text:
+            `LINK BOT:👉 Join Zoom Meeting on time(${msg.split(" ").pop()})\n` +
+            `${rep.data.join_url}\n`,
+        });
+      }
+    } catch ({ response }) {
+      console.log(response);
+      sendMessage(creds, activeChat, {
+        text: "Internal server error",
+      });
+    }
   };
 
   const DeclineHandler = async () => {
     // TODO connect api
     sendMessage(creds, activeChat, {
-      text: `REJECT BOT:${creds.userName} rejected the invitation`,
+      text: `REJECT BOT:${user.username} rejected the invitation`,
     });
   };
 
@@ -61,7 +78,10 @@ const RenderMessageBubble = ({ message }) => {
         {invitationMsg}
       </Typography>
       <Box>
-        <button className="btn" onClick={acceptHandler}>
+        <button
+          className="btn"
+          onClick={() => acceptHandler(invitationMsg, sender.username)}
+        >
           Accept
         </button>
         <button className="cancel-btn" onClick={DeclineHandler}>
@@ -127,7 +147,7 @@ const RenderMessageBubble = ({ message }) => {
         >
           <Msg paperSx={paper} />
           {!isAccepted && !isRejected && !isLink && (
-            <Avatar src={sender.avatar} />
+            <Avatar src={sender.last_name} />
           )}
         </div>
       ) : (
@@ -141,7 +161,7 @@ const RenderMessageBubble = ({ message }) => {
           }}
         >
           {!isAccepted && !isRejected && !isLink && (
-            <Avatar src={sender.avatar} />
+            <Avatar src={sender.last_name} />
           )}
           <Msg
             paperSx={{ ...paper, backgroundColor: "#EAEAEA", color: "black" }}

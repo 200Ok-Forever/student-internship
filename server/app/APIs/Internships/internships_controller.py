@@ -1,7 +1,6 @@
 from email.policy import default
 from flask import request, jsonify
 from flask_restx import Resource, reqparse
-from pyrsistent import get_in
 from .internships_model import InternshipsAPI
 from .internships_utils import InternshipsUtils
 
@@ -83,7 +82,6 @@ class ApplyInternship(Resource):
             arg = request.get_json()
             print(arg)
             return InternshipsUtils.apply(id, arg)
-            pass
         except Exception as error:
             pass
 
