@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
+import { postPost } from "../../api/auth-api";
+
 import {
   FormControlLabel,
   Checkbox,
@@ -19,7 +21,7 @@ import { INDUSTRIES } from "./constants";
 const CreatePost = (props) => {
   const { id } = useParams();
   const history = useHistory();
-  const [loading, setLoading] = useState(id ? true : false);
+  const [loading, setLoading] = useState(!!id);
 
   const [title, setTitle] = useState("");
   const [industry, setIndustry] = useState(
@@ -31,6 +33,8 @@ const CreatePost = (props) => {
   useEffect(() => {
     if (id) {
       // TODO get post
+      // const response = postPost(id);
+      console.log()
       const post = {
         title: "test",
         industry: "Arts",
