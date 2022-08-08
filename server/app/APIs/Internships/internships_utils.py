@@ -9,9 +9,10 @@ from json import dumps
 from requests import session
 from sqlalchemy import null
 from torch import is_same_size
+
 from ...Models.model import Calendar, Internship, City, Comment, User, Student, File, InternshipStatus
 from ...Models.company import Companies
-from ...Models.internship import InternQuestion, InternAnswer
+from ...Models.internship import InternQuestion, InternAnswer, Process
 from ...Models.skill import StudentSkills, Skill
 from flask_restx import Resource, reqparse
 from ...extension import db
@@ -425,7 +426,12 @@ class InternshipsUtils:
         if is_applied:
             info = []
             for applied in is_applied:
-                info.append(Internship.get_info(applied))
+                internship_info = Internship.get_info(applied)
+                status = InternshipStatus.query.filter(InternshipStatus.intern_id == applied.id).filter(InternshipStatus.uid==uid).first().status
+                internship_info['status'] = status
+                info.append(internship_info)
+                
+            
             result = {
                 "is_applied": info
             }
@@ -462,11 +468,22 @@ class InternshipsUtils:
         # update is_applied status
        
         print(current_user_id)
+        curr_stage = db.query(Process).filter(Process.intern_id == id, Process.order == 1).first()
+        stage = None
+        if curr_stage:
+            stage = curr_stage.id
+
         apply = db.session.query(InternshipStatus) \
             .filter(InternshipStatus.intern_id == id) \
             .filter(InternshipStatus.uid == current_user_id) \
-            .update({InternshipStatus.is_applied: "True", InternshipStatus.applied_time: str(datetime.datetime.now())})
+            .update({InternshipStatus.is_applied: "True", 
+            InternshipStatus.applied_time: str(datetime.datetime.now()),
+            InternshipStatus.stage: stage})
 
+        if apply == None:
+            apply= InternshipStatus(current_user_id, id, "True", str(datetime.datetime.now()), stage)
+            db.session.add(apply)
+            db.session.commit()
     
         # store question and answer
         try:

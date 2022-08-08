@@ -210,9 +210,15 @@ class GetAllApplications(Resource):
         print(job.status)
         result = []
         for appli in job.status:
+            if appli.is_applied != "True":
+                continue
             stu = appli.student
-            if not stu: continue
+            if not stu: 
+                continue
             data = convert_object_to_dict(stu)
+            data['stage'] = None
+            if appli.process != None:
+                data['stage'] = appli.process.name
             data['status'] = appli.status
             data['avatar'] = stu.user.avatar
             data['applicationId'] = appli.id
@@ -238,12 +244,11 @@ class CreateIntern(Resource):
     @company_ns.response(200, "Successfully")
     @company_ns.response(400, "Something wrong")
     @company_ns.expect(CompanyPageAPI.intern_data, validate=True)
-    #@jwt_required()
+    @jwt_required()
     def post(self, companyid):
         data = company_ns.payload
         print(data)
-        #uid = get_jwt_identity()
-        uid = 371
+        uid = get_jwt_identity()
 
         query = db.session.query(Company.Companies).filter(Company.Companies.id == companyid)
 
