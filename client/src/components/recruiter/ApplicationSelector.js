@@ -14,31 +14,46 @@ import {
   ListItem,
   ListItemButton,
   Avatar,
+  FormControlLabel,
   Box,
+  Checkbox,
   Typography,
 } from "@mui/material";
 import classes from "./Recruiter.module.scss";
 import { toTitleCase } from '../../helpers';
+import { SettingsApplications } from "@mui/icons-material";
 
-const process = ["Phone Interview", "Tech Interview", "Behavioural Interview"];
-
-const Selector = ({ applications, setSelectedApp, selectedApp }) => {
+const Selector = ({ applications, steps, setSelectedApp, selectedApp }) => {
   const [status, setStatus] = useState("all");
   const [filteredApplications, setFilteredApplications] =
     useState(applications);
+  const [first, setFirst] = useState(true);
+  const [shortlist, setShortlist] = useState(false);
 
   useEffect(() => {
-    if (status === "all") {
-      setFilteredApplications(applications);
-    } else if (status === 'accepted' || status === 'rejected') {
-      setFilteredApplications(applications.filter(app => app.status === null))
-    } else {
-      setFilteredApplications(
-        applications.filter((app) => app.stage === status)
-      );
+    if (first) {
+      setFirst(false);
+      return;
     }
-    setSelectedApp(0)
-  }, [applications, status]);
+    let filtered;
+    if (status === "all") {
+      filtered = applications;
+    } else if (status === 'accepted' || status === 'rejected') {
+      filtered = applications.filter(app => app.status === status)
+    } else {
+      filtered =
+        applications.filter((app) => app.stage === status)
+    }
+    if (shortlist) {
+      filtered = filtered.filter(app => app.shortlist)
+    }
+    setFilteredApplications(filtered);
+    if (filtered.length > 0) {
+      setSelectedApp(0)
+    } else {
+      setSelectedApp(null);
+    }
+  }, [status, shortlist]);
 
   return (
     <Box>
@@ -55,11 +70,18 @@ const Selector = ({ applications, setSelectedApp, selectedApp }) => {
           <MenuItem value="all">All</MenuItem>
           <MenuItem value="accepted">Accepted</MenuItem>
           <MenuItem value="rejected">Rejected</MenuItem>
-          {process.map((p) => (
+          {steps.map((p) => (
             <MenuItem value={p}>{toTitleCase(p)}</MenuItem>
           ))}
         </Select>
       </FormControl>
+      <FormControlLabel
+        control={<Checkbox />}
+        label="Only Shortlisted"
+        checked={shortlist}
+        onChange={(e) => setShortlist(e.target.checked)}
+        sx={{ mt: 2 }}
+      />
       <List sx={{ mt: 2, maxHeight: "65vh", overflow: "auto" }}>
         {filteredApplications.map((app, i) => (
           <ApplicationCard

@@ -6,14 +6,14 @@ import { useParams } from "react-router-dom";
 import { useContext } from "react";
 import { UserContext } from "../../store/UserContext";
 
-const Application = ({ application, setLoading, setApplications }) => {
+const Application = ({ application, setLoading, setApplications, applications, i, setSelectedApp }) => {
   return (
     <Box sx={{ maxHeight: "70vh", overflow: "auto" }}>
       {!application ? (
         <Typography>Nothing to display</Typography>
       ) : (
         <>
-          <ApplicationHeader application={application} setLoading={setLoading} setApplications={setApplications} />
+          <ApplicationHeader application={application} setLoading={setLoading} setApplications={setApplications} applications={applications} i={i} setSelectedApp={setSelectedApp} />
           <Documents application={application} />
           <Questions questions={application.questions} />
         </>
@@ -22,36 +22,50 @@ const Application = ({ application, setLoading, setApplications }) => {
   );
 };
 
-const ApplicationHeader = ({ application, setLoading, setApplications }) => {
+const ApplicationHeader = ({ application, i, setLoading, setApplications, applications, setSelectedApp }) => {
   const { id } = useParams();
   const { user } = useContext(UserContext);
   
   const onProceed = async () => {
     setLoading(true);
     const res = await postForwardApplication(id, application.applicationId, user.token)
+    let newApps = [...applications];
+    newApps[i] = res;
+    setApplications(newApps)
+    setSelectedApp(i)
     setLoading(false);
-    setApplications(res.applicants)
   }
 
   const onReject = async () => {
     setLoading(true);
     const res = await postRejectApplication(id, application.applicationId, user.token)
+    let newApps = [...applications];
+    newApps[i] = res;
+    setSelectedApp(i)
+    setApplications(newApps)
     setLoading(false);
-    setApplications(res.applicants)
   }
 
   const onShortlist = async () => {
     setLoading(true);
     const res = await postShortlistApplication(id, application.applicationId, user.token)
+    let newApps = [...applications];
+    newApps[i] = res;
+    console.log("ON")
+    console.log(i)
+    setApplications(newApps)
+    setSelectedApp(i)
     setLoading(false);
-    setApplications(res.applicants)
   }
 
   const onUnshortlist = async () => {
     setLoading(true);
     const res = await postUnshortlistApplication(id, application.applicationId, user.token)
+    let newApps = [...applications];
+    newApps[i] = res;
+    setSelectedApp(i)
+    setApplications(newApps)
     setLoading(false);
-    setApplications(res.applicants)
   }
 
   const pending =

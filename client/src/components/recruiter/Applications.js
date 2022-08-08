@@ -13,6 +13,7 @@ const Applications = () => {
   const [loading, setLoading] = useState(true);
   const { user } = useContext(UserContext);
   const [jobTitle, setJobTitle] = useState({})
+  const [steps, setSteps] = useState([]);
   const [selectedApp, setSelectedApp] = useState();
 
   useEffect(() => {
@@ -25,6 +26,7 @@ const Applications = () => {
           name: res.intern_title,
           city: res.city
         })
+        setSteps(res.processes)
         setSelectedApp(res.applicants.length > 0 && 0)
       } catch (e) {
         window.location.href = '/';
@@ -39,7 +41,7 @@ const Applications = () => {
         Applications
       </Typography>
       {jobTitle.name &&
-        <Typography variant="h6" component="div" mt={2} mb={5}>
+        <Typography variant="h5" component="div" mt={2} mb={5}>
           {jobTitle.name} {jobTitle.city && `(${jobTitle.city})`}
         </Typography>
       }
@@ -54,10 +56,11 @@ const Applications = () => {
                 applications={applications} 
                 setSelectedApp={setSelectedApp} 
                 selectedApp={selectedApp}
+                steps={steps}
               />
             </Grid>
             <Grid item xs={8.5}>
-              <Application application={applications.length > 0 && applications[selectedApp]} setLoading={setLoading} />
+              <Application setSelectedApp={setSelectedApp} application={applications.length > 0 && applications[selectedApp]} setApplications={setApplications} setLoading={setLoading} applications={applications} i={selectedApp} />
             </Grid>
           </Grid>
         }

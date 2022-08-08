@@ -41,7 +41,7 @@ const RecommendedCandidates = () => {
         Recommended Students
       </Typography>
       {title?.title && 
-        <Typography variant="h6" component="div" mt={2} mb={5}>
+        <Typography variant="h5" component="div" mt={2} mb={5}>
           {title?.title} {title?.city && `(${title.city})`}
         </Typography>
       }
