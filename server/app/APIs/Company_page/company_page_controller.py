@@ -226,7 +226,8 @@ class GetAllApplications(Resource):
                                                 Internship.InternQuestion.intern_id == jobid,
                                                 Internship.InternQuestion.id == Internship.InternAnswer.question_id
                                                 ).all()
-            for que, ans in answers:
+            
+            for ans, que in answers:
                 data['questions'][que.content] = ans.answer
             result.append(data)
         return {'applicants': result, "intern_title": job.title, "city": get_location(job.city) }, 200
