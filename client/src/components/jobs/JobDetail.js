@@ -175,62 +175,69 @@ const BasicInfo = ({ info }) => {
         save={saveBtns}
       />
       <Box sx={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-        <Button
-          variant="contained"
-          startIcon={<SendIcon />}
-          size="small"
-          onClick={() =>
-            history.push(
-              `/apply?id=${info.internship_id}&name=${info.jobTitle.replace(
-                / /g,
-                "-"
-              )}&company=${info.companyName.replace(/ /g, "-")}`,
-              {
-                state: { avatar: info.company_logo },
-              }
-            )
-          }
-        >
-          Apply now
-        </Button>
-        <Button
-          variant="outlined"
-          startIcon={<ShareIcon />}
-          size="small"
-          onClick={() => {
-            navigator.clipboard.writeText(window.location.href);
-            setShareBar(true);
-          }}
-        >
-          Share
-        </Button>
+        {user.role === 1 && (
+          <Button
+            variant="contained"
+            startIcon={<SendIcon />}
+            size="small"
+            onClick={() =>
+              history.push(
+                `/apply?id=${info.internship_id}&name=${info.jobTitle.replace(
+                  / /g,
+                  "-"
+                )}&company=${info.companyName.replace(/ /g, "-")}`,
+                {
+                  state: { avatar: info.company_logo },
+                }
+              )
+            }
+          >
+            Apply now
+          </Button>
+        )}
+        {user.role === 1 && (
+          <Button
+            variant="outlined"
+            startIcon={<ShareIcon />}
+            size="small"
+            onClick={() => {
+              navigator.clipboard.writeText(window.location.href);
+              setShareBar(true);
+            }}
+          >
+            Share
+          </Button>
+        )}
         <Snackbar
           open={shareBar}
           autoHideDuration={2000}
           onClose={handleSharedBarClose}
           message="🎉 Copied link to clipboard"
         />
-        <Button
-          variant="outlined"
-          startIcon={<CalendarMonthIcon />}
-          size="small"
-          onClick={addCalendarHandler}
-          color={isCalendar ? "error" : "primary"}
-        >
-          {isCalendar ? "Remove from Calendar" : "Add to Calendar"}
-        </Button>
-
-        <Button
-          variant="outlined"
-          startIcon={<MailOutlineIcon />}
-          size="small"
-          onClick={() => {
-            window.open(`/chat`, "_blank");
-            localStorage.setItem("chat", info.companyId.toString());
-          }}
-        >
-          Chat
-        </Button>
+        {user.role === 1 && (
+          <Button
+            variant="outlined"
+            startIcon={<CalendarMonthIcon />}
+            size="small"
+            onClick={addCalendarHandler}
+            color={isCalendar ? "error" : "primary"}
+          >
+            {isCalendar ? "Remove from Calendar" : "Add to Calendar"}
+          </Button>
+        )}
+        {user.role === 1 && (
+          <Button
+            variant="outlined"
+            startIcon={<MailOutlineIcon />}
+            size="small"
+            onClick={() => {
+              window.open(`/chat`, "_blank");
+              localStorage.setItem("chat", info.companyId.toString());
+            }}
+          >
+            Chat
+          </Button>
+        )}
       </Box>
       <Box
         sx={{
