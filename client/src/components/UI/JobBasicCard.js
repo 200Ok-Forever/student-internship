@@ -40,7 +40,7 @@ const JobBasicCard = (props) => {
           variant="h8"
           fontWeight="700"
           sx={{ cursor: "pointer" }}
-          onClick={() => history.push(`/company?id=${job.company_id}`)}
+          onClick={() => history.push(`/company?id=${job.id}`)}
         >
           {job.com_name}
         </Typography>
