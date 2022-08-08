@@ -213,6 +213,9 @@ class GetAllApplications(Resource):
             stu = appli.student
             if not stu: continue
             data = convert_object_to_dict(stu)
+            data['stage'] = None
+            if appli.process != None:
+                data['stage'] = appli.process.name
             data['status'] = appli.status
             data['avatar'] = stu.user.avatar
             data['applicationId'] = appli.id
