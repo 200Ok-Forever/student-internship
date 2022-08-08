@@ -70,8 +70,6 @@ const IndustryForum = () => {
   useEffect(() => {
     const getData = async () => {
       const post = await getPosts(params);
-      console.log(post.result);
-      
       setPosts(post.result);
     };
     getData();
@@ -126,6 +124,8 @@ const Header = ({setParams, params}) => {
           id="search"
           label="Search"
           sx={{ml: 2}}
+          value={params.searchTerm}
+          onChange={(e) => setParams({...params, searchTerm: e.target.value})}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -135,9 +135,9 @@ const Header = ({setParams, params}) => {
           }}
           variant="standard"
         />
-        <Button variant="outlined" color="primary">
-          Search
-        </Button>
+        {/*<Button variant="outlined" color="primary">*/}
+        {/*  Search*/}
+        {/*</Button>*/}
         <Button
           variant="contained"
           color="primary"
