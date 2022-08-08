@@ -17,3 +17,4 @@ class Invitation(db.Model):
         self.start_time = start_time
         self.zoom_link = zoom_link
         self.status = status
+
