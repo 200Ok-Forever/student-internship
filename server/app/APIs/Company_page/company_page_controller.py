@@ -1,3 +1,5 @@
+from concurrent.futures import process
+from multiprocessing.dummy import Process
 from flask_jwt_extended import get_jwt_identity
 from flask_restx import Resource
 from .company_page_model import CompanyPageAPI
@@ -18,6 +20,13 @@ from sqlalchemy.orm import aliased
 company_ns = CompanyPageAPI.company_ns
 authParser = company_ns.parser()
 authParser.add_argument('Authorization', location='headers', help='Bearer [Token]', default='Bearer xxxxxxxxxxxxx')
+
+def get_location(data):
+    city = model.City.query.filter_by(id=data).first()
+    if city:
+        return city.name
+    else:
+        return ""
 
 # --------------------------------COMPANY OPERATOR-----------------------
 @company_ns.route("/<id>")
@@ -179,6 +188,13 @@ class GetAllApplications(Resource):
     @company_ns.response(400, "Something wrong")
     @jwt_required()
     def get(self, jobid):
+        def get_location(data):
+            city = model.City.query.filter_by(id=data).first()
+            if city:
+                return city.name
+            else:
+                return ""
+
         uid = get_jwt_identity()
 
         # 1. check internship id
@@ -196,12 +212,19 @@ class GetAllApplications(Resource):
         print(job.status)
         result = []
         for appli in job.status:
+            if appli.is_applied != "True":
+                continue
             stu = appli.student
-            if not stu: continue
+            if not stu: 
+                continue
             data = convert_object_to_dict(stu)
+            data['stage'] = None
+            if appli.process != None:
+                data['stage'] = appli.process.name
             data['status'] = appli.status
             data['avatar'] = stu.user.avatar
             data['applicationId'] = appli.id
+            data['applicationTime'] = appli.applied_time
             data['shortlist'] = appli.shortlist
             data['resume'] = find_file("resume", stu.id)
             data['coverletter'] = find_file('coverletter', stu.id)
@@ -211,10 +234,11 @@ class GetAllApplications(Resource):
                                                 Internship.InternQuestion.intern_id == jobid,
                                                 Internship.InternQuestion.id == Internship.InternAnswer.question_id
                                                 ).all()
-            for que, ans in answers:
+            
+            for ans, que in answers:
                 data['questions'][que.content] = ans.answer
             result.append(data)
-        return {'applicant': result}, 200
+        return {'applicants': result, "intern_title": job.title, "city": get_location(job.city) }, 200
 
 
 @company_ns.route("/<companyid>/create-job")
@@ -222,12 +246,11 @@ class CreateIntern(Resource):
     @company_ns.response(200, "Successfully")
     @company_ns.response(400, "Something wrong")
     @company_ns.expect(CompanyPageAPI.intern_data, validate=True)
-    #@jwt_required()
+    @jwt_required()
     def post(self, companyid):
         data = company_ns.payload
         print(data)
-        #uid = get_jwt_identity()
-        uid = 371
+        uid = get_jwt_identity()
 
         query = db.session.query(Company.Companies).filter(Company.Companies.id == companyid)
 
@@ -348,7 +371,7 @@ class Recomendation(Resource):
             skills = [skill[1].name for skill in stu_skills]
             info['match'] = skills
             result.append(info)
-        return {"result": result, "intern_title": job.title}, 200
+        return {"result": result, "intern_title": job.title, "city": get_location(job.city) }, 200
 
 
 # --------------------------------MANAGE THE APPLICATION-----------------------
@@ -408,22 +431,24 @@ class ForwardProcess(Resource):
         # forward
         curr_process = data.process
 
-        # none or already the first
-        if not curr_process or curr_process.order == 1:
-            db.session.commit()
-            return 200
+        processes = db.session.query(Internship.Process).filter(Internship.Process.intern_id == jobid).order_by(Internship.Process.order.asc()).all()
+        if processes == None:
+            return {"message": "Successfully"}, 200
 
-        
-        # forward
-        last_order = curr_process.order - 1
-        """
-        previous = db.session.query(Internship.Process).filter(Internship.Process.intern_id == jobid, Internship.Process.order == last_order).first()
-        if previous == None:
-            return 400"""
-        data.stage = last_order
+        # none, set to first order 
+        if not curr_process:
+            data.process = processes[0]
+        else:
+            # forward
+            # check is the last one
+            curr_order = processes.index(curr_process)
+            if curr_order < len(processes) - 1:
+                data.process = processes[curr_order + 1]
+            elif curr_order == len(processes) - 1:
+                data.status = "accepted"
 
         db.session.commit()
-        return 200
+        return {"message": "Successfully"},  200
 
 
 @company_ns.route("/<jobid>/<appliedid>/reject")

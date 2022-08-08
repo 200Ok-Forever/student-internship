@@ -313,7 +313,9 @@ if you did not request a password reset, please ignore this email.
             print(current_student)
             if current_student is not None:
                 student_info = Student.get_info(current_student)
-                return student_info, 200
+                avatar = user.avatar
+                student_info['avatar'] = avatar
+                return {"student_info":student_info}, 200
         return {
                    "status": False,
                    "message": "User not found.",
@@ -334,6 +336,7 @@ if you did not request a password reset, please ignore this email.
                 current_student.position = data['position']
                 current_student.description = data['description']
                 current_student.skills = []
+                user.username = data['first_name'] + " " + data['last_name']
                 db.session.commit()
                 for skill_id in data["skills"]:
                     skill = Skill.query.filter_by(id=skill_id).first()

@@ -7,8 +7,6 @@ class ChatAPI:
     zoom_link = api.model(
         "Zoom link",
         {
-            "internship_id": fields.Integer(required=True),
-            "user_id": fields.Integer(required=True),
             "otherUserId": fields.Integer(required=True),
             "time": fields.String(required=True)
         }
