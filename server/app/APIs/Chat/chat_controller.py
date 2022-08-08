@@ -33,14 +33,20 @@ class SendMeetingInvitation(Resource):
             return info, status
         
         if user.role == 2:
-            internship_id = data['otherUserId']
+            company_id = data['otherUserId']
             student_id = uid
         else:
-            internship_id = uid
+            company_id = uid
             student_id = data['otherUserId']
-        invi = Invitation(student_id, internship_id, data['time'], info['start_url'], None)
-        db.session.add(invi)
-        db.session.commit()
+
+        try:
+                
+            invi = Invitation(student_id, company_id, data['time'], info['start_url'], None)
+            db.session.add(invi)
+            db.session.commit()
+        except:
+            db.session.rollback()
+            return {"message": "already has invitaion"}, 200
         return info, status
 
 
