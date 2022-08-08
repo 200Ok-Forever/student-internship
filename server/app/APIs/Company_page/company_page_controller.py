@@ -229,10 +229,12 @@ class CreateIntern(Resource):
     @company_ns.response(200, "Successfully")
     @company_ns.response(400, "Something wrong")
     @company_ns.expect(CompanyPageAPI.intern_data, validate=True)
-    @jwt_required()
+    #@jwt_required()
     def post(self, companyid):
         data = company_ns.payload
-        uid = get_jwt_identity()
+        print(data)
+        #uid = get_jwt_identity()
+        uid = 371
 
         query = db.session.query(Company.Companies).filter(Company.Companies.id == companyid)
 
@@ -335,7 +337,7 @@ class Recomendation(Resource):
         # join the stuudent , skill, studentskill
         ).filter(model.Student.id == Skill.StudentSkills.student_id, Skill.Skill.id == Skill.StudentSkills.skill_id,
         # get the pending applicant
-        model.InternshipStatus.intern_id == jobid, model.InternshipStatus.uid == model.Student.id, model.InternshipStatus.is_applied == 'True', model.InternshipStatus.status == 'pending',
+        model.InternshipStatus.intern_id == jobid, model.InternshipStatus.uid == model.Student.id, model.InternshipStatus.is_applied == 'False',
         # get the skill that the job needs
         Skill.Skill.id.in_(skills_id))
         top6 = query.group_by(model.Student.id).order_by(func.count(model.Student.id).desc()).limit(6).all()
