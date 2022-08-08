@@ -28,11 +28,17 @@ class SendMeetingInvitation(Resource):
         """ Send Zoom meeting invitation link """
         # Grab the json data
         data = request.get_json()
-        info, status= ChatUtils.send_zoom_meeting_invitation(data)
+        info, status, user= ChatUtils.send_zoom_meeting_invitation(data)
         if status != 200:
             return info, status
-
-        invi = Invitation(data['user_id'], data['internship_id'], data['time'], info['start_url'], None)
+        
+        if user.role == 2:
+            internship_id = data['otherUserId']
+            student_id = uid
+        else:
+            internship_id = uid
+            student_id = data['otherUserId']
+        invi = Invitation(student_id, internship_id, data['time'], info['start_url'], None)
         db.session.add(invi)
         db.session.commit()
         return info, status
@@ -51,7 +57,6 @@ class GetMeetings(Resource):
     @jwt_required()
     def get(self):
         uid = get_jwt_identity()
-        uid = 185
 
         # check user's role
         user = db.session.query(User).filter(User.uid == uid).first()
