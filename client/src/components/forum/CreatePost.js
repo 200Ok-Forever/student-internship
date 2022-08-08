@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { useHistory, useParams } from "react-router-dom";
-import { postPost } from "../../api/auth-api";
+import React, {useState, useEffect, useContext} from "react";
+import {useHistory, useParams} from "react-router-dom";
+import {getPost, patchPost, postPost} from "../../api/forum-api";
+
 
 import {
   FormControlLabel,
@@ -16,45 +17,60 @@ import {
   TextField,
   Button,
 } from "@mui/material";
-import { INDUSTRIES } from "./constants";
+import {INDUSTRIES} from "./constants";
+import {UserContext} from "../../store/UserContext";
 
 const CreatePost = (props) => {
-  const { id } = useParams();
+  const {id} = useParams();
   const history = useHistory();
   const [loading, setLoading] = useState(!!id);
-
+  const {user} = useContext(UserContext);
   const [title, setTitle] = useState("");
   const [industry, setIndustry] = useState(
     props.location.state?.industry || "General"
   );
   const [content, setContent] = useState("");
   const [anon, setAnon] = useState(false);
-
+  
   useEffect(() => {
-    if (id) {
-      // TODO get post
-      // const response = postPost(id);
-      console.log()
-      const post = {
-        title: "test",
-        industry: "Arts",
-        content:
-          "Exercitation quis mollit mollit nulla deserunt sunt ut ad occaecat ipsum occaecat minim adipisicing. Ut Lorem excepteur et dolor adipisicing dolore. Veniam occaecat do duis culpa dolor esse culpa. Excepteur eu mollit exercitation proident nisi ullamco aliqua laboris ex tempor do non amet magna. Proident laborum do sunt Lorem ut velit sunt ea aute ex qui id mollit cillum. Irure est commodo officia eu ea. Ea laborum nulla ullamco aliqua incididunt mollit.",
-      };
-      setTitle(post.title);
-      setIndustry(post.industry);
-      setContent(post.content);
-      setLoading(false);
-    }
-  }, [id]);
+    const getData = async () => {
+      if (id) {
+        // TODO get post
+        const data = await getPost(id);
+        const post = data.post;
+        setTitle(post.title);
+        setIndustry(data.industry);
+        setContent(post.content);
+        setLoading(false);
+      }
 
+    }
+    getData()
+  }, [id]);
+  
+  const updateContent = async (id, data, token) => {
+    const resp = await patchPost(id, {"content": data}, 'Bearer ' + token)
+    if (resp.message === "update successfully") {
+      history.push("/forum/posts/" + id);
+    }
+  }
+  
+  const postNewPost = async (data, token) => {
+    console.log(data)
+    const resp = await postPost(data, 'Bearer ' + token)
+    console.log(resp);
+    if (resp.message === "'Successfully'") {
+      history.push("/forum/posts/" + id);
+    }
+  }
+  
   if (loading) {
     return;
   }
-
+  
   return (
     <Box>
-      <Typography variant="h4" component="div" sx={{ mb: 1 }}>
+      <Typography variant="h4" component="div" sx={{mb: 1}}>
         {id ? "Edit" : "Create"} Post
       </Typography>
       <Grid container spacing={2} mt={2}>
@@ -75,7 +91,7 @@ const CreatePost = (props) => {
               labelId="industry"
               disabled={id}
               id="industry"
-              value={industry}
+              value={industry.slice(0, 1).toUpperCase() + industry.slice(1).toLowerCase()}
               label="Industry"
               onChange={(e) => setIndustry(e.target.value)}
             >
@@ -87,7 +103,7 @@ const CreatePost = (props) => {
         </Grid>
       </Grid>
       <TextField
-        sx={{ mt: 3 }}
+        sx={{mt: 3}}
         id="content"
         label="Content"
         multiline
@@ -99,15 +115,26 @@ const CreatePost = (props) => {
       />
       {!id && (
         <FormControlLabel
-          control={<Checkbox />}
+          control={<Checkbox/>}
           label="Post Anonymously"
           checked={anon}
           onChange={(e) => setAnon(e.target.checked)}
-          sx={{ mt: 2 }}
+          sx={{mt: 2}}
         />
       )}
-      <Box sx={{ display: "flex", alignItems: "center", mt: 2 }}>
-        <Button color="primary" variant="contained" sx={{ px: 5, mr: 3 }}>
+      <Box sx={{display: "flex", alignItems: "center", mt: 2}}>
+        <Button color="primary" variant="contained" sx={{px: 5, mr: 3}}
+                onClick={() => {
+                  id ? updateContent(id, content, user.token) : postNewPost(
+                    {
+                      "Title": title,
+                      "Content": content,
+                      "Author": anon ? "Anonymous" : user.username,
+                      "createdAt": new Date().toISOString(),
+                      "Industry": industry,
+                    }
+                    , user.token)
+                }}>
           Post
         </Button>
         <Link underline="none" href="#" onClick={history.goBack}>

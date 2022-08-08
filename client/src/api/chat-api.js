@@ -2,8 +2,10 @@ import axios from "axios";
 import { API } from "./base";
 
 export const getUsers = () => API.get(`/chat/users`);
-export const createMeeting = (data) =>
-  API.post(`/chat/meeting/invitation`, data);
+export const createMeeting = (data, token) =>
+  API.post(`/chat/meeting/invitation`, data, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
 export const getMeetingList = (token) =>
   API.get("/chat/meetings", {
     headers: { Authorization: `Bearer ${token}` },

@@ -465,7 +465,6 @@ class InternshipsUtils:
         resume = arg.get('resume', None)
         coverletter = arg.get('coverletter', None)
         interview_question = arg.get('interview_question', None)
-        
         try:
             internship = Internship.query.filter(Internship.id == id).first()
             print(internship)

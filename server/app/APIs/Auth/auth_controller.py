@@ -182,6 +182,7 @@ class ContinueSession(Resource):
     @auth_api.expect(authParser, validate=True)
     @jwt_required()
     def get(self):
+        """ Continue session """
         uid = get_jwt_identity()
         return AuthUtils.userInfoShort(uid)
 

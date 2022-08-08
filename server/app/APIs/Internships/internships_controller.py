@@ -27,9 +27,16 @@ class GetInternshipList(Resource):
 
     # @internships_api.expect(search_internships)
     @internships_api.doc(body=searrch_parser)
-    @internships_api.response(200, "Search successfully")
-    @internships_api.response(404, "Internships not found")
+    @internships_api.doc(
+        "Search the matched interships",
+        responses={
+            200: "Successfuly",
+            404: "Internships not found",
+            400: "user not found",
+        }
+    )
     def get(self):
+        """ Search the matched interships """
 
         args1 = request.args
 
@@ -56,10 +63,12 @@ class GetInternship(Resource):
         404: "user not found",
         400 :"API KEY PROBELMS"
 
+
     })
     @internships_api.doc(body=get_internship_parser)
     @jwt_required(optional=True)
     def get(self, id):
+        """ Get internship """
         try:
             uid = get_jwt_identity()
             print(uid)
@@ -78,6 +87,7 @@ applyParser.add_argument('Authorization', location='headers', help='Bearer [Toke
 class ApplyInternship(Resource):
     internship_apply = InternshipsAPI.internship_apply
 
+
     @jwt_required()
     @internships_api.doc("apply internship", response= {
         400:"you have applied this internship",
@@ -85,10 +95,13 @@ class ApplyInternship(Resource):
        200: "sucesfully"
     })
     @internships_api.expect(internship_apply, applyParser)
+
     def post(self, id):
+        """ Apply internship """
         try:
 
             arg = request.get_json()
+
             print(arg)
             return InternshipsUtils.apply(id, arg)
         except Exception as error:
@@ -109,7 +122,9 @@ class CommentInternship(Resource):
                    
     })
     @internships_api.expect(commentParser, internship_comment, validate=True)
+ 
     def post(self, id):
+        """ Post a comment under the internship """
         try:
             data = request.get_json()
             print(data)
@@ -128,11 +143,15 @@ class AppliedForInternship(Resource):
 
     @jwt_required()
     @internships_api.expect(appliedfor_parser)
-    @internships_api.doc("applied internship", response={
-        400:"user not found",
-        400:"internship not found"
+
+    @internships_api.doc("Get all the applications of the user", responses={
+        200: "success",
+        404: "Internship not found!",
+        400: "user not found",
+
     })
     def get(self):
+        """ Get all the applications of the user """
         # arg = request.get_json()
         uid = get_jwt_identity()
         arg = request.args
@@ -150,14 +169,18 @@ savePostParser.add_argument('internship_id')
 class SaveInternship(Resource):
     @jwt_required()
     @internships_api.expect(saveParser, validate=True)
+
     @internships_api.doc("get internship save list", response={
         400:"user not found",
         400:"internship not found",
         200:"save sucessfullt"
+
     })
     def get(self):
+        """ Get the saved internships """
         uid = get_jwt_identity()
         return InternshipsUtils.getSaveList(uid)
+
 
     @jwt_required()
     @internships_api.expect(saveParser, savePostParser)
@@ -166,6 +189,7 @@ class SaveInternship(Resource):
         404: "Internship not found"
     })
     def post(self):
+        """ Save the internship """
         arg = request.get_json()
         uid = get_jwt_identity()
         return InternshipsUtils.saveInternship(arg, uid)
@@ -174,12 +198,14 @@ class SaveInternship(Resource):
 @internships_api.route('/internships/unsave')
 class UnsaveInternship(Resource):
     @jwt_required()
-    @internships_api.doc("internship history", response = {
-       400: "Internship not found",
-       
-    })
+ 
     @internships_api.expect(saveParser, validate=True)
+    @internships_api.doc("Unsave the internship", responses={
+        200: "success",
+        404: "Internship not found!",
+    })
     def post(self):
+        """ Unsave the internship """
         arg = request.get_json()
         uid = get_jwt_identity()
         return InternshipsUtils.unSaveInternship(arg, uid)
@@ -188,12 +214,13 @@ class UnsaveInternship(Resource):
 @internships_api.route('/internships/history')
 class GetViewedInternships(Resource):
     @jwt_required()
-    @internships_api.doc("internship history", response = {
-       400: "Internship not found",
-
-    })
     @internships_api.expect(saveParser, validate=True)
+    @internships_api.doc("Get the internships that viewed before", responses={
+        200: "success",
+        400: "Internship not found",
+    })
     def get(self):
+        """ Get the internships that viewed before """
         uid = get_jwt_identity()
         return InternshipsUtils.getViewedHistory(uid)
 
@@ -202,12 +229,14 @@ class GetViewedInternships(Resource):
 class InternshipCalendar(Resource):
     internship_calendar = InternshipsAPI.internship_calendar
 
-    @jwt_required()
-    @internships_api.expect("add calendar", response = {
-        200:"Success"
+    @internships_api.doc("Add the internship into calendar", responses={
+        200: "Success",
+        400: "Error",
     })
+    @jwt_required()
     @internships_api.expect(saveParser, internship_calendar)
     def post(self):
+        """ Add the internship into calendar """
         arg = request.get_json()
         uid = get_jwt_identity()
         return InternshipsUtils.addCalendar(arg, uid)
@@ -215,9 +244,14 @@ class InternshipCalendar(Resource):
 
 @internships_api.route('/internships/uncalendar')
 class InternshipCalendar(Resource):
+    @internships_api.doc("Remove the internship from the calendar", responses={
+        200: "Success",
+        400: "Error",
+    })
     @jwt_required()
     @internships_api.expect(saveParser)
     def post(self):
+        """ Remove the internship from the calendar """
         arg = request.get_json()
         uid = get_jwt_identity()
         return InternshipsUtils.deleteCalendar(arg, uid)
@@ -225,9 +259,13 @@ class InternshipCalendar(Resource):
 
 @internships_api.route('/events')
 class Events(Resource):
+    @internships_api.doc("Get the calendar", responses={
+        200: "success"
+    })
     @jwt_required()
     @internships_api.expect(saveParser)
     def get(self):
+        """ Get the calendar """
         uid = get_jwt_identity()
         return InternshipsUtils.getCalendar(uid)
 
@@ -239,12 +277,16 @@ recommendParser.add_argument('type', help='recommend/new/closing')
 
 @internships_api.route('/internships/recommend')
 class Recommend(Resource):
-    @internships_api.expect("get recoomend", response = {
-        200:"No related student"
+
+    @internships_api.doc("Get the recommendation of internships", responses={
+        200: "success",
+        400: "no related student",
+
     })
     @internships_api.expect(recommendParser, validate=True)
     @jwt_required()
     def get(self):
+        """ Get the recommendation of internships """
         arg = request.args
         print(arg)
         return InternshipsUtils.getRecommend(arg)

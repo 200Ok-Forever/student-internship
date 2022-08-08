@@ -1,5 +1,5 @@
 from flask import request, jsonify, current_app
-from flask_restx import Resource
+from flask_restx import Resource, reqparse
 from .chat_model import ChatAPI
 from .chat_utils import ChatUtils
 from flask_jwt_extended import jwt_required
@@ -12,6 +12,9 @@ from ...Helpers.other_util import convert_object_to_dict, convert_model_to_dict
 
 chat_api = ChatAPI.api
 
+auth_parser = reqparse.RequestParser()
+auth_parser.add_argument('Authorization', location='headers', help='Bearer [Token]', default='Bearer xxxxxxxxxxx')
+
 
 @chat_api.route("/meeting/invitation")
 class SendMeetingInvitation(Resource):
@@ -21,17 +24,19 @@ class SendMeetingInvitation(Resource):
         200: "success",
         404: "User not found!",
     })
-    @chat_api.expect(zoom_link)
+
+    @chat_api.expect(auth_parser, zoom_link)
     @jwt_required()
     def post(self):
-        uid = get_jwt_identity()
         """ Send Zoom meeting invitation link """
+        uid = get_jwt_identity()
         # Grab the json data
         data = request.get_json()
-        info, status, user= ChatUtils.send_zoom_meeting_invitation(data)
+        info, status, user = ChatUtils.send_zoom_meeting_invitation(data)
+
         if status != 200:
             return info, status
-        
+
         if user.role == 2:
             company_id = data['otherUserId']
             student_id = uid
@@ -40,7 +45,7 @@ class SendMeetingInvitation(Resource):
             student_id = data['otherUserId']
 
         try:
-                
+
             invi = Invitation(student_id, company_id, data['time'], info['start_url'], None)
             db.session.add(invi)
             db.session.commit()
@@ -52,24 +57,33 @@ class SendMeetingInvitation(Resource):
 
 @chat_api.route('/users')
 class GetUser(Resource):
+    @chat_api.doc(
+        "Get all the users", responses={
+        200: "Successfully",
+        404: "User not found!",
+    })
     def get(self):
+        """ Get all the users for chat engine """
         return ChatUtils.getUser()
 
 
 @chat_api.route('/meetings')
 class GetMeetings(Resource):
-    @chat_api.response(200, "Successfully")
-    @chat_api.response(400, "Something wrong")
+    @chat_api.doc(
+        "Get all invitations of the user", responses={
+        200: "Successfully",
+        404: "Invalid user",
+    })
     @jwt_required()
     def get(self):
+        """ Get all invitations of the user """
         uid = get_jwt_identity()
         # check user's role
         user = db.session.query(User).filter(User.uid == uid).first()
-        print(user.role)
         if not user:
-            return 400
+            return {"message": "Invalid user"},400
         query = db.session.query(Companies, Invitation, Student).filter(Companies.id == Invitation.company_id,
-                                                                         Student.id == Invitation.student_id)
+                                                                        Student.id == Invitation.student_id)
         # company
         if user.role == 2:
             query = query.filter(Invitation.company_id == uid)

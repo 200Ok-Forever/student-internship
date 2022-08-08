@@ -24,6 +24,8 @@ import { getMeetingList } from "../../api/chat-api";
 const Sidebar = () => {
   const { user } = useContext(UserContext);
   const [events, setEvents] = useState([]);
+  const [meetings, setMeetings] = useState([]);
+  console.log("🚀 ~ meetings", meetings);
 
   useEffect(() => {
     const getEvents = async () => {
@@ -33,7 +35,7 @@ const Sidebar = () => {
 
     const getMeetings = async () => {
       const res = await getMeetingList(user.token);
-      console.log(res.data.invitations);
+      setMeetings(res.data.invitations);
     };
     getMeetings();
     getEvents();
@@ -43,6 +45,13 @@ const Sidebar = () => {
     const res = await postInternshipUncalendar(data, user.token);
     setEvents(JSON.parse(res));
   };
+  // const upcomingMeetings = () =>
+  //   meetings.filter((e) =>
+  //     moment(e.start_time, "YYYY-MM-DD hh:mm:ss").isBetween(
+  //       moment(),
+  //       moment().add(14, "d")
+  //     )
+  //   );
 
   // events in the next fortnight
   const upcomingEvents = () =>
@@ -63,10 +72,7 @@ const Sidebar = () => {
       <Link component={RouteLink} to="/calendar" color="primary">
         View Full Calendar
       </Link>
-      <Meetings
-        events={upcomingEvents().filter((e) => e.type === "meeting")}
-        onRemove={onRemove}
-      />
+      <Meetings events={meetings} />
       {user.role === STUDENT_ROLE && (
         <Internships
           events={upcomingEvents().filter((e) => e.type === "internship")}
@@ -122,6 +128,8 @@ const Internships = ({ events, onRemove }) => {
 };
 
 const Meetings = ({ events, onRemove }) => {
+  const { user } = useContext(UserContext);
+
   return (
     <Box sx={{ mt: 4 }}>
       <Typography variant="h6" component="div" fontWeight={700}>
@@ -136,10 +144,11 @@ const Meetings = ({ events, onRemove }) => {
           <Card sx={{ mt: 1 }} key={`event_${i}`}>
             <CardContent>
               <Typography gutterBottom variant="h6" component="div">
-                {e.title}
+                {user.role === 1 ? e.name : e.first_name + " " + e.last_name}
               </Typography>
               <Typography gutterBottom variant="subtitle1" component="div">
-                {moment(e.start).calendar()} ({moment(e.start).fromNow()})
+                {moment(e.start_time).calendar()} (
+                {moment(e.start_time).fromNow()})
               </Typography>
               <Box sx={{ mt: 4 }}>
                 <Button
@@ -147,10 +156,10 @@ const Meetings = ({ events, onRemove }) => {
                   sx={{ mr: 2 }}
                   size="small"
                   startIcon={<VideoCameraFrontIcon />}
+                  onClick={() => window.location.replace(e.zoom_link)}
                 >
                   Join
                 </Button>
-                <RemoveButton onClick={() => onRemove({ id: e.id })} />
               </Box>
             </CardContent>
           </Card>
