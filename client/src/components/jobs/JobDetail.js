@@ -89,10 +89,7 @@ const BasicInfo = ({ info }) => {
       : info.recruiting_process;
 
   let salary_str;
-  let salary_curr =
-    info.salary_currency !== "AUD"
-      ? getSymbolFromCurrency(info.salary_currency)
-      : "AU$";
+  let salary_curr = getSymbolFromCurrency(info.salary_currency) || "AU$";
   if (info.min_salary && info.max_salary) {
     salary_str =
       salary_curr + info.min_salary + " - " + salary_curr + info.max_salary;

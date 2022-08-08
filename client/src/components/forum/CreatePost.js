@@ -2,6 +2,7 @@ import React, {useState, useEffect, useContext} from "react";
 import {useHistory, useParams} from "react-router-dom";
 import {getPost, patchPost, postPost} from "../../api/forum-api";
 
+
 import {
   FormControlLabel,
   Checkbox,
@@ -42,6 +43,7 @@ const CreatePost = (props) => {
         setContent(post.content);
         setLoading(false);
       }
+
     }
     getData()
   }, [id]);

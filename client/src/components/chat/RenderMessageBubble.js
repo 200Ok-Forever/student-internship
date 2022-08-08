@@ -27,7 +27,7 @@ const RenderMessageBubble = ({ message }) => {
   const { user } = useContext(UserContext);
 
   const acceptHandler = async (msg, otherId) => {
-    console.log("🚀 ~ otherId", otherId);
+    if (otherId === user.uid.toString()) return;
     // TODO connect api
     sendMessage(creds, activeChat, {
       text: `ACCEPT BOT:${user.username} accepted the invitation`,
@@ -35,27 +35,32 @@ const RenderMessageBubble = ({ message }) => {
 
     const data = {
       otherUserId: otherId,
-      time: msg.split(" ").pop(),
+      time: new Date(msg.split(" ").pop()).toString(),
     };
+
     try {
-      const rep = await createMeeting(data);
+      const rep = await createMeeting(data, user.token);
       if (rep.status === 200) {
-        sendMessage(creds, activeChat, {
-          text:
-            `LINK BOT:👉 Join Zoom Meeting on time(${msg.split(" ").pop()})\n` +
-            `${rep.data.join_url}\n`,
-        });
+        if (rep.data.join_url) {
+          sendMessage(creds, activeChat, {
+            text: `LINK BOT:👉 Join Zoom Meeting on time(${data.time})\n${rep.data.join_url}\n`,
+          });
+        } else {
+          sendMessage(creds, activeChat, {
+            text: "LINK BOT:👉 Sorry! You cannot book the appointment twice",
+          });
+        }
       }
     } catch ({ response }) {
       console.log(response);
       sendMessage(creds, activeChat, {
-        text: "Internal server error",
+        text: "LINK BOT:👉 Internal server error",
       });
     }
   };
 
-  const DeclineHandler = async () => {
-    // TODO connect api
+  const DeclineHandler = async (otherId) => {
+    if (otherId === user.uid.toString()) return;
     sendMessage(creds, activeChat, {
       text: `REJECT BOT:${user.username} rejected the invitation`,
     });
@@ -84,7 +89,10 @@ const RenderMessageBubble = ({ message }) => {
         >
           Accept
         </button>
-        <button className="cancel-btn" onClick={DeclineHandler}>
+        <button
+          className="cancel-btn"
+          onClick={() => DeclineHandler(sender.username)}
+        >
           Decline
         </button>
       </Box>

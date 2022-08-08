@@ -28,8 +28,8 @@ class SendMeetingInvitation(Resource):
     @chat_api.expect(auth_parser, zoom_link)
     @jwt_required()
     def post(self):
-        uid = get_jwt_identity()
         """ Send Zoom meeting invitation link """
+        uid = get_jwt_identity()
         # Grab the json data
         data = request.get_json()
         info, status, user = ChatUtils.send_zoom_meeting_invitation(data)
@@ -57,21 +57,31 @@ class SendMeetingInvitation(Resource):
 
 @chat_api.route('/users')
 class GetUser(Resource):
+    @chat_api.doc(
+        "Get all the users", responses={
+        200: "Successfully",
+        404: "User not found!",
+    })
     def get(self):
+        """ Get all the users for chat engine """
         return ChatUtils.getUser()
 
 
 @chat_api.route('/meetings')
 class GetMeetings(Resource):
-    @chat_api.response(200, "Successfully")
-    @chat_api.response(400, "Something wrong")
+    @chat_api.doc(
+        "Get all invitations of the user", responses={
+        200: "Successfully",
+        404: "Invalid user",
+    })
     @jwt_required()
     def get(self):
+        """ Get all invitations of the user """
         uid = get_jwt_identity()
         # check user's role
         user = db.session.query(User).filter(User.uid == uid).first()
         if not user:
-            return {"message": "Something wrong"},400
+            return {"message": "Invalid user"},400
         query = db.session.query(Companies, Invitation, Student).filter(Companies.id == Invitation.company_id,
                                                                         Student.id == Invitation.student_id)
         # company

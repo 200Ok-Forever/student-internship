@@ -6,7 +6,7 @@ import JobBasicCard from "../UI/JobBasicCard";
 import getSymbolFromCurrency from "currency-symbol-map";
 
 const paper = {
-  width: "1200px",
+  width: "80vw",
   maxWidth: "1200px",
   height: "265px",
   p: "20px",
@@ -43,7 +43,7 @@ const JobBlock = ({ job, children }) => {
           city: job.location,
           avatar: job.company_logo,
           job_id: job.job_id,
-          company_id: job.company_id
+          company_id: job.company_id,
         }}
       >
         <Box>

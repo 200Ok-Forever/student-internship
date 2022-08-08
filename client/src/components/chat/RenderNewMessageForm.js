@@ -56,8 +56,8 @@ const RenderNewMessageForm = ({ creds, chatID }) => {
         alignItems: "center",
         flexWrap: "wrap",
         backgroundColor: "white",
-        width: "100vw",
-        maxWidth: "1250px",
+        width: "49vw",
+        maxWidth: "1050px",
         zIndex: "2",
       }}
     >

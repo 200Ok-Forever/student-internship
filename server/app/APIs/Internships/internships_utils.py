@@ -9,7 +9,6 @@ from json import dumps
 from requests import session
 from sqlalchemy import null
 from torch import is_same_size
-
 from ...Models.model import Calendar, Internship, City, Comment, User, Student, File, InternshipStatus
 from ...Models.company import Companies
 from ...Models.internship import InternQuestion, InternAnswer, Process
@@ -193,16 +192,29 @@ class InternshipsUtils:
                 if uid is not None:
                     # update the interhsip status as is_seen
                     update = db.session.query(InternshipStatus).filter(InternshipStatus.intern_id == id).filter(
+                        InternshipStatus.uid == uid).first()
+
+                    if update is not None:
+                        print("is not none")
+                        db.session.query(InternshipStatus).filter(InternshipStatus.intern_id == id).filter(
                         InternshipStatus.uid == uid).update(
-                        {InternshipStatus.is_seen: "True", InternshipStatus.seen_time: datetime.datetime.now()})
-                    if update:
+                        {InternshipStatus.seen_time: datetime.datetime.now()})
                         db.session.commit()
 
                     else:
-                        save_internship = InternshipStatus(uid=uid, intern_id=id, is_seen="True",
-                                                           seen_time=datetime.datetime.now())
-                        db.session.add(save_internship)
-                        db.session.commit()
+                        print("okkkkk")
+                        try:
+                            seen_internship = InternshipStatus()
+                            seen_internship.uid = uid
+                            seen_internship.intern_id = id
+                            seen_internship.is_seen = "True"
+                            seen_internship.seen_time = datetime.datetime.now()
+
+                            db.session.add(seen_internship)
+                            db.session.commit()
+                        except Exception as errors:
+                            print(errors)
+
 
                     # check if it is saved
                     status = db.session.query(InternshipStatus).filter(InternshipStatus.intern_id == id) \
@@ -452,7 +464,6 @@ class InternshipsUtils:
 
         resume = arg.get('resume', None)
         coverletter = arg.get('coverletter', None)
-
         interview_question = arg.get('interview_question', None)
         
         try:
@@ -466,9 +477,24 @@ class InternshipsUtils:
         #     return dumps({"msg": "Internship not found"}), 404
 
         # update is_applied status
-       
+        try:
+            query = db.session.query(InternshipStatus).filter(InternshipStatus.intern_id == id)\
+                .filter(InternshipStatus.uid ==current_user_id ).first()
+            # print(query.is_applied)
+            if query.is_applied == "True":
+                return {"msg": "you have applied this internship"},400
+        except Exception as errors:
+            print(errors)
+
         print(current_user_id)
-        curr_stage = db.query(Process).filter(Process.intern_id == id, Process.order == 1).first()
+        try:
+            curr_stage = db.session.query(Process).filter(Process.intern_id == id).filter(Process.order == 1).first()
+        except Exception as errors:
+            print(errors)
+
+        
+        print("cur_stage")
+        print(curr_stage)
         stage = None
         if curr_stage:
             stage = curr_stage.id
@@ -480,10 +506,14 @@ class InternshipsUtils:
             InternshipStatus.applied_time: str(datetime.datetime.now()),
             InternshipStatus.stage: stage, InternshipStatus.status: "pending"})
 
-        if apply == None:
-            apply= InternshipStatus(current_user_id, id, "True", str(datetime.datetime.now()), stage)
-            db.session.add(apply)
-            db.session.commit()
+        print("this is apply")
+        print(apply)
+        # if apply == 0:
+        #     return {'msg': 'you have applied this internship'},400
+        # if apply == None:
+        #     apply= InternshipStatus(current_user_id, id, "True", str(datetime.datetime.now()), stage)
+        #     db.session.add(apply)
+        #     db.session.commit()
     
         # store question and answer
         try:
