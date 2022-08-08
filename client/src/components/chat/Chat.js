@@ -1,4 +1,6 @@
+import { useContext } from "react";
 import { ChatEngine } from "react-chat-engine";
+import { UserContext } from "../../store/UserContext";
 import "./chat.scss";
 import ChatCard from "./ChatCard";
 import ChatFeedTop from "./ChatFeedTop";
@@ -7,17 +9,23 @@ import RenderChatSettingsTop from "./RenderChatSettingsTop";
 import RenderMessageBubble from "./RenderMessageBubble";
 import RenderNewMessageForm from "./RenderNewMessageForm";
 
-const Chat = () => {
-  // TODO: change uername and usersecret
-  const student = "1";
-  // const company = "2";
+const Chat = (props) => {
+  console.log("🚀 ~ props", props.location?.query?.uid);
+  const { user } = useContext(UserContext);
+  const currChatUser = user.uid.toString();
+
   return (
     <ChatEngine
       projectID="e7fb7381-46fd-413f-9422-766a54881ff6"
-      userName={student}
-      userSecret={student}
+      userName={currChatUser}
+      userSecret={currChatUser}
       height="100vh"
-      renderNewChatForm={(creds) => <RenderChatForm creds={creds} />}
+      renderNewChatForm={(creds) => (
+        <RenderChatForm
+          creds={creds}
+          chatWith={props.location.query?.uid.toString()}
+        />
+      )}
       onNewMessage={() =>
         new Audio(
           "https://chat-engine-assets.s3.amazonaws.com/click.mp3"
@@ -41,6 +49,7 @@ const Chat = () => {
       )}
       renderChatHeader={(chat) => <ChatFeedTop chat={chat} />}
       renderChatCard={(chat, index) => <ChatCard chat={chat} index={index} />}
+      renderPhotosSettings={() => {}}
     />
   );
 };

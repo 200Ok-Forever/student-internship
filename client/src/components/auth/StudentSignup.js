@@ -14,6 +14,8 @@ import { StudentSignupAPI } from "../../api/auth-api";
 import { UserContext } from "../../store/UserContext";
 import ErrorMessage from "../UI/ErrorMessage";
 import { IconButton } from "@mui/material";
+import SkillsSelect from "../UI/SkillsSelect";
+import { newUserOnChat } from "../../api/chat-api";
 
 const StudentSignup = () => {
   const { setUser } = useContext(UserContext);
@@ -24,6 +26,7 @@ const StudentSignup = () => {
     setErrorModalState(true);
   };
   const handleClose = () => setErrorModalState(false);
+  const [loading, setLoading] = useState(false);
 
   const [avatar, setAvatar] = useState("");
 
@@ -32,39 +35,52 @@ const StudentSignup = () => {
       email: "",
       password: "",
       confirmPassword: "",
-      username: "",
       firstName: "",
       lastName: "",
       university: "",
       degree: "",
       major: "",
       positions: "",
-      skills: "",
+      skills: [],
       description: "",
     },
     validationSchema: studentSignupValidationSchema,
     onSubmit: (values) => {
+      setLoading(true);
       const signup = async (values) => {
         const signupValues = {
           email: values.email,
-          username: values.username,
+          username: values.firstName + " " + values.lastName,
           password: values.password,
           first_name: values.firstName,
           last_name: values.lastName,
           university: values.university,
           degree: values.degree,
           major: values.major,
-          positions: values.positions,
-          skills: values.skills,
+          position: values.positions,
+          skills: values.skills.map((s) => parseInt(s.id)),
           description: values.description,
           avatar: avatar,
         };
         try {
           const res = await StudentSignupAPI(signupValues);
-          if (res.status === true) {
+          if (res.user) {
             const userInfo = res.user;
             const userInfoWithToken = { token: res.token, ...userInfo };
+            window.localStorage.setItem(
+              "user",
+              JSON.stringify(userInfoWithToken)
+            );
             setUser(userInfoWithToken);
+            setLoading(false);
+
+            const newUser = {
+              username: userInfo.uid.toString(),
+              secret: userInfo.uid.toString(),
+              first_name: userInfo.username,
+              last_name: userInfo.avatar,
+            };
+            await newUserOnChat(newUser);
             history.push("/");
           } else if (
             res.response.status === 404 ||
@@ -80,6 +96,7 @@ const StudentSignup = () => {
         } catch (err) {
           console.log(err);
           //handleOpen(err);
+          setLoading(false);
         }
       };
       signup(values);
@@ -121,7 +138,7 @@ const StudentSignup = () => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <ErrorMessage errorMessage={errorMessage} />
+        <ErrorMessage errorTitle={"Error"} errorMessage={errorMessage} />
       </Modal>
       <Typography
         component="h1"
@@ -134,7 +151,15 @@ const StudentSignup = () => {
       </Typography>
       <IconButton color="primary" aria-label="upload picture" component="label">
         <input hidden accept="image/*" type="file" onChange={onAvatarChange} />
-        <Avatar sx={{ m: 1, bgcolor: "primary.main" }} src={avatar} />
+        <Avatar
+          sx={{
+            m: 1,
+            bgcolor: "primary.main",
+            width: "80px",
+            height: "80px",
+          }}
+          src={avatar}
+        />
       </IconButton>
       <Box
         component="form"
@@ -190,20 +215,6 @@ const StudentSignup = () => {
               helperText={
                 formik.touched.confirmPassword && formik.errors.confirmPassword
               }
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              required
-              fullWidth
-              name="username"
-              label="Username"
-              id="username"
-              autoComplete="username"
-              value={formik.values.username}
-              onChange={formik.handleChange}
-              error={formik.touched.username && Boolean(formik.errors.username)}
-              helperText={formik.touched.username && formik.errors.username}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -282,7 +293,7 @@ const StudentSignup = () => {
             <TextField
               fullWidth
               name="positions"
-              label="What positions you are searching?"
+              label="What positions you are searching? (Separated by comma)"
               id="positions"
               autoComplete="positions"
               value={formik.values.positions}
@@ -290,14 +301,12 @@ const StudentSignup = () => {
             />
           </Grid>
           <Grid item xs={12}>
-            <TextField
-              fullWidth
-              name="skills"
+            <SkillsSelect
               label="Skills"
-              id="skills"
-              autoComplete="skills"
+              onChange={(event, value) => {
+                formik.setFieldValue("skills", value);
+              }}
               value={formik.values.skills}
-              onChange={formik.handleChange}
             />
           </Grid>
           <Grid item xs={12}>
@@ -317,6 +326,7 @@ const StudentSignup = () => {
           fullWidth
           variant="contained"
           sx={{ mt: 3, mb: 2 }}
+          disabled={loading}
         >
           Sign Up
         </Button>

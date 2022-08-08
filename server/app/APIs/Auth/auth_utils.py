@@ -26,12 +26,20 @@ class AuthUtils:
             if not user:
                 return {
                            "status": False,
-                           "message": "The username you have entered does not match any account.",
+                           "message": "The email you have entered does not match any account.",
                        }, 404
 
             elif user and user.verify_password(password):
                 user_info = User.get_info(user)
                 print(user_info)
+                if user_info['role'] == 1:
+                    student = Student.query.filter_by(email=email).first()
+                    user_info["first_name"] = student.first_name
+                    user_info["last_name"] = student.last_name
+                else:
+                    company = Companies.query.filter_by(email=email).first()
+                    user_info["first_name"] = company.first_name
+                    user_info["last_name"] = company.last_name
                 access_token = create_access_token(identity=user_info['uid'])
                 resp = {"status": True,
                         "message": "Successfully logged in.",
@@ -84,6 +92,7 @@ class AuthUtils:
                 university=data["university"],
                 degree=data["degree"],
                 major=data["major"],
+                position=data["position"],
                 description=data["description"],
             )
             for skill_id in data["skills"]:
@@ -94,10 +103,12 @@ class AuthUtils:
 
             user = User.query.filter_by(email=email).first()
             user_info = User.get_info(user)
+            user_info["first_name"] = data["first_name"]
+            user_info["last_name"] = data["last_name"]
             # Create access token
             access_token = create_access_token(identity=new_user.uid)
             resp = {"status": True,
-                    "message": "Successfully signup.",
+                    "message": "Student successfully signup.",
                     "user": user_info,
                     "token": access_token
                     }
@@ -133,6 +144,7 @@ class AuthUtils:
             db.session.add(new_user)
             db.session.commit()
             user_id = User.query.with_entities(User.uid).filter_by(email=email).first()
+            print(data)
             new_company = Companies(
                 id=user_id[0],
                 email=email,
@@ -146,21 +158,24 @@ class AuthUtils:
                 country=data["country"],
                 city=data["city"],
                 line1=data["line1"],
+                postalCode=data["postalCode"],
                 description=data["description"],
                 company_logo=data["company_logo"]
             )
             for industry_id in data["industry"]:
-                industry = Skill.query.filter_by(id=industry_id).first()
+                industry = Industry.query.filter_by(id=industry_id).first()
                 new_company.industries.append(industry)
             db.session.add(new_company)
             db.session.commit()
 
             user = User.query.filter_by(email=email).first()
             user_info = User.get_info(user)
+            user_info["first_name"] = data["first_name"]
+            user_info["last_name"] = data["last_name"]
             # Create access token
             access_token = create_access_token(identity=new_user.uid)
             resp = {"status": True,
-                    "message": "Successfully signup.",
+                    "message": "Company successfully signup.",
                     "user": user_info,
                     "token": access_token,
                     }
@@ -174,7 +189,7 @@ class AuthUtils:
 
     @staticmethod
     @jwt.token_in_blocklist_loader
-    def check_if_token_is_revoked(jwt_payload: dict):
+    def check_if_token_is_revoked(jwt_header, jwt_payload: dict):
         jti = jwt_payload["jti"]
         token_in_redis = r.get(jti)
         print(jti, token_in_redis, token_in_redis is not None)
@@ -298,7 +313,9 @@ if you did not request a password reset, please ignore this email.
             print(current_student)
             if current_student is not None:
                 student_info = Student.get_info(current_student)
-                return student_info, 200
+                avatar = user.avatar
+                student_info['avatar'] = avatar
+                return {"student_info":student_info}, 200
         return {
                    "status": False,
                    "message": "User not found.",
@@ -318,6 +335,12 @@ if you did not request a password reset, please ignore this email.
                 current_student.major = data['major']
                 current_student.position = data['position']
                 current_student.description = data['description']
+                current_student.skills = []
+                user.username = data['first_name'] + " " + data['last_name']
+                db.session.commit()
+                for skill_id in data["skills"]:
+                    skill = Skill.query.filter_by(id=skill_id).first()
+                    current_student.skills.append(skill)
                 db.session.commit()
                 return {
                            "status": True,

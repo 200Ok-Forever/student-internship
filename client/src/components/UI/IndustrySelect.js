@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-import { getSkils } from '../../api/auth-api';
+import { getIndustries } from '../../api/auth-api';
 
-const SkillsSelect = ({ label, value, onChange, defaultValue = [] }) => {
-  const [skills, setSkills] = useState([])
+const IndustrySelect = ({ label, value, onChange }) => {
+  const [industries, setIndustries] = useState([])
 
   useEffect(() => {
     const init = async () => {
-      const res = await getSkils();
-      setSkills(res.skills);
+      const res = await getIndustries();
+      setIndustries(res.industries);
     }
     init();
   }, [])
@@ -18,10 +18,10 @@ const SkillsSelect = ({ label, value, onChange, defaultValue = [] }) => {
     <Autocomplete
       multiple
       id="skills"
-      options={skills}
+      options={industries}
       disableCloseOnSelect
       getOptionLabel={(option) => option.name}
-      defaultValue={defaultValue}
+      defaultValue={[]}
       onChange={onChange}
       renderInput={(params) => (
         <TextField
@@ -35,4 +35,4 @@ const SkillsSelect = ({ label, value, onChange, defaultValue = [] }) => {
   )
 }
 
-export default SkillsSelect;
+export default IndustrySelect;

@@ -100,7 +100,10 @@ class AuthAPI:
             "company_url": fields.String,
             "founded_year": fields.String(required=True),
             "company_size": fields.String(required=True),
-            "location": fields.String,
+            "country": fields.String,
+            "city": fields.String,
+            "line1": fields.String,
+            "postalCode": fields.String,
             "description": fields.String,
             "company_logo": fields.String,
             "avatar": fields.String
@@ -154,7 +157,7 @@ class AuthAPI:
             "degree": fields.String(required=True),
             "major": fields.String,
             "position": fields.String,
-            "skills": fields.String,
+            "skills": fields.List(fields.Integer),
             "description": fields.String,
         }
     )

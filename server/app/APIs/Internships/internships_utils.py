@@ -1,5 +1,7 @@
+from ftplib import error_reply
 from plistlib import UID
 from sys import intern
+from typing_extensions import Annotated
 from flask import jsonify
 import requests
 import re
@@ -7,9 +9,10 @@ from json import dumps
 from requests import session
 from sqlalchemy import null
 from torch import is_same_size
+
 from ...Models.model import Calendar, Internship, City, Comment, User, Student, File, InternshipStatus
 from ...Models.company import Companies
-from ...Models.internship import InternQuestion, InternAnswer
+from ...Models.internship import InternQuestion, InternAnswer, Process
 from ...Models.skill import StudentSkills, Skill
 from flask_restx import Resource, reqparse
 from ...extension import db
@@ -96,6 +99,10 @@ def changeTypeFormat(type):
         return ""
 
 
+def get_user_info(uid):
+    user = db.session.query(User).filter(User.uid==uid).first()
+    return user.username, user.avatar
+
 def get_all_parent_comment(comments):
     all_parent_comment = []
 
@@ -106,6 +113,8 @@ def get_all_parent_comment(comments):
         all_parent_comment.append({
             'text': comment.content,
             'uid': comment.user_id,
+            'username': get_user_info(comment.user_id)[0],
+            'avatar': get_user_info(comment.user_id)[1],
             'cmtId': comment.id,
             'time': str(comment.date),
             'replied': children_comment_list
@@ -120,7 +129,10 @@ def get_children_comment(comments):
             'repliedId': comment.id,
             'text': comment.content,
             'time': str(comment.date),
-            'uid': comment.user_id}, )
+            'uid': comment.user_id,
+            'username': get_user_info(comment.user_id)[0],
+            'avatar': get_user_info(comment.user_id)[1],
+            }, )
 
     # print(all_children_comment)
     return all_children_comment
@@ -140,12 +152,33 @@ def check_is_seen(internship_id, uid):
         else:
             return "False"
 
+def check_user_exist(uid):
+    result = db.session.query(User).filter(User.uid == uid).first()
+    if result:
+        return True
+    return False
+
+def get_question(id):
+    questions = db.session.query(InternQuestion).filter(InternQuestion.intern_id == id).all()
+    result = []
+    for q in questions:
+        result.append({'question_id':q.id, 'content':q.content,'intern_id':q.intern_id})
+    
+    return result
 
 class InternshipsUtils:
     @staticmethod
     def get_Internship(id, uid):
         is_save = "False"
         is_calendar = "False"
+        if uid:
+            exist = check_user_exist(uid)
+
+            if exist == False:
+                return {
+                        "message": "user not found",
+
+                    }, 400
 
         try:
             # print(id)
@@ -226,14 +259,15 @@ class InternshipsUtils:
                     "remote": internship.is_remote,
                     "min_salary": internship.min_salary,
                     "max_salary": internship.max_salary,
-                    "salary_currency": internship.salary_curreny,
+                    "salary_currency": internship.salary_currency,
                     "location": get_location(internship.city),
                     "companyName": get_company_info(internship.company_id)[0],
                     'company_logo': get_company_info(internship.company_id)[1],
                     "video_id": video_id_list,
-                    "recruiting_process": [],
+                    "recruiting_process": ["Phone Interview", "Technical Interview"],
                     "is_save": is_save,
-                    "is_calendar": is_calendar
+                    "is_calendar": is_calendar,
+                    "questions": get_question(internship.id),
 
                 }
                 return internship_result, 200
@@ -254,6 +288,15 @@ class InternshipsUtils:
         paid = data.get("paid", None)
         remote = data.get("is_remote", None)
         uid = data.get("uid", None)
+
+        if uid != None:
+            exist = check_user_exist(uid)
+
+            if exist == False:
+                return {
+                        "message": "user not found",
+
+                    }, 400
         if paid:
             paid = paid.upper()
         if remote:
@@ -314,7 +357,7 @@ class InternshipsUtils:
                             'is_remote': internship.is_remote, 'posted_time': changeDateFormat(internship.posted_time),
                             'closed_time': changeDateFormat(internship.expiration_datetime_utc),
                             'min_salary': internship.min_salary, 'max_salary': internship.max_salary,
-                            'description': internship.description, "salary_currency": internship.salary_curreny,
+                            'description': internship.description, "salary_currency": internship.salary_currency,
                             'numAllResults': {"total_count": count}, 'location': get_location(internship.city),
                             'company_id': internship.company_id,
                             'company_name': get_company_info(internship.company_id)[0],
@@ -326,11 +369,25 @@ class InternshipsUtils:
 
     @staticmethod
     def comment(id, data):
+        #check internship is valid
         result = Internship.query.filter(Internship.id == id).first()
-        print(result)
+        if result == None:
+            return {
+                       "message": "internship not found",
+
+                   }, 400
+
+        #check uid is valid
         current_user_id = get_jwt_identity()
-        print(current_user_id)
-        print(result)
+        exist = check_user_exist(current_user_id)
+
+        if exist == False:
+            return {
+                       "message": "user not found",
+
+                   }, 400
+
+
         comment = data.get("comment", None)
         parent_id = data.get("parent_id", None)
 
@@ -355,16 +412,26 @@ class InternshipsUtils:
         return dumps({'msg': 'no related internship'})
 
     @staticmethod
-    def appliedfor(arg):
-        # id = arg['id']
+    def appliedfor(uid, arg):
+        exist = check_user_exist(uid)
 
-        # uid should not be 102, should change later
+        if exist == False:
+            return {
+                       "message": "user not found",
+
+                   }, 400
+
         is_applied = db.session.query(Internship).join(InternshipStatus, Internship.id == InternshipStatus.intern_id) \
-            .filter(InternshipStatus.uid == 102).filter(InternshipStatus.is_applied == "True").all()
+            .filter(InternshipStatus.uid == uid).filter(InternshipStatus.is_applied == "True").all()
         if is_applied:
             info = []
             for applied in is_applied:
-                info.append(Internship.get_info(applied))
+                internship_info = Internship.get_info(applied)
+                status = InternshipStatus.query.filter(InternshipStatus.intern_id == applied.id).filter(InternshipStatus.uid==uid).first().status
+                internship_info['status'] = status
+                info.append(internship_info)
+                
+            
             result = {
                 "is_applied": info
             }
@@ -375,52 +442,98 @@ class InternshipsUtils:
     @staticmethod
     def apply(id, arg):
         current_user_id = get_jwt_identity()
-        print(current_user_id)
+        exist = check_user_exist(current_user_id)
+        print(exist)
+        if exist == False:
+            return {
+                       "message": "user not found",
+                   }, 400
+
 
         resume = arg.get('resume', None)
         coverletter = arg.get('coverletter', None)
 
-        question_id = arg.get('question_id')
-        answer = arg.get('answer')
+        interview_question = arg.get('interview_question', None)
+        
+        try:
+            internship = Internship.query.filter(Internship.id == id).first()
+            print(internship)
+         
+        except Exception as error:
+            return dumps({'msg': error}), 400
+        # if internship == None:
 
-        internship = Internship.query.filter(Internship.id == id).first()
-        if internship:
+        #     return dumps({"msg": "Internship not found"}), 404
 
-            # update is_applied status
+        # update is_applied status
+       
+        print(current_user_id)
+        curr_stage = db.query(Process).filter(Process.intern_id == id, Process.order == 1).first()
+        stage = None
+        if curr_stage:
+            stage = curr_stage.id
 
-            apply = db.session.query(InternshipStatus) \
-                .filter(InternshipStatus.intern_id == id) \
-                .filter(InternshipStatus.uid == current_user_id) \
-                .update({InternshipStatus.is_applied: "True"})
+        apply = db.session.query(InternshipStatus) \
+            .filter(InternshipStatus.intern_id == id) \
+            .filter(InternshipStatus.uid == current_user_id) \
+            .update({InternshipStatus.is_applied: "True", 
+            InternshipStatus.applied_time: str(datetime.datetime.now()),
+            InternshipStatus.stage: stage, InternshipStatus.status: "pending"})
 
-            # get student id
-            student = db.session.query(Student).join(User, Student.email == User.email).filter(
-                User.uid == current_user_id).first()
+        if apply == None:
+            apply= InternshipStatus(current_user_id, id, "True", str(datetime.datetime.now()), stage)
+            db.session.add(apply)
+            db.session.commit()
+    
+        # store question and answer
+        try:
+            if interview_question is not None:
+                for QandA in interview_question:
+                    print(QandA)
+                    question_id = QandA.get('question_id', None)
+                    answer = QandA.get('answer', None)
 
-            # store question and answer
-            new_interview_question = InternQuestion(student_id=student.id, question_id=question_id,
-                                                              answer=answer)
-            db.session.add(new_interview_question)
-            if resume:
-                file = File(uid=current_user_id, data=resume, file_type="resume", upload_time=datetime.datetime.now())
-                print(file)
-                db.session.add(file)
+                    if question_id != None and answer != None:
+                        new_interview_question = InternAnswer(student_id=current_user_id, question_id=question_id,
+                                                            answer=answer)
+                        db.session.add(new_interview_question)
+        except Exception as error:
+            print(error)
+            return dumps({'msg': error}),400
+                    
 
-            if coverletter:
-                file = File(uid=current_user_id, data=coverletter, file_type="coverletter",
-                            upload_time=datetime.datetime.now())
-                db.session.add(file)
-            try:
-                db.session.commit()
-                return dumps({"msg": "save sucessfully"}), 200
-            except Exception as error:
-                return dumps({"msg": error}), 400
-        else:
+        if resume is not None and len(resume) != 0:
+           
+            file = File(uid=current_user_id, data=resume, file_type="resume", upload_time=datetime.datetime.now())
+            
+            db.session.add(file)
 
-            return dumps({"msg": "Internship not found"}), 404
+        if coverletter is not None and len(coverletter) != 0:
+           
+            file = File(uid=current_user_id, data=coverletter, file_type="coverletter",
+                        upload_time=datetime.datetime.now())
+            db.session.add(file)
+
+        try:
+            db.session.commit()
+            print("sucess")
+            return dumps({"msg": "sucessfully"}), 200
+
+        except Exception as error:
+            print("______")
+            print(error)
+            return dumps({"msg": error}), 400
+       
 
     @staticmethod
     def getSaveList(uid):
+        exist = check_user_exist(uid)
+
+        if exist == False:
+            return {
+                       "message": "user not found",
+                   }, 400
+        
         is_save = db.session.query(Internship) \
             .join(InternshipStatus, Internship.id == InternshipStatus.intern_id) \
             .filter(InternshipStatus.uid == uid).filter(InternshipStatus.is_save == "True").all()
@@ -430,8 +543,7 @@ class InternshipsUtils:
                             'posted_time': changeDateFormat(internship.posted_time),
                             'closed_time': changeDateFormat(internship.expiration_datetime_utc), \
                             'min_salary': internship.min_salary, 'max_salary': internship.max_salary,
-                            'description': internship.description, "salary_currency": internship.salary_curreny, \
- \
+                            'description': internship.description, "salary_currency": internship.salary_currency, \
                             'location': get_location(internship.city), 'company_id': internship.company_id, \
                             'company_name': get_company_info(internship.company_id)[0],
                             'company_logo': get_company_info(internship.company_id)[1]
@@ -491,8 +603,7 @@ class InternshipsUtils:
                                 'posted_time': changeDateFormat(internship.posted_time),
                                 'closed_time': changeDateFormat(internship.expiration_datetime_utc), \
                                 'min_salary': internship.min_salary, 'max_salary': internship.max_salary,
-                                'description': internship.description, "salary_currency": internship.salary_curreny, \
- \
+                                'description': internship.description, "salary_currency": internship.salary_currency, \
                                 'location': get_location(internship.city), 'company_id': internship.company_id, \
                                 'company_name': get_company_info(internship.company_id)[0],
                                 'company_logo': get_company_info(internship.company_id)[1]
@@ -513,14 +624,14 @@ class InternshipsUtils:
                 calendar_result = {
                     "id": calendar.id,
                     'internship_id': calendar.internship_id,
-                    'start': calendar.start,
+                    'start':str(calendar.start),
                     'title': calendar.title,
                     'type': calendar.type,
                     'link': calendar.link,
                 }
                 calander_list.append(calendar_result)
 
-        return dumps(calander_list, default=str), 200
+        return {"calander_list":calander_list}, 200
 
     @staticmethod
     def addCalendar(arg, uid):
@@ -597,8 +708,7 @@ class InternshipsUtils:
                                     'posted_time': changeDateFormat(internship.posted_time),
                                     'closed_time': changeDateFormat(internship.expiration_datetime_utc), \
                                     'min_salary': internship.min_salary, 'max_salary': internship.max_salary,
-                                    'description': internship.description, "salary_currency": internship.salary_curreny, \
- \
+                                    'description': internship.description, "salary_currency": internship.salary_currency, \
                                     'location': get_location(internship.city), 'company_id': internship.company_id, \
                                     'company_name': get_company_info(internship.company_id)[0],
                                     'company_logo': get_company_info(internship.company_id)[1]

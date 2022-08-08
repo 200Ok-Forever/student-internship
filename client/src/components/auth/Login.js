@@ -9,10 +9,10 @@ import { useFormik } from "formik";
 import { useHistory } from "react-router-dom";
 import { Paper } from "@mui/material";
 import { loginValidationSchema } from "./ValidationSchema";
-import { LoginAPI } from "../../api/auth-api";
 import { UserContext } from "../../store/UserContext";
 import { Modal } from "@mui/material";
 import ErrorMessage from "../UI/ErrorMessage";
+import axios from "axios";
 
 const Login = () => {
   const history = useHistory();
@@ -24,6 +24,7 @@ const Login = () => {
     setErrorModalState(true);
   };
   const handleClose = () => setErrorModalState(false);
+  const [loading, setLoading] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -31,33 +32,27 @@ const Login = () => {
       password: "",
     },
     validationSchema: loginValidationSchema,
-    onSubmit: (values) => {
-      const login = async (values) => {
-        try {
-          const res = await LoginAPI(values);
-          if (res.status === true) {
-            console.log(res);
-            // If success, store the user info and token to UserContext then route to main page
-            window.localStorage.setItem('user', JSON.stringify({ ...res.user_info, token: res.token }))
-            setUser({ ...res.user_info, token: res.token });
-            history.push("/");
-          } else if (
-            res.response.status === 404 ||
-            res.response.status === 403 ||
-            res.response.status === 400
-          ) {
-            console.log(res.response.data.message);
-            handleOpen(res.response.data.message);
-          } else {
-            console.log(res);
-            //handleOpen(res);
-          }
-        } catch (err) {
-          console.log(err);
-          //handleOpen(err);
+    onSubmit: async (values) => {
+      setLoading(true);
+      try {
+        const res = await axios.post(
+          "http://localhost:5004/auth/login",
+          values
+        );
+        if (res.status === 200) {
+          // If success, store the user info and token to UserContext then route to main page
+          window.localStorage.setItem(
+            "user",
+            JSON.stringify({ ...res.data.user_info, token: res.data.token })
+          );
+          setUser({ ...res.data.user_info, token: res.data.token });
+          history.push("/");
+          setLoading(false);
         }
-      };
-      login(values);
+      } catch ({ response }) {
+        handleOpen(response.data.message);
+        setLoading(false);
+      }
     },
   });
 
@@ -83,7 +78,7 @@ const Login = () => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <ErrorMessage errorMessage={errorMessage} />
+        <ErrorMessage errorTitle={"Error"} errorMessage={errorMessage} />
       </Modal>
       <Typography
         component="h1"
@@ -137,6 +132,7 @@ const Login = () => {
           fullWidth
           variant="contained"
           sx={{ mt: 3, mb: 2 }}
+          disabled={loading}
         >
           Log In
         </Button>
