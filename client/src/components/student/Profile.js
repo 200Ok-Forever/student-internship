@@ -12,7 +12,6 @@ const Profile = () => {
 
   // get user's infomations
   const [info, setInfo] = useState({});
-  console.log("🚀 ~ info", info);
   useEffect(() => {
     setLoading(true);
     const loadInfo = async () => {

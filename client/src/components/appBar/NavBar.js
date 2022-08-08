@@ -65,7 +65,6 @@ const NavBar = () => {
 
   useEffect(() => {
     const update = async () => {
-      console.log(user);
       if (user.token) {
         const res = await getShortUserInfo(user.uid);
         setUser({ ...res, token: user.token });
