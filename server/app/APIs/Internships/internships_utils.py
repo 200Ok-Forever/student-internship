@@ -10,7 +10,6 @@ from requests import session
 from sqlalchemy import null
 from torch import is_same_size
 
-from server import app
 from ...Models.model import Calendar, Internship, City, Comment, User, Student, File, InternshipStatus
 from ...Models.company import Companies
 from ...Models.internship import InternQuestion, InternAnswer, Process
