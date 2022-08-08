@@ -28,6 +28,7 @@ const RenderMessageBubble = ({ message }) => {
 
   const acceptHandler = async (msg, otherId) => {
     console.log("🚀 ~ otherId", otherId);
+    if (otherId === user.uid.toString()) return;
     // TODO connect api
     sendMessage(creds, activeChat, {
       text: `ACCEPT BOT:${user.username} accepted the invitation`,
@@ -38,7 +39,7 @@ const RenderMessageBubble = ({ message }) => {
       time: msg.split(" ").pop(),
     };
     try {
-      const rep = await createMeeting(data);
+      const rep = await createMeeting(data, user.token);
       if (rep.status === 200) {
         sendMessage(creds, activeChat, {
           text:
@@ -54,8 +55,8 @@ const RenderMessageBubble = ({ message }) => {
     }
   };
 
-  const DeclineHandler = async () => {
-    // TODO connect api
+  const DeclineHandler = async (otherId) => {
+    if (otherId === user.uid.toString()) return;
     sendMessage(creds, activeChat, {
       text: `REJECT BOT:${user.username} rejected the invitation`,
     });
@@ -84,7 +85,10 @@ const RenderMessageBubble = ({ message }) => {
         >
           Accept
         </button>
-        <button className="cancel-btn" onClick={DeclineHandler}>
+        <button
+          className="cancel-btn"
+          onClick={() => DeclineHandler(sender.username)}
+        >
           Decline
         </button>
       </Box>

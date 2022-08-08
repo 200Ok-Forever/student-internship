@@ -30,7 +30,6 @@ forum_parser.add_argument('sort', choices=['newest', 'hottest', 'popular'], type
 auth_parser = reqparse.RequestParser()
 auth_parser.add_argument('Authorization', location='headers', help='Bearer [Token]', default='Bearer xxxxxxxxxxx')
 
-
 @forum_api.route("/posts/<postid>")
 class GetPost(Resource):
     @forum_api.doc(

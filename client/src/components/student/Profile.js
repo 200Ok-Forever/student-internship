@@ -78,7 +78,10 @@ const Profile = () => {
           justifyContent: "center",
         }}
       >
-        <Avatar sx={{ m: 1, width: "60px", height: "60px" }} />
+        <Avatar
+          sx={{ m: 1, width: "60px", height: "60px" }}
+          src={info.avatar}
+        />
         <Typography variant="h4" fontWeight="bold" fontFamily="inherit">
           {info.first_name} {info.last_name}
         </Typography>
