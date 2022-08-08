@@ -6,7 +6,7 @@ from  ...Models import model
 from  ...Models import internship as Internship
 from  ...Models import skill as Skill
 from ... import db
-from sqlalchemy import and_, null, or_
+from sqlalchemy import or_
 
 def get_intern_process(job):
     process = [-1 for i in range(0, len(job.processes))]
@@ -150,8 +150,8 @@ def create_job(data, intern_id, companyid, old_skills):
 def find_file(type, uid):
     file = db.session.query(model.File).filter(model.File.uid == uid, model.File.file_type == type).first()
     if file != None:
-        file = str(file.decode())
-    return file
+        return { 'data': file.data, 'name': file.filename }
+    return None
 
 def format_jobs(jobs, uid, company_logo, company_name):
     # format result

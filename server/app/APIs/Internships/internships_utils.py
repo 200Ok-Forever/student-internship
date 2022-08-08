@@ -465,7 +465,7 @@ class InternshipsUtils:
         apply = db.session.query(InternshipStatus) \
             .filter(InternshipStatus.intern_id == id) \
             .filter(InternshipStatus.uid == current_user_id) \
-            .update({InternshipStatus.is_applied: "True"})
+            .update({InternshipStatus.is_applied: "True", InternshipStatus.applied_time: str(datetime.datetime.now())})
 
     
         # store question and answer
