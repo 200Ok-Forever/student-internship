@@ -1,3 +1,5 @@
+from concurrent.futures import process
+from multiprocessing.dummy import Process
 from flask_jwt_extended import get_jwt_identity
 from flask_restx import Resource
 from .company_page_model import CompanyPageAPI
@@ -427,24 +429,24 @@ class ForwardProcess(Resource):
         data.shortlist = False
 
         # forward
-        curr_process = data.process
+        curr_process = data.stage
 
-        # none or already the first
-        if not curr_process or curr_process.order == 1:
-            db.session.commit()
-            return 200
+        processes = db.session.query(Internship.Process).filter(Internship.Process.intern_id == jobid).all()
+        if processes == None:
+            return {"message": "Successfully"}, 400
 
+        # none, set to first order 
+        if not curr_process:
+            data.stage = processes[0].id
+        else:
+            # forward
+            curr_order = processes.index(curr_process)
+            # check is the last one
+            if curr_order != len(processes) - 1:
+                data.stage = processes[curr_order]
         
-        # forward
-        last_order = curr_process.order - 1
-        """
-        previous = db.session.query(Internship.Process).filter(Internship.Process.intern_id == jobid, Internship.Process.order == last_order).first()
-        if previous == None:
-            return 400"""
-        data.stage = last_order
-
         db.session.commit()
-        return 200
+        return {"message": "Successfully"}, 400
 
 
 @company_ns.route("/<jobid>/<appliedid>/reject")

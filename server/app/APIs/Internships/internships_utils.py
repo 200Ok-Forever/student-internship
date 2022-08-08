@@ -478,7 +478,7 @@ class InternshipsUtils:
             .filter(InternshipStatus.uid == current_user_id) \
             .update({InternshipStatus.is_applied: "True", 
             InternshipStatus.applied_time: str(datetime.datetime.now()),
-            InternshipStatus.stage: stage})
+            InternshipStatus.stage: stage, InternshipStatus.status: "pending"})
 
         if apply == None:
             apply= InternshipStatus(current_user_id, id, "True", str(datetime.datetime.now()), stage)

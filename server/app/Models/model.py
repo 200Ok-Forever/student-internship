@@ -249,6 +249,7 @@ class InternshipStatus(db.Model):
         self.is_applied = is_applied
         self.applied_time = applied_time
         self.stage = stage
+        self.status = "pending"
 
 
 class File(db.Model):
