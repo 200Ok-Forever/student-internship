@@ -57,13 +57,12 @@ class GetMeetings(Resource):
     @jwt_required()
     def get(self):
         uid = get_jwt_identity()
-
         # check user's role
         user = db.session.query(User).filter(User.uid == uid).first()
         print(user.role)
         if not user:
             return 400
-        query = db.session.query(Internship, Invitation, Student).filter(Internship.id == Invitation.company_id,
+        query = db.session.query(Companies, Invitation, Student).filter(Companies.id == Invitation.company_id,
                                                                          Student.id == Invitation.student_id)
         # company
         if user.role == 2:
@@ -74,16 +73,14 @@ class GetMeetings(Resource):
         data = query.all()
 
         result = []
-        for intern, invi, stu in data:
+        for company, invi, stu in data:
             if user.role == 2:
                 data = convert_object_to_dict(invi)
                 data["first_name"] = stu.first_name
                 data['last_name'] = stu.last_name
-                data["user_id"] = stu.id
             else:
                 data = convert_object_to_dict(invi)
-                data["name"] = intern.company.company_name
-                data['user_id'] = intern.company.id
+                data["name"] = company.company_name
 
             result.append(data)
 
