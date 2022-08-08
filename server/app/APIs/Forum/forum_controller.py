@@ -46,15 +46,15 @@ class GetAllPosts(Resource):
 
         if args['searchTerm'] is not None:
             key = args['searchTerm']
-            query = query.filter(Post.content.ilike(f'%{key}%'), or_(Post.title.ilike(f'%{key}%')))
+            query = query.filter(or_(Post.title.ilike(f'%{key}%'), Post.content.ilike(f'%{key}%')))
 
         if args['strategy'] is not None and args['strategy'] == 'newest':
-            query = query.order(Post.created_time.desc())
+            query = query.order_by(Post.created_time.desc())
         elif args['strategy'] is not None and args['strategy'] == 'hottest':
             yesterday = date.today() - timedelta(days=1)
-            query = query.filter(Post.created_time == yesterday).order(func.count(PostComment.id).desc())
+            query = query.filter(Post.created_time == yesterday).order_by(func.count(PostComment.id).desc())
         elif args['strategy'] is not None and args['strategy'] == 'popular':
-            query = query.order(func.count(PostComment.id).desc())
+            query = query.order_by(func.count(PostComment.id).desc())
 
         # 10 items per page
         index = args['pageNumber'] - 1
