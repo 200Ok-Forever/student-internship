@@ -476,11 +476,6 @@ class InternshipsUtils:
         #     return dumps({"msg": "Internship not found"}), 404
 
         # update is_applied status
-<<<<<<< HEAD
-       
-        curr_stage = db.session.query(Process).filter(Process.intern_id == id, Process.order == 1).first()
-
-=======
         try:
             query = db.session.query(InternshipStatus).filter(InternshipStatus.intern_id == id)\
                 .filter(InternshipStatus.uid ==current_user_id ).first()
@@ -499,7 +494,6 @@ class InternshipsUtils:
         
         print("cur_stage")
         print(curr_stage)
->>>>>>> 76afdb781b6a44a4da93167eb63f7eb6800e9176
         stage = None
         if curr_stage:
             stage = curr_stage.id
