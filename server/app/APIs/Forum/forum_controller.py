@@ -34,10 +34,10 @@ auth_parser.add_argument('Authorization', location='headers', help='Bearer [Toke
 class GetPost(Resource):
     @forum_api.response(200, "Successfully")
     @forum_api.response(400, "Something wrong")
-    def get(self, id):
+    def get(self, postid):
 
         post = db.session.query(Post).outerjoin(PostComment, PostComment.post_id == Post.id).filter(
-            Post.id == id).first()
+            Post.id == postid).first()
         if post == None:
             return {"message": "Invalid post id"}, 400
         forum_id = post.forum_id
