@@ -184,7 +184,7 @@ def format_jobs(jobs, uid, company_logo, company_name):
     result['company_logo'] = company_logo
     return result
 
-def formate_application(appli, stu):
+def formate_application(appli, stu, jobid):
     data = convert_object_to_dict(stu)
     data['stage'] = None
     if appli.process != None:

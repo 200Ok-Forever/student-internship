@@ -217,7 +217,7 @@ class GetAllApplications(Resource):
             stu = appli.student
             if not stu: 
                 continue
-            data = formate_application(appli, stu)
+            data = formate_application(appli, stu, jobid)
             result.append(data)
         return {'applicants': result, "intern_title": job.title, "city": get_location(job.city) }, 200
 
@@ -372,7 +372,7 @@ class AddShortList(Resource):
         # set the shortlist to true
         data.shortlist = True
         db.session.commit()
-        data = formate_application(data, data.student)
+        data = formate_application(data, data.student, jobid)
         return data, 200
 
 
@@ -393,7 +393,7 @@ class AddShortList(Resource):
         # set the shortlist to true
         data.shortlist = False
         db.session.commit()
-        data = formate_application(data, data.student)
+        data = formate_application(data, data.student, jobid)
         return data, 200
 
 
@@ -433,7 +433,7 @@ class ForwardProcess(Resource):
                 data.status = "accepted"
 
         db.session.commit()
-        data = formate_application(data, data.student)
+        data = formate_application(data, data.student, jobid)
         return data, 200
 
 
@@ -458,5 +458,5 @@ class Accept(Resource):
         data.status = 'reject'
         print(data.status)
         db.session.commit()
-        data = formate_application(data, data.student)
+        data = formate_application(data, data.student, jobid)
         return data, 200
