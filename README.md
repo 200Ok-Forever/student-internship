@@ -77,7 +77,9 @@ In this project, we used teams and discord to communicate. Also, multiple meetin
 We collaborately created text version of API documentation and Swagger UI, which make the apis more easy to understand and eases the
 communication between the front end team and the back end team. We used Jira Board to conduct product management as well.  
 <img width="955" alt="image" src="https://user-images.githubusercontent.com/62100969/183334736-b6d88580-ed64-4924-8218-ceb03af417a6.png">  
-Jira Board  
+Jira Board
+<img width="727" alt="image" src="https://user-images.githubusercontent.com/62100969/183337251-2b12856a-676d-4346-addd-fa5e966be0f5.png">  
+Jira Card Detail Info  
 <img width="825" alt="image" src="https://user-images.githubusercontent.com/62100969/183334990-7e549e85-604e-4572-be04-270a527b3e6e.png">  
 Teams Chat  
 <img width="607" alt="image" src="https://user-images.githubusercontent.com/62100969/183335035-f92a0a9e-2ef1-4a44-b4d0-5c8f038bec3a.png">  
@@ -87,3 +89,9 @@ One of the Meeting Minutes
 <img width="1195" alt="image" src="https://user-images.githubusercontent.com/62100969/183336464-5603c985-9b43-428d-97cf-8812c64d2353.png">  
 Swagger UI  
 [API doc](https://docs.google.com/document/d/1NLNMbSkB_7ZOhxpqY15lnbS8eaYhqX4LKpNnbSYbFoA/edit#heading=h.6jxjxr7tu5qb)  
+
+## Version Control
+In the project, we strongly used git version control system. We created branches for each of the tasks.  
+<img width="1916" alt="image" src="https://user-images.githubusercontent.com/62100969/183338480-2bee303d-769a-4f0e-9879-d95ca313bddf.png">  
+Sourcetree Screenshot  
+
