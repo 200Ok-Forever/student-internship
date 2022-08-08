@@ -526,7 +526,7 @@ class Accept(Resource):
             return {"message": "Not applied yet"}, 400
 
         # update data
-        data.status = 'reject'
+        data.status = 'rejected'
         print(data.status)
         db.session.commit()
         data = formate_application(data, data.student, jobid)
