@@ -8,7 +8,6 @@ import { useHistory } from "react-router-dom";
 const JobBasicCard = (props) => {
   const history = useHistory();
   const job = props.job;
-  console.log(job);
   return (
     <>
       <Box
