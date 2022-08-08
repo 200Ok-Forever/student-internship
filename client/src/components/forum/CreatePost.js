@@ -59,8 +59,8 @@ const CreatePost = (props) => {
     console.log(data)
     const resp = await postPost(data, 'Bearer ' + token)
     console.log(resp);
-    if (resp.message === "'Successfully'") {
-      history.push("/forum/posts/" + id);
+    if (resp.postid) {
+      history.push("/forum/posts/" + resp.postid);
     }
   }
   
