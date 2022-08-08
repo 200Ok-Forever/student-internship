@@ -10,7 +10,6 @@ import RenderMessageBubble from "./RenderMessageBubble";
 import RenderNewMessageForm from "./RenderNewMessageForm";
 
 const Chat = (props) => {
-  console.log("🚀 ~ props", props.location?.query?.uid);
   const { user } = useContext(UserContext);
   const currChatUser = user.uid.toString();
 
