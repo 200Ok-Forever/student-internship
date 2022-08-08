@@ -36,6 +36,7 @@ import { UserContext } from "./store/UserContext";
 import UserPosts from "./components/forum/UserPosts";
 import CreateInternship from "./components/recruiter/CreateInternship";
 import EditStudentProfile from "./components/student/EditStudentProfile";
+import EditCompanyProfile from "./components/company/EditCompanyProfile";
 import StudentProfile from "./components/student/StudentProfile";
 import { STUDENT_ROLE, RECRUITER_ROLE } from "./constants";
 
@@ -88,6 +89,11 @@ function App() {
               path="/editstudentprofile"
               exact
               component={EditStudentProfile}
+            />
+            <Route
+              path="/editcompanyprofile"
+              exact
+              component={EditCompanyProfile}
             />
             <Route
               path="/studentprofile/:id"

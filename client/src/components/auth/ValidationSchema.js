@@ -80,6 +80,18 @@ export const studentEditValidationObject = {
   degree: yup.string("Please enter your degree").required("Degree is required"),
 };
 
+export const companyEditValidationObject = {
+  firstName: yup
+    .string("Please enter your first name")
+    .required("First name is required"),
+  lastName: yup
+    .string("Please enter your last name")
+    .required("Last name is required"),
+  company_name: yup
+    .string("Please enter your company name")
+    .required("company name is required"),
+};
+
 export const sendResetEmailValidationSchema = yup.object(
   sendResetEmailValidationObject
 );
@@ -95,5 +107,8 @@ export const resetPasswordValidationSchema = yup.object(
 );
 export const studentEditValidationSchema = yup.object(
   studentEditValidationObject
+);
+export const companyEditValidationSchema = yup.object(
+  companyEditValidationObject
 );
 // export const emailValidationSchema = yup.object(emailValidationObject);

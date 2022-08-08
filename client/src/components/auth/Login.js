@@ -24,6 +24,7 @@ const Login = () => {
     setErrorModalState(true);
   };
   const handleClose = () => setErrorModalState(false);
+  const [loading, setLoading] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -32,6 +33,7 @@ const Login = () => {
     },
     validationSchema: loginValidationSchema,
     onSubmit: async (values) => {
+      setLoading(true);
       try {
         const res = await axios.post(
           "http://localhost:5004/auth/login",
@@ -45,9 +47,11 @@ const Login = () => {
           );
           setUser({ ...res.data.user_info, token: res.data.token });
           history.push("/");
+          setLoading(false);
         }
       } catch ({ response }) {
         handleOpen(response.data.message);
+        setLoading(false);
       }
     },
   });
@@ -128,6 +132,7 @@ const Login = () => {
           fullWidth
           variant="contained"
           sx={{ mt: 3, mb: 2 }}
+          disabled={loading}
         >
           Log In
         </Button>

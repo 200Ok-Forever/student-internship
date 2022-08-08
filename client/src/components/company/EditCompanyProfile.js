@@ -13,33 +13,30 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { UserContext } from "../../store/UserContext";
-import { CompanySignupAPI } from "../../api/auth-api";
+import { postEditCompanyInfo } from "../../api/company-api";
 import { useFormik } from "formik";
-import { companySignupValidationSchema } from "./ValidationSchema";
+import { companyEditValidationSchema } from "../auth/ValidationSchema";
 import { Modal, IconButton } from "@mui/material";
 import ErrorMessage from "../UI/ErrorMessage";
 import IndustrySelect from "../UI/IndustrySelect";
 import CountrySelect from "../UI/CountrySelect";
-import { newUserOnChat } from "../../api/chat-api";
 
-const CompanySignup = () => {
-  const { setUser } = useContext(UserContext);
+const EditCompanyProfile = () => {
+  const { user } = useContext(UserContext);
   const [avatar, setAvatar] = useState("");
   const [errorModalState, setErrorModalState] = useState(false);
+  const [errorTitle, setErrorTitle] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const handleOpen = (msg) => {
+  const handleOpen = (title, msg) => {
+    setErrorTitle(title)
     setErrorMessage(msg);
     setErrorModalState(true);
   };
   const handleClose = () => setErrorModalState(false);
   const history = useHistory();
-  const [loading, setLoading] = useState(false);
 
   const formik = useFormik({
     initialValues: {
-      email: "",
-      password: "",
-      confirmPassword: "",
       firstName: "",
       lastName: "",
       company_name: "",
@@ -54,49 +51,33 @@ const CompanySignup = () => {
       country: "",
       description: "",
     },
-    validationSchema: companySignupValidationSchema,
+    validationSchema: companyEditValidationSchema,
     onSubmit: (values) => {
-      const signup = async (values) => {
-        setLoading(true);
-        const signupValues = {
-          email: values.email,
-          username: values.company_name,
-          password: values.password,
+      const edit = async (values) => {
+        const editValues = {
           first_name: values.firstName,
           last_name: values.lastName,
           company_name: values.company_name,
-          industry: values.industry.map((i) => parseInt(i.id)),
+          industry: values.industry.map((i) => (i.name)),
           linkedin: values.linkedin,
           company_url: values.company_url,
           line1: values.address,
           city: values.city,
           country: values.country?.name ? values.country.name : "",
-          postalCode: values.postalCode,
           description: values.description,
           avatar: "",
           company_logo: avatar,
           company_size: values.size,
           founded_year: values.founded_year,
         };
-        console.log(signupValues);
+        console.log(editValues);
         try {
-          const res = await CompanySignupAPI(signupValues);
-          if (res.status === true) {
-            const userInfo = res.user;
-            const userInfoWithToken = { token: res.token, ...userInfo };
-            window.localStorage.setItem(
-              "user",
-              JSON.stringify(userInfoWithToken)
-            );
-            setUser(userInfoWithToken);
-            const newUser = {
-              username: userInfo.uid.toString(),
-              secret: userInfo.uid.toString(),
-              first_name: userInfo.username,
-              last_name: userInfo.avatar,
-            };
-            await newUserOnChat(newUser);
-            setLoading(false);
+          console.log(editValues)
+          const res = await postEditCompanyInfo(user.uid, editValues, user.token);
+          console.log(res.message);
+          if (res.message === 'Successfully') {
+            console.log(res);
+            handleOpen("Success", "Successfully edit the infomation!")
             history.push("/");
           } else if (
             res.response.status === 404 ||
@@ -104,19 +85,16 @@ const CompanySignup = () => {
             res.response.status === 400
           ) {
             console.log(res);
-            handleOpen(res.response.data.message);
+            handleOpen("Error", res.response.data.message);
           } else {
             console.log(res);
             //handleOpen(res);
           }
         } catch (err) {
           console.log(err);
-          setLoading(false);
-          //handleOpen(err);
         }
       };
-
-      signup(values);
+      edit(values);
     },
   });
 
@@ -154,14 +132,11 @@ const CompanySignup = () => {
         sx={{ textAlign: "center" }}
         fontFamily="inherit"
       >
-        Company Sign Up
+        Edit Profile
       </Typography>
       <IconButton color="primary" aria-label="upload picture" component="label">
         <input hidden accept="image/*" type="file" onChange={onAvatarChange} />
-        <Avatar
-          sx={{ m: 1, bgcolor: "primary.main", width: "80px", height: "80px" }}
-          src={avatar}
-        />
+        <Avatar sx={{ m: 1, bgcolor: "primary.main" }} src={avatar} />
       </IconButton>
       <Box
         component="form"
@@ -175,63 +150,9 @@ const CompanySignup = () => {
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
         >
-          <ErrorMessage errorTitle={"Error"} errorMessage={errorMessage} />
+          <ErrorMessage errorTitle={errorTitle} errorMessage={errorMessage} />
         </Modal>
         <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <TextField
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              value={formik.values.email}
-              onChange={formik.handleChange}
-              error={formik.touched.email && Boolean(formik.errors.email)}
-              helperText={formik.touched.email && formik.errors.email}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="new-password"
-              value={formik.values.password}
-              onChange={formik.handleChange}
-              error={formik.touched.password && Boolean(formik.errors.password)}
-              helperText={formik.touched.password && formik.errors.password}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              required
-              fullWidth
-              name="confirmPassword"
-              label="Confirm Password"
-              type="password"
-              id="confirm-password"
-              autoComplete="confirm-password"
-              value={formik.values.confirmPassword}
-              onChange={formik.handleChange}
-              error={
-                formik.touched.confirmPassword &&
-                Boolean(formik.errors.confirmPassword)
-              }
-              helperText={
-                formik.touched.confirmPassword && formik.errors.confirmPassword
-              }
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <Typography fontWeight="bold" fontFamily="inherit" variant="h6">
-              Recruiter:
-            </Typography>
-          </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
               autoComplete="given-name"
@@ -283,7 +204,7 @@ const CompanySignup = () => {
             />
           </Grid>
           <Grid item xs={12}>
-            <IndustrySelect
+          <IndustrySelect
               label="Industry"
               onChange={(event, value) => {
                 formik.setFieldValue("industry", value);
@@ -314,21 +235,6 @@ const CompanySignup = () => {
             />
           </Grid>
           <Grid item xs={12} sm={6}>
-            {/* <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DatePicker
-                disableFuture
-                fullWidth
-                name="foundedYear"
-                label="Founded Year"
-                id="foundedYear"
-                autoComplete="foundedYear"
-                openTo="year"
-                views={["year"]}
-                renderInput={(params) => <TextField {...params} />}
-                value={formik.values.foundedYear}
-                onChange={formik.handleChange}
-              />
-            </LocalizationProvider> */}
             <TextField
               fullWidth
               name="founded_year"
@@ -384,7 +290,7 @@ const CompanySignup = () => {
           </Grid>
           <Grid item xs={12} sm={8}>
             <CountrySelect
-              label="Country"
+              label="Country*"
               onChange={(event, value) => {
                 formik.setFieldValue("country", value);
               }}
@@ -416,22 +322,12 @@ const CompanySignup = () => {
           fullWidth
           variant="contained"
           sx={{ mt: 3, mb: 2 }}
-          disabled={loading}
         >
-          Sign Up
-        </Button>
-        <Button
-          type="submit"
-          fullWidth
-          variant="outlined"
-          sx={{ margin: "auto" }}
-          onClick={() => history.push("/login")}
-        >
-          Already has an account? Login!
+          Edit
         </Button>
       </Box>
     </Paper>
   );
 };
 
-export default CompanySignup;
+export default EditCompanyProfile;

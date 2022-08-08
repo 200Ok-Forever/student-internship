@@ -333,7 +333,7 @@ class Recomendation(Resource):
         job_skills = job.skills
         skills_id = [skill.id for skill in job_skills]
 
-        query = db.session.query(model.Student, Skill.Skill, Skill.StudentSkills, model.InternshipStatus
+        query = db.session.query(model.Student, Skill.Skill, Skill.StudentSkills
         # join the stuudent , skill, studentskill
         ).filter(model.Student.id == Skill.StudentSkills.student_id, Skill.Skill.id == Skill.StudentSkills.skill_id,
         # get the pending applicant
