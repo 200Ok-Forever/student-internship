@@ -1,5 +1,5 @@
 from flask import request, jsonify, current_app
-from flask_restx import Resource
+from flask_restx import Resource, reqparse
 from .chat_model import ChatAPI
 from .chat_utils import ChatUtils
 from flask_jwt_extended import jwt_required
@@ -12,6 +12,9 @@ from ...Helpers.other_util import convert_object_to_dict, convert_model_to_dict
 
 chat_api = ChatAPI.api
 
+auth_parser = reqparse.RequestParser()
+auth_parser.add_argument('Authorization', location='headers', help='Bearer [Token]', default='Bearer xxxxxxxxxxx')
+
 
 @chat_api.route("/meeting/invitation")
 class SendMeetingInvitation(Resource):
@@ -21,7 +24,7 @@ class SendMeetingInvitation(Resource):
         200: "success",
         404: "User not found!",
     })
-    @chat_api.expect(zoom_link)
+    @chat_api.expect(zoom_link, auth_parser)
     @jwt_required()
     def post(self):
         uid = get_jwt_identity()
@@ -29,6 +32,7 @@ class SendMeetingInvitation(Resource):
         # Grab the json data
         data = request.get_json()
         info, status, user= ChatUtils.send_zoom_meeting_invitation(data)
+
         if status != 200:
             return info, status
         
