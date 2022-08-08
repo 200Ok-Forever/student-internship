@@ -17,7 +17,6 @@ import { useState, useContext, useEffect } from "react";
 import apply from "../../asset/apply.png";
 import { getInternship, postNewApply } from "../../api/internship-api";
 import { UserContext } from "../../store/UserContext";
-import _ from "lodash";
 import ErrorMessage from "../UI/ErrorMessage";
 
 const center = {
