@@ -177,7 +177,7 @@ class CreateComment(Resource):
         return {"message": "Successfully"}, 200
 
 
-@forum_api.route("/forum/posts/<int:id>")
+@forum_api.route("/forum/posts/<int:postid>")
 class EditAndDeletePost(Resource):
     @forum_api.doc(
         " Delete the given post",
@@ -187,10 +187,10 @@ class EditAndDeletePost(Resource):
         }
     )
     @jwt_required()
-    def delete(self, id):
+    def delete(self, postid):
         """ Delete the given post """
         #uid = get_jwt_identity()
-        return ForumUtils.deletepost(id)
+        return ForumUtils.deletepost(postid)
 
     @jwt_required()
     @forum_api.expect(ForumAPI.edit, auth_parser)
@@ -201,9 +201,10 @@ class EditAndDeletePost(Resource):
             400: "Error",
         }
     )
-    def patch(self, id):
+    def patch(self, postid):
+        """ Edit the given post """
         content = request.get_json()
         print(content)
         #uid = get_jwt_identity()
         # return "hahahaha"
-        return ForumUtils.editPost(id, content)
+        return ForumUtils.editPost(postid, content)
