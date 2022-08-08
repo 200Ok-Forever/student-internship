@@ -16,7 +16,6 @@ const RenderChatForm = ({ creds }) => {
           setActiveChat(data.id);
         }
       );
-      localStorage.removeItem("chat");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatId, conn?.userName]);
