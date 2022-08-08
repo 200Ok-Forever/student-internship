@@ -1,12 +1,12 @@
 import React from 'react';
 import moment from 'moment';
-import { Redirect } from 'react-router-dom'
-import { Box, Typography } from '@mui/material';
+import {Redirect} from 'react-router-dom'
+import {Box, Typography} from '@mui/material';
 import ShowCmts from '../UI/ShowCmts';
 import EditAndDelete from '../UI/EditAndDelete';
 
 const ForumPost = () => {
-
+  
   // API CALL
   const post = {
     title: "Horrible experience at XYZ, stay away!!",
@@ -43,41 +43,41 @@ const ForumPost = () => {
       },
     ],
   };
-
+  
   if (!post) {
     return (
-      <Redirect to="/forum" />
+      <Redirect to="/forum"/>
     )
   }
-
+  
   return (
     <Box>
-      <PostDetails post={post} />
-      <ShowCmts list={post.comments} />
+      <PostDetails post={post}/>
+      <ShowCmts list={post.comments}/>
     </Box>
   )
 }
 
-const PostDetails = ({ post }) => {
+const PostDetails = ({post}) => {
   // TODO
   const isMine = true;
-
+  
   return (
     <>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
-        <Typography variant="h4" component='div' sx={{ mb: 1 }}>
+      <Box sx={{display: 'flex', justifyContent: 'space-between'}}>
+        <Typography variant="h4" component='div' sx={{mb: 1}}>
           {post.title}
         </Typography>
-        {isMine && <EditAndDelete />}
+        {isMine && <EditAndDelete/>}
       </Box>
-      <Box sx={{ mb: 1 }}>
+      <Box sx={{mb: 1}}>
         <Typography variant='subtitle1' color="primary" component="span">
           {post.author}
         </Typography>
         {" "}
-        <Typography variant="body1" component='span' sx={{ mb: 1 }}>
+        <Typography variant="body1" component='span' sx={{mb: 1}}>
           {moment(post.createdAt).fromNow()}
-        </Typography> 
+        </Typography>
       </Box>
       <Typography variant="body1" component='div'>
         {post.content.split('\n').map(text => (

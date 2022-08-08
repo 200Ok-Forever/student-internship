@@ -23,13 +23,11 @@ forum_api = ForumAPI.forum_ns
 
 forum_parser = reqparse.RequestParser()
 forum_parser.add_argument('pageNumber', type=int, location='args', default=1)
-forum_parser.add_argument('Industry', type=str, location='args')
+forum_parser.add_argument('industry', type=str, location='args')
 forum_parser.add_argument('userId', type=int, location='args')
 forum_parser.add_argument('searchTerm', type=str, location='args')
-forum_parser.add_argument('strategy', choices=['newest', 'hottest', 'popular'], type=str, location='args')
-auth_parser = reqparse.RequestParser()
-# patch_parser.add_argument('content', location = 'body',help='edit content')
-auth_parser.add_argument('Authorization', location='headers', help='Bearer [Token]', default='Bearer xxxxxxxxxxx')
+forum_parser.add_argument('sort', choices=['newest', 'hottest', 'popular'], type=str, location='args')
+
 
 @forum_api.route("/posts/<id>")
 class GetPost(Resource):
@@ -61,53 +59,58 @@ class AllPost(Resource):
     @forum_api.expect(forum_parser)
     def get(self):
         args = forum_parser.parse_args()
-        ind_id = forum_list.index(args['Industry'].lower())
-        query = db.session.query(Post,
-                                 func.count(PostComment.id)).outerjoin(PostComment,
-                                                                       PostComment.post_id == Post.id).filter(
-            Post.forum_id == ind_id).group_by(PostComment.post_id)
-        # need to get the users posts
-        if args['userId'] is not None:
-            query = query.filter(Post.student_id == int(args['userId']))
+        if args['industry'] is not None:
+            ind_id = forum_list.index(args['industry'].lower())
+            query = db.session.query(Post,
+                                     func.count(PostComment.id)).outerjoin(PostComment,
+                                                                           PostComment.post_id == Post.id).filter(
+                Post.forum_id == ind_id).group_by(PostComment.post_id)
+            # need to get the users posts
+            if args['userId'] is not None:
+                query = query.filter(Post.student_id == int(args['userId']))
 
-        if args['searchTerm'] is not None:
-            key = args['searchTerm']
-            query = query.filter(or_(Post.title.ilike(f'%{key}%'), Post.content.ilike(f'%{key}%')))
+            if args['searchTerm'] is not None:
+                key = args['searchTerm']
+                query = query.filter(or_(Post.title.ilike(f'%{key}%'), Post.content.ilike(f'%{key}%')))
 
-        if args['strategy'] is not None and args['strategy'] == 'newest':
-            query = query.order_by(Post.created_time.desc())
-        elif args['strategy'] is not None and args['strategy'] == 'hottest':
-            yesterday = date.today() - timedelta(days=1)
-            query = query.filter(Post.created_time == yesterday).order_by(func.count(PostComment.id).desc())
-        elif args['strategy'] is not None and args['strategy'] == 'popular':
-            query = query.order_by(func.count(PostComment.id).desc())
+            if args['sort'] is not None and args['sort'] == 'newest':
+                query = query.order_by(Post.created_time.desc())
+            elif args['sort'] is not None and args['sort'] == 'hottest':
+                yesterday = date.today() - timedelta(days=1)
+                query = query.filter(Post.created_time == yesterday).order_by(func.count(PostComment.id).desc())
+            elif args['sort'] is not None and args['sort'] == 'popular':
+                query = query.order_by(func.count(PostComment.id).desc())
 
-        # 10 items per page
-        index = args['pageNumber'] - 1
-        posts = query.offset(index * 10).limit(10).all()
-        result = []
-        for post, count in posts:
-            data = convert_object_to_dict(post)
-            data['nComments'] = count
-            data['authName'] = post.student.user.username
-            data['authId'] = post.student.id
-            result.append(data)
-        return {"result": result}, 200
+            # 10 items per page
+            index = args['pageNumber'] - 1
+            posts = query.offset(index * 10).limit(10).all()
+            result = []
+            for post, count in posts:
+                data = convert_object_to_dict(post)
+                data['nComments'] = count
+                data['authName'] = post.student.user.username
+                data['authId'] = post.student.id
+                result.append(data)
+            return {"result": result}, 200
+        else:
+            return {
+                "message": "Please provide an industry"
+            }, 400
 
     @jwt_required()
-    @forum_api.expect(ForumAPI.post_data, auth_parser, validate=True)
+    @forum_api.expect(ForumAPI.post_data, validate=True)
     def post(self):
         uid = get_jwt_identity()
         data = forum_api.payload
 
-        if data['Industry'].lower() not in forum_list:
+        if data['industry'].lower() not in forum_list:
             return {"message": "Invalid forum name"}, 400
 
         user = db.session.query(User).filter(User.username == data['Author']).first()
 
-        fourm_id = forum_list.index(data['Industry'].lower())
+        fourm_id = forum_list.index(data['industry'].lower())
 
-        if user == None or user.uid != uid:
+        if user == None or user.id != uid:
             return {"message": "Invalid user name"}, 400
 
         new_post = Post(data["Title"], data['Content'], data['createdAt'], fourm_id, uid)
@@ -146,7 +149,9 @@ class CreateComment(Resource):
         return {"message": "Successfully"}, 200
 
 
-
+patch_parser = reqparse.RequestParser()
+# patch_parser.add_argument('content', location = 'body',help='edit content')
+patch_parser.add_argument('Authorization', location='headers', help='Bearer [Token]', default='Bearer xxxxxxxxxxx')
 
 
 @forum_api.route("/forum/posts/<int:id>")
@@ -157,7 +162,7 @@ class EditAndDeletePost(Resource):
         return ForumUtils.deletepost(id)
 
     @jwt_required()
-    @forum_api.expect(ForumAPI.edit, auth_parser)
+    @forum_api.expect(ForumAPI.edit, patch_parser)
     def patch(self, id):
         content = request.get_json()
         print(content)
