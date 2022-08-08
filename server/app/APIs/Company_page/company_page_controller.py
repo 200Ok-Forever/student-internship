@@ -29,13 +29,19 @@ def get_location(data):
         return ""
 
 # --------------------------------COMPANY OPERATOR-----------------------
-@company_ns.route("/<id>")
+@company_ns.route("/<companyid>")
 class GetCompany(Resource):
 
-    @company_ns.response(200, "Successfully")
-    @company_ns.response(400, "Something wrong")
-    def get(self, id):
-        company = db.session.query(Company.Companies).filter(Company.Companies.id == id).first()
+    @company_ns.doc(
+        "Get the information of the company of the given id",
+        responses={
+            200: "Get info Successfuly",
+            400: "Invalid company id",
+        }
+    )
+    def get(self, companyid):
+        """ Get the information of the company of the given id """
+        company = db.session.query(Company.Companies).filter(Company.Companies.id == companyid).first()
         if company == None:
             return {"message": "Invalid company id"}, 400
 
@@ -44,14 +50,20 @@ class GetCompany(Resource):
         data['industries'] = industry
         return data, 200
 
-    @company_ns.response(200, "Successfully")
-    @company_ns.response(400, "Something wrong")
     @jwt_required()
     @company_ns.expect(authParser, CompanyPageAPI.company_data, validate=True)
-    def post(self, id):
+    @company_ns.doc(
+        "Update the infomation of the given company",
+        responses={
+            200: "Update Successfuly",
+            400: "Invalid company id/No permission/Error when update",
+        }
+    )
+    def post(self, companyid):
+        """Update the infomation of the given company"""
         data = company_ns.payload
         uid = get_jwt_identity()
-        query = db.session.query(Company.Companies).filter(Company.Companies.id == id)
+        query = db.session.query(Company.Companies).filter(Company.Companies.id == companyid)
 
         # 1. check company id
         company = query.first()
@@ -126,10 +138,16 @@ class GetCompany(Resource):
 # --------------------------------INTERN OPERATOR-----------------------
 @company_ns.route("/jobs/<jobid>")
 class JobsManager(Resource):
-    @company_ns.response(200, "Successfully")
-    @company_ns.response(400, "Something wrong")
+    @company_ns.doc(
+        "Delete the given Internship",
+        responses={
+            200: "Update Successfuly",
+            400: "Invalid internship id/No permission",
+        }
+    )
     @jwt_required()
     def delete(self, jobid):
+        """ Delete the given Internship """
         jobid = int(jobid)
         uid = get_jwt_identity()
         # 1. check internship id
@@ -160,13 +178,18 @@ class JobsManager(Resource):
         return format_jobs(jobs, uid, company_logo, company_name), 200
 
 
-@company_ns.route("/<id>/jobs")
+@company_ns.route("/<companyid>/jobs")
 class CompanyJobs(Resource):
-
-    @company_ns.response(200, "Successfully")
-    @company_ns.response(400, "Something wrong")
+    @company_ns.doc(
+        "Get all the release internships of this given company",
+        responses={
+            200: "Successfuly",
+            400: "Error",
+        }
+    )
     @jwt_required(optional=True)
-    def get(self, id):
+    def get(self, companyid):
+        """ Get all the release internships of this given company"""
         parser = reqparse.RequestParser()
         parser.add_argument('searchTerm', type=str, location='args')
         parser.add_argument('sort', type=str, choices=['closing', 'newest'], location='args', default='newest')
@@ -175,7 +198,7 @@ class CompanyJobs(Resource):
         args = parser.parse_args()
 
         uid = get_jwt_identity()
-        jobs = search_jobs(args, id)
+        jobs = search_jobs(args, companyid)
         if len(jobs) == 0:
             return {"jobs": [], 'company_name': None, 'company_logo': None, 'numAllResults': 0}
 
@@ -184,10 +207,16 @@ class CompanyJobs(Resource):
 
 @company_ns.route("/<jobid>/applicant")
 class GetAllApplications(Resource):
-    @company_ns.response(200, "Successfully")
-    @company_ns.response(400, "Something wrong")
+    @company_ns.doc(
+        "Get all applications of this internship",
+        responses={
+            200: "Successfuly",
+            400: "Invalid internship id/No permissio",
+        }
+    )
     @jwt_required()
     def get(self, jobid):
+        """ Get all applications of this internship """
         def get_location(data):
             city = model.City.query.filter_by(id=data).first()
             if city:
@@ -224,11 +253,17 @@ class GetAllApplications(Resource):
 
 @company_ns.route("/<companyid>/create-job")
 class CreateIntern(Resource):
-    @company_ns.response(200, "Successfully")
-    @company_ns.response(400, "Something wrong")
+    @company_ns.doc(
+        "Realse a new internship",
+        responses={
+            200: "Create Successfuly",
+            400: "Invalid company id/No permission/ Something wrong when create",
+        }
+    )
     @company_ns.expect(CompanyPageAPI.intern_data, validate=True)
     @jwt_required()
     def post(self, companyid):
+        """ Realse a new internship """
         data = company_ns.payload
         print(data)
         uid = get_jwt_identity()
@@ -255,11 +290,17 @@ class CreateIntern(Resource):
 
 @company_ns.route("/<jobid>/edit")
 class CreateIntern(Resource):
-    @company_ns.response(200, "Successfully")
-    @company_ns.response(400, "Something wrong")
     @company_ns.expect(CompanyPageAPI.intern_data, validate=True)
     @jwt_required()
+    @company_ns.doc(
+        "Edit an existing internship",
+        responses={
+            200: "Create Successfuly",
+            400: "Invalid internship id/No permission/ Something wrong when update",
+        }
+    )
     def put(self, jobid):
+        """ Edit an existing internship"""
         jobid = int(jobid)
         data = company_ns.payload
         uid = get_jwt_identity()
@@ -310,10 +351,16 @@ class CreateIntern(Resource):
 # --------------------------------RECOMMENDATION-----------------------
 @company_ns.route("/<jobid>/recommendation")
 class Recomendation(Resource):
-    @company_ns.response(200, "Successfully")
-    @company_ns.response(400, "Something wrong")
     @jwt_required()
+    @company_ns.doc(
+        "Get the top 6 matched students with the internship's skills",
+        responses={
+            200: "Successfuly",
+            400: "Invalid internship id/No permission",
+        }
+    )
     def get(self, jobid):
+        """ Get the top 6 matched students with the internship's skills """
         jobid = int(jobid)
         uid = get_jwt_identity()
         query = db.session.query(model.Internship).filter(model.Internship.id == jobid)
@@ -358,10 +405,16 @@ class Recomendation(Resource):
 # --------------------------------MANAGE THE APPLICATION-----------------------
 @company_ns.route("/<jobid>/<appliedid>/shortlist")
 class AddShortList(Resource):
-    @company_ns.response(200, "Successfully")
-    @company_ns.response(400, "Something wrong")
     @jwt_required()
+    @company_ns.doc(
+        "Add the given application into shortlist",
+        responses={
+            200: "Successfuly",
+            400: "Invalid internship id/No permission/Application id invalid",
+        }
+    )
     def post(self, jobid, appliedid):
+        """ Add the given application into shortlist """
         uid = get_jwt_identity()
 
         valid, data = check_editapplication_permison(jobid, appliedid, uid)
@@ -379,10 +432,16 @@ class AddShortList(Resource):
 
 @company_ns.route("/<jobid>/<appliedid>/unshortlist")
 class AddShortList(Resource):
-    @company_ns.response(200, "Successfully")
-    @company_ns.response(400, "Something wrong")
+    @company_ns.doc(
+        "Remove the given application from shortlist",
+        responses={
+            200: "Successfuly",
+            400: "Invalid internship id/No permission/Application id invalid",
+        }
+    )
     @jwt_required()
     def post(self, jobid, appliedid):
+        """ Remove the given application from shortlis """
         uid = get_jwt_identity()
 
         valid, data = check_editapplication_permison(jobid, appliedid, uid)
@@ -400,10 +459,16 @@ class AddShortList(Resource):
 
 @company_ns.route("/<jobid>/<appliedid>/forward")
 class ForwardProcess(Resource):
-    @company_ns.response(200, "Successfully")
-    @company_ns.response(400, "Something wrong")
+    @company_ns.doc(
+        "Forward the stage of the given application",
+        responses={
+            200: "Successfuly",
+            400: "Invalid internship id/No permission/Application id invalid",
+        }
+    )
     @jwt_required()
     def post(self, jobid, appliedid):
+        """ Forward the stage of the given application """
         uid = get_jwt_identity()
         valid, data = check_editapplication_permison(jobid, appliedid, uid)
 
@@ -440,10 +505,16 @@ class ForwardProcess(Resource):
 
 @company_ns.route("/<jobid>/<appliedid>/reject")
 class Accept(Resource):
-    @company_ns.response(200, "Successfully")
-    @company_ns.response(400, "Something wrong")
+    @company_ns.doc(
+        "Reject the given application",
+        responses={
+            200: "Successfuly",
+            400: "Invalid internship id/No permission/Application id invalid",
+        }
+    )
     @jwt_required()
     def post(self, jobid, appliedid):
+        """ Reject the given application """
         uid = get_jwt_identity()
         valid, data = check_editapplication_permison(jobid, appliedid, uid)
         
