@@ -59,6 +59,7 @@ const EditCompanyProfile = () => {
       city: info?.city,
       postalCode: info?.postalCode,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [info]);
 
   const formik = useFormik({
