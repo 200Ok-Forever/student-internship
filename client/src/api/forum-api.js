@@ -20,6 +20,6 @@ export const deletePost = async (id, token) => {
   return await deleteRequest(`/forum/posts/${id}`, {headers: {"Authorization": token}})
 }
 
-export const postComment = async (id, data, token) => {
-  await postRequest(`/forum/posts/${id}/comment`, data, {headers: {"Authorization": token}})
+export const getPostComment = async (id) => {
+  return await getRequest(`/forum/posts/${id}`)
 }

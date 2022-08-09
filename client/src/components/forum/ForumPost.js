@@ -1,18 +1,29 @@
-import React from 'react';
-import moment from 'moment';
-import {Redirect} from 'react-router-dom'
-import {Box, Typography} from '@mui/material';
-import ShowCmts from '../UI/ShowCmts';
-import EditAndDelete from '../UI/EditAndDelete';
-// import {getPosts} from "../../api/forum-api";
+import React, { useEffect } from "react";
+import moment from "moment";
+import { Redirect, useLocation } from "react-router-dom";
+import { Box, Typography } from "@mui/material";
+import ShowCmts from "../UI/ShowCmts";
+import EditAndDelete from "../UI/EditAndDelete";
+import axios from "axios";
 
 const ForumPost = () => {
-  
+  const location = useLocation();
+  const postNum = location.pathname.split("/")[3];
+  useEffect(() => {
+    const getPostInfo = async () => {
+      const resp = await axios.get(
+        `http://localhost:5004/forum/posts/${postNum}`
+      );
+      console.log("🚀 ~ resp", resp);
+    };
+    getPostInfo();
+  }, [postNum]);
   // API CALL
   const post = {
     title: "Horrible experience at XYZ, stay away!!",
-    author: 'Sarah Zheng',
-    content: 'Velit ut cupidatat nostrud ea sunt Lorem id aliquip officia commodo nostrud commodo adipisicing. Excepteur voluptate ullamco ullamco labore ipsum minim nulla ea elit id esse minim duis. Laboris duis irure ullamco cillum. Cupidatat voluptate irure mollit pariatur consequat dolor irure exercitation ea deserunt aliqua. Do mollit occaecat ea nisi enim irure ad amet id eiusmod cillum. Cillum id ut in minim deserunt adipisicing non minim sit duis in sint proident. Laborum incididunt aute pariatur labore minim fugiat ut ullamco cupidatat laborum aliquip Lorem. \n Nulla nisi magna commodo fugiat nulla reprehenderit pariatur esse. Esse dolore ut consectetur mollit anim proident reprehenderit ad ullamco dolor nisi. Incididunt commodo dolore est duis exercitation eiusmod elit culpa ea elit. Ex laboris enim officia nostrud laborum consequat aliquip in amet excepteur aliqua pariatur Lorem ad. \n Dolore excepteur voluptate dolore sit aute voluptate ipsum anim non elit esse laboris. Ea cillum fugiat laborum aute minim proident sunt excepteur ex aute. Id laborum duis ad anim eiusmod cupidatat Lorem magna adipisicing et. Nisi amet laboris consectetur aute officia sunt nisi tempor.',
+    author: "Sarah Zheng",
+    content:
+      "Velit ut cupidatat nostrud ea sunt Lorem id aliquip officia commodo nostrud commodo adipisicing. Excepteur voluptate ullamco ullamco labore ipsum minim nulla ea elit id esse minim duis. Laboris duis irure ullamco cillum. Cupidatat voluptate irure mollit pariatur consequat dolor irure exercitation ea deserunt aliqua. Do mollit occaecat ea nisi enim irure ad amet id eiusmod cillum. Cillum id ut in minim deserunt adipisicing non minim sit duis in sint proident. Laborum incididunt aute pariatur labore minim fugiat ut ullamco cupidatat laborum aliquip Lorem. \n Nulla nisi magna commodo fugiat nulla reprehenderit pariatur esse. Esse dolore ut consectetur mollit anim proident reprehenderit ad ullamco dolor nisi. Incididunt commodo dolore est duis exercitation eiusmod elit culpa ea elit. Ex laboris enim officia nostrud laborum consequat aliquip in amet excepteur aliqua pariatur Lorem ad. \n Dolore excepteur voluptate dolore sit aute voluptate ipsum anim non elit esse laboris. Ea cillum fugiat laborum aute minim proident sunt excepteur ex aute. Id laborum duis ad anim eiusmod cupidatat Lorem magna adipisicing et. Nisi amet laboris consectetur aute officia sunt nisi tempor.",
     createdAt: new Date(),
     comments: [
       {
@@ -44,49 +55,46 @@ const ForumPost = () => {
       },
     ],
   };
-  
+
   if (!post) {
-    return (
-      <Redirect to="/forum"/>
-    )
+    return <Redirect to="/forum" />;
   }
-  
+
   return (
     <Box>
-      <PostDetails post={post}/>
-      <ShowCmts list={post.comments}/>
+      <PostDetails post={post} />
+      <ShowCmts list={post.comments} />
     </Box>
-  )
-}
+  );
+};
 
-const PostDetails = ({post}) => {
+const PostDetails = ({ post }) => {
   // TODO
   const isMine = true;
-  
+
   return (
     <>
-      <Box sx={{display: 'flex', justifyContent: 'space-between'}}>
-        <Typography variant="h4" component='div' sx={{mb: 1}}>
+      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Typography variant="h4" component="div" sx={{ mb: 1 }}>
           {post.title}
         </Typography>
-        {isMine && <EditAndDelete/>}
+        {isMine && <EditAndDelete />}
       </Box>
-      <Box sx={{mb: 1}}>
-        <Typography variant='subtitle1' color="primary" component="span">
+      <Box sx={{ mb: 1 }}>
+        <Typography variant="subtitle1" color="primary" component="span">
           {post.author}
-        </Typography>
-        {" "}
-        <Typography variant="body1" component='span' sx={{mb: 1}}>
+        </Typography>{" "}
+        <Typography variant="body1" component="span" sx={{ mb: 1 }}>
           {moment(post.createdAt).fromNow()}
         </Typography>
       </Box>
-      <Typography variant="body1" component='div'>
-        {post.content.split('\n').map(text => (
+      <Typography variant="body1" component="div">
+        {post.content.split("\n").map((text) => (
           <p>{text}</p>
         ))}
       </Typography>
     </>
-  )
-}
+  );
+};
 
 export default ForumPost;

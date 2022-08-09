@@ -13,11 +13,10 @@ const Forum = () => {
         Discuss internship opportunities and experiences with your peers.
       </Typography>
       <Grid container>
-        {INDUSTRIES.map((industry) => (
-          <Grid item xs={12} sm={6} lg={4}>
+        {INDUSTRIES.map((industry, idx) => (
+          <Grid item xs={12} sm={6} lg={4} key={idx}>
             <Card
               title={industry}
-              subheading={`${Math.floor(Math.random() * 1000)} Posts`}
               media={`https://source.unsplash.com/random/?${industry}`}
               to={`/forum/${industry.toLowerCase()}`}
               width="85%"

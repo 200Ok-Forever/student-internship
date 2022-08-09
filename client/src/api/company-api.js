@@ -40,3 +40,23 @@ export const postEditCompanyInfo = async (id, data, token) => {
 
 export const companyGetJobInfo = async (id) => 
   await getRequest(`company/${id}/jobs`)
+
+export const postForwardApplication = async (jobId, appId, token) =>
+  await postRequest(`/company/${jobId}/${appId}/forward`, {}, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+export const postRejectApplication = async (jobId, appId, token) =>
+  await postRequest(`/company/${jobId}/${appId}/reject`, {}, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+export const postShortlistApplication = async (jobId, appId, token) =>
+  await postRequest(`/company/${jobId}/${appId}/shortlist`, {}, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+export const postUnshortlistApplication = async (jobId, appId, token) =>
+  await postRequest(`/company/${jobId}/${appId}/unshortlist`, {}, {
+    headers: { Authorization: `Bearer ${token}` },
+  });

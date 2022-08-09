@@ -40,7 +40,6 @@ const EditCompanyProfile = () => {
   useEffect(() => {
     const loadInfo = async () => {
       const res = await getCompanyInfo(user.uid);
-      console.log(res);
       setAvatar(res.company_logo);
       setInfo(res);
     };
@@ -98,15 +97,12 @@ const EditCompanyProfile = () => {
           company_size: values?.size ? values.size : "",
           founded_year: values.founded_year,
         };
-        console.log(editValues);
         try {
-          console.log(editValues);
           const res = await postEditCompanyInfo(
             user.uid,
             editValues,
             user.token
           );
-          console.log(res);
           if (res.message === "Successfully") {
             console.log(res);
             handleOpen("Success", "Successfully edit the infomation!");
