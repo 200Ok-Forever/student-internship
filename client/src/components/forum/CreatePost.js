@@ -1,10 +1,8 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect, useContext } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { getPost, patchPost, postPost } from "../../api/forum-api";
-
 import {
-  FormControlLabel,
-  Checkbox,
   Grid,
   Link,
   InputLabel,
@@ -30,17 +28,16 @@ const CreatePost = (props) => {
   );
   const [content, setContent] = useState("");
   const [anon, setAnon] = useState(false);
+  const [sending, setSending] = useState(false);
 
   useEffect(() => {
     const getData = async () => {
       if (id) {
-        // TODO get post
         const data = await getPost(id);
         const post = data.post;
         setTitle(post.title);
         setIndustry(data.industry);
         setContent(post.content);
-        setLoading(false);
       }
     };
     getData();
@@ -54,10 +51,12 @@ const CreatePost = (props) => {
   };
 
   const postNewPost = async (data, token) => {
+    setSending(true);
     const resp = await postPost(data, "Bearer " + token);
     if (resp.postid) {
       history.push("/forum/posts/" + resp.postid);
     }
+    setSending(false);
   };
 
   if (loading) {
@@ -112,20 +111,12 @@ const CreatePost = (props) => {
         onChange={(e) => setContent(e.target.value)}
         fullWidth
       />
-      {!id && (
-        <FormControlLabel
-          control={<Checkbox />}
-          label="Post Anonymously"
-          checked={anon}
-          onChange={(e) => setAnon(e.target.checked)}
-          sx={{ mt: 2 }}
-        />
-      )}
       <Box sx={{ display: "flex", alignItems: "center", mt: 2 }}>
         <Button
           color="primary"
           variant="contained"
           sx={{ px: 5, mr: 3 }}
+          disabled={sending}
           onClick={() => {
             id
               ? updateContent(id, content, user.token)

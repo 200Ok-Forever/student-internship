@@ -1,5 +1,5 @@
-import React, { useContext } from "react";
-import { useHistory, Link as RouterLink } from "react-router-dom";
+import React from "react";
+import { Link as RouterLink } from "react-router-dom";
 import moment from "moment";
 import ChatIcon from "@mui/icons-material/Chat";
 import classes from "./Forum.module.scss";
@@ -10,23 +10,8 @@ import {
   Card,
   CardContent,
 } from "@mui/material";
-import EditAndDelete from "../UI/EditAndDelete";
-import { deletePost } from "../../api/forum-api";
-import { UserContext } from "../../store/UserContext";
 
 const PostCard = ({ post }) => {
-  // TODO
-  const isMine = true;
-  const history = useHistory();
-  const { user } = useContext(UserContext);
-
-  const delete_Post = async (id, token) => {
-    const resp = await deletePost(id, "Bearer " + token);
-    if (resp.message === "delete successfully") {
-      history.push("/forum/posts");
-    }
-  };
-
   return (
     <Card sx={{ mb: 2 }} className={classes.cardHover}>
       <CardActionArea component={RouterLink} to={`/forum/posts/${post.id}`}>
@@ -35,12 +20,6 @@ const PostCard = ({ post }) => {
             <Typography variant="h5" component="div" sx={{ mb: 1 }}>
               {post.title}
             </Typography>
-            {isMine && (
-              <EditAndDelete
-                onEdit={() => history.push(`/forum/${post.id}/edit`)}
-                onDelete={() => delete_Post(post.id, user.token)}
-              />
-            )}
           </Box>
           <Box sx={{ mb: 1 }}>
             <Typography variant="subtitle1" color="primary" component="span">

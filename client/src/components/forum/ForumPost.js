@@ -5,7 +5,6 @@ import { Box, Typography } from "@mui/material";
 import ShowCmts from "../UI/ShowCmts";
 import EditAndDelete from "../UI/EditAndDelete";
 import axios from "axios";
-import { postCmt } from "../../api/forum-api";
 import { UserContext } from "../../store/UserContext";
 
 const ForumPost = () => {
@@ -13,17 +12,17 @@ const ForumPost = () => {
   const postNum = location.pathname.split("/")[3];
   const [post, setPost] = useState({});
   const { user } = useContext(UserContext);
-  console.log("🚀 ~ user", user);
   const [comments, setComments] = useState([]);
+  const [industry, setIndustry] = useState("");
 
   useEffect(() => {
     const getPostInfo = async () => {
       const resp = await axios.get(
         `http://localhost:5004/forum/posts/${postNum}`
       );
-      console.log("🚀 ~ resp", resp);
       setPost(resp.data);
       setComments(resp.data.comments);
+      setIndustry(resp.data.industry);
     };
     getPostInfo();
   }, [postNum]);
@@ -74,6 +73,7 @@ const ForumPost = () => {
         userID: newCmt.uid,
         Content: newCmt.text,
         createdAt: new Date(),
+        replyID: 0,
       };
       const resp = await axios.post(
         `http://localhost:5004/forum/posts/${postNum}/comment`,
@@ -104,16 +104,18 @@ const ForumPost = () => {
   return (
     <>
       <Box>
-        <PostDetails post={post.post} author={post.user} />
-        <ShowCmts list={comments} sendCmt={sendCmt} sendReply={sendReply} />
+        <PostDetails post={post.post} author={post.user} industry={industry} />
+        {post?.post?.title && (
+          <ShowCmts list={comments} sendCmt={sendCmt} sendReply={sendReply} />
+        )}
       </Box>
     </>
   );
 };
 
-const PostDetails = ({ post, author }) => {
+const PostDetails = ({ post, author, industry }) => {
   const { user } = useContext(UserContext);
-  const isMine = user.uid === author.uid;
+  const isMine = user?.uid === author?.uid;
 
   return (
     <>
@@ -123,7 +125,13 @@ const PostDetails = ({ post, author }) => {
             <Typography variant="h4" component="div" sx={{ mb: 1 }}>
               {post?.title}
             </Typography>
-            {isMine && <EditAndDelete />}
+            {isMine && (
+              <EditAndDelete
+                id={post.id}
+                token={user.token}
+                industry={industry}
+              />
+            )}
           </Box>
           <Box sx={{ mb: 1 }}>
             <Typography variant="subtitle1" color="primary" component="span">

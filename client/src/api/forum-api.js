@@ -16,7 +16,7 @@ export const getPost = async (id) => {
 
 export const postPost = async (data, token) => {
   return await postRequest("/forum/posts", data, {
-    headers: { Authorization: `Bearer ${token}` },
+    headers: { Authorization: token },
   });
 };
 
