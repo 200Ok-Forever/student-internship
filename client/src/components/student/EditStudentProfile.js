@@ -22,7 +22,8 @@ import SkillsSelect from "../UI/SkillsSelect";
 const EditStudentProfile = () => {
   const history = useHistory();
 
-  const { user } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
+  const [loading, setLoading] = useState(false);
 
   // Handle the error modal
   const [errorModalState, setErrorModalState] = useState(false);
@@ -43,8 +44,7 @@ const EditStudentProfile = () => {
   useEffect(() => {
     const loadInfo = async () => {
       const res = await getLongUserInfo(user.uid);
-      console.log("🚀 ~ res", res);
-      setInfo(res);
+      setInfo(res.student_info);
     };
     loadInfo();
   }, [user.uid]);
@@ -90,6 +90,7 @@ const EditStudentProfile = () => {
     validationSchema: studentEditValidationSchema,
     onSubmit: (values) => {
       const edit = async (values) => {
+        setLoading(true);
         const editValues = {
           first_name: values.firstName,
           last_name: values.lastName,
@@ -97,10 +98,12 @@ const EditStudentProfile = () => {
           degree: values.degree,
           major: values.major,
           position: values.positions,
-          skills: values.skills.map((item) => item.id),
+          skills:
+            values.skills.length === 0
+              ? []
+              : values.skills.map((item) => item.id),
           description: values.description,
         };
-        console.log(editValues);
         try {
           const res = await editStudentProfileAPI(editValues, user.token);
           if (res.status === true) {
@@ -118,7 +121,7 @@ const EditStudentProfile = () => {
             console.log(res);
             //handleOpen(res);
           }
-          console.log(editValues);
+          setLoading(false);
         } catch (err) {
           console.log(err);
           //handleOpen(err);
@@ -127,6 +130,10 @@ const EditStudentProfile = () => {
 
       const changeAvatar = async () => {
         await changeAvatarApi({ avatar: avatar }, user.token);
+        const storedUser = localStorage.getItem("user");
+        const newInfo = { ...storedUser, avatar: avatar };
+        localStorage.setItem("user", JSON.stringify(newInfo));
+        setUser(JSON.parse(storedUser));
       };
       edit(values);
       changeAvatar();
@@ -135,176 +142,185 @@ const EditStudentProfile = () => {
 
   return (
     <>
-      <Paper
-        elevation={4}
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: "36px",
-          width: "50vw",
-          height: "fit-content",
-          gap: "40px",
-          mx: "auto",
-          mb: "100px",
-        }}
-      >
-        <Modal
-          open={errorModalState}
-          onClose={handleClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
+      {info?.id && (
+        <Paper
+          elevation={4}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "36px",
+            width: "50vw",
+            height: "fit-content",
+            gap: "40px",
+            mx: "auto",
+            mb: "100px",
+          }}
         >
-          <ErrorMessage title={errorTitle} errorMessage={errorMessage} />
-        </Modal>
-        <Typography
-          component="h1"
-          variant="h4"
-          fontWeight="bold"
-          sx={{ textAlign: "center" }}
-          fontFamily="inherit"
-        >
-          Edit Profile
-        </Typography>
-        <IconButton
-          color="primary"
-          aria-label="upload picture"
-          component="label"
-        >
-          <input
-            hidden
-            accept="image/*"
-            type="file"
-            onChange={onAvatarChange}
-          />
-          <Avatar sx={{ m: 1, width: "100px", height: "100px" }} src={avatar} />
-        </IconButton>
-        <Box
-          component="form"
-          noValidate
-          onSubmit={formik.handleSubmit}
-          sx={{ mt: 3 }}
-        >
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                autoComplete="given-name"
-                name="firstName"
-                required
-                fullWidth
-                id="firstName"
-                label="First Name"
-                autoFocus
-                value={formik.values.firstName}
-                onChange={formik.handleChange}
-                error={
-                  formik.touched.firstName && Boolean(formik.errors.firstName)
-                }
-                helperText={formik.touched.firstName && formik.errors.firstName}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                required
-                fullWidth
-                id="lastName"
-                label="Last Name"
-                name="lastName"
-                autoComplete="family-name"
-                value={formik.values.lastName}
-                onChange={formik.handleChange}
-                error={
-                  formik.touched.lastName && Boolean(formik.errors.lastName)
-                }
-                helperText={formik.touched.lastName && formik.errors.lastName}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                name="university"
-                label="University"
-                id="university"
-                autoComplete="university"
-                value={formik.values.university}
-                onChange={formik.handleChange}
-                error={
-                  formik.touched.university && Boolean(formik.errors.university)
-                }
-                helperText={
-                  formik.touched.university && formik.errors.university
-                }
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                name="degree"
-                label="Degree"
-                id="degree"
-                autoComplete="degree"
-                value={formik.values.degree}
-                onChange={formik.handleChange}
-                error={formik.touched.degree && Boolean(formik.errors.degree)}
-                helperText={formik.touched.degree && formik.errors.degree}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                name="major"
-                label="Major"
-                id="major"
-                autoComplete="major"
-                value={formik.values.major}
-                onChange={formik.handleChange}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                name="positions"
-                label="What positions you are searching?"
-                id="positions"
-                autoComplete="positions"
-                value={formik.values.positions}
-                onChange={formik.handleChange}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <SkillsSelect
-                label="Skills"
-                onChange={(event, value) => {
-                  formik.setFieldValue("skills", value);
-                }}
-                value={formik.values.skills}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                id="description"
-                label="Description"
-                multiline
-                fullWidth
-                rows={4}
-                value={formik.values.description}
-                onChange={formik.handleChange}
-              />
-            </Grid>
-          </Grid>
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
+          <Modal
+            open={errorModalState}
+            onClose={handleClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
           >
-            Submit
-          </Button>
-        </Box>
-      </Paper>
+            <ErrorMessage title={errorTitle} errorMessage={errorMessage} />
+          </Modal>
+          <Typography
+            component="h1"
+            variant="h4"
+            fontWeight="bold"
+            sx={{ textAlign: "center" }}
+            fontFamily="inherit"
+          >
+            Edit Profile
+          </Typography>
+          <IconButton
+            color="primary"
+            aria-label="upload picture"
+            component="label"
+          >
+            <input
+              hidden
+              accept="image/*"
+              type="file"
+              onChange={onAvatarChange}
+            />
+            <Avatar
+              sx={{ m: 1, width: "100px", height: "100px" }}
+              src={avatar}
+            />
+          </IconButton>
+          <Box
+            component="form"
+            noValidate
+            onSubmit={formik.handleSubmit}
+            sx={{ mt: 3 }}
+          >
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  autoComplete="given-name"
+                  name="firstName"
+                  required
+                  fullWidth
+                  id="firstName"
+                  label="First Name"
+                  autoFocus
+                  value={formik.values.firstName}
+                  onChange={formik.handleChange}
+                  error={
+                    formik.touched.firstName && Boolean(formik.errors.firstName)
+                  }
+                  helperText={
+                    formik.touched.firstName && formik.errors.firstName
+                  }
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  fullWidth
+                  id="lastName"
+                  label="Last Name"
+                  name="lastName"
+                  autoComplete="family-name"
+                  value={formik.values.lastName}
+                  onChange={formik.handleChange}
+                  error={
+                    formik.touched.lastName && Boolean(formik.errors.lastName)
+                  }
+                  helperText={formik.touched.lastName && formik.errors.lastName}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name="university"
+                  label="University"
+                  id="university"
+                  autoComplete="university"
+                  value={formik.values.university}
+                  onChange={formik.handleChange}
+                  error={
+                    formik.touched.university &&
+                    Boolean(formik.errors.university)
+                  }
+                  helperText={
+                    formik.touched.university && formik.errors.university
+                  }
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name="degree"
+                  label="Degree"
+                  id="degree"
+                  autoComplete="degree"
+                  value={formik.values.degree}
+                  onChange={formik.handleChange}
+                  error={formik.touched.degree && Boolean(formik.errors.degree)}
+                  helperText={formik.touched.degree && formik.errors.degree}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  name="major"
+                  label="Major"
+                  id="major"
+                  autoComplete="major"
+                  value={formik.values.major}
+                  onChange={formik.handleChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  name="positions"
+                  label="What positions you are searching?"
+                  id="positions"
+                  autoComplete="positions"
+                  value={formik.values.positions}
+                  onChange={formik.handleChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <SkillsSelect
+                  label="Skills"
+                  onChange={(event, value) => {
+                    formik.setFieldValue("skills", value);
+                  }}
+                  value={formik.values.skills}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  id="description"
+                  label="Description"
+                  multiline
+                  fullWidth
+                  rows={4}
+                  value={formik.values.description}
+                  onChange={formik.handleChange}
+                />
+              </Grid>
+            </Grid>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+              disabled={loading}
+            >
+              Submit
+            </Button>
+          </Box>
+        </Paper>
+      )}
     </>
   );
 };
