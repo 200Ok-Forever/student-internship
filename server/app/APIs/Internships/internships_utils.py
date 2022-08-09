@@ -522,9 +522,12 @@ class InternshipsUtils:
                     answer = QandA.get('answer', None)
 
                     if question_id != None and answer != None:
-                        new_interview_question = InternAnswer(student_id=current_user_id, question_id=question_id,
+                        try:
+                            new_interview_question = InternAnswer(student_id=current_user_id, question_id=question_id,
                                                             answer=answer)
-                        db.session.add(new_interview_question)
+                            db.session.add(new_interview_question)
+                        except Exception as errors:
+                            return dumps({'msg': error}),400
         except Exception as error:
             print(error)
             return dumps({'msg': error}),400

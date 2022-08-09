@@ -45,6 +45,12 @@ class GetPost(Resource):
         if forum_id <= 0 or forum_id >= len(forum_list):
             return {"message": "invalid forum id"}, 400
 
+        user = db.session.query(User).filter(User.uid == post.student_id).first()
+        result['user'] = {
+            'uid': user.uid,
+            'avatar': user.avatar,
+            'username': user.username
+        }
         result['industry'] = forum_list[forum_id]
 
         result['post'] = convert_object_to_dict(post)
