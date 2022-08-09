@@ -152,7 +152,7 @@ class CreateComment(Resource):
         }
     )
     @jwt_required()
-    @forum_api.expect(ForumAPI.comment_data, validate=True)
+    @forum_api.expect(ForumAPI.comment_data,auth_parser, validate=True)
     def post(self, postid):
         """ Comment to the given post """
         uid = get_jwt_identity()
