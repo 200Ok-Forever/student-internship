@@ -218,7 +218,7 @@ class CreateComment(Resource):
         new_comm = PostComment(data['userID'], postid, data['replyID'], data['createdAt'], data['Content'])
         db.session.add(new_comm)
         db.session.commit()
-        return {"message": "Successfully"}, 200
+        return {"message": "Successfully","id":new_comm.id}, 200
 
 
 
