@@ -130,10 +130,6 @@ const EditStudentProfile = () => {
 
       const changeAvatar = async () => {
         await changeAvatarApi({ avatar: avatar }, user.token);
-        const storedUser = localStorage.getItem("user");
-        const newInfo = { ...storedUser, avatar: avatar };
-        localStorage.setItem("user", JSON.stringify(newInfo));
-        setUser(JSON.parse(storedUser));
       };
       edit(values);
       changeAvatar();
