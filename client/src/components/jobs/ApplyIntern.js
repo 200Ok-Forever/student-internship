@@ -71,7 +71,7 @@ const ApplyForm = ({ setIsSubmitted }) => {
   const [resume, setResume] = useState(null);
   const [coverLetter, setCoverLetter] = useState(null);
   const [questions, setQuestions] = useState(null);
-
+  const [loading, setLoading] = useState(false);
   // Error prompt
   const [errorModalState, setErrorModalState] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -118,6 +118,7 @@ const ApplyForm = ({ setIsSubmitted }) => {
     if (resume === null && coverLetter === null) {
       handleOpen("Please Submit a resume and/or cover letter");
     } else {
+      setLoading(true);
       const resumeBase64 = await getBase64(resume);
       const coverBase64 = await getBase64(coverLetter);
       const res = await postNewApply(
@@ -132,9 +133,11 @@ const ApplyForm = ({ setIsSubmitted }) => {
       const resObject = JSON.parse(res);
       if (resObject.msg === "sucessfully") {
         setIsSubmitted(true);
+        setLoading(false);
       } else {
         console.log(resObject);
         handleOpen(resObject);
+        setLoading(false);
       }
     }
   };
@@ -209,6 +212,7 @@ const ApplyForm = ({ setIsSubmitted }) => {
           fullWidth
           sx={{ my: "100px" }}
           onClick={submitHandler}
+          disabled={loading}
         >
           Submit
         </Button>
