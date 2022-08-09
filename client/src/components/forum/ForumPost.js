@@ -89,7 +89,7 @@ const ForumPost = () => {
           uid: newCmt.uid,
           time: new Date(),
           replied: [],
-          cmtId: JSON.parse(resp.data).comment_id,
+          cmtId: resp.data.id,
           avatar: newCmt.avatar,
           username: newCmt.username,
         };
@@ -119,7 +119,7 @@ const ForumPost = () => {
           const idx = prev.findIndex((e) => e.cmtId === cmtId);
           const cmt = prev[idx];
           const replyInfo = {
-            repliedId: JSON.parse(resp.data).comment_id,
+            repliedId: resp.data.id,
             text: newReply.text,
             time: new Date(),
             uid: newReply.uid,
