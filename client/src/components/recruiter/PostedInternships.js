@@ -107,7 +107,7 @@ const CardHeader = ({ job, setInternships, setLoading }) => {
         <Typography
           variant="h5"
           sx={{ cursor: "pointer", display: "flex", alignItems: "center" }}
-          onClick={() => history.push(`/job?id=${job.job_id}`)}
+          onClick={() => history.push(`/job?id=${job.id}`)}
         >
           {job.title}
         </Typography>
@@ -146,7 +146,7 @@ const Labels = ({ job }) => {
           </Label>
         }
         <Label text={toTitleCase(job.type)}></Label>
-        {job.is_remote && <Label text={"Remote"}></Label>}
+        {job.is_remote === 'true' && <Label text={"Remote"}></Label>}
       </Box>
       <Box>
         <Button
