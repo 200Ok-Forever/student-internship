@@ -5,7 +5,6 @@ import { deletePost } from "../../api/forum-api";
 import { useHistory } from "react-router-dom";
 
 const EditAndDelete = ({ id, token, industry }) => {
-  console.log("🚀 ~ industry", industry);
   const ind = industry;
   const history = useHistory();
 

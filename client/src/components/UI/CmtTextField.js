@@ -1,9 +1,7 @@
 import { Button, TextField } from "@mui/material";
 import { Box } from "@mui/system";
-import { FormControlLabel, Checkbox } from "@mui/material";
 import React, { useContext, useState } from "react";
 import SendIcon from "@mui/icons-material/Send";
-import { useLocation } from "react-router-dom";
 import { UserContext } from "../../store/UserContext";
 
 // isCmt => true -- comment, false -- reply
@@ -15,7 +13,6 @@ const CmtTextField = ({
   placeholder,
 }) => {
   const [text, setText] = useState("");
-  const location = useLocation();
   const { user } = useContext(UserContext);
 
   const sendInfo = () => {

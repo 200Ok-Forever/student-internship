@@ -1,5 +1,5 @@
-import React, { useContext } from "react";
-import { useHistory, Link as RouterLink } from "react-router-dom";
+import React from "react";
+import { Link as RouterLink } from "react-router-dom";
 import moment from "moment";
 import ChatIcon from "@mui/icons-material/Chat";
 import classes from "./Forum.module.scss";
@@ -10,22 +10,8 @@ import {
   Card,
   CardContent,
 } from "@mui/material";
-import { deletePost } from "../../api/forum-api";
-import { UserContext } from "../../store/UserContext";
 
 const PostCard = ({ post }) => {
-  console.log("🚀 ~ post", post);
-
-  const history = useHistory();
-  const { user } = useContext(UserContext);
-
-  const delete_Post = async (id, token) => {
-    const resp = await deletePost(id, "Bearer " + token);
-    if (resp.message === "delete successfully") {
-      history.push("/forum/posts");
-    }
-  };
-
   return (
     <Card sx={{ mb: 2 }} className={classes.cardHover}>
       <CardActionArea component={RouterLink} to={`/forum/posts/${post.id}`}>
