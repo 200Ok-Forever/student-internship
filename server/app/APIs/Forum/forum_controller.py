@@ -166,7 +166,8 @@ class CreateComment(Resource):
         if post is None:
             return {"message": "Post id invalid"}, 400
         # check comment
-        if data['replyID'] is not None:
+        replyId = data.get('replyID',None)
+        if data['replyID'] is not None and replyId != 0:
             comment = db.session.query(PostComment).filter(PostComment.id == data['replyID']).first()
             if comment is None:
                 return {"message": "Parent comment id invalid"}, 400
