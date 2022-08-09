@@ -22,7 +22,8 @@ import SkillsSelect from "../UI/SkillsSelect";
 const EditStudentProfile = () => {
   const history = useHistory();
 
-  const { user } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
+  const [loading, setLoading] = useState(false);
 
   // Handle the error modal
   const [errorModalState, setErrorModalState] = useState(false);
@@ -40,7 +41,6 @@ const EditStudentProfile = () => {
 
   // get user's original info
   const [info, setInfo] = useState({});
-  console.log("🚀 ~ info", info);
   useEffect(() => {
     const loadInfo = async () => {
       const res = await getLongUserInfo(user.uid);
@@ -97,7 +97,10 @@ const EditStudentProfile = () => {
           degree: values.degree,
           major: values.major,
           position: values.positions,
-          skills: values.skills.map((item) => item.id),
+          skills:
+            values.skills.length === 0
+              ? []
+              : values.skills.map((item) => item.id),
           description: values.description,
         };
         console.log(editValues);
@@ -127,9 +130,15 @@ const EditStudentProfile = () => {
 
       const changeAvatar = async () => {
         await changeAvatarApi({ avatar: avatar }, user.token);
+        const storedUser = localStorage.getItem("user");
+        const newInfo = { ...storedUser, avatar: avatar };
+        localStorage.setItem("user", JSON.stringify(newInfo));
+        setUser(JSON.parse(storedUser));
       };
+      setLoading(true);
       edit(values);
       changeAvatar();
+      setLoading(false);
     },
   });
 
@@ -307,6 +316,7 @@ const EditStudentProfile = () => {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              disabled={loading}
             >
               Submit
             </Button>
