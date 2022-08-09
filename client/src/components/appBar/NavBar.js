@@ -160,13 +160,6 @@ const NavBar = () => {
               >
                 History
               </MenuItem>
-              <MenuItem
-                onClick={handleClose}
-                component={RouterLink}
-                to="/forum/me"
-              >
-                My Forum Posts
-              </MenuItem>
               <MenuItem onClick={LogoutHandler} component={RouterLink} to="/">
                 Logout
               </MenuItem>

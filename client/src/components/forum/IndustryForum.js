@@ -82,9 +82,8 @@ const Header = ({ setParams, params }) => {
             label="Sort By"
             onChange={(e) => setParams({ ...params, sort: e.target.value })}
           >
+            <MenuItem value="popular">All</MenuItem>
             <MenuItem value="newest">Newest</MenuItem>
-            <MenuItem value="hot">Hot</MenuItem>
-            <MenuItem value="popular">All Time Popular</MenuItem>
           </Select>
         </FormControl>
         <TextField
