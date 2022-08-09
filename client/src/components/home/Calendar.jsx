@@ -28,7 +28,7 @@ const CalendarScreen = () => {
   useEffect(() => {
     const getEvents = async () => {
       const res = await getInternshipEvents(user.token);
-      setEvents(formatEvents(JSON.parse(res)))
+      setEvents(formatEvents(res.calander_list))
     }
     getEvents();
   }, [user.token])

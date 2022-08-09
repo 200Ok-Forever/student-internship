@@ -29,7 +29,7 @@ const Sidebar = () => {
   useEffect(() => {
     const getEvents = async () => {
       const res = await getInternshipEvents(user.token);
-      setEvents(JSON.parse(res));
+      setEvents(res.calander_list);
     };
 
     const getMeetings = async () => {
@@ -42,7 +42,7 @@ const Sidebar = () => {
 
   const onRemove = async (data) => {
     const res = await postInternshipUncalendar(data, user.token);
-    setEvents(JSON.parse(res));
+    setEvents(res.calander_list);
   };
   // const upcomingMeetings = () =>
   //   meetings.filter((e) =>
@@ -74,7 +74,7 @@ const Sidebar = () => {
       <Meetings events={meetings} />
       {user.role === STUDENT_ROLE && (
         <Internships
-          events={upcomingEvents().filter((e) => e.type === "internship")}
+          events={upcomingEvents()}
           onRemove={onRemove}
         />
       )}
