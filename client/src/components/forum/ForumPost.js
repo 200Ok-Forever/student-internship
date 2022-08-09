@@ -99,7 +99,45 @@ const ForumPost = () => {
       console.log(e);
     }
   };
-  const sendReply = () => {};
+  const sendReply = async (cmtId, newReply) => {
+    try {
+      const data = {
+        userID: newReply.uid,
+        Content: newReply.text,
+        createdAt: new Date(),
+        replyID: cmtId,
+      };
+      const resp = await axios.post(
+        `http://localhost:5004/forum/posts/${postNum}/comment`,
+        data,
+        {
+          headers: { Authorization: `Bearer ${user.token}` },
+        }
+      );
+      if (resp.status === 200) {
+        setComments((prev) => {
+          const idx = prev.findIndex((e) => e.cmtId === cmtId);
+          const cmt = prev[idx];
+          const replyInfo = {
+            repliedId: JSON.parse(resp.data).comment_id,
+            text: newReply.text,
+            time: new Date(),
+            uid: newReply.uid,
+            avatar: newReply.avatar,
+            username: newReply.username,
+          };
+          if (cmt) {
+            const new_replies = [replyInfo].concat(cmt.replied);
+            const new_cmt = { ...cmt, replied: new_replies };
+            prev.splice(idx, 1, new_cmt);
+          }
+          return [...prev];
+        });
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   return (
     <>
