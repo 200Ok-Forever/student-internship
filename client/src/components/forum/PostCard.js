@@ -10,13 +10,12 @@ import {
   Card,
   CardContent,
 } from "@mui/material";
-import EditAndDelete from "../UI/EditAndDelete";
 import { deletePost } from "../../api/forum-api";
 import { UserContext } from "../../store/UserContext";
 
 const PostCard = ({ post }) => {
-  // TODO
-  const isMine = true;
+  console.log("🚀 ~ post", post);
+
   const history = useHistory();
   const { user } = useContext(UserContext);
 
@@ -35,12 +34,6 @@ const PostCard = ({ post }) => {
             <Typography variant="h5" component="div" sx={{ mb: 1 }}>
               {post.title}
             </Typography>
-            {isMine && (
-              <EditAndDelete
-                onEdit={() => history.push(`/forum/${post.id}/edit`)}
-                onDelete={() => delete_Post(post.id, user.token)}
-              />
-            )}
           </Box>
           <Box sx={{ mb: 1 }}>
             <Typography variant="subtitle1" color="primary" component="span">
