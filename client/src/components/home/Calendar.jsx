@@ -140,7 +140,7 @@ const Event = ({ eventWrapper, onRemove }) => {
 
 const EventTime = ({ event, inclDay = false }) => (
   <Typography variant="subtitle2" component="span">
-    {moment(event.start).format(`${inclDay && "D MMM "}hh:mm a`)}
+    {inclDay ? moment(event.start).format(`D MMM hh:mm a`) : moment(event.start).format(`hh:mm a`)}
   </Typography>
 );
 
