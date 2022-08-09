@@ -19,6 +19,47 @@ from ...Helpers.other_util import convert_object_to_dict, convert_model_to_dict
 from ...Models import forum
 from .forum_utils import ForumUtils
 
+
+def get_user_info(uid):
+    user = db.session.query(User).filter(User.uid==uid).first()
+    return user.username, user.avatar
+
+
+def get_all_parent_comment(comments):
+    all_parent_comment = []
+
+    for comment in comments:
+        children_comment = db.session.query(PostComment).filter(PostComment.parent_id == comment.id).all()
+        children_comment_list = get_children_comment(children_comment)
+        # print(children_comment_list)
+        all_parent_comment.append({
+            'text': comment.content,
+            'uid': comment.student_id,
+            'username': get_user_info(comment.student_id)[0],
+            'avatar': get_user_info(comment.student_id)[1],
+            'cmtId': comment.id,
+            'time': str(comment.created_time),
+            'replied': children_comment_list
+        })
+    return all_parent_comment
+
+
+def get_children_comment(comments):
+    all_children_comment = []
+    for comment in comments:
+        all_children_comment.append({
+            'repliedId': comment.id,
+            'text': comment.content,
+            'time': str(comment.created_time),
+            'uid': comment.student_id,
+            'username': get_user_info(comment.student_id)[0],
+            'avatar': get_user_info(comment.student_id)[1],
+            }, )
+
+    # print(all_children_comment)
+    return all_children_comment
+
+
 forum_api = ForumAPI.forum_ns
 
 forum_parser = reqparse.RequestParser()
@@ -54,8 +95,10 @@ class GetPost(Resource):
         result['industry'] = forum_list[forum_id]
 
         result['post'] = convert_object_to_dict(post)
-        comments = post.comments
-        result['comments'] = convert_model_to_dict(comments)
+
+        postcomment = db.session.query(PostComment).filter(PostComment.post_id == postid).filter(PostComment.parent_id==0).all()
+        
+        result['comments'] = get_all_parent_comment(postcomment)
 
         return result, 200
 
