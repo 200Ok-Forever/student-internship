@@ -90,6 +90,7 @@ const EditStudentProfile = () => {
     validationSchema: studentEditValidationSchema,
     onSubmit: (values) => {
       const edit = async (values) => {
+        setLoading(true);
         const editValues = {
           first_name: values.firstName,
           last_name: values.lastName,
@@ -103,7 +104,6 @@ const EditStudentProfile = () => {
               : values.skills.map((item) => item.id),
           description: values.description,
         };
-        console.log(editValues);
         try {
           const res = await editStudentProfileAPI(editValues, user.token);
           if (res.status === true) {
@@ -121,7 +121,7 @@ const EditStudentProfile = () => {
             console.log(res);
             //handleOpen(res);
           }
-          console.log(editValues);
+          setLoading(false);
         } catch (err) {
           console.log(err);
           //handleOpen(err);
@@ -135,10 +135,8 @@ const EditStudentProfile = () => {
         localStorage.setItem("user", JSON.stringify(newInfo));
         setUser(JSON.parse(storedUser));
       };
-      setLoading(true);
       edit(values);
       changeAvatar();
-      setLoading(false);
     },
   });
 
