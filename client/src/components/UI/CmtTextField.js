@@ -54,9 +54,6 @@ const CmtTextField = ({
       <Box
         sx={{ alignSelf: "flex-end", display: "flex", alignItems: "center" }}
       >
-        {location.pathname !== "/job" && (
-          <FormControlLabel control={<Checkbox />} label="Post Anonymously" />
-        )}
         <Button
           variant="contained"
           endIcon={<SendIcon />}

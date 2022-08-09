@@ -13,6 +13,7 @@ const ForumPost = () => {
   const postNum = location.pathname.split("/")[3];
   const [post, setPost] = useState({});
   const { user } = useContext(UserContext);
+  console.log("🚀 ~ user", user);
   const [comments, setComments] = useState([]);
 
   useEffect(() => {
@@ -74,7 +75,13 @@ const ForumPost = () => {
         Content: newCmt.text,
         createdAt: new Date(),
       };
-      const resp = await postCmt(postNum, data, user.token);
+      const resp = await axios.post(
+        `http://localhost:5004/forum/posts/${postNum}/comment`,
+        data,
+        {
+          headers: { Authorization: `Bearer ${user.token}` },
+        }
+      );
       console.log("🚀 ~ resp", resp);
       if (resp.status === 200) {
         const cmtInfo = {
@@ -105,7 +112,8 @@ const ForumPost = () => {
 };
 
 const PostDetails = ({ post, author }) => {
-  const isMine = true;
+  const { user } = useContext(UserContext);
+  const isMine = user.uid === author.uid;
 
   return (
     <>
