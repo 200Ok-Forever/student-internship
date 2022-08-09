@@ -176,7 +176,7 @@ def format_jobs(jobs, uid, company_logo, company_name):
             data['processes'] = process_list
             data['require_resume'] = job.require_resume
             data['require_coverLetter'] = job.require_coverLetter
-            data['nApplications'] = len(job.status)
+            data['nApplications'] = len(list(filter(lambda x: x.is_applied == "True", job.status)))
             data['skills'] = [{ 'name': skill.name, 'id': skill.id} for skill in job.skills]
         result['jobs'].append(data)
 
